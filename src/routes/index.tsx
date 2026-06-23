@@ -88,9 +88,10 @@ function Index() {
           </div>
 
           {/* Right: portrait composition */}
-          <div className="order-1 lg:order-2">
+          <div className="order-2">
             <Portrait />
           </div>
+
         </section>
 
         <footer className="animate-fade-in relative z-10 mt-auto border-t border-border/60 py-7 text-center sm:text-left">
