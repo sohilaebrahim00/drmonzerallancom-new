@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/landing/Header";
 import { Portrait } from "@/components/landing/Portrait";
 import { HeroBackground } from "@/components/landing/HeroBackground";
-import { INSTAGRAM_URL, InstagramIcon } from "@/components/landing/instagram";
+import { InstagramIcon } from "@/components/landing/instagram";
 
 export const Route = createFileRoute("/")({
   head: () => ({

@@ -1,5 +1,5 @@
 import logo from "@/assets/ma-logo.png.asset.json";
-import { INSTAGRAM_URL, InstagramIcon } from "./instagram";
+import { InstagramIcon } from "./instagram";
 
 export function Header() {
   return (
