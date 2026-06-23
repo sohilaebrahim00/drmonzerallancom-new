@@ -4,7 +4,7 @@
  */
 export function HeroBackground() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
       {/* Soft aqua + light-blue radial blooms */}
       <div className="animate-float-slow absolute -left-40 -top-44 h-[34rem] w-[34rem] rounded-full bg-secondary blur-3xl" />
       <div className="animate-float-slower absolute -right-32 top-1/4 h-[30rem] w-[30rem] rounded-full bg-turquoise/10 blur-3xl" />
