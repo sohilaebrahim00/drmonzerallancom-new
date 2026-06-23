@@ -93,6 +93,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Monzer Allan | Nutrition, Health & Wellness" },
+      { name: "description", content: "Monzer Allan's website offers premium health, nutrition, and wellness education." },
+      { property: "og:description", content: "Monzer Allan's website offers premium health, nutrition, and wellness education." },
+      { name: "twitter:description", content: "Monzer Allan's website offers premium health, nutrition, and wellness education." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/w8dnv8YLEDUU1CSLhI7R7Yg6cIu2/social-images/social-1782250775965-WhatsApp_Image_2026-06-24_at_00.19.58.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/w8dnv8YLEDUU1CSLhI7R7Yg6cIu2/social-images/social-1782250775965-WhatsApp_Image_2026-06-24_at_00.19.58.webp" },
     ],
     links: [
       {
