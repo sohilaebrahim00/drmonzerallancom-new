@@ -26,8 +26,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-gold: var(--gold);
-  --color-gold-foreground: var(--gold-foreground);
+  --color-turquoise: var(--turquoise);
+  --color-turquoise-foreground: var(--turquoise-foreground);
+  --color-green: var(--green);
+  --color-navy: var(--navy);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -41,40 +43,44 @@
 :root {
   --radius: 0.75rem;
 
-  /* Warm ivory background */
-  --background: oklch(0.974 0.012 88);
-  /* Dark charcoal text */
-  --foreground: oklch(0.275 0.008 80);
+  /* Clean soft white */
+  --background: #fcfdfd;
+  /* Dark navy text */
+  --foreground: #17233b;
 
-  --card: oklch(0.985 0.008 88);
-  --card-foreground: oklch(0.275 0.008 80);
-  --popover: oklch(0.985 0.008 88);
-  --popover-foreground: oklch(0.275 0.008 80);
+  --card: #ffffff;
+  --card-foreground: #17233b;
+  --popover: #ffffff;
+  --popover-foreground: #17233b;
 
-  /* Deep olive green */
-  --primary: oklch(0.46 0.058 120);
-  --primary-foreground: oklch(0.98 0.012 88);
+  /* Deep royal blue */
+  --primary: #253fa4;
+  --primary-foreground: #fcfdfd;
 
-  /* Soft beige */
-  --secondary: oklch(0.93 0.018 84);
-  --secondary-foreground: oklch(0.35 0.02 110);
+  /* Soft aqua */
+  --secondary: #eaf8fa;
+  --secondary-foreground: #17233b;
 
-  --muted: oklch(0.94 0.012 86);
-  --muted-foreground: oklch(0.52 0.012 85);
+  --muted: #eef2f7;
+  --muted-foreground: #5b667d;
 
-  --accent: oklch(0.91 0.025 90);
-  --accent-foreground: oklch(0.35 0.02 110);
+  --accent: #eaf8fa;
+  --accent-foreground: #17233b;
 
-  /* Muted warm gold */
-  --gold: oklch(0.76 0.062 82);
-  --gold-foreground: oklch(0.3 0.02 90);
+  /* Turquoise — buttons & highlights */
+  --turquoise: #38b7c7;
+  --turquoise-foreground: #fcfdfd;
+  /* Fresh green — small accent only */
+  --green: #72be2d;
+  /* Dark navy */
+  --navy: #17233b;
 
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
 
-  --border: oklch(0.9 0.014 86);
-  --input: oklch(0.9 0.014 86);
-  --ring: oklch(0.46 0.058 120);
+  --border: #dde6ee;
+  --input: #dde6ee;
+  --ring: #253fa4;
 }
 
 @layer base {
