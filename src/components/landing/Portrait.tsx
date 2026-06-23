@@ -9,7 +9,7 @@ export function Portrait() {
     <div className="animate-portrait relative mx-auto w-full max-w-md lg:max-w-lg">
       {/* Soft aqua + light-blue radial gradient behind portrait */}
       <div
-        className="animate-float-slower absolute inset-0 -z-10"
+        className="animate-float-slower pointer-events-none absolute inset-0 -z-10"
         style={{
           borderRadius: "62% 38% 46% 54% / 56% 44% 56% 44%",
           background:
