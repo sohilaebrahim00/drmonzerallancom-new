@@ -1,5 +1,5 @@
 import logo from "@/assets/ma-logo.png.asset.json";
-import { INSTAGRAM_URL, InstagramIcon } from "./instagram";
+import { InstagramIcon } from "./instagram";
 
 export function Header() {
   return (
@@ -18,7 +18,7 @@ export function Header() {
       </a>
 
       <a
-        href={INSTAGRAM_URL}
+        href="https://www.instagram.com/monzerallan/"
         target="_blank"
         rel="noopener noreferrer"
         className="group relative z-30 inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2 text-sm font-semibold text-navy/80 backdrop-blur-sm transition-all duration-300 hover:border-turquoise hover:bg-card hover:text-turquoise"
