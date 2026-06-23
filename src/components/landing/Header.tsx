@@ -12,7 +12,7 @@ export function Header() {
           height={120}
           className="h-11 w-auto sm:h-12"
         />
-        <span className="hidden font-display text-lg font-700 tracking-tight text-foreground sm:inline">
+        <span className="hidden font-display text-lg font-bold tracking-tight text-foreground sm:inline">
           Monzer Allan
         </span>
       </a>
@@ -21,7 +21,7 @@ export function Header() {
         href={INSTAGRAM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="group inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/40 px-4 py-2 text-sm font-600 text-foreground/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-card hover:text-primary"
+        className="group inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/40 px-4 py-2 text-sm font-semibold text-foreground/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-card hover:text-primary"
       >
         <InstagramIcon className="h-[1.05rem] w-[1.05rem] transition-transform duration-300 group-hover:scale-110" />
         <span>Instagram</span>
