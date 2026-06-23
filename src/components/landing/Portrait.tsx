@@ -1,9 +1,3 @@
-import portrait from "@/assets/monzer-portrait.jpg.asset.json";
-
-/**
- * Editorial portrait composition — organic arched frame with soft aqua /
- * turquoise accents, gentle gradient overlay to calm office background.
- */
 export function Portrait() {
   return (
     <div className="animate-portrait relative mx-auto w-full max-w-md lg:max-w-lg">
@@ -44,7 +38,7 @@ export function Portrait() {
         style={{ borderRadius: "60% 40% 44% 56% / 54% 46% 54% 46%" }}
       >
         <img
-          src={portrait.url}
+          src="/monzer-portrait.jpg"
           alt="Monzer Allan, Nutrition Specialist and Pharmacist, at his desk"
           width={960}
           height={1280}

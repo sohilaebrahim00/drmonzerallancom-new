@@ -1,32 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/landing/Header";
 import { Portrait } from "@/components/landing/Portrait";
 import { HeroBackground } from "@/components/landing/HeroBackground";
 import { InstagramIcon } from "@/components/landing/instagram";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Monzer Allan | Nutrition, Health & Wellness" },
-      {
-        name: "description",
-        content:
-          "Trusted nutrition, health, and wellness guidance from Monzer Allan, Nutrition Specialist and Pharmacist.",
-      },
-      { property: "og:title", content: "Monzer Allan | Nutrition, Health & Wellness" },
-      {
-        property: "og:description",
-        content:
-          "Trusted nutrition, health, and wellness guidance from Monzer Allan, Nutrition Specialist and Pharmacist.",
-      },
-      { property: "og:url", content: "/" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
-  component: Index,
-});
-
-function Index() {
+export default function App() {
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background">
       <HeroBackground />
@@ -92,7 +69,6 @@ function Index() {
             <Portrait />
           </div>
         </section>
-
 
         <footer className="animate-fade-in relative z-10 mt-auto border-t border-border/60 py-7 text-center sm:text-left">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

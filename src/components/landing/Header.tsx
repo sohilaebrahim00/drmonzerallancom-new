@@ -1,4 +1,3 @@
-import logo from "@/assets/ma-logo.png.asset.json";
 import { InstagramIcon } from "./instagram";
 
 export function Header() {
@@ -6,7 +5,7 @@ export function Header() {
     <header className="animate-fade-in relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 sm:px-10 sm:py-7">
       <a href="/" className="flex items-center gap-2" aria-label="Monzer Allan home">
         <img
-          src={logo.url}
+          src="/ma-logo.png"
           alt="Monzer Allan logo"
           width={140}
           height={140}
