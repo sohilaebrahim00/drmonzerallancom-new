@@ -17,7 +17,7 @@ export function Portrait() {
         }}
       />
       <div
-        className="absolute -inset-3 -z-10 bg-turquoise/10 blur-2xl"
+        className="pointer-events-none absolute -inset-3 -z-10 bg-turquoise/10 blur-2xl"
         style={{ borderRadius: "62% 38% 46% 54% / 56% 44% 56% 44%" }}
       />
 
