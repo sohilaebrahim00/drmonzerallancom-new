@@ -36,7 +36,7 @@ function Index() {
       <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 sm:px-10">
         <section className="grid flex-1 grid-cols-1 items-center gap-12 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-16">
           {/* Left: editorial content */}
-          <div className="order-2 max-w-xl lg:order-1">
+          <div className="order-1 max-w-xl">
             <p
               className="animate-fade-up text-xs font-semibold uppercase tracking-[0.28em] text-primary"
               style={{ animationDelay: "0.05s" }}
