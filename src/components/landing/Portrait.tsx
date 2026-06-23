@@ -9,7 +9,7 @@ export function Portrait() {
     <div className="animate-portrait relative mx-auto w-full max-w-md lg:max-w-lg">
       {/* Soft aqua + light-blue radial gradient behind portrait */}
       <div
-        className="animate-float-slower absolute inset-0 -z-10"
+        className="animate-float-slower pointer-events-none absolute inset-0 -z-10"
         style={{
           borderRadius: "62% 38% 46% 54% / 56% 44% 56% 44%",
           background:
@@ -17,13 +17,13 @@ export function Portrait() {
         }}
       />
       <div
-        className="absolute -inset-3 -z-10 bg-turquoise/10 blur-2xl"
+        className="pointer-events-none absolute -inset-3 -z-10 bg-turquoise/10 blur-2xl"
         style={{ borderRadius: "62% 38% 46% 54% / 56% 44% 56% 44%" }}
       />
 
       {/* Thin curved aqua/turquoise accent ring */}
       <svg
-        className="absolute -inset-4 h-[calc(100%+2rem)] w-[calc(100%+2rem)]"
+        className="pointer-events-none absolute -inset-4 h-[calc(100%+2rem)] w-[calc(100%+2rem)]"
         viewBox="0 0 100 100"
         fill="none"
         preserveAspectRatio="none"
@@ -57,8 +57,8 @@ export function Portrait() {
       </div>
 
       {/* Floating soft accent dots */}
-      <div className="animate-float-slow absolute -right-2 top-8 h-16 w-16 rounded-full bg-turquoise/15 blur-md" />
-      <div className="animate-float-slower absolute -left-3 bottom-12 h-3 w-3 rounded-full bg-green/50" />
+      <div className="animate-float-slow pointer-events-none absolute -right-2 top-8 h-16 w-16 rounded-full bg-turquoise/15 blur-md" />
+      <div className="animate-float-slower pointer-events-none absolute -left-3 bottom-12 h-3 w-3 rounded-full bg-green/50" />
     </div>
   );
 }
