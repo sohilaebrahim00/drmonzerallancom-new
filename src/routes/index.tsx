@@ -100,7 +100,7 @@ function Index() {
               © 2026 Monzer Allan. All rights reserved.
             </p>
             <p className="max-w-md text-xs leading-relaxed text-muted-foreground/80">
-              Educational content only and is not a substitute for professional
+              Educational content only and not a substitute for professional
               medical consultation.
             </p>
           </div>
