@@ -1,0 +1,59 @@
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+
+import { Reveal } from "@/components/common/Reveal";
+import { SectionHeading } from "@/components/common/SectionHeading";
+import { ProductCard } from "@/components/products/ProductCard";
+import { ProductsEmptyState } from "@/components/products/ProductsEmptyState";
+import { getFeaturedProducts } from "@/data/products";
+
+export function ProductsPreview() {
+  const products = getFeaturedProducts();
+
+  return (
+    <section
+      id="products-preview"
+      className="relative py-20 sm:py-28"
+      aria-labelledby="products-preview-heading"
+    >
+      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
+        <SectionHeading
+          eyebrow="Products"
+          title="Featured Wellness Products"
+          description="Carefully selected products designed to support a healthier daily routine."
+        />
+
+        <div className="mt-14">
+          {products.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((product, index) => (
+                <Reveal key={product.id} direction="up" delay={index * 0.08}>
+                  <ProductCard product={product} />
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <Reveal direction="up">
+              <ProductsEmptyState />
+            </Reveal>
+          )}
+        </div>
+
+        <Reveal direction="up" delay={0.2} className="mt-10 flex justify-center">
+          <Link
+            to="/products"
+            className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:border-turquoise hover:text-turquoise"
+          >
+            View All Products
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        </Reveal>
+
+        <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground/80">
+          Products shown here are wellness-support items and are not intended to diagnose, treat,
+          cure, or prevent any disease.
+        </p>
+      </div>
+    </section>
+  );
+}

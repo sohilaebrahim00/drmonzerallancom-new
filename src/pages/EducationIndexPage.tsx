@@ -1,0 +1,149 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { ArrowUpRight, Clock, Search } from "lucide-react";
+
+import { Seo } from "@/components/seo/Seo";
+import { Reveal } from "@/components/common/Reveal";
+import { ArticleCard } from "@/components/education/ArticleCard";
+import { Input } from "@/components/ui/input";
+import { articles, categories, estimateReadingTime, type ArticleCategory } from "@/data/articles";
+import { cn } from "@/lib/utils";
+
+export default function EducationIndexPage() {
+  const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<ArticleCategory | "All">("All");
+  const featured = articles[0];
+
+  useEffect(() => {
+    const requested = searchParams.get("category");
+    if (requested && (categories as string[]).includes(requested)) {
+      setActiveCategory(requested as ArticleCategory);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filtered = useMemo(() => {
+    return articles.filter((article) => {
+      if (!query.trim() && activeCategory === "All" && article.slug === featured?.slug) {
+        return false;
+      }
+      const matchesCategory = activeCategory === "All" || article.category === activeCategory;
+      const q = query.trim().toLowerCase();
+      const matchesQuery =
+        !q ||
+        article.title.toLowerCase().includes(q) ||
+        article.excerpt.toLowerCase().includes(q) ||
+        article.category.toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, activeCategory, featured?.slug]);
+
+  return (
+    <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:px-10 sm:py-20">
+      <Seo
+        title="Nutrition Blog & Education"
+        description="Evidence-based nutrition articles covering weight management, clinical nutrition, sports nutrition, women's health, and more."
+        path="/blog"
+      />
+
+      <Reveal direction="up" className="mx-auto max-w-2xl text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Blog</p>
+        <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+          Nutrition Knowledge You Can Trust
+        </h1>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+          Practical, evidence-based articles to help you understand nutrition and make confident
+          choices.
+        </p>
+      </Reveal>
+
+      {featured && (
+        <Reveal direction="up" delay={0.08} className="mt-12">
+          <Link
+            to={`/blog/${featured.slug}`}
+            className="group grid grid-cols-1 overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-turquoise/50 hover:shadow-[0_30px_60px_-30px_rgba(23,35,59,0.35)] lg:grid-cols-[1.1fr_1fr]"
+          >
+            <div className="relative flex min-h-[14rem] items-center justify-center overflow-hidden bg-gradient-to-br from-navy via-primary to-turquoise/80 p-10">
+              <featured.icon className="h-20 w-20 text-white/90 transition-transform duration-500 group-hover:scale-110" />
+              <span className="absolute left-6 top-6 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
+                Featured Article
+              </span>
+            </div>
+            <div className="flex flex-col justify-center gap-3 p-8 sm:p-10">
+              <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
+                {featured.category}
+              </span>
+              <h2 className="font-display text-2xl font-extrabold leading-tight text-navy sm:text-3xl">
+                {featured.title}
+              </h2>
+              <p className="text-sm leading-relaxed text-muted-foreground">{featured.excerpt}</p>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5" /> {estimateReadingTime(featured)} min read
+                </span>
+                <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:text-turquoise">
+                  Read the Article
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              </div>
+            </div>
+          </Link>
+        </Reveal>
+      )}
+
+      <Reveal direction="up" delay={0.1} className="mx-auto mt-10 max-w-xl">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search articles…"
+            aria-label="Search articles"
+            className="pl-10"
+          />
+        </div>
+      </Reveal>
+
+      <p className="mx-auto mt-8 max-w-xl text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+        Topic Explorer
+      </p>
+      <Reveal direction="up" delay={0.15} className="mt-3 flex flex-wrap justify-center gap-2">
+        {(["All", ...categories] as const).map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => setActiveCategory(category)}
+            className={cn(
+              "cursor-pointer rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors",
+              activeCategory === category
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border text-navy/70 hover:border-turquoise hover:text-turquoise",
+            )}
+          >
+            {category}
+          </button>
+        ))}
+      </Reveal>
+
+      <div className="mt-14">
+        <h2 className="font-display text-lg font-bold text-navy">Latest Articles</h2>
+        <div className="mt-6">
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((article, index) => (
+              <Reveal key={article.slug} direction="up" delay={(index % 3) * 0.06}>
+                <ArticleCard article={article} />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <p className="py-16 text-center text-sm text-muted-foreground">
+            No articles match your search. Try a different keyword or category.
+          </p>
+        )}
+        </div>
+      </div>
+    </div>
+  );
+}

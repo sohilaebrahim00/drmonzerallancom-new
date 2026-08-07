@@ -1,2 +1,14 @@
 User-agent: *
 Allow: /
+Disallow: /privacy-policy
+Disallow: /terms
+Disallow: /medical-disclaimer
+Disallow: /booking
+Disallow: /booking/success
+Disallow: /login
+Disallow: /join
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /account
+
+Sitemap: https://monzerallan.com/sitemap.xml
