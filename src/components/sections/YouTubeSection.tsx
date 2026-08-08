@@ -107,10 +107,7 @@ export function YouTubeSection() {
 
         {videos.length > 0 && (
           <Reveal direction="up" delay={0.15} className="mt-10 flex justify-center">
-            <Link
-              to="/gallery"
-              className="text-sm font-semibold text-primary hover:text-turquoise"
-            >
+            <Link to="/gallery" className="text-sm font-semibold text-primary hover:text-turquoise">
               Watch More in the Gallery
             </Link>
           </Reveal>

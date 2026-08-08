@@ -2,19 +2,20 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import { Hero } from "@/components/landing/Hero";
-import { About } from "@/components/sections/About";
+import { AboutPreview } from "@/components/sections/AboutPreview";
 import { Services } from "@/components/sections/Services";
 import { Packages } from "@/components/sections/Packages";
 import { HowMembershipWorks } from "@/components/sections/HowMembershipWorks";
 import { ProductsPreview } from "@/components/sections/ProductsPreview";
+import { MemberExperiencePreview } from "@/components/sections/MemberExperiencePreview";
 import { YouTubeSection } from "@/components/sections/YouTubeSection";
 import { EducationPreview } from "@/components/sections/EducationPreview";
+import { ContentDiscovery } from "@/components/sections/ContentDiscovery";
 import { GalleryTeaser } from "@/components/sections/GalleryTeaser";
 import { BeforeAfter } from "@/components/sections/BeforeAfter";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { FAQ } from "@/components/sections/FAQ";
+import { FaqPreview } from "@/components/sections/FaqPreview";
 import { SocialCommunity } from "@/components/sections/SocialCommunity";
-import { Contact } from "@/components/sections/Contact";
 import { MembershipCta } from "@/components/sections/MembershipCta";
 import { Seo } from "@/components/seo/Seo";
 import { medicalBusinessSchema, personSchema, faqSchema } from "@/lib/schema";
@@ -41,19 +42,20 @@ export default function HomePage() {
         jsonLd={[medicalBusinessSchema(), personSchema(), faqSchema(faqs)]}
       />
       <Hero />
-      <About />
+      <AboutPreview />
       <Services />
       <Packages />
       <HowMembershipWorks />
       <ProductsPreview />
+      <MemberExperiencePreview />
       <YouTubeSection />
       <EducationPreview />
+      <ContentDiscovery />
       <GalleryTeaser />
       <BeforeAfter />
       <Testimonials />
-      <FAQ />
+      <FaqPreview />
       <SocialCommunity />
-      <Contact />
       <MembershipCta />
     </>
   );

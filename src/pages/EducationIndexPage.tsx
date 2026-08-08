@@ -114,6 +114,7 @@ export default function EducationIndexPage() {
             key={category}
             type="button"
             onClick={() => setActiveCategory(category)}
+            aria-pressed={activeCategory === category}
             className={cn(
               "cursor-pointer rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors",
               activeCategory === category
@@ -129,19 +130,19 @@ export default function EducationIndexPage() {
       <div className="mt-14">
         <h2 className="font-display text-lg font-bold text-navy">Latest Articles</h2>
         <div className="mt-6">
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((article, index) => (
-              <Reveal key={article.slug} direction="up" delay={(index % 3) * 0.06}>
-                <ArticleCard article={article} />
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <p className="py-16 text-center text-sm text-muted-foreground">
-            No articles match your search. Try a different keyword or category.
-          </p>
-        )}
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((article, index) => (
+                <Reveal key={article.slug} direction="up" delay={(index % 3) * 0.06}>
+                  <ArticleCard article={article} />
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <p className="py-16 text-center text-sm text-muted-foreground">
+              No articles match your search. Try a different keyword or category.
+            </p>
+          )}
         </div>
       </div>
     </div>

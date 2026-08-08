@@ -10,5 +10,8 @@ Disallow: /join
 Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /account
+Disallow: /membership/success
+Disallow: /membership/cancelled
+Disallow: /education
 
 Sitemap: https://monzerallan.com/sitemap.xml

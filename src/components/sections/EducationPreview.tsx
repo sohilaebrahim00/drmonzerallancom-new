@@ -17,7 +17,7 @@ export function EducationPreview() {
     >
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading
-          eyebrow="Education"
+          eyebrow="Blog"
           title="Learn The Science Behind The Advice"
           description="Free, evidence-based articles covering the topics that matter most to your health."
         />
@@ -32,10 +32,10 @@ export function EducationPreview() {
 
         <Reveal direction="up" delay={0.2} className="mt-10 flex justify-center">
           <Link
-            to="/education"
+            to="/blog"
             className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:border-turquoise hover:text-turquoise"
           >
-            View All Articles
+            Read the Blog
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </Reveal>

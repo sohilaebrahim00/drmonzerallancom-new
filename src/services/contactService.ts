@@ -1,33 +1,26 @@
 import { business } from "@/data/business";
 import { whatsappLink } from "@/config/contact";
+import { supabase } from "@/lib/supabase";
 
 export interface ContactPayload {
   name: string;
   email: string;
   phone: string;
+  preferredContactMethod: "whatsapp" | "email" | "either";
+  subject: string;
   message: string;
 }
 
 export type ContactSubmitResult =
+  | { channel: "submitted" }
+  | { channel: "error"; message: string }
   | { channel: "email"; href: string }
   | { channel: "whatsapp"; href: string }
   | { channel: "unavailable" };
 
-/**
- * Isolated so a real backend (Resend, Formspree, Web3Forms, a Hostinger-side
- * script, …) can be dropped in later without touching the Contact form UI —
- * just replace the body of this function with a `fetch()` call to that
- * provider's endpoint. No secret keys belong in this file or anywhere under
- * `VITE_*`: those are bundled into the public client build.
- *
- * Until a provider is configured, this never claims a message was "sent" —
- * it hands the visitor off to a real, working channel (their own email
- * client, or WhatsApp) and reports which one so the UI can be honest about
- * what actually happened.
- */
-export function submitContact(payload: ContactPayload): ContactSubmitResult {
+function fallback(payload: ContactPayload): ContactSubmitResult {
   if (business.email) {
-    const subject = `New inquiry from ${payload.name}`;
+    const subject = payload.subject || `New inquiry from ${payload.name}`;
     const body = [
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
@@ -55,4 +48,44 @@ export function submitContact(payload: ContactPayload): ContactSubmitResult {
   }
 
   return { channel: "unavailable" };
+}
+
+/**
+ * Submits the Contact form to the contact-submit Edge Function, which
+ * stores the inquiry in Supabase and emails the team — a real backend
+ * request, not just a mailto: handoff. Only reports "submitted" when that
+ * backend actually confirms the write; any failure (not configured,
+ * network error, validation error, rate limit) falls back to a real,
+ * working channel (the visitor's own email client, or WhatsApp) instead of
+ * ever claiming a message was sent when it wasn't.
+ */
+export async function submitContact(payload: ContactPayload): Promise<ContactSubmitResult> {
+  if (!supabase) {
+    return fallback(payload);
+  }
+
+  try {
+    const { data, error } = await supabase.functions.invoke<{ ok?: boolean; error?: string }>(
+      "contact-submit",
+      {
+        body: {
+          fullName: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          preferredContactMethod: payload.preferredContactMethod,
+          subject: payload.subject,
+          message: payload.message,
+          sourcePage: window.location.pathname,
+        },
+      },
+    );
+
+    if (error || !data?.ok) {
+      if (data?.error) return { channel: "error", message: data.error };
+      return fallback(payload);
+    }
+    return { channel: "submitted" };
+  } catch {
+    return fallback(payload);
+  }
 }

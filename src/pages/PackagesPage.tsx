@@ -95,9 +95,7 @@ export default function PackagesPage() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <CalendarCheck className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 font-display text-base font-bold text-navy">
-                  Monthly Credits
-                </h3>
+                <h3 className="mt-4 font-display text-base font-bold text-navy">Monthly Credits</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   Each membership includes a fixed number of consultation credits every month.
                   Request a consultation from your member account, and one credit is used per
@@ -112,8 +110,8 @@ export default function PackagesPage() {
                 </div>
                 <h3 className="mt-4 font-display text-base font-bold text-navy">Google Meet</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Approved consultations are conducted online over Google Meet. Once confirmed,
-                  your meeting link appears with the appointment in your account.
+                  Approved consultations are conducted online over Google Meet. Once confirmed, your
+                  meeting link appears with the appointment in your account.
                 </p>
               </div>
             </Reveal>
@@ -152,7 +150,11 @@ export default function PackagesPage() {
                 className="rounded-2xl border border-border/70 bg-card px-2 shadow-sm sm:px-4"
               >
                 {relevantFaqs.map((faq) => (
-                  <AccordionItem key={faq.question} value={faq.question} className="border-border/60">
+                  <AccordionItem
+                    key={faq.question}
+                    value={faq.question}
+                    className="border-border/60"
+                  >
                     <AccordionTrigger className="py-5 text-left font-display text-base font-bold text-navy hover:no-underline">
                       {faq.question}
                     </AccordionTrigger>
@@ -164,10 +166,7 @@ export default function PackagesPage() {
               </Accordion>
             </Reveal>
             <Reveal direction="up" delay={0.15} className="mt-6 text-center">
-              <Link
-                to="/faq"
-                className="text-sm font-semibold text-primary hover:text-turquoise"
-              >
+              <Link to="/faq" className="text-sm font-semibold text-primary hover:text-turquoise">
                 View All FAQs
               </Link>
             </Reveal>

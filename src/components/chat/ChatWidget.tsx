@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -62,7 +62,26 @@ const QUICK_ACTIONS: QuickAction[] = [
   },
 ];
 
+const PAGE_PROMPTS: { prefix: string; prompt: string }[] = [
+  { prefix: "/packages", prompt: "Need help choosing a membership?" },
+  { prefix: "/join", prompt: "Need help choosing a membership?" },
+  { prefix: "/products", prompt: "Have a question about a product?" },
+  { prefix: "/blog", prompt: "Looking for information on a specific topic?" },
+  { prefix: "/gallery", prompt: "Want to see more from the practice?" },
+  { prefix: "/faq", prompt: "Can't find the answer you're looking for?" },
+];
+
+function usePagePrompt() {
+  const { pathname } = useLocation();
+  return (
+    PAGE_PROMPTS.find((p) => pathname.startsWith(p.prefix))?.prompt ??
+    "Choose an option below to get started."
+  );
+}
+
 export function ChatWidget() {
+  const pagePrompt = usePagePrompt();
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -97,7 +116,7 @@ export function ChatWidget() {
             <p className="font-display text-base font-bold">
               Hi, I&apos;m {business.doctorName}&apos;s virtual assistant
             </p>
-            <p className="mt-1 text-xs text-white/75">Choose an option below to get started.</p>
+            <p className="mt-1 text-xs text-white/75">{pagePrompt}</p>
           </div>
           <PopoverClose
             aria-label="Close chat"

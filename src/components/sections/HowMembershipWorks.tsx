@@ -1,4 +1,4 @@
-import { CalendarCheck, CreditCard, Sparkles, UserPlus } from "lucide-react";
+import { CalendarCheck, CreditCard, MessagesSquare, Sparkles, UserPlus, Video } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
@@ -6,26 +6,33 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 const STEPS = [
   {
     icon: Sparkles,
-    title: "Choose a Package",
-    description:
-      "Pick Basic, Premium, or VIP Elite based on the support and consultation credits you need.",
+    title: "Choose Your Membership",
+    description: "Pick Basic, Premium, or VIP Elite based on the support you need.",
   },
   {
     icon: UserPlus,
-    title: "Create Your Account",
-    description:
-      "Set up your member login — this is where your membership and consultation history live.",
+    title: "Create Your Member Account",
+    description: "Your account is where your membership and consultation history live.",
   },
   {
     icon: CreditCard,
-    title: "Complete Payment",
-    description: "Confirm your monthly membership securely to activate your consultation credits.",
+    title: "Access Your Consultation Credits",
+    description: "Your monthly credit allowance activates as soon as your membership is confirmed.",
   },
   {
     icon: CalendarCheck,
-    title: "Request Consultations",
-    description:
-      "Use your credits to request online consultations over Google Meet, right from your dashboard.",
+    title: "Request Your Online Consultation",
+    description: "Use a credit to request a session directly from your dashboard.",
+  },
+  {
+    icon: Video,
+    title: "Meet Through Google Meet",
+    description: "Approved consultations happen over a secure Google Meet link.",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Continue Your Nutrition Journey",
+    description: "Ongoing guidance, follow-ups, and support for as long as you stay a member.",
   },
 ];
 
@@ -43,18 +50,34 @@ export function HowMembershipWorks() {
           description="From choosing a package to your first consultation — a simple, transparent process."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Vertical journey on mobile, connected horizontal journey on desktop */}
+        <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-0">
           {STEPS.map((step, index) => (
-            <Reveal key={step.title} direction="up" delay={index * 0.08}>
-              <div className="relative flex h-full flex-col items-center gap-3 rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm">
-                <span className="absolute -top-3 left-1/2 flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                  {index + 1}
-                </span>
-                <div className="mt-3 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary">
-                  <step.icon className="h-6 w-6" />
+            <Reveal
+              key={step.title}
+              direction="up"
+              delay={index * 0.06}
+              className="relative flex flex-1 gap-4 lg:flex-col lg:items-center lg:gap-3 lg:text-center"
+            >
+              {index < STEPS.length - 1 && (
+                <span
+                  className="absolute left-6 top-14 h-[calc(100%+1.5rem)] w-px bg-border lg:left-1/2 lg:top-6 lg:h-px lg:w-full lg:-translate-x-0 lg:translate-x-1/2"
+                  aria-hidden="true"
+                />
+              )}
+              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-white shadow-md">
+                {index + 1}
+              </span>
+              <div className="lg:px-2">
+                <div className="flex items-center gap-2 lg:flex-col lg:gap-2">
+                  <step.icon className="h-5 w-5 text-primary lg:h-6 lg:w-6" />
+                  <h3 className="font-display text-sm font-bold text-navy sm:text-base">
+                    {step.title}
+                  </h3>
                 </div>
-                <h3 className="font-display text-base font-bold text-navy">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  {step.description}
+                </p>
               </div>
             </Reveal>
           ))}

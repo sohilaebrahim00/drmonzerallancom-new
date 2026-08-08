@@ -170,3 +170,78 @@ begin
   return v_result;
 end;
 $$;
+
+-- ── shared contact-preference enum ─────────────────────────────────────
+create type public.contact_method as enum ('whatsapp', 'email', 'either');
+
+-- ── membership_leads ────────────────────────────────────────────────────
+-- Written by the Join page BEFORE the visitor reaches Stripe Checkout, so
+-- the team can follow up with people who showed intent but didn't finish
+-- paying. Only a Supabase Edge Function (service_role) ever marks a lead
+-- "paid" — that happens exclusively from a verified Stripe webhook event,
+-- never from the browser.
+create type public.membership_lead_status as enum ('started', 'checkout_created', 'paid', 'abandoned');
+
+create table if not exists public.membership_leads (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  preferred_contact_method public.contact_method not null default 'either',
+  package_id text not null check (package_id in ('basic', 'premium', 'vip-elite')),
+  status public.membership_lead_status not null default 'started',
+  stripe_checkout_session_id text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.membership_leads enable row level security;
+
+-- Anyone (including anonymous visitors, since no account exists yet at this
+-- point in the flow) may create a lead. No select/update/delete policy is
+-- granted to anon/authenticated roles — leads are only ever read or updated
+-- by service-role Edge Functions (create-checkout-session, stripe-webhook).
+create policy "Anyone can submit a membership lead"
+  on public.membership_leads for insert
+  with check (true);
+
+-- ── contact_inquiries ───────────────────────────────────────────────────
+-- Backs the public Contact form. Deliberately write-only from the client
+-- (no select policy) so submitted inquiries — which may include a phone
+-- number — aren't readable by other visitors. The admin notification email
+-- (sent by a service-role Edge Function) is how the team actually sees these.
+create table if not exists public.contact_inquiries (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  preferred_contact_method public.contact_method not null default 'either',
+  subject text,
+  message text not null,
+  source_page text,
+  status text not null default 'new',
+  created_at timestamptz not null default now()
+);
+
+alter table public.contact_inquiries enable row level security;
+
+create policy "Anyone can submit a contact inquiry"
+  on public.contact_inquiries for insert
+  with check (true);
+
+-- ── admin helper: look up an auth user's id by email ───────────────────
+-- Used only by the stripe-webhook Edge Function (service_role) to find an
+-- existing member when a checkout completes with an email that already has
+-- an account, so it never creates a duplicate auth user. auth.users is not
+-- otherwise exposed via the API — this function deliberately grants
+-- execute only to service_role, never to anon/authenticated.
+create or replace function public.get_user_id_by_email(p_email text)
+returns uuid
+language sql
+security definer set search_path = public, auth
+as $$
+  select id from auth.users where email = p_email limit 1;
+$$;
+
+revoke all on function public.get_user_id_by_email(text) from public, anon, authenticated;
+grant execute on function public.get_user_id_by_email(text) to service_role;

@@ -97,9 +97,7 @@ export function YouTubeEmbed({
 
   if (fallback) {
     return (
-      <div
-        className={cn("aspect-video w-full overflow-hidden rounded-2xl bg-navy/10", className)}
-      >
+      <div className={cn("aspect-video w-full overflow-hidden rounded-2xl bg-navy/10", className)}>
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${videoId}?playsinline=1`}
           title={title}

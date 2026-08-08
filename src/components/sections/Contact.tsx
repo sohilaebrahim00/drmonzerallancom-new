@@ -13,6 +13,7 @@ import {
   Phone,
   Send,
   CheckCircle2,
+  TriangleAlert,
 } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
@@ -33,6 +34,7 @@ import { BookingButton } from "@/components/booking/BookingButton";
 import { business, tel } from "@/data/business";
 import { whatsappLink } from "@/config/contact";
 import { submitContact, type ContactSubmitResult } from "@/services/contactService";
+import { cn } from "@/lib/utils";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your full name."),
@@ -42,10 +44,23 @@ const contactSchema = z.object({
     .trim()
     .min(7, "Please enter a valid phone number.")
     .regex(/^[+()\-\s\d]+$/, "Please enter a valid phone number."),
-  message: z.string().trim().min(10, "Tell us a little more (at least 10 characters)."),
+  preferredContactMethod: z.enum(["whatsapp", "email", "either"]),
+  subject: z.string().trim().max(200),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Tell us a little more (at least 10 characters).")
+    .max(4000, "Please keep your message under 4000 characters."),
+  companyWebsite: z.string().max(0),
 });
 
 type ContactValues = z.infer<typeof contactSchema>;
+
+const CONTACT_METHODS = [
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "email", label: "Email" },
+  { value: "either", label: "Either" },
+] as const;
 
 export function Contact() {
   const [result, setResult] = useState<ContactSubmitResult | null>(null);
@@ -53,20 +68,28 @@ export function Contact() {
 
   const form = useForm<ContactValues>({
     resolver: zodResolver(contactSchema),
-    defaultValues: { name: "", email: "", phone: "", message: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      preferredContactMethod: "either",
+      subject: "",
+      message: "",
+      companyWebsite: "",
+    },
   });
 
-  function onSubmit(values: ContactValues) {
+  async function onSubmit(values: ContactValues) {
     setSubmitting(true);
-    window.setTimeout(() => {
-      const outcome = submitContact(values);
-      if (outcome.channel !== "unavailable") {
-        window.open(outcome.href, outcome.channel === "whatsapp" ? "_blank" : "_self");
-      }
-      setResult(outcome);
-      setSubmitting(false);
+    const outcome = await submitContact(values);
+    if (outcome.channel === "email" || outcome.channel === "whatsapp") {
+      window.open(outcome.href, outcome.channel === "whatsapp" ? "_blank" : "_self");
+    }
+    setResult(outcome);
+    setSubmitting(false);
+    if (outcome.channel !== "error") {
       form.reset();
-    }, 500);
+    }
   }
 
   const inquiryWhatsapp = whatsappLink("Hi Monzer, I'd like to ask about your nutrition services.");
@@ -226,10 +249,38 @@ export function Contact() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 16 }}
-                      className="flex h-16 w-16 items-center justify-center rounded-full bg-turquoise/15 text-turquoise"
+                      className={cn(
+                        "flex h-16 w-16 items-center justify-center rounded-full",
+                        result.channel === "error"
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-turquoise/15 text-turquoise",
+                      )}
                     >
-                      <CheckCircle2 className="h-9 w-9" />
+                      {result.channel === "error" ? (
+                        <TriangleAlert className="h-9 w-9" />
+                      ) : (
+                        <CheckCircle2 className="h-9 w-9" />
+                      )}
                     </motion.div>
+                    {result.channel === "submitted" && (
+                      <>
+                        <h3 className="font-display text-lg font-bold text-navy">Message sent</h3>
+                        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+                          Thanks for reaching out — we've received your message and will get back to
+                          you soon.
+                        </p>
+                      </>
+                    )}
+                    {result.channel === "error" && (
+                      <>
+                        <h3 className="font-display text-lg font-bold text-navy">
+                          Something went wrong
+                        </h3>
+                        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+                          {result.message} Nothing you entered has been sent — please try again.
+                        </p>
+                      </>
+                    )}
                     {result.channel === "email" && (
                       <>
                         <h3 className="font-display text-lg font-bold text-navy">
@@ -334,6 +385,46 @@ export function Contact() {
                         />
                         <FormField
                           control={form.control}
+                          name="preferredContactMethod"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Preferred contact method</FormLabel>
+                              <div className="grid grid-cols-3 gap-2">
+                                {CONTACT_METHODS.map((method) => (
+                                  <button
+                                    key={method.value}
+                                    type="button"
+                                    onClick={() => field.onChange(method.value)}
+                                    className={cn(
+                                      "cursor-pointer rounded-lg border px-2 py-2 text-xs font-semibold transition-colors",
+                                      field.value === method.value
+                                        ? "border-primary bg-secondary/60 text-primary"
+                                        : "border-border text-navy/70 hover:border-turquoise",
+                                    )}
+                                  >
+                                    {method.label}
+                                  </button>
+                                ))}
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="subject"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Subject (optional)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="What's this about?" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
                           name="message"
                           render={({ field }) => (
                             <FormItem>
@@ -345,8 +436,26 @@ export function Contact() {
                                   {...field}
                                 />
                               </FormControl>
+                              <p className="text-xs text-muted-foreground">
+                                Please avoid sharing detailed medical history here — a nutrition
+                                specialist will follow up to discuss specifics privately.
+                              </p>
                               <FormMessage />
                             </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="companyWebsite"
+                          render={({ field }) => (
+                            <input
+                              {...field}
+                              type="text"
+                              tabIndex={-1}
+                              autoComplete="off"
+                              aria-hidden="true"
+                              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                            />
                           )}
                         />
                         <Button
@@ -356,7 +465,7 @@ export function Contact() {
                         >
                           {submitting ? (
                             <>
-                              <Loader2 className="h-4 w-4 animate-spin" /> Preparing…
+                              <Loader2 className="h-4 w-4 animate-spin" /> Sending…
                             </>
                           ) : (
                             <>

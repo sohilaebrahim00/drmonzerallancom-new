@@ -123,8 +123,8 @@ export default function AboutPage() {
               the outside. By combining a pharmacist&apos;s clinical training with specialized
               nutrition science, the goal is always the same: guidance that respects a person&apos;s
               schedule, culture, and preferences while still being grounded in evidence. Change that
-              lasts comes from small, realistic adjustments — not dramatic overhauls that are hard to
-              sustain.
+              lasts comes from small, realistic adjustments — not dramatic overhauls that are hard
+              to sustain.
             </p>
           </Reveal>
         </div>
