@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
         path="/privacy-policy"
         noindex
       />
-      <LegalLayout title="Privacy Policy" updated="August 6, 2026">
+      <LegalLayout title="Privacy Policy" updated="August 12, 2026">
         <p>
           This Privacy Policy explains how {business.doctorName} (&ldquo;we&rdquo;,
           &ldquo;us&rdquo;, or &ldquo;our&rdquo;) collects, uses, and protects information you
@@ -65,6 +65,32 @@ export default function PrivacyPolicyPage() {
           Booking requests may be sent via WhatsApp or email, which are subject to the respective
           privacy policies of those platforms. We encourage you to review their policies as well.
         </p>
+
+        <h2>Native App Permissions</h2>
+        <p>
+          The {business.doctorName} mobile app requests the following device permissions. Each is
+          requested only when you open the specific feature that needs it — never at app launch —
+          and each is optional except where noted.
+        </p>
+        <ul>
+          <li>
+            <strong>Camera &amp; Photos.</strong> Used only when you choose to scan a meal with the
+            Food Scanner. The photo is compressed on your device, sent to our nutrition-estimation
+            service for analysis, and is not stored permanently unless you explicitly choose to save
+            that scan.
+          </li>
+          <li>
+            <strong>Location (approximate).</strong> Used only to calculate local prayer times and
+            the Qibla direction when you open those features. Your location is never sent to our AI
+            assistant, never sent to analytics, and never associated with your account or medical
+            information. You may decline and choose a city manually instead.
+          </li>
+          <li>
+            <strong>Notifications.</strong> Used to deliver prayer reminders you enable, scheduled
+            entirely on your device (never sent from our servers), and — separately — to notify you
+            about your own confirmed consultations.
+          </li>
+        </ul>
 
         <h2>Your Rights</h2>
         <p>

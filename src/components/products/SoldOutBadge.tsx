@@ -8,7 +8,7 @@ export function SoldOutBadge({ className }: { className?: string }) {
         className,
       )}
     >
-      Sold Out
+      Out of Stock
     </span>
   );
 }

@@ -1,0 +1,615 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Bot,
+  Camera,
+  Check,
+  Compass,
+  Flame,
+  Footprints,
+  Loader2,
+  Repeat,
+  Scale,
+  Sparkles,
+  Sun,
+  UtensilsCrossed,
+} from "lucide-react";
+
+import { AppScreen } from "@/app-native/components/AppScreen";
+import { CircularProgress } from "@/app-native/components/CircularProgress";
+import { EmptyState } from "@/app-native/components/EmptyState";
+import { InstallAppCard } from "@/app-native/components/InstallAppCard";
+import {
+  NutritionCardSkeleton,
+  ProgramCardSkeleton,
+  MealListSkeleton,
+} from "@/app-native/components/AppSkeletons";
+import { useAuth } from "@/context/AuthContext";
+import { useAppBoot } from "@/context/AppBootContext";
+import NativeDoctorDashboard from "@/app-native/screens/NativeDoctorDashboard";
+import { articles } from "@/data/articles";
+import { getFeaturedVideo } from "@/data/videos";
+import { getMyCurrentTarget, type DailyTarget } from "@/services/bodyProfileService";
+import { getMyMealsForDay, saveMealLog, type MealLog } from "@/services/mealLogService";
+import { createPostMealActivityTask } from "@/services/activityService";
+import { getMyPendingActivityTasks, type ActivityTask } from "@/services/activityService";
+import {
+  currentProgramDayNumber,
+  getMyActiveProgram,
+  type NutritionProgram,
+} from "@/services/programService";
+import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
+import { useResolvedLocation } from "@/hooks/use-resolved-location";
+import {
+  computeUpcomingSchedule,
+  findNextPrayer,
+  formatCountdown,
+  type NextPrayer,
+} from "@/services/prayerTimesService";
+import { computeQiblaBearing } from "@/services/qiblaService";
+import { PRAYER_LABELS } from "@/config/prayer";
+
+function greeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good Morning";
+  if (hour < 18) return "Good Afternoon";
+  return "Good Evening";
+}
+
+function formatToday(): string {
+  return new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+export default function NativeHome() {
+  const { user } = useAuth();
+  const { profile, role, status } = useAppBoot();
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [caloriesToday, setCaloriesToday] = useState(0);
+  const [target, setTarget] = useState<DailyTarget | null>(null);
+  const [stepsToday, setStepsToday] = useState<number | null>(null);
+  const [activityTask, setActivityTask] = useState<ActivityTask | null>(null);
+  const [program, setProgram] = useState<NutritionProgram | null>(null);
+  const [recentMeals, setRecentMeals] = useState<MealLog[]>([]);
+  const [loading, setLoading] = useState(Boolean(user));
+  const { coords } = useResolvedLocation();
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    Promise.all([
+      getMyMealsForDay(new Date()),
+      getMyCurrentTarget(),
+      supabase
+        ? supabase.from("step_logs").select("steps").eq("date", dateStr).maybeSingle()
+        : Promise.resolve({ data: null }),
+      getMyPendingActivityTasks(),
+      getMyActiveProgram(),
+    ]).then(([meals, currentTarget, steps, tasks, activeProgram]) => {
+      if (cancelled) return;
+      setFirstName((profile?.full_name ?? user.email ?? "").split(" ")[0].split("@")[0] || null);
+      setCaloriesToday(meals.reduce((sum, m) => sum + m.total_calories, 0));
+      setRecentMeals(meals.slice(0, 3));
+      setTarget(currentTarget);
+      setStepsToday(steps.data?.steps ?? null);
+      setActivityTask(tasks[0] ?? null);
+      setProgram(activeProgram);
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, profile?.full_name]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextPrayer: NextPrayer | null = useMemo(() => {
+    if (!coords) return null;
+    return findNextPrayer(
+      computeUpcomingSchedule(coords, {
+        calculationMethod: "MuslimWorldLeague",
+        madhab: "Shafi",
+        manualCity: null,
+      }),
+      now,
+    );
+  }, [coords, now]);
+
+  const qiblaBearing = useMemo(
+    () => (coords ? Math.round(computeQiblaBearing(coords)) : null),
+    [coords],
+  );
+
+  const featuredArticle = articles[0];
+
+  // A doctor's Home IS the doctor dashboard — one persona, one destination
+  // (see navTabs.ts). Wait for AppBoot to resolve the role first so a
+  // patient never flashes the doctor dashboard for a frame.
+  if (status === "ready" && (role === "doctor" || role === "admin")) {
+    return <NativeDoctorDashboard />;
+  }
+
+  const remaining = target ? Math.max(Math.round(target.daily_target - caloriesToday), 0) : null;
+  const ringValue = target ? Math.min(caloriesToday / target.daily_target, 1) : 0;
+  const taskAvailable = activityTask && new Date(activityTask.available_at) <= now;
+
+  return (
+    <AppScreen tabBar hideHeader className="mx-auto w-full px-4 pb-6 pt-3">
+      {/* Compact top bar — avatar, greeting, date. Never a marketing hero. */}
+      <div className="native-safe-top flex items-center justify-between gap-3 pb-4 pt-2">
+        <div className="flex min-w-0 items-center gap-3">
+          {user && (
+            <Link
+              to="/account"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold text-primary"
+            >
+              {(firstName ?? user.email ?? "U").charAt(0).toUpperCase()}
+            </Link>
+          )}
+          <div className="min-w-0">
+            <p className="truncate font-display text-lg font-extrabold tracking-tight text-navy">
+              {user
+                ? `${greeting()}${firstName ? `, ${firstName}` : ""}`
+                : "Welcome to Dr. Monzer Allan"}
+            </p>
+            <p className="truncate text-xs text-muted-foreground">
+              {user ? formatToday() : "Your daily nutrition companion"}
+            </p>
+          </div>
+        </div>
+        {!user && (
+          <img
+            src="/ma-logo.png"
+            alt=""
+            className="h-9 w-9 shrink-0 rounded-full border border-border/70 object-contain p-1"
+          />
+        )}
+      </div>
+
+      <div className="mb-3">
+        <InstallAppCard />
+      </div>
+
+      <div className="mt-3 lg:grid lg:grid-cols-3 lg:items-start lg:gap-6">
+        {/* ── MAIN column ─────────────────────────────────────────── */}
+        <div className="space-y-4 lg:col-span-2">
+          {!user ? (
+            <GuestWelcomeCard />
+          ) : loading ? (
+            <NutritionCardSkeleton />
+          ) : (
+            <DailyNutritionCard
+              caloriesToday={caloriesToday}
+              target={target}
+              remaining={remaining}
+              ringValue={ringValue}
+            />
+          )}
+
+          <ScanFeatureCard />
+
+          {user && (
+            <>
+              {loading ? (
+                <ProgramCardSkeleton />
+              ) : program ? (
+                <TodayProgramCard program={program} />
+              ) : (
+                <EmptyState
+                  icon={UtensilsCrossed}
+                  title="No active program yet"
+                  body="Your assigned nutrition program will appear here once your doctor sets one up."
+                  action={
+                    <Link to="/account" className="text-xs font-semibold text-primary">
+                      Connect With Doctor
+                    </Link>
+                  }
+                />
+              )}
+
+              <div>
+                <div className="mb-2 flex items-center justify-between px-0.5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Recent Meals
+                  </p>
+                  <Link to="/my-program" className="text-xs font-semibold text-primary">
+                    View Daily Log
+                  </Link>
+                </div>
+                {loading ? (
+                  <MealListSkeleton />
+                ) : recentMeals.length === 0 ? (
+                  <EmptyState
+                    icon={Camera}
+                    title="No meals yet"
+                    body="Scan your first meal to start tracking today's nutrition."
+                    action={
+                      <Link to="/food-scanner" className="text-xs font-semibold text-primary">
+                        Scan Meal
+                      </Link>
+                    }
+                  />
+                ) : (
+                  <div className="space-y-2">
+                    {recentMeals.map((meal) => (
+                      <RecentMealRow
+                        key={meal.id}
+                        meal={meal}
+                        onLoggedAgain={(calories) => setCaloriesToday((c) => c + calories)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* ── SECONDARY column ────────────────────────────────────── */}
+        <div className="mt-4 space-y-3 lg:col-span-1 lg:mt-0">
+          {user && !loading && (
+            <div className="grid grid-cols-2 gap-2.5">
+              <StatChip
+                icon={Footprints}
+                label="Steps"
+                value={stepsToday != null ? stepsToday.toLocaleString() : "—"}
+              />
+              <StatChip icon={Flame} label="Meals" value={String(recentMeals.length)} />
+            </div>
+          )}
+
+          {user && taskAvailable && activityTask?.activity && (
+            <Link
+              to="/activity-task"
+              className="flex items-center gap-3 rounded-2xl border border-turquoise/30 bg-turquoise/10 p-3.5"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-turquoise/20 text-turquoise">
+                <Sparkles className="h-4.5 w-4.5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold text-navy">
+                  {activityTask.activity.name}
+                </span>
+                <span className="block text-xs text-muted-foreground">Ready now</span>
+              </span>
+            </Link>
+          )}
+
+          <div className="grid grid-cols-3 gap-2">
+            <SmallQuickAction icon={Bot} label="Ask AI" to="/ai" />
+            <SmallQuickAction icon={Sparkles} label="Progress" to="/progress" />
+            <SmallQuickAction icon={Scale} label="Weight" to="/my-health" />
+          </div>
+
+          {/* Prayer + Qibla — a compact utility, never competing with nutrition. */}
+          <div className="flex divide-x divide-border/60 rounded-2xl border border-border/60 bg-app-surface">
+            <Link to="/prayer-times" className="flex flex-1 items-center gap-2 p-3">
+              <Sun className="h-4 w-4 shrink-0 text-primary" />
+              <span className="min-w-0">
+                <span className="block truncate text-xs font-bold text-navy">
+                  {nextPrayer ? PRAYER_LABELS[nextPrayer.name] : "Prayer"}
+                </span>
+                <span className="block truncate text-[0.65rem] text-muted-foreground">
+                  {nextPrayer ? formatCountdown(nextPrayer.time, now) : "Set location"}
+                </span>
+              </span>
+            </Link>
+            <Link to="/qibla" className="flex flex-1 items-center gap-2 p-3">
+              <Compass className="h-4 w-4 shrink-0 text-primary" />
+              <span className="min-w-0">
+                <span className="block truncate text-xs font-bold text-navy">Qibla</span>
+                <span className="block truncate text-[0.65rem] text-muted-foreground">
+                  {qiblaBearing !== null ? `${qiblaBearing}°` : "Tap to find"}
+                </span>
+              </span>
+            </Link>
+          </div>
+
+          {featuredArticle && (
+            <Link
+              to={`/blog/${featuredArticle.slug}`}
+              className="flex items-center gap-3 rounded-2xl border border-border/60 bg-app-surface p-3"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+                <featuredArticle.icon className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-xs font-semibold text-navy">
+                  {featuredArticle.title}
+                </span>
+                <span className="block truncate text-[0.65rem] text-muted-foreground">
+                  Recommended for you
+                </span>
+              </span>
+            </Link>
+          )}
+        </div>
+      </div>
+    </AppScreen>
+  );
+}
+
+function GuestWelcomeCard() {
+  return (
+    <div className="overflow-hidden rounded-3xl border border-border/60 bg-app-surface">
+      <div className="grid gap-5 p-5 sm:grid-cols-5 sm:items-center sm:gap-4">
+        <div className="sm:col-span-3">
+          <p className="font-display text-xl font-extrabold tracking-tight text-navy">
+            Your daily nutrition companion.
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Track meals, understand your nutrition, follow your program, and stay connected with
+            your doctor.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            <Link
+              to="/join"
+              className="rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
+            >
+              Create Free Account
+            </Link>
+            <Link
+              to="/login"
+              className="rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-turquoise"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+        <div className="hidden sm:col-span-2 sm:flex sm:justify-end">
+          <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-white">
+            <CircularProgress
+              value={0.68}
+              size={104}
+              strokeWidth={8}
+              progressClassName="text-primary"
+              trackClassName="text-primary/15"
+            >
+              <Flame className="h-7 w-7 text-primary" />
+            </CircularProgress>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DailyNutritionCard({
+  caloriesToday,
+  target,
+  remaining,
+  ringValue,
+}: {
+  caloriesToday: number;
+  target: DailyTarget | null;
+  remaining: number | null;
+  ringValue: number;
+}) {
+  return (
+    <div className="rounded-3xl bg-gradient-to-br from-navy to-primary p-5 text-white shadow-[0_20px_44px_-24px_rgba(23,35,59,0.55)]">
+      <div className="flex items-center gap-4">
+        <CircularProgress
+          value={ringValue}
+          size={92}
+          strokeWidth={8}
+          progressClassName="text-turquoise"
+          trackClassName="text-white"
+        >
+          <div className="text-center leading-none">
+            <p className="font-display text-xl font-extrabold">{Math.round(caloriesToday)}</p>
+          </div>
+        </CircularProgress>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Today</p>
+          <p className="mt-0.5 font-display text-base font-bold">
+            {Math.round(caloriesToday)}
+            {target && (
+              <span className="font-semibold text-white/70">
+                {" "}
+                of {Math.round(target.daily_target)} kcal
+              </span>
+            )}
+          </p>
+          {target?.source === "doctor" && (
+            <p className="mt-0.5 text-[0.65rem] text-white/70">Target set by Dr. Monzer</p>
+          )}
+          {!target && (
+            <p className="mt-0.5 text-[0.65rem] text-white/70">Set your target in My Health</p>
+          )}
+        </div>
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/15 pt-3.5 text-center">
+        <div>
+          <p className="font-display text-sm font-bold">{Math.round(caloriesToday)}</p>
+          <p className="text-[0.65rem] text-white/70">Consumed</p>
+        </div>
+        <div>
+          <p className="font-display text-sm font-bold">{remaining ?? "—"}</p>
+          <p className="text-[0.65rem] text-white/70">Remaining</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScanFeatureCard() {
+  return (
+    <Link
+      to="/food-scanner"
+      className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-secondary via-secondary to-white p-5 transition-transform active:scale-[0.99]"
+    >
+      <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy to-primary text-white shadow-[0_10px_24px_-10px_rgba(37,63,164,0.6)] transition-transform group-hover:scale-105">
+        <Camera className="h-6 w-6" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="font-display text-base font-bold text-navy">Scan Your Meal</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          Take a photo and get an estimated nutrition breakdown.
+        </p>
+      </div>
+      <span className="shrink-0 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground">
+        Scan Now
+      </span>
+    </Link>
+  );
+}
+
+function TodayProgramCard({ program }: { program: NutritionProgram }) {
+  const dayNumber = currentProgramDayNumber(program);
+  return (
+    <div className="rounded-2xl border border-border/60 bg-app-surface p-4">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Today&apos;s Program
+        </p>
+        <span className="text-xs font-semibold text-primary">Day {dayNumber} of 30</span>
+      </div>
+      <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-primary to-turquoise"
+          style={{ width: `${(dayNumber / 30) * 100}%` }}
+        />
+      </div>
+      <div className="mt-3.5 flex gap-2.5">
+        <Link
+          to="/my-program"
+          className="flex-1 rounded-xl border border-border py-2.5 text-center text-xs font-semibold text-navy"
+        >
+          View Program
+        </Link>
+        <Link
+          to="/food-scanner"
+          className="flex-1 rounded-xl bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground"
+        >
+          Scan Meal
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/** "Log Again" reuses the exact items from a past meal_log — no new Gemini call, no new table (favorites would need one; this doesn't). */
+function RecentMealRow({
+  meal,
+  onLoggedAgain,
+}: {
+  meal: MealLog;
+  onLoggedAgain: (calories: number) => void;
+}) {
+  const [state, setState] = useState<"idle" | "saving" | "done">("idle");
+
+  async function handleLogAgain() {
+    if (state !== "idle" || meal.items.length === 0) return;
+    setState("saving");
+    const outcome = await saveMealLog({
+      mealType: (meal.meal_type as "breakfast" | "lunch" | "dinner" | "snack") ?? null,
+      items: meal.items.map((item) => ({
+        name: item.name,
+        estimatedPortion: item.estimatedPortion,
+        estimatedCalories: item.estimatedCalories,
+        proteinGrams: item.proteinGrams,
+        carbohydrateGrams: item.carbohydrateGrams,
+        fatGrams: item.fatGrams,
+      })),
+      aiConfidence: null,
+      isOutsideProgram: true,
+      sharedWithFriends: meal.shared_with_friends,
+    });
+    if (!outcome.ok) {
+      setState("idle");
+      return;
+    }
+    await createPostMealActivityTask(outcome.mealLogId);
+    onLoggedAgain(meal.total_calories);
+    setState("done");
+  }
+
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-app-surface p-3">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+        <UtensilsCrossed className="h-4.5 w-4.5" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold capitalize text-navy">
+          {meal.meal_type ?? "Meal"}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {new Date(meal.meal_time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+        </p>
+      </div>
+      <span className="shrink-0 text-sm font-bold text-navy">
+        {Math.round(meal.total_calories)}
+        <span className="ml-0.5 text-[0.65rem] font-normal text-muted-foreground">kcal</span>
+      </span>
+      <button
+        type="button"
+        onClick={handleLogAgain}
+        disabled={state !== "idle"}
+        aria-label="Log again"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-primary disabled:opacity-60"
+      >
+        {state === "saving" ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : state === "done" ? (
+          <Check className="h-4 w-4 text-app-success" />
+        ) : (
+          <Repeat className="h-4 w-4" />
+        )}
+      </button>
+    </div>
+  );
+}
+
+function StatChip({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Footprints;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-border/60 bg-app-surface p-3.5">
+      <Icon className="h-4 w-4 text-primary" />
+      <p className="mt-1.5 font-display text-base font-bold text-navy">{value}</p>
+      <p className="text-[0.65rem] text-muted-foreground">{label}</p>
+    </div>
+  );
+}
+
+function SmallQuickAction({
+  icon: Icon,
+  label,
+  to,
+}: {
+  icon: typeof Bot;
+  label: string;
+  to: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className={cn(
+        "flex flex-col items-center gap-1.5 rounded-xl border border-border/60 bg-app-surface py-3 text-center transition-colors hover:bg-secondary active:scale-[0.97]",
+      )}
+    >
+      <Icon className="h-4 w-4 text-primary" />
+      <span className="text-[0.65rem] font-semibold text-navy">{label}</span>
+    </Link>
+  );
+}

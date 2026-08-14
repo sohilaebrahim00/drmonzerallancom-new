@@ -1,0 +1,1377 @@
+{
+  "generatedFrom": "src/data/{packages,products,services,faqs,articles,videos,business,about}.ts",
+  "items": [
+    {
+      "id": "doctor-profile",
+      "category": "doctor",
+      "title": "About Monzer Allan",
+      "content": "Monzer Allan is a Nutrition Specialist & Pharmacist. Monzer Allan brings a combination of clinical and nutritional expertise to every consultation — trained as a pharmacist and specialized in nutrition, he approaches health from both the science of the body and the reality of everyday eating. Rather than one-size-fits-all diet plans, Monzer builds guidance around each client's actual life: their schedule, culture, preferences, and goals. The aim is always the same — lasting change that doesn't feel like a sacrifice. His approach blends evidence-based nutrition science with genuine, ongoing support, across the specialized programs described below. Mission: To make expert, evidence-based nutrition guidance accessible and genuinely sustainable — helping every client build a healthier relationship with food, one realistic step at a time. Credentials: Licensed Pharmacist — A clinical foundation in pharmacology and how nutrition interacts with treatment. | Nutrition Specialist — Focused training in evidence-based dietary science and behavior change.",
+      "keywords": [
+        "monzer",
+        "allan",
+        "nutrition",
+        "specialist",
+        "pharmacist",
+        "who",
+        "about",
+        "qualifications",
+        "credentials",
+        "background"
+      ],
+      "route": "/about"
+    },
+    {
+      "id": "membership-overview",
+      "category": "membership",
+      "title": "How Membership Works",
+      "content": "Membership works in six steps: choose a membership (Basic, Premium, or VIP Elite), complete secure payment via Stripe Checkout, your member account activates once payment is confirmed, your monthly consultation credits become available, you request an online consultation from your account dashboard using a credit, and approved consultations happen over Google Meet. Creating an account is not free — it begins with choosing and paying for a membership package. Nutrition services are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Laboratory review does not constitute a medical diagnosis. Membership pricing and consultation credits are set by the current promotion and may change.",
+      "keywords": [
+        "membership",
+        "how",
+        "works",
+        "join",
+        "sign",
+        "create",
+        "account",
+        "free",
+        "trial"
+      ]
+    },
+    {
+      "id": "consultation-credits",
+      "category": "consultations",
+      "title": "Consultation Credits & Requests",
+      "content": "Each membership includes a monthly consultation-credit allowance: Basic includes 1, Premium includes 3, VIP Elite includes 12. A credit is only used once a booking is actually confirmed with a real Google Meet link — not just for opening the booking page or selecting a date. Members book from their account by choosing an available date and time, reviewing the appointment, and confirming. If a member has no credits remaining, they're offered the option to upgrade or renew their membership. Detailed medical history should not be shared through the consultation booking form — that stays with the consultation itself.",
+      "keywords": [
+        "consultation",
+        "credit",
+        "credits",
+        "book",
+        "booking",
+        "meeting",
+        "meet",
+        "google",
+        "request",
+        "schedule",
+        "appointment"
+      ]
+    },
+    {
+      "id": "consultation-availability",
+      "category": "consultations",
+      "title": "Consultation Availability & Booking Rules",
+      "content": "Dr. Monzer Allan's standard consultation hours are Monday, Wednesday, and Friday, 4:00 PM to 9:00 PM Dubai time (Asia/Dubai). Actual open slots change as appointments are booked and as the schedule is updated, so the real available times should always be checked on the booking page rather than assumed from this general schedule. Appointments must be requested at least 48 hours in advance — same-day and next-day booking are not available. Consultations are conducted online via a real Google Meet link, created only once a booking is confirmed.",
+      "keywords": [
+        "availability",
+        "available",
+        "when",
+        "monday",
+        "wednesday",
+        "friday",
+        "hours",
+        "today",
+        "tomorrow",
+        "notice",
+        "advance",
+        "book",
+        "schedule",
+        "time"
+      ]
+    },
+    {
+      "id": "package-basic",
+      "category": "packages",
+      "title": "Basic Membership",
+      "content": "Basic: A focused introduction to guided nutrition. Current price: $29 / Month (was $58). Includes 1 consultation credit per month. Features: Personalized nutrition plan; Health-focused follow-up based on the client's condition and goals; 1 consultation credit per month; Google Meet consultation booked at least three days in advance; One nutrition plan adjustment per month; Member account access.",
+      "keywords": [
+        "basic",
+        "price",
+        "cost",
+        "membership",
+        "package",
+        "plan"
+      ]
+    },
+    {
+      "id": "package-premium",
+      "category": "packages",
+      "title": "Premium Membership",
+      "content": "Premium: Structured guidance with real accountability. Current price: $61 / Month (was $122). Includes 3 consultation credits per month. Badge: Most Popular. Features: Everything included in Basic; 3 consultation credits per month; Priority scheduling; Two nutrition plan adjustments per month; Basic review of laboratory results; Faster inquiry response; Exclusive nutrition resources; Member account access.",
+      "keywords": [
+        "premium",
+        "price",
+        "cost",
+        "membership",
+        "package",
+        "plan",
+        "most",
+        "popular"
+      ]
+    },
+    {
+      "id": "package-vip-elite",
+      "category": "packages",
+      "title": "VIP Elite Membership",
+      "content": "VIP Elite: White-glove nutrition care, fully personalized. Current price: $103 / Month (was $206). Includes 12 consultation credits per month. Badge: VIP. Includes Priority Hotline access. Features: Everything included in Premium; 12 consultation credits per month; Highest booking priority; Same-day consultation requests when availability permits; Unlimited nutrition plan adjustments, per plan policy; Detailed review of laboratory results; Highest-priority responses; Intensive health follow-up; Priority Hotline access; Member account access.",
+      "keywords": [
+        "vip",
+        "elite",
+        "price",
+        "cost",
+        "membership",
+        "package",
+        "plan"
+      ]
+    },
+    {
+      "id": "package-comparison",
+      "category": "packages",
+      "title": "Package Comparison",
+      "content": "Monthly price — Basic: $29 (was $58); Premium: $61 (was $122); VIP Elite: $103 (was $206). Consultation credits — Basic: 1 / month; Premium: 3 / month; VIP Elite: 12 / month. Plan adjustments — Basic: 1 / month; Premium: 2 / month; VIP Elite: Unlimited (per plan policy). Lab review — Basic: Not included; Premium: Basic review; VIP Elite: Detailed review. Response priority — Basic: Standard; Premium: Faster response; VIP Elite: Highest priority. Booking priority — Basic: 3+ days notice; Premium: 2+ days notice; VIP Elite: Same-day, subject to availability. Priority Hotline — Basic: Not included; Premium: Not included; VIP Elite: Included.",
+      "keywords": [
+        "compare",
+        "comparison",
+        "difference",
+        "basic",
+        "premium",
+        "vip"
+      ]
+    },
+    {
+      "id": "service-nutrition-consultation",
+      "category": "services",
+      "title": "Nutrition Consultation",
+      "content": "Nutrition Consultation: A personalized one-on-one assessment of your eating habits, lifestyle, and health goals to build a plan that actually fits your life. Highlights: Full dietary assessment, Custom nutrition plan, Ongoing follow-up.",
+      "keywords": [
+        "nutrition",
+        "consultation",
+        "full",
+        "dietary",
+        "assessment",
+        "custom",
+        "plan",
+        "ongoing",
+        "follow"
+      ]
+    },
+    {
+      "id": "service-weight-loss",
+      "category": "services",
+      "title": "Weight Loss",
+      "content": "Weight Loss: Sustainable, medically sound weight management built around real food, not extremes or fad diets that don't last. Highlights: Metabolic evaluation, Realistic meal structure, Progress tracking.",
+      "keywords": [
+        "weight",
+        "loss",
+        "metabolic",
+        "evaluation",
+        "realistic",
+        "meal",
+        "structure",
+        "progress",
+        "tracking"
+      ]
+    },
+    {
+      "id": "service-weight-gain",
+      "category": "services",
+      "title": "Weight Gain",
+      "content": "Weight Gain: Structured calorie and nutrient plans to help you build healthy mass safely, whether for health, strength, or recovery. Highlights: Caloric surplus planning, Nutrient-dense menus, Strength-friendly guidance.",
+      "keywords": [
+        "weight",
+        "gain",
+        "caloric",
+        "surplus",
+        "planning",
+        "nutrient",
+        "dense",
+        "menus",
+        "strength",
+        "friendly",
+        "guidance"
+      ]
+    },
+    {
+      "id": "service-clinical-nutrition",
+      "category": "services",
+      "title": "Clinical Nutrition",
+      "content": "Clinical Nutrition: Evidence-based nutrition therapy that works alongside your medical treatment for chronic or complex conditions. Highlights: Condition-specific plans, Coordination with physicians, Lab-informed adjustments.",
+      "keywords": [
+        "clinical",
+        "nutrition",
+        "condition",
+        "specific",
+        "plans",
+        "coordination",
+        "with",
+        "physicians",
+        "lab",
+        "informed",
+        "adjustments"
+      ]
+    },
+    {
+      "id": "service-sports-nutrition",
+      "category": "services",
+      "title": "Sports Nutrition",
+      "content": "Sports Nutrition: Fueling strategies for athletes and active people to improve performance, recovery, and endurance. Highlights: Performance fueling, Recovery nutrition, Hydration strategy.",
+      "keywords": [
+        "sports",
+        "nutrition",
+        "performance",
+        "fueling",
+        "recovery",
+        "hydration",
+        "strategy"
+      ]
+    },
+    {
+      "id": "service-diabetes-nutrition",
+      "category": "services",
+      "title": "Diabetes Nutrition",
+      "content": "Diabetes Nutrition: Blood-sugar-conscious meal planning designed to help you manage diabetes with confidence and enjoy your food again. Highlights: Glycemic load planning, Carb-balanced menus, Lifestyle coaching.",
+      "keywords": [
+        "diabetes",
+        "nutrition",
+        "glycemic",
+        "load",
+        "planning",
+        "carb",
+        "balanced",
+        "menus",
+        "lifestyle",
+        "coaching"
+      ]
+    },
+    {
+      "id": "service-hypertension",
+      "category": "services",
+      "title": "Hypertension",
+      "content": "Hypertension: Heart-healthy, low-sodium nutrition strategies tailored to help manage blood pressure naturally. Highlights: Sodium-conscious planning, Heart-healthy swaps, Lifestyle support.",
+      "keywords": [
+        "hypertension",
+        "sodium",
+        "conscious",
+        "planning",
+        "heart",
+        "healthy",
+        "swaps",
+        "lifestyle",
+        "support"
+      ]
+    },
+    {
+      "id": "service-cholesterol",
+      "category": "services",
+      "title": "Cholesterol",
+      "content": "Cholesterol: Targeted dietary changes to help improve your lipid profile and support long-term cardiovascular health. Highlights: Lipid-friendly menus, Fiber & fat balance, Progress monitoring.",
+      "keywords": [
+        "cholesterol",
+        "lipid",
+        "friendly",
+        "menus",
+        "fiber",
+        "fat",
+        "balance",
+        "progress",
+        "monitoring"
+      ]
+    },
+    {
+      "id": "service-digestive-health",
+      "category": "services",
+      "title": "Digestive Health",
+      "content": "Digestive Health: Gut-focused nutrition to ease discomfort, improve digestion, and identify food sensitivities. Highlights: Elimination guidance, Gut-friendly menus, Symptom tracking.",
+      "keywords": [
+        "digestive",
+        "health",
+        "elimination",
+        "guidance",
+        "gut",
+        "friendly",
+        "menus",
+        "symptom",
+        "tracking"
+      ]
+    },
+    {
+      "id": "service-pregnancy-nutrition",
+      "category": "services",
+      "title": "Pregnancy Nutrition",
+      "content": "Pregnancy Nutrition: Safe, nutrient-rich guidance to support you and your baby through every trimester. Highlights: Trimester-based planning, Micronutrient focus, Safe-food guidance.",
+      "keywords": [
+        "pregnancy",
+        "nutrition",
+        "trimester",
+        "based",
+        "planning",
+        "micronutrient",
+        "focus",
+        "safe",
+        "food",
+        "guidance"
+      ]
+    },
+    {
+      "id": "service-child-nutrition",
+      "category": "services",
+      "title": "Child Nutrition",
+      "content": "Child Nutrition: Family-friendly nutrition plans that support healthy growth, energy, and positive eating habits in kids. Highlights: Growth-focused planning, Picky-eater strategies, Family meal guidance.",
+      "keywords": [
+        "child",
+        "nutrition",
+        "growth",
+        "focused",
+        "planning",
+        "picky",
+        "eater",
+        "strategies",
+        "family",
+        "meal",
+        "guidance"
+      ]
+    },
+    {
+      "id": "service-senior-nutrition",
+      "category": "services",
+      "title": "Senior Nutrition",
+      "content": "Senior Nutrition: Thoughtful nutrition care that supports strength, immunity, and quality of life in later years. Highlights: Bone & muscle support, Appetite-friendly menus, Medication-aware planning.",
+      "keywords": [
+        "senior",
+        "nutrition",
+        "bone",
+        "muscle",
+        "support",
+        "appetite",
+        "friendly",
+        "menus",
+        "medication",
+        "aware",
+        "planning"
+      ]
+    },
+    {
+      "id": "product-omega-3-krill-oil",
+      "category": "products",
+      "title": "Omega-3 Krill Oil",
+      "content": "Omega-3 Krill Oil (1000 mg), 120 Capsules — Supplements. A Monzer Allan-branded krill oil dietary supplement providing about 240 mg of omega-3s per serving. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "omega",
+        "krill",
+        "oil",
+        "supplements",
+        "1000"
+      ],
+      "route": "/products/omega-3-krill-oil"
+    },
+    {
+      "id": "product-irish-moss-bladderwrack",
+      "category": "products",
+      "title": "Irish Moss + Bladderwrack",
+      "content": "Irish Moss + Bladderwrack, 60 Capsules — Herbal Wellness. A Monzer Allan-branded sea mineral blend supplement combining Irish moss and bladderwrack. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "irish",
+        "moss",
+        "bladderwrack",
+        "herbal",
+        "wellness"
+      ],
+      "route": "/products/irish-moss-bladderwrack"
+    },
+    {
+      "id": "product-resveratrol",
+      "category": "products",
+      "title": "Resveratrol",
+      "content": "Resveratrol (1000 mg), 60 Capsules — Supplements. A Monzer Allan-branded resveratrol supplement positioned for antioxidant and cellular support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "resveratrol",
+        "supplements",
+        "1000"
+      ],
+      "route": "/products/resveratrol"
+    },
+    {
+      "id": "product-beta-carotene",
+      "category": "products",
+      "title": "Beta Carotene",
+      "content": "Beta Carotene (7500 mcg), 120 Capsules — Vitamins & Minerals. A Monzer Allan-branded beta carotene supplement, a vitamin A precursor. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "beta",
+        "carotene",
+        "vitamins",
+        "minerals",
+        "7500",
+        "mcg"
+      ],
+      "route": "/products/beta-carotene"
+    },
+    {
+      "id": "product-norwegian-cod-liver-oil-60",
+      "category": "products",
+      "title": "Norwegian Cod Liver Oil — 60 Capsules",
+      "content": "Norwegian Cod Liver Oil — 60 Capsules (1250 mg), 60 Capsules — Supplements. A Monzer Allan-branded Norwegian cod liver oil supplement with omega-3s and vitamins A & D. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "norwegian",
+        "cod",
+        "liver",
+        "oil",
+        "capsules",
+        "supplements",
+        "1250"
+      ],
+      "route": "/products/norwegian-cod-liver-oil-60"
+    },
+    {
+      "id": "product-tudca",
+      "category": "products",
+      "title": "TUDCA",
+      "content": "TUDCA (250 mg), 60 Capsules — Supplements. A Monzer Allan-branded TUDCA supplement positioned for liver and digestive support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "tudca",
+        "supplements",
+        "250"
+      ],
+      "route": "/products/tudca"
+    },
+    {
+      "id": "product-milk-thistle-extract",
+      "category": "products",
+      "title": "Milk Thistle Extract",
+      "content": "Milk Thistle Extract (175 mg (80% Silymarin)), 60 Capsules — Herbal Wellness. A Monzer Allan-branded milk thistle extract supplement standardized to 80% silymarin. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "milk",
+        "thistle",
+        "extract",
+        "herbal",
+        "wellness",
+        "175",
+        "silymarin"
+      ],
+      "route": "/products/milk-thistle-extract"
+    },
+    {
+      "id": "product-glucosamine-chondroitin",
+      "category": "products",
+      "title": "Glucosamine Chondroitin",
+      "content": "Glucosamine Chondroitin (1500 mg Glucosamine / 1200 mg Chondroitin), 60 Capsules — Supplements. A Monzer Allan-branded glucosamine and chondroitin supplement for joint and mobility support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "glucosamine",
+        "chondroitin",
+        "supplements",
+        "1500",
+        "1200"
+      ],
+      "route": "/products/glucosamine-chondroitin"
+    },
+    {
+      "id": "product-berberine-plus",
+      "category": "products",
+      "title": "Berberine Plus",
+      "content": "Berberine Plus (1200 mg), 60 Capsules — Supplements. A Monzer Allan-branded berberine supplement positioned for metabolic and glucose support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "berberine",
+        "plus",
+        "supplements",
+        "1200"
+      ],
+      "route": "/products/berberine-plus"
+    },
+    {
+      "id": "product-alpha-lipoic-acid",
+      "category": "products",
+      "title": "Alpha Lipoic Acid",
+      "content": "Alpha Lipoic Acid (600 mg), 60 Capsules — Supplements. A Monzer Allan-branded alpha lipoic acid supplement for cellular and metabolic support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "alpha",
+        "lipoic",
+        "acid",
+        "supplements",
+        "600"
+      ],
+      "route": "/products/alpha-lipoic-acid"
+    },
+    {
+      "id": "product-potassium-gluconate",
+      "category": "products",
+      "title": "Potassium Gluconate",
+      "content": "Potassium Gluconate (595 mg), 60 Capsules — Vitamins & Minerals. A Monzer Allan-branded potassium gluconate supplement for electrolyte and wellness support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "potassium",
+        "gluconate",
+        "vitamins",
+        "minerals",
+        "595"
+      ],
+      "route": "/products/potassium-gluconate"
+    },
+    {
+      "id": "product-spirulina",
+      "category": "products",
+      "title": "Spirulina",
+      "content": "Spirulina (3000 mg), 60 Capsules — Herbal Wellness. A Monzer Allan-branded spirulina supplement for greens and daily wellness support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "spirulina",
+        "herbal",
+        "wellness",
+        "3000"
+      ],
+      "route": "/products/spirulina"
+    },
+    {
+      "id": "product-shilajit-extra-strength",
+      "category": "products",
+      "title": "Shilajit Extra Strength",
+      "content": "Shilajit Extra Strength, 120 Capsules — Herbal Wellness. A Monzer Allan-branded Shilajit supplement labeled as a mineral vitality formula. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "shilajit",
+        "extra",
+        "strength",
+        "herbal",
+        "wellness"
+      ],
+      "route": "/products/shilajit-extra-strength"
+    },
+    {
+      "id": "product-stinging-nettle",
+      "category": "products",
+      "title": "Stinging Nettle",
+      "content": "Stinging Nettle (500 mg), 120 Capsules — Herbal Wellness. A Monzer Allan-branded stinging nettle supplement labeled as a men's support formula. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "stinging",
+        "nettle",
+        "herbal",
+        "wellness",
+        "500"
+      ],
+      "route": "/products/stinging-nettle"
+    },
+    {
+      "id": "product-tongkat-ali",
+      "category": "products",
+      "title": "Tongkat Ali",
+      "content": "Tongkat Ali (1000 mg (LJ100)), 120 Capsules — Herbal Wellness. A Monzer Allan-branded Tongkat Ali (LJ100) supplement labeled as a strength and vitality formula. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "tongkat",
+        "ali",
+        "herbal",
+        "wellness",
+        "1000",
+        "lj100"
+      ],
+      "route": "/products/tongkat-ali"
+    },
+    {
+      "id": "product-super-male-b-complex",
+      "category": "products",
+      "title": "Super Male B-Complex",
+      "content": "Super Male B-Complex, 120 Capsules — Vitamins & Minerals. A Monzer Allan-branded B-Complex supplement labeled as a performance formula. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "super",
+        "male",
+        "complex",
+        "vitamins",
+        "minerals"
+      ],
+      "route": "/products/super-male-b-complex"
+    },
+    {
+      "id": "product-glutathione",
+      "category": "products",
+      "title": "Glutathione",
+      "content": "Glutathione (500 mg), 60 Capsules — Supplements. A Monzer Allan-branded glutathione supplement for antioxidant and cellular defense support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "glutathione",
+        "supplements",
+        "500"
+      ],
+      "route": "/products/glutathione"
+    },
+    {
+      "id": "product-grass-fed-beef-liver",
+      "category": "products",
+      "title": "Grass-Fed Beef Liver",
+      "content": "Grass-Fed Beef Liver (4500 mg), 120 Capsules — Supplements. A Monzer Allan-branded grass-fed beef liver whole food supplement. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "grass",
+        "fed",
+        "beef",
+        "liver",
+        "supplements",
+        "4500"
+      ],
+      "route": "/products/grass-fed-beef-liver"
+    },
+    {
+      "id": "product-vitamin-d3-k2",
+      "category": "products",
+      "title": "Vitamin D3K2",
+      "content": "Vitamin D3K2 (5000 IU (MK-7)), 120 Tablets — Vitamins & Minerals. A Monzer Allan-branded Vitamin D3 + K2 (MK-7) supplement for bone, heart, and immune support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "vitamin",
+        "d3k2",
+        "vitamins",
+        "minerals",
+        "5000"
+      ],
+      "route": "/products/vitamin-d3-k2"
+    },
+    {
+      "id": "product-norwegian-cod-liver-oil-120",
+      "category": "products",
+      "title": "Norwegian Cod Liver Oil — 120 Capsules",
+      "content": "Norwegian Cod Liver Oil — 120 Capsules (1250 mg), 120 Capsules — Supplements. A Monzer Allan-branded Norwegian cod liver oil supplement with vitamins A & D and omega-3. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "norwegian",
+        "cod",
+        "liver",
+        "oil",
+        "120",
+        "capsules",
+        "supplements",
+        "1250"
+      ],
+      "route": "/products/norwegian-cod-liver-oil-120"
+    },
+    {
+      "id": "product-coq10",
+      "category": "products",
+      "title": "CoQ10",
+      "content": "CoQ10 (200 mg), 120 Capsules — Supplements. A Monzer Allan-branded CoQ10 supplement for heart and cellular energy support. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "coq10",
+        "supplements",
+        "200"
+      ],
+      "route": "/products/coq10"
+    },
+    {
+      "id": "product-advanced-b-complex",
+      "category": "products",
+      "title": "Advanced B-Complex",
+      "content": "Advanced B-Complex, 120 Capsules — Vitamins & Minerals. A Monzer Allan-branded B-Complex supplement labeled as a complete daily energy formula. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "advanced",
+        "complex",
+        "vitamins",
+        "minerals"
+      ],
+      "route": "/products/advanced-b-complex"
+    },
+    {
+      "id": "product-non-contact-infrared-thermometer",
+      "category": "products",
+      "title": "Non-Contact Infrared Thermometer",
+      "content": "Non-Contact Infrared Thermometer — Health Monitoring Devices. A Monzer Allan-branded non-contact infrared thermometer with a 3-color fever alert display. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "non",
+        "contact",
+        "infrared",
+        "thermometer",
+        "health",
+        "monitoring",
+        "devices"
+      ],
+      "route": "/products/non-contact-infrared-thermometer"
+    },
+    {
+      "id": "product-digital-thermometer",
+      "category": "products",
+      "title": "Digital Thermometer",
+      "content": "Digital Thermometer, 1 Piece — Health Monitoring Devices. A Monzer Allan-branded digital thermometer for at-home temperature readings. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "digital",
+        "thermometer",
+        "health",
+        "monitoring",
+        "devices"
+      ],
+      "route": "/products/digital-thermometer"
+    },
+    {
+      "id": "product-digital-blood-pressure-monitor",
+      "category": "products",
+      "title": "Digital Upper-Arm Blood Pressure Monitor",
+      "content": "Digital Upper-Arm Blood Pressure Monitor — Health Monitoring Devices. A Monzer Allan-branded digital upper-arm blood pressure monitor with a universal cuff. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "digital",
+        "upper",
+        "arm",
+        "blood",
+        "pressure",
+        "monitor",
+        "health",
+        "monitoring",
+        "devices"
+      ],
+      "route": "/products/digital-blood-pressure-monitor"
+    },
+    {
+      "id": "product-smart-body-composition-scale",
+      "category": "products",
+      "title": "Smart Body Composition Scale",
+      "content": "Smart Body Composition Scale — Health Monitoring Devices. A Monzer Allan-branded smart scale that tracks body composition metrics with Wi-Fi sync. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "smart",
+        "body",
+        "composition",
+        "scale",
+        "health",
+        "monitoring",
+        "devices"
+      ],
+      "route": "/products/smart-body-composition-scale"
+    },
+    {
+      "id": "product-blood-glucose-meter-kit",
+      "category": "products",
+      "title": "Blood Glucose Meter Kit",
+      "content": "Blood Glucose Meter Kit — Health Monitoring Devices. A Monzer Allan-branded blood glucose meter kit for at-home glucose testing. Currently Out of Stock. Price: Contact for Price.",
+      "keywords": [
+        "blood",
+        "glucose",
+        "meter",
+        "kit",
+        "health",
+        "monitoring",
+        "devices"
+      ],
+      "route": "/products/blood-glucose-meter-kit"
+    },
+    {
+      "id": "products-overview",
+      "category": "products",
+      "title": "Product Catalog Overview",
+      "content": "All current products (27 items across Supplements, Vitamins & Minerals, Herbal Wellness, and Health Monitoring Devices) are currently marked Out of Stock. Visitors can view details and ask about availability from any product page — no online checkout is currently available for products.",
+      "keywords": [
+        "products",
+        "shop",
+        "store",
+        "buy",
+        "stock",
+        "available",
+        "availability"
+      ]
+    },
+    {
+      "id": "faq-0",
+      "category": "faq",
+      "title": "What's included in a membership?",
+      "content": "Every membership includes a set number of monthly consultation credits, access to your member account and consultation history, and ongoing nutrition support. Basic, Premium, and VIP Elite differ in credit allowance and included features — compare them on the Packages page.",
+      "keywords": [
+        "what",
+        "included",
+        "membership"
+      ]
+    },
+    {
+      "id": "faq-1",
+      "category": "faq",
+      "title": "Can I change or cancel my membership?",
+      "content": "Yes, memberships are designed to be flexible. Membership billing and self-service cancellation will be available once online payment is fully connected — in the meantime, reach out directly for any changes to your plan.",
+      "keywords": [
+        "can",
+        "change",
+        "cancel",
+        "membership"
+      ]
+    },
+    {
+      "id": "faq-2",
+      "category": "faq",
+      "title": "What happens in the first consultation?",
+      "content": "Your first session is a full assessment of your health history, current eating habits, lifestyle, and goals. By the end, you'll leave with a clear picture of your plan and next steps — no guesswork.",
+      "keywords": [
+        "what",
+        "happens",
+        "the",
+        "first",
+        "consultation",
+        "consultations"
+      ]
+    },
+    {
+      "id": "faq-3",
+      "category": "faq",
+      "title": "Do you offer online consultations?",
+      "content": "Yes. Membership consultations are conducted online over Google Meet, and every service can also be booked in person — choose whichever fits your schedule and comfort best.",
+      "keywords": [
+        "you",
+        "offer",
+        "online",
+        "consultations"
+      ]
+    },
+    {
+      "id": "faq-4",
+      "category": "faq",
+      "title": "How do consultation credits work?",
+      "content": "Each membership includes a fixed number of consultation credits per month (1 for Basic, 3 for Premium, more for VIP Elite). You use one credit each time you request an online consultation from your member account.",
+      "keywords": [
+        "how",
+        "consultation",
+        "credits",
+        "work"
+      ]
+    },
+    {
+      "id": "faq-5",
+      "category": "faq",
+      "title": "What happens if I don't use all my credits?",
+      "content": "Credits are tied to your active membership period. A formal rollover policy will be confirmed once billing is fully connected — nothing is promised beyond your current cycle at this time.",
+      "keywords": [
+        "what",
+        "happens",
+        "don",
+        "use",
+        "all",
+        "credits",
+        "consultation"
+      ]
+    },
+    {
+      "id": "faq-6",
+      "category": "faq",
+      "title": "How do I join my online consultation?",
+      "content": "Once a consultation request is approved, a Google Meet link is attached to that appointment in your member account. You'll be able to join directly from there at your scheduled time.",
+      "keywords": [
+        "how",
+        "join",
+        "online",
+        "consultation",
+        "meetings"
+      ]
+    },
+    {
+      "id": "faq-7",
+      "category": "faq",
+      "title": "How do I create a member account?",
+      "content": "Creating an account is part of choosing a membership package. Visit the Packages page, select a plan, and follow the Create Account steps to set up your login and begin the payment process.",
+      "keywords": [
+        "how",
+        "create",
+        "member",
+        "account",
+        "billing"
+      ]
+    },
+    {
+      "id": "faq-8",
+      "category": "faq",
+      "title": "Is my payment information secure?",
+      "content": "Membership payments are intended to be processed through a secure, PCI-compliant payment provider — this website will never ask you to send card details directly. Full checkout is not yet live; the Packages and Join pages will show current status.",
+      "keywords": [
+        "payment",
+        "information",
+        "secure",
+        "account",
+        "billing"
+      ]
+    },
+    {
+      "id": "faq-9",
+      "category": "faq",
+      "title": "Can I purchase products directly on the site?",
+      "content": "All products currently listed are marked Out of Stock. You're welcome to ask about availability from any product page, and we'll follow up directly with updates.",
+      "keywords": [
+        "can",
+        "purchase",
+        "products",
+        "directly",
+        "the",
+        "site"
+      ]
+    },
+    {
+      "id": "faq-10",
+      "category": "faq",
+      "title": "How soon will I see results?",
+      "content": "It depends on your goal and starting point, but most clients notice meaningful changes in energy and habits within 2–3 weeks, with visible physical results typically building over 4–8 weeks.",
+      "keywords": [
+        "how",
+        "soon",
+        "will",
+        "see",
+        "results",
+        "nutrition",
+        "services"
+      ]
+    },
+    {
+      "id": "faq-11",
+      "category": "faq",
+      "title": "Is the plan built around foods I already eat?",
+      "content": "Always. Every plan starts from your current lifestyle, preferences, and culture — it's adapted to you, not a generic template you're forced to follow.",
+      "keywords": [
+        "the",
+        "plan",
+        "built",
+        "around",
+        "foods",
+        "already",
+        "eat",
+        "nutrition",
+        "services"
+      ]
+    },
+    {
+      "id": "faq-12",
+      "category": "faq",
+      "title": "Can you work with an existing medical condition?",
+      "content": "Yes, clinical nutrition for conditions like diabetes, hypertension, and high cholesterol is a core part of the practice. Plans are coordinated with your physician's guidance when needed.",
+      "keywords": [
+        "can",
+        "you",
+        "work",
+        "with",
+        "existing",
+        "medical",
+        "condition",
+        "nutrition",
+        "services"
+      ]
+    },
+    {
+      "id": "faq-13",
+      "category": "faq",
+      "title": "Do you provide guidance for children or seniors?",
+      "content": "Yes — both child nutrition and senior nutrition are dedicated services, each tailored to the specific needs of those life stages.",
+      "keywords": [
+        "you",
+        "provide",
+        "guidance",
+        "for",
+        "children",
+        "seniors",
+        "nutrition",
+        "services"
+      ]
+    },
+    {
+      "id": "faq-14",
+      "category": "faq",
+      "title": "How do I book a session?",
+      "content": "Use the “Book a Session” button anywhere on the site to choose your service, preferred date and time, and session type. You'll receive a confirmation immediately after booking.",
+      "keywords": [
+        "how",
+        "book",
+        "session",
+        "general",
+        "questions"
+      ]
+    },
+    {
+      "id": "faq-15",
+      "category": "faq",
+      "title": "What is your cancellation policy?",
+      "content": "We ask for at least 24 hours' notice to reschedule or cancel a session so the time slot can be offered to another client. Reach out via WhatsApp or the Contact page and we'll take care of it.",
+      "keywords": [
+        "what",
+        "your",
+        "cancellation",
+        "policy",
+        "general",
+        "questions"
+      ]
+    },
+    {
+      "id": "blog-sustainable-weight-loss-without-crash-diets",
+      "category": "blog",
+      "title": "Sustainable Weight Loss Without Crash Diets",
+      "content": "Sustainable Weight Loss Without Crash Diets (Weight Management): Why extreme restriction backfires, and what a realistic weight-loss plan looks like in practice.",
+      "keywords": [
+        "sustainable",
+        "weight",
+        "loss",
+        "without",
+        "crash",
+        "diets",
+        "management"
+      ],
+      "route": "/blog/sustainable-weight-loss-without-crash-diets"
+    },
+    {
+      "id": "blog-eating-well-with-type-2-diabetes",
+      "category": "blog",
+      "title": "Eating Well With Type 2 Diabetes",
+      "content": "Eating Well With Type 2 Diabetes (Clinical Nutrition): A practical look at managing blood sugar through food choices, meal timing, and carbohydrate balance.",
+      "keywords": [
+        "eating",
+        "well",
+        "with",
+        "type",
+        "diabetes",
+        "clinical",
+        "nutrition"
+      ],
+      "route": "/blog/eating-well-with-type-2-diabetes"
+    },
+    {
+      "id": "blog-fueling-athletic-performance-and-recovery",
+      "category": "blog",
+      "title": "Fueling Athletic Performance and Recovery",
+      "content": "Fueling Athletic Performance and Recovery (Sports Nutrition): How pre- and post-workout nutrition choices affect energy, endurance, and how quickly you bounce back.",
+      "keywords": [
+        "fueling",
+        "athletic",
+        "performance",
+        "and",
+        "recovery",
+        "sports",
+        "nutrition"
+      ],
+      "route": "/blog/fueling-athletic-performance-and-recovery"
+    },
+    {
+      "id": "blog-nutrition-through-every-trimester-of-pregnancy",
+      "category": "blog",
+      "title": "Nutrition Through Every Trimester of Pregnancy",
+      "content": "Nutrition Through Every Trimester of Pregnancy (Women's Health): What changes nutritionally from the first trimester to the third, and the nutrients worth paying closer attention to.",
+      "keywords": [
+        "nutrition",
+        "through",
+        "every",
+        "trimester",
+        "pregnancy",
+        "women",
+        "health"
+      ],
+      "route": "/blog/nutrition-through-every-trimester-of-pregnancy"
+    },
+    {
+      "id": "blog-raising-healthy-eaters-without-the-battles",
+      "category": "blog",
+      "title": "Raising Healthy Eaters Without the Battles",
+      "content": "Raising Healthy Eaters Without the Battles (Family Nutrition): Practical, low-stress strategies for encouraging balanced eating habits in children — including picky eaters.",
+      "keywords": [
+        "raising",
+        "healthy",
+        "eaters",
+        "without",
+        "the",
+        "battles",
+        "family",
+        "nutrition"
+      ],
+      "route": "/blog/raising-healthy-eaters-without-the-battles"
+    },
+    {
+      "id": "blog-understanding-food-and-digestive-comfort",
+      "category": "blog",
+      "title": "Understanding Food and Digestive Comfort",
+      "content": "Understanding Food and Digestive Comfort (Digestive Health): How to approach bloating, discomfort, and food sensitivities without cutting out entire food groups unnecessarily.",
+      "keywords": [
+        "understanding",
+        "food",
+        "and",
+        "digestive",
+        "comfort",
+        "health"
+      ],
+      "route": "/blog/understanding-food-and-digestive-comfort"
+    },
+    {
+      "id": "blog-heart-healthy-eating-for-cholesterol-and-blood-pressure",
+      "category": "blog",
+      "title": "Heart-Healthy Eating for Cholesterol and Blood Pressure",
+      "content": "Heart-Healthy Eating for Cholesterol and Blood Pressure (Heart Health): The dietary patterns most consistently linked to better cardiovascular numbers, explained simply.",
+      "keywords": [
+        "heart",
+        "healthy",
+        "eating",
+        "for",
+        "cholesterol",
+        "and",
+        "blood",
+        "pressure",
+        "health"
+      ],
+      "route": "/blog/heart-healthy-eating-for-cholesterol-and-blood-pressure"
+    },
+    {
+      "id": "blog-how-much-protein-do-you-actually-need",
+      "category": "blog",
+      "title": "How Much Protein Do You Actually Need?",
+      "content": "How Much Protein Do You Actually Need? (Weight Management): Cutting through the noise around protein intake, timing, and sources for different goals.",
+      "keywords": [
+        "how",
+        "much",
+        "protein",
+        "you",
+        "actually",
+        "need",
+        "weight",
+        "management"
+      ],
+      "route": "/blog/how-much-protein-do-you-actually-need"
+    },
+    {
+      "id": "video-vitamin-d-deficiency-signs",
+      "category": "videos",
+      "title": "10 Signs of Vitamin D Deficiency You Shouldn't Ignore.",
+      "content": "10 Signs of Vitamin D Deficiency You Shouldn't Ignore. (Nutrition): A rundown of common signs linked to low vitamin D — from fatigue and difficulty concentrating to joint stiffness and mood changes — plus general guidance on supplementation and target levels. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "signs",
+        "vitamin",
+        "deficiency",
+        "you",
+        "shouldn",
+        "ignore",
+        "nutrition"
+      ]
+    },
+    {
+      "id": "video-iron-stores-drop",
+      "category": "videos",
+      "title": "What Happens When Your Iron Stores Drop?",
+      "content": "What Happens When Your Iron Stores Drop? (Nutrition): An overview of symptoms tied to low iron stores, such as fatigue, dizziness, and hair loss, along with practical guidance on testing and supporting healthy iron levels. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "what",
+        "happens",
+        "when",
+        "your",
+        "iron",
+        "stores",
+        "drop",
+        "nutrition"
+      ]
+    },
+    {
+      "id": "video-magnesium-types-timing",
+      "category": "videos",
+      "title": "Types of Magnesium and Best Times to Take Them",
+      "content": "Types of Magnesium and Best Times to Take Them (Nutrition): A quick guide to the different forms of magnesium and when to take each one. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "types",
+        "magnesium",
+        "and",
+        "best",
+        "times",
+        "take",
+        "them",
+        "nutrition"
+      ]
+    },
+    {
+      "id": "video-candida-treatment-stage-three",
+      "category": "videos",
+      "title": "Stage Three of Kandida Treatment: Essential Remedies and Vitamins for Both Spouses",
+      "content": "Stage Three of Kandida Treatment: Essential Remedies and Vitamins for Both Spouses (Wellness): A look at a later stage of a Candida-support protocol, covering natural remedies and the vitamins commonly recommended alongside it. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "stage",
+        "three",
+        "kandida",
+        "treatment",
+        "essential",
+        "remedies",
+        "and",
+        "vitamins",
+        "for",
+        "both",
+        "spouses",
+        "wellness"
+      ]
+    },
+    {
+      "id": "video-candida-treatment-bone-broth",
+      "category": "videos",
+      "title": "Candida Treatment: Bone Broth, Steamed Veggies, and Herbal Remedies",
+      "content": "Candida Treatment: Bone Broth, Steamed Veggies, and Herbal Remedies (Wellness): A walkthrough of an early-stage Candida-support approach built around bone broth, steamed vegetables, and supportive herbs. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "candida",
+        "treatment",
+        "bone",
+        "broth",
+        "steamed",
+        "veggies",
+        "and",
+        "herbal",
+        "remedies",
+        "wellness"
+      ]
+    },
+    {
+      "id": "video-candida-foods-to-avoid",
+      "category": "videos",
+      "title": "Candida Treatment: Foods to Avoid for Healing",
+      "content": "Candida Treatment: Foods to Avoid for Healing (Wellness): Practical guidance on the foods commonly avoided during a Candida-support protocol, and why they can work against progress. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "candida",
+        "treatment",
+        "foods",
+        "avoid",
+        "for",
+        "healing",
+        "wellness"
+      ]
+    },
+    {
+      "id": "video-autoimmune-path-before-medication",
+      "category": "videos",
+      "title": "The Path to Treating Autoimmune Diseases: Essential Steps Before Medication",
+      "content": "The Path to Treating Autoimmune Diseases: Essential Steps Before Medication (Metabolic Health): A discussion on the foundational steps — digestion, diet, exercise, sleep, and stress management — often addressed before or alongside autoimmune treatment. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "the",
+        "path",
+        "treating",
+        "autoimmune",
+        "diseases",
+        "essential",
+        "steps",
+        "before",
+        "medication",
+        "metabolic",
+        "health"
+      ]
+    },
+    {
+      "id": "video-one-simple-habit",
+      "category": "videos",
+      "title": "One simple habit can support a healthier lifestyle.",
+      "content": "One simple habit can support a healthier lifestyle. (Lifestyle): A short, practical habit that can make everyday healthy living easier to sustain. Watch on the official YouTube channel or in the site's video library.",
+      "keywords": [
+        "one",
+        "simple",
+        "habit",
+        "can",
+        "support",
+        "healthier",
+        "lifestyle"
+      ]
+    },
+    {
+      "id": "videos-overview",
+      "category": "videos",
+      "title": "YouTube Channel",
+      "content": "Educational videos are published on the official Dr. Monzer Allan YouTube channel (https://youtube.com/@monzerallan?si=NxAdGsbsX6ADqHNz) and featured on the website's Watch & Learn section and Gallery page, and on the native app's video library.",
+      "keywords": [
+        "youtube",
+        "video",
+        "videos",
+        "watch",
+        "channel"
+      ]
+    },
+    {
+      "id": "contact-info",
+      "category": "contact",
+      "title": "Contact & Social",
+      "content": "The fastest way to reach the team is the Contact page (website) or Help & Support (native app), which offer a message form and, when configured, a WhatsApp link. Official social profiles: Instagram: https://www.instagram.com/monzerallan?igsh=YWgyeGdramF3c3Ft | Facebook: https://www.facebook.com/share/1Dhu99SQt3/?mibextid=wwXIfr | TikTok: https://www.tiktok.com/@monzerallan?_r=1&_t=ZT-98hAmzX1TsU | YouTube: https://youtube.com/@monzerallan?si=NxAdGsbsX6ADqHNz. No public phone number, email address, or physical office address has been confirmed yet — do not state one.",
+      "keywords": [
+        "contact",
+        "reach",
+        "email",
+        "phone",
+        "address",
+        "social",
+        "instagram",
+        "facebook",
+        "tiktok"
+      ]
+    },
+    {
+      "id": "site-navigation",
+      "category": "navigation",
+      "title": "Navigation",
+      "content": "On the website: Home, About, Packages, Shop/Products, Blog, Gallery, FAQ, Contact, Sign In, Create Account / Join a membership, My Account (requires sign-in). On the native mobile app, navigation instead uses five bottom tabs: Home (dashboard), Health (Food Scanner, Prayer Times, Qibla, Products, Blog, Videos), AI (the AI Concierge), Consultations (membership, credits, booking), and Account (profile, settings, help). Create Account begins a paid membership purchase — it is not a free signup, on either platform.",
+      "keywords": [
+        "navigate",
+        "navigation",
+        "page",
+        "pages",
+        "find",
+        "where",
+        "menu",
+        "sign",
+        "login",
+        "account",
+        "tab",
+        "tabs"
+      ]
+    },
+    {
+      "id": "app-feature-prayer-times",
+      "category": "app-features",
+      "title": "Prayer Times (mobile app)",
+      "content": "The mobile app includes a Prayer Times feature (in the app's Health tab) showing today's five daily prayers (Fajr, Dhuhr, Asr, Maghrib, Isha) plus Sunrise, calculated for the visitor's location (device location or a manually chosen city), with a configurable calculation method and Asr madhab. Optional on-device reminders can be enabled per prayer. This feature is only available in the native app, not the website — do not offer it as a website navigation link.",
+      "keywords": [
+        "prayer",
+        "times",
+        "fajr",
+        "dhuhr",
+        "asr",
+        "maghrib",
+        "isha",
+        "salah",
+        "salat"
+      ]
+    },
+    {
+      "id": "app-feature-qibla",
+      "category": "app-features",
+      "title": "Qibla (mobile app)",
+      "content": "The mobile app includes a Qibla compass (in the app's Health tab) showing the direction to the Kaaba from the visitor's location, using the device's compass when available (with a manual-alignment fallback and calibration tip when it isn't). This feature is only available in the native app, not the website — do not offer it as a website navigation link.",
+      "keywords": [
+        "qibla",
+        "kaaba",
+        "mecca",
+        "compass",
+        "direction"
+      ]
+    },
+    {
+      "id": "app-feature-food-scanner",
+      "category": "app-features",
+      "title": "Food Scanner (mobile app)",
+      "content": "The mobile app includes a Food Scanner (in the app's Health tab): the visitor photographs a meal and receives an ESTIMATED calorie and macronutrient (protein, carbohydrate, fat) breakdown per detected food item, powered by Gemini image analysis. These are estimates only, never exact measurements, and the visitor can correct detected items before optionally asking the AI assistant general educational questions about the meal. This feature is only available in the native app, not the website — do not offer it as a website navigation link.",
+      "keywords": [
+        "food",
+        "scanner",
+        "calorie",
+        "calories",
+        "nutrition",
+        "macros",
+        "meal",
+        "scan"
+      ]
+    },
+    {
+      "id": "policy-membership-disclaimer",
+      "category": "policies",
+      "title": "Membership & Nutrition Service Disclaimer",
+      "content": "Nutrition services are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Laboratory review does not constitute a medical diagnosis. Membership pricing and consultation credits are set by the current promotion and may change.",
+      "keywords": [
+        "disclaimer",
+        "policy",
+        "medical",
+        "diagnosis",
+        "emergency"
+      ]
+    },
+    {
+      "id": "policy-product-disclaimer",
+      "category": "policies",
+      "title": "Product Disclaimer",
+      "content": "Product information is provided for general informational purposes only. Dietary supplements are not intended to diagnose, treat, cure, or prevent any disease. Consult a qualified healthcare professional before using a supplement, especially if pregnant, nursing, taking medication, managing a medical condition, or considering use for a child.",
+      "keywords": [
+        "supplement",
+        "disclaimer",
+        "product",
+        "claim",
+        "treat",
+        "cure"
+      ]
+    },
+    {
+      "id": "policy-privacy",
+      "category": "policies",
+      "title": "Privacy & Sensitive Information",
+      "content": "Visitors should not share detailed medical history, diagnoses, medications, or lab results through the chat, contact form, or consultation request form — that information stays with the consultation itself with a qualified professional.",
+      "keywords": [
+        "privacy",
+        "medical",
+        "records",
+        "sensitive",
+        "share"
+      ]
+    }
+  ]
+}

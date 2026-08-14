@@ -1,4 +1,4 @@
-import { CalendarCheck, CreditCard, MessagesSquare, Sparkles, UserPlus, Video } from "lucide-react";
+import { CalendarCheck, CreditCard, Lock, Sparkles, UserPlus, Video } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
@@ -10,29 +10,30 @@ const STEPS = [
     description: "Pick Basic, Premium, or VIP Elite based on the support you need.",
   },
   {
+    icon: Lock,
+    title: "Complete Secure Payment",
+    description:
+      "Checkout is handled securely by Stripe — your card details never touch our servers.",
+  },
+  {
     icon: UserPlus,
-    title: "Create Your Member Account",
-    description: "Your account is where your membership and consultation history live.",
+    title: "Activate Your Member Account",
+    description: "Once payment is confirmed, your account activates and you set your password.",
   },
   {
     icon: CreditCard,
     title: "Access Your Consultation Credits",
-    description: "Your monthly credit allowance activates as soon as your membership is confirmed.",
+    description: "Your monthly credit allowance is ready as soon as your membership is active.",
   },
   {
     icon: CalendarCheck,
-    title: "Request Your Online Consultation",
+    title: "Request an Online Consultation",
     description: "Use a credit to request a session directly from your dashboard.",
   },
   {
     icon: Video,
     title: "Meet Through Google Meet",
     description: "Approved consultations happen over a secure Google Meet link.",
-  },
-  {
-    icon: MessagesSquare,
-    title: "Continue Your Nutrition Journey",
-    description: "Ongoing guidance, follow-ups, and support for as long as you stay a member.",
   },
 ];
 

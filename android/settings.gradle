@@ -1,0 +1,12 @@
+plugins {
+    // Lets Gradle auto-download a matching JDK when a module's toolchain
+    // requirement (e.g. capacitor-camera's Java 21) isn't already installed,
+    // instead of failing the build outright.
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+include ':app'
+include ':capacitor-cordova-android-plugins'
+project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
+
+apply from: 'capacitor.settings.gradle'

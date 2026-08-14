@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Universal Links for https://monzerallan.com/... — prepared here but
+	     NOT wired into the Xcode target yet (that requires adding the
+	     "Associated Domains" capability via Xcode's Signing & Capabilities
+	     tab, which sets CODE_SIGN_ENTITLEMENTS to point at this file — a
+	     REQUIRES MAC/XCODE step, see IOS_IPHONE_IMPLEMENTATION_REPORT.md).
+	     This also requires a real apple-app-site-association file hosted at
+	     https://monzerallan.com/.well-known/apple-app-site-association,
+	     containing this app's Team ID + Bundle ID, before it does anything —
+	     not configurable from this environment. -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:monzerallan.com</string>
+	</array>
+</dict>
+</plist>

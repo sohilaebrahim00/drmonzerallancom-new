@@ -38,6 +38,17 @@
   --color-ring-offset-background: var(--background);
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* App-experience-only tokens (PWA/native) — deliberately separate from
+     --color-background/--color-card above, which the marketing website
+     also uses. Nothing here is ever referenced by src/pages or
+     src/components/landing, so the marketing site's palette is untouched. */
+  --color-app-shell: var(--app-shell-bg);
+  --color-app-surface: var(--app-surface);
+  --color-app-surface-secondary: var(--app-surface-secondary);
+  --color-app-success: var(--app-success);
+  --color-app-warning: var(--app-warning);
+  --color-app-info: var(--app-info);
 }
 
 :root {
@@ -81,6 +92,16 @@
   --border: #dde6ee;
   --input: #dde6ee;
   --ring: #253fa4;
+
+  /* App experience (PWA/native) design tokens — see the @theme comment above. */
+  /* Subtle cool blue-gray shell, not flat white — cards (--app-surface) sit on top of it. */
+  --app-shell-bg: #eef2f8;
+  --app-surface: #ffffff;
+  /* Flat inset panel (e.g. chip groups, secondary rows) — one step down from a card. */
+  --app-surface-secondary: #f4f7fb;
+  --app-success: #1f9d55;
+  --app-warning: #b7791f;
+  --app-info: #253fa4;
 }
 
 @layer base {
@@ -107,6 +128,27 @@
   }
   .grain {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Safe-area insets (Dynamic Island / notch / gesture bar / home indicator).
+     `viewport-fit=cover` in index.html is required for these env() values to
+     resolve to anything nonzero — no-ops on web/older devices. */
+  .native-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .native-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .native-safe-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Fills exactly the space between the native app's slim top bar (h-14) and
+     bottom tab bar (h-14 + safe-area-bottom), for screens like the AI
+     Concierge that need their own internal scroll instead of page scroll. */
+  .native-fullscreen-content {
+    height: calc(100dvh - 3.5rem - 3.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
 }
 

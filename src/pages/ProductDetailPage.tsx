@@ -175,7 +175,7 @@ export default function ProductDetailPage() {
                   aria-disabled="true"
                   className="inline-flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-md bg-muted px-5 py-3 text-sm font-semibold text-muted-foreground"
                 >
-                  Currently Sold Out
+                  Currently Out of Stock
                 </span>
                 {availabilityHref ? (
                   <a

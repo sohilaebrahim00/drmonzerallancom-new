@@ -6,6 +6,8 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { services } from "@/data/services";
 
 export function Services() {
+  const [featured, ...rest] = services;
+
   return (
     <section id="services" className="relative py-20 sm:py-28" aria-labelledby="services-heading">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
@@ -15,39 +17,63 @@ export function Services() {
           description="Twelve focused programs, each tailored to your body, your goals, and your medical needs."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => (
-            <Reveal key={service.slug} direction="up" delay={(index % 3) * 0.08}>
-              <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-turquoise/50 hover:shadow-[0_24px_50px_-24px_rgba(23,35,59,0.35)]">
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-turquoise/0 blur-2xl transition-colors duration-500 group-hover:bg-turquoise/15"
-                  aria-hidden="true"
-                />
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
-                  <service.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-5 font-display text-lg font-bold text-navy">{service.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {service.description}
-                </p>
-                <ul className="mt-4 space-y-1.5">
-                  {service.highlights.map((highlight) => (
-                    <li key={highlight} className="flex items-center gap-2 text-xs text-navy/70">
-                      <span className="h-1 w-1 shrink-0 rounded-full bg-turquoise" />
-                      {highlight}
-                    </li>
-                  ))}
-                </ul>
+        <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1fr]">
+          {/* Spotlight: the foundational service gets an editorial feature treatment */}
+          <Reveal direction="right">
+            <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-br from-navy to-primary p-8 text-white shadow-[0_30px_60px_-30px_rgba(23,35,59,0.5)] sm:p-10">
+              <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-turquoise">
+                Where Every Plan Starts
+              </span>
+              <div className="mt-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-turquoise">
+                <featured.icon className="h-7 w-7" />
+              </div>
+              <h3 className="mt-6 font-display text-2xl font-bold sm:text-3xl">{featured.title}</h3>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-white/80">
+                {featured.description}
+              </p>
+              <ul className="mt-6 space-y-2">
+                {featured.highlights.map((highlight) => (
+                  <li key={highlight} className="flex items-center gap-2 text-sm text-white/90">
+                    <span className="h-1 w-1 shrink-0 rounded-full bg-turquoise" />
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={`/booking?service=${featured.slug}`}
+                className="mt-8 inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-turquoise px-5 py-2.5 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
+              >
+                Book this service
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </article>
+          </Reveal>
+
+          {/* Remaining programs: compact editorial list, not a repeated card grid */}
+          <Reveal direction="left" delay={0.08}>
+            <div className="grid h-full grid-cols-1 gap-3 rounded-2xl border border-border/70 bg-card p-3 shadow-sm sm:grid-cols-2">
+              {rest.map((service) => (
                 <Link
+                  key={service.slug}
                   to={`/booking?service=${service.slug}`}
-                  className="mt-6 inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-turquoise focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="group flex items-start gap-3 rounded-xl p-3.5 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Book this service
-                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    <service.icon className="h-4.5 w-4.5" />
+                  </span>
+                  <span>
+                    <span className="flex items-center gap-1 text-sm font-semibold text-navy">
+                      {service.title}
+                      <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
+                    </span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                      {service.highlights[0]}
+                    </span>
+                  </span>
                 </Link>
-              </article>
-            </Reveal>
-          ))}
+              ))}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

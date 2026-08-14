@@ -16,7 +16,7 @@ export function buildProductInquiryMessage(productName: string, pageUrl: string)
 }
 
 export function buildAvailabilityInquiryMessage(productName: string) {
-  return `Hello, I'm interested in ${productName}. I see that it is currently sold out. Could you let me know when it may become available again?`;
+  return `Hello, I'm interested in ${productName}. I see that it is currently out of stock. Could you let me know when it may become available again?`;
 }
 
 export function buildPackageInquiryMessage(packageName: string, priceLabel: string) {

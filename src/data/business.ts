@@ -21,6 +21,8 @@ export interface Business {
   officeHours?: string[];
   googleMapsUrl?: string;
   timeZone?: string;
+  /** VIP Elite priority contact number. Never shown publicly — only inside the authenticated /account dashboard for VIP members, and only when set. */
+  vipHotlinePhone?: string;
 }
 
 export const business: Business = {

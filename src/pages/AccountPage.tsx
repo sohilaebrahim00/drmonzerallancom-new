@@ -1,8 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   CalendarClock,
   CalendarPlus,
@@ -12,69 +9,51 @@ import {
   PhoneCall,
   Sparkles,
   User as UserIcon,
+  Video,
 } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { useAuth } from "@/context/AuthContext";
 import { packages } from "@/data/packages";
-import { business } from "@/data/business";
+import { business, tel } from "@/data/business";
 import {
   getMyConsultationRequests,
   getMySubscription,
   getProfile,
-  requestConsultation,
   type ConsultationRequest,
   type Subscription,
 } from "@/services/membershipService";
 import { cn } from "@/lib/utils";
 
-const consultationSchema = z.object({
-  consultationType: z.string().min(1, "Please choose a consultation type."),
-  preferredDate: z.string().min(1, "Please choose a preferred date."),
-  preferredTime: z.string().min(1, "Please choose a preferred time."),
-  reason: z
-    .string()
-    .max(300, "Keep this brief — you can share more during your session.")
-    .optional(),
-});
-type ConsultationValues = z.infer<typeof consultationSchema>;
-
 const statusLabel: Record<ConsultationRequest["status"], string> = {
   pending: "Pending",
-  approved: "Approved",
-  scheduled: "Scheduled",
+  confirmed: "Confirmed",
   completed: "Completed",
   cancelled: "Cancelled",
+  rescheduled: "Rescheduled",
 };
 
 const statusStyle: Record<ConsultationRequest["status"], string> = {
   pending: "bg-secondary text-primary",
-  approved: "bg-turquoise/15 text-turquoise",
-  scheduled: "bg-primary/15 text-primary",
+  confirmed: "bg-turquoise/15 text-turquoise",
   completed: "bg-muted text-muted-foreground",
   cancelled: "bg-destructive/10 text-destructive",
+  rescheduled: "bg-primary/15 text-primary",
 };
+
+function formatAppointment(iso: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(iso));
+}
 
 export default function AccountPage() {
   const { user, signOut, configured } = useAuth();
@@ -82,23 +61,6 @@ export default function AccountPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [requests, setRequests] = useState<ConsultationRequest[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [requestError, setRequestError] = useState<string | null>(null);
-  const [requestSuccess, setRequestSuccess] = useState(false);
-
-  const timeZone = useMemo(() => {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch {
-      return "Unknown";
-    }
-  }, []);
-
-  const form = useForm<ConsultationValues>({
-    resolver: zodResolver(consultationSchema),
-    defaultValues: { consultationType: "", preferredDate: "", preferredTime: "", reason: "" },
-  });
 
   useEffect(() => {
     if (!user) return;
@@ -125,32 +87,19 @@ export default function AccountPage() {
     ? Math.max(subscription.consultation_credit_limit - subscription.consultation_credits_used, 0)
     : 0;
   const hasActiveMembership = Boolean(subscription);
-  const canRequestConsultation = hasActiveMembership && creditsRemaining > 0;
   const firstName = (fullName ?? user?.email ?? "there").split(" ")[0].split("@")[0];
 
-  async function onSubmitConsultation(values: ConsultationValues) {
-    setSubmitting(true);
-    setRequestError(null);
-    const result = await requestConsultation({
-      consultationType: values.consultationType,
-      preferredDate: values.preferredDate,
-      preferredTime: values.preferredTime,
-      timeZone,
-      reason: values.reason ?? "",
-    });
-    setSubmitting(false);
-    if (!result.ok) {
-      setRequestError(result.error);
-      return;
-    }
-    setRequests((prev) => [result.request, ...prev]);
-    setRequestSuccess(true);
-    form.reset();
-    window.setTimeout(() => {
-      setDialogOpen(false);
-      setRequestSuccess(false);
-    }, 1500);
-  }
+  const now = Date.now();
+  const upcoming = requests
+    .filter(
+      (r) =>
+        (r.status === "pending" || r.status === "confirmed") &&
+        new Date(r.appointment_start).getTime() > now,
+    )
+    .sort(
+      (a, b) => new Date(a.appointment_start).getTime() - new Date(b.appointment_start).getTime(),
+    )[0];
+  const history = requests.filter((r) => r.id !== upcoming?.id);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
@@ -190,12 +139,9 @@ export default function AccountPage() {
       )}
 
       {dataLoading ? (
-        <div
-          className="mt-10 flex items-center justify-center py-16"
-          role="status"
-          aria-label="Loading account"
-        >
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 py-16" role="status">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading your membership…</p>
         </div>
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -242,9 +188,18 @@ export default function AccountPage() {
                       <p className="flex items-center gap-2 text-sm font-semibold text-navy">
                         <PhoneCall className="h-4 w-4 text-turquoise" /> VIP Priority Hotline
                       </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Hotline access will appear here once activated.
-                      </p>
+                      {business.vipHotlinePhone ? (
+                        <a
+                          href={tel(business.vipHotlinePhone)}
+                          className="mt-1 inline-block text-sm font-semibold text-turquoise hover:underline"
+                        >
+                          {business.vipHotlinePhone}
+                        </a>
+                      ) : (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Hotline access will appear here once activated.
+                        </p>
+                      )}
                     </div>
                   )}
                 </>
@@ -272,124 +227,11 @@ export default function AccountPage() {
             <div className="mt-6 rounded-2xl border border-border/70 bg-card p-6 shadow-sm sm:p-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="font-display text-lg font-bold text-navy">Consultations</h2>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button
-                      type="button"
-                      disabled={!canRequestConsultation}
-                      className="cursor-pointer disabled:cursor-not-allowed"
-                    >
-                      <CalendarPlus className="h-4 w-4" /> Request Consultation
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md rounded-2xl">
-                    <DialogHeader>
-                      <DialogTitle>Request a Consultation</DialogTitle>
-                      <DialogDescription>
-                        Uses 1 consultation credit once approved. We&apos;ll confirm your exact time
-                        by email or WhatsApp.
-                      </DialogDescription>
-                    </DialogHeader>
-                    {requestSuccess ? (
-                      <p className="py-6 text-center text-sm font-medium text-turquoise">
-                        Request sent — you&apos;ll see it below as Pending.
-                      </p>
-                    ) : (
-                      <Form {...form}>
-                        <form
-                          onSubmit={form.handleSubmit(onSubmitConsultation)}
-                          className="space-y-4"
-                          noValidate
-                        >
-                          <FormField
-                            control={form.control}
-                            name="consultationType"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Consultation type</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="e.g., Monthly follow-up" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="grid grid-cols-2 gap-3">
-                            <FormField
-                              control={form.control}
-                              name="preferredDate"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Preferred date</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="date"
-                                      min={new Date().toISOString().slice(0, 10)}
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="preferredTime"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Preferred time</FormLabel>
-                                  <FormControl>
-                                    <Input type="time" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          <p className="text-xs text-muted-foreground">Time zone: {timeZone}</p>
-                          <FormField
-                            control={form.control}
-                            name="reason"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>General reason (optional)</FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    rows={3}
-                                    placeholder="e.g., monthly check-in, plan adjustment…"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <p className="text-xs text-muted-foreground">
-                                  Please keep this general — no detailed medical history here.
-                                </p>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          {requestError && (
-                            <Alert variant="destructive" role="alert">
-                              <AlertDescription>{requestError}</AlertDescription>
-                            </Alert>
-                          )}
-                          <Button
-                            type="submit"
-                            disabled={submitting}
-                            className="w-full cursor-pointer justify-center"
-                          >
-                            {submitting ? (
-                              <>
-                                <Loader2 className="h-4 w-4 animate-spin" /> Sending…
-                              </>
-                            ) : (
-                              "Send Request"
-                            )}
-                          </Button>
-                        </form>
-                      </Form>
-                    )}
-                  </DialogContent>
-                </Dialog>
+                <Button asChild className="cursor-pointer">
+                  <Link to="/account/consultations">
+                    <CalendarPlus className="h-4 w-4" /> Request Consultation
+                  </Link>
+                </Button>
               </div>
 
               {!hasActiveMembership && (
@@ -402,18 +244,57 @@ export default function AccountPage() {
                   You have no consultation credits remaining in your current membership.{" "}
                   <Link to="/packages" className="font-semibold text-primary hover:text-turquoise">
                     Upgrade Membership
+                  </Link>{" "}
+                  ·{" "}
+                  <Link to="/packages" className="font-semibold text-primary hover:text-turquoise">
+                    Renew Membership
                   </Link>
                 </p>
               )}
 
+              {upcoming && (
+                <div className="mt-5 rounded-xl border border-turquoise/40 bg-turquoise/10 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-turquoise">
+                    Upcoming Consultation
+                  </p>
+                  <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-navy">
+                    <CalendarClock className="h-4 w-4" />{" "}
+                    {formatAppointment(upcoming.appointment_start)}
+                  </p>
+                  <div className="mt-2 flex items-center gap-3">
+                    <span
+                      className={cn(
+                        "rounded-full px-2.5 py-1 text-xs font-bold",
+                        statusStyle[upcoming.status],
+                      )}
+                    >
+                      {statusLabel[upcoming.status]}
+                    </span>
+                    {upcoming.google_meet_url && (
+                      <a
+                        href={upcoming.google_meet_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-turquoise"
+                      >
+                        <Video className="h-3.5 w-3.5" /> Join Google Meet
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="mt-5">
-                {requests.length === 0 ? (
-                  <p className="rounded-xl border border-dashed border-border/70 bg-secondary/30 p-5 text-center text-sm text-muted-foreground">
-                    No appointments yet.
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Consultation History
+                </p>
+                {history.length === 0 ? (
+                  <p className="mt-2 rounded-xl border border-dashed border-border/70 bg-secondary/30 p-5 text-center text-sm text-muted-foreground">
+                    No consultations scheduled yet.
                   </p>
                 ) : (
-                  <ul className="space-y-3">
-                    {requests.map((req) => (
+                  <ul className="mt-2 space-y-3">
+                    {history.map((req) => (
                       <li
                         key={req.id}
                         className="flex items-start justify-between gap-3 rounded-xl border border-border/60 p-4"
@@ -424,20 +305,8 @@ export default function AccountPage() {
                           </p>
                           <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                             <CalendarClock className="h-3.5 w-3.5" />
-                            {req.preferred_date ?? "—"}{" "}
-                            {req.preferred_time ? `· ${req.preferred_time}` : ""}
-                            {req.time_zone ? ` (${req.time_zone})` : ""}
+                            {formatAppointment(req.appointment_start)}
                           </p>
-                          {req.google_meet_link && (
-                            <a
-                              href={req.google_meet_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="mt-1 inline-block text-xs font-semibold text-primary hover:text-turquoise"
-                            >
-                              Join Google Meet
-                            </a>
-                          )}
                         </div>
                         <span
                           className={cn(

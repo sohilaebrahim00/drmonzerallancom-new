@@ -1,0 +1,35 @@
+import { supabase } from "@/lib/supabase";
+
+/**
+ * Calls the delete-account Edge Function, which verifies the caller's own
+ * session and deletes exactly that auth.users row via the Admin API — the
+ * only way to actually remove an account (a client can never do this
+ * directly). Cascades through every owned record via the FKs declared in
+ * schema.sql/PHASE_G_SOCIAL_NUTRITION_MIGRATION.sql. The client signs the
+ * visitor out immediately after a success response.
+ */
+export async function requestAccountDeletion(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  if (!supabase) return { ok: false, error: "Not connected." };
+
+  const { data, error } = await supabase.functions.invoke<{ ok?: boolean; error?: string }>(
+    "delete-account",
+    { body: {} },
+  );
+
+  if (error) {
+    const status = (error as { context?: { status?: number } }).context?.status;
+    if (status === 403) {
+      return {
+        ok: false,
+        error: "Doctor/admin accounts require manual deletion — contact support.",
+      };
+    }
+    return { ok: false, error: "Could not delete account. Please try again." };
+  }
+  if (!data?.ok) return { ok: false, error: data?.error ?? "Could not delete account." };
+
+  await supabase.auth.signOut();
+  return { ok: true };
+}

@@ -9,6 +9,9 @@ import { ChatWidget } from "@/components/chat/ChatWidget";
 import { StickyCta } from "@/components/common/StickyCta";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { AdminRoute } from "@/components/auth/AdminRoute";
+import { AppExperience } from "@/app-native/AppExperience";
+import { getAppMode } from "@/hooks/use-native-platform";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
@@ -22,11 +25,14 @@ const BookingSuccessPage = lazy(() => import("@/pages/BookingSuccessPage"));
 const EducationIndexPage = lazy(() => import("@/pages/EducationIndexPage"));
 const EducationArticlePage = lazy(() => import("@/pages/EducationArticlePage"));
 const GalleryPage = lazy(() => import("@/pages/GalleryPage"));
+const VideosPage = lazy(() => import("@/pages/VideosPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const JoinPage = lazy(() => import("@/pages/JoinPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const AccountPage = lazy(() => import("@/pages/AccountPage"));
+const AccountConsultationsPage = lazy(() => import("@/pages/AccountConsultationsPage"));
+const AdminAvailabilityPage = lazy(() => import("@/pages/AdminAvailabilityPage"));
 const MembershipSuccessPage = lazy(() => import("@/pages/MembershipSuccessPage"));
 const MembershipCancelledPage = lazy(() => import("@/pages/MembershipCancelledPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
@@ -79,66 +85,95 @@ function PageTransition({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * The existing, approved marketing website — completely unmodified in
+ * structure/behavior from before the native rebuild. Never rendered inside
+ * Capacitor or the PWA/Web App; see AppExperience for that presentation layer.
+ */
+function WebApp() {
+  return (
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-primary-foreground"
+      >
+        Skip to main content
+      </a>
+      <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background">
+        <ScrollRestoration />
+        <Header />
+        <main id="main-content" className="relative z-10 flex-1">
+          <Suspense fallback={<PageFallback />}>
+            <PageTransition>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/packages" element={<PackagesPage />} />
+                <Route path="/faq" element={<FaqPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/products" element={<ProductsIndexPage />} />
+                <Route path="/products/:slug" element={<ProductDetailPage />} />
+                <Route path="/booking" element={<BookingPage />} />
+                <Route path="/booking/success" element={<BookingSuccessPage />} />
+                <Route path="/blog" element={<EducationIndexPage />} />
+                <Route path="/blog/:slug" element={<EducationArticlePage />} />
+                <Route path="/education" element={<Navigate to="/blog" replace />} />
+                <Route path="/education/:slug" element={<BlogArticleRedirect />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/videos" element={<VideosPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/join" element={<JoinPage />} />
+                <Route path="/membership/success" element={<MembershipSuccessPage />} />
+                <Route path="/membership/cancelled" element={<MembershipCancelledPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route
+                  path="/account"
+                  element={
+                    <ProtectedRoute>
+                      <AccountPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/account/consultations"
+                  element={
+                    <ProtectedRoute>
+                      <AccountConsultationsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/availability"
+                  element={
+                    <AdminRoute>
+                      <AdminAvailabilityPage />
+                    </AdminRoute>
+                  }
+                />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/medical-disclaimer" element={<MedicalDisclaimerPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </PageTransition>
+          </Suspense>
+        </main>
+        <Footer />
+        <BackToTop />
+        <StickyCta />
+        <ChatWidget />
+      </div>
+    </>
+  );
+}
+
 export default function App() {
+  const appMode = getAppMode();
   return (
     <BrowserRouter>
       <MotionConfig reducedMotion="user">
-        <AuthProvider>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-primary-foreground"
-          >
-            Skip to main content
-          </a>
-          <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background">
-            <ScrollRestoration />
-            <Header />
-            <main id="main-content" className="relative z-10 flex-1">
-              <Suspense fallback={<PageFallback />}>
-                <PageTransition>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/packages" element={<PackagesPage />} />
-                    <Route path="/faq" element={<FaqPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/products" element={<ProductsIndexPage />} />
-                    <Route path="/products/:slug" element={<ProductDetailPage />} />
-                    <Route path="/booking" element={<BookingPage />} />
-                    <Route path="/booking/success" element={<BookingSuccessPage />} />
-                    <Route path="/blog" element={<EducationIndexPage />} />
-                    <Route path="/blog/:slug" element={<EducationArticlePage />} />
-                    <Route path="/education" element={<Navigate to="/blog" replace />} />
-                    <Route path="/education/:slug" element={<BlogArticleRedirect />} />
-                    <Route path="/gallery" element={<GalleryPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/join" element={<JoinPage />} />
-                    <Route path="/membership/success" element={<MembershipSuccessPage />} />
-                    <Route path="/membership/cancelled" element={<MembershipCancelledPage />} />
-                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                    <Route path="/reset-password" element={<ResetPasswordPage />} />
-                    <Route
-                      path="/account"
-                      element={
-                        <ProtectedRoute>
-                          <AccountPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                    <Route path="/terms" element={<TermsPage />} />
-                    <Route path="/medical-disclaimer" element={<MedicalDisclaimerPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
-                </PageTransition>
-              </Suspense>
-            </main>
-            <Footer />
-            <BackToTop />
-            <StickyCta />
-            <ChatWidget />
-          </div>
-        </AuthProvider>
+        <AuthProvider>{appMode === "MARKETING_WEB" ? <WebApp /> : <AppExperience />}</AuthProvider>
       </MotionConfig>
     </BrowserRouter>
   );

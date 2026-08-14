@@ -163,3 +163,56 @@ export function customerContactAckEmail(input: { fullName: string; siteUrl: stri
   `;
   return { subject: "We've Received Your Message", html: shell(body) };
 }
+
+interface ConsultationConfirmedClientEmailInput {
+  siteUrl: string;
+  clientName: string;
+  clientLocalTime: string;
+  clientTimeZone: string;
+  dubaiTime: string;
+  meetUrl: string;
+  packageName: string;
+  creditsRemaining: number;
+  creditsLimit: number;
+}
+
+export function consultationConfirmedClientEmail(input: ConsultationConfirmedClientEmailInput) {
+  const body = `
+    <h2 style="margin:0 0 12px;font-size:18px;">Your consultation is confirmed, ${escapeHtml(input.clientName)}</h2>
+    <table role="presentation" style="width:100%;font-size:13px;">
+      <tr><td style="padding:4px 0;color:#8a94a6;">Your time</td><td>${escapeHtml(input.clientLocalTime)} (${escapeHtml(input.clientTimeZone)})</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Doctor's time</td><td>${escapeHtml(input.dubaiTime)} (Dubai)</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Membership</td><td>${escapeHtml(input.packageName)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Consultation credits</td><td>${input.creditsRemaining} of ${input.creditsLimit} remaining</td></tr>
+    </table>
+    ${ctaButton("Join Google Meet", input.meetUrl)}
+    <p style="margin-top:20px;">Need to make a change? Visit your
+    <a href="${input.siteUrl}/account/consultations" style="color:${PRIMARY};">account</a> to review your
+    consultation, or reach out via the <a href="${input.siteUrl}/contact" style="color:${PRIMARY};">Contact page</a>.</p>
+  `;
+  return { subject: "Your Consultation with Dr. Monzer Allan is Confirmed", html: shell(body) };
+}
+
+interface ConsultationConfirmedAdminEmailInput {
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string | null;
+  packageName: string;
+  dubaiTime: string;
+  meetUrl: string;
+}
+
+export function consultationConfirmedAdminEmail(input: ConsultationConfirmedAdminEmailInput) {
+  const body = `
+    <h2 style="margin:0 0 12px;font-size:18px;">New Consultation Scheduled — ${escapeHtml(input.clientName)}</h2>
+    <table role="presentation" style="width:100%;font-size:13px;">
+      <tr><td style="padding:4px 0;color:#8a94a6;">Client</td><td>${escapeHtml(input.clientName)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Email</td><td>${escapeHtml(input.clientEmail)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Phone</td><td>${input.clientPhone ? escapeHtml(input.clientPhone) : "Not provided"}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Membership</td><td>${escapeHtml(input.packageName)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Dubai time</td><td>${escapeHtml(input.dubaiTime)}</td></tr>
+    </table>
+    ${ctaButton("Join Google Meet", input.meetUrl)}
+  `;
+  return { subject: `New Consultation Scheduled — ${input.clientName}`, html: shell(body) };
+}

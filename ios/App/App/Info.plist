@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CAPACITOR_DEBUG</key>
+	<string>$(CAPACITOR_DEBUG)</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+        <string>Monzer Allan</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+    <false/>
+    <key>UISceneConfigurations</key>
+    <dict>
+      <key>UIWindowSceneSessionRoleApplication</key>
+      <array>
+        <dict>
+            <key>UISceneConfigurationName</key>
+            <string>Default Configuration</string>
+            <key>UISceneDelegateClassName</key>
+            <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+            <key>UISceneStoryboardFile</key>
+            <string>Main</string>
+        </dict>
+      </array>
+    </dict>
+	</dict>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<!-- Portrait-only on iPhone: the native app shell (fixed bottom tab bar,
+	     h-dvh full-screen chat/compass/camera layouts) was built and tested
+	     for portrait only — landscape was never exercised and would need its
+	     own layout pass, not just permission to rotate. iPad keeps its
+	     existing orientation set below since it isn't a primary target. -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+
+	<!-- Usage descriptions shown in Apple's native permission prompt — required
+	     or the app crashes when requesting the permission. Each is requested
+	     only from its feature screen (Food Scanner / Prayer Times / Qibla). -->
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is used to scan meals and estimate nutritional information.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo access lets you choose a meal image for nutritional analysis.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is used to calculate local prayer times and Qibla direction.</string>
+
+	<!-- Custom-scheme deep link, e.g. monzerallan://consultations — handled in
+	     src/app-native/DeepLinkHandler.tsx via the App plugin's appUrlOpen
+	     event. Universal Links (https://monzerallan.com/...) additionally require
+	     the Associated Domains capability (added in Xcode) and a real
+	     apple-app-site-association file hosted at https://monzerallan.com/ —
+	     not configurable from this environment; see
+	     IOS_IPHONE_IMPLEMENTATION_REPORT.md. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>monzerallan</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

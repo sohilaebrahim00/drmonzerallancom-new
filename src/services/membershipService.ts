@@ -12,20 +12,23 @@ export interface Subscription {
 
 export interface ConsultationRequest {
   id: string;
+  appointment_start: string;
+  appointment_end: string;
+  client_timezone: string | null;
   consultation_type: string | null;
-  preferred_date: string | null;
-  preferred_time: string | null;
-  time_zone: string | null;
   reason: string | null;
-  status: "pending" | "approved" | "scheduled" | "completed" | "cancelled";
-  google_meet_link: string | null;
-  scheduled_at: string | null;
+  status: "pending" | "confirmed" | "completed" | "cancelled" | "rescheduled";
+  credit_status: "reserved" | "confirmed" | "released";
+  google_calendar_event_id: string | null;
+  google_meet_url: string | null;
+  cancelled_at: string | null;
   created_at: string;
 }
 
 export interface Profile {
   id: string;
   full_name: string | null;
+  is_admin?: boolean;
 }
 
 /**
@@ -40,7 +43,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, full_name")
+    .select("id, full_name, is_admin")
     .eq("id", userId)
     .maybeSingle();
   if (error) {
@@ -73,44 +76,12 @@ export async function getMyConsultationRequests(): Promise<ConsultationRequest[]
   const { data, error } = await supabase
     .from("consultation_requests")
     .select(
-      "id, consultation_type, preferred_date, preferred_time, time_zone, reason, status, google_meet_link, scheduled_at, created_at",
+      "id, appointment_start, appointment_end, client_timezone, consultation_type, reason, status, credit_status, google_calendar_event_id, google_meet_url, cancelled_at, created_at",
     )
-    .order("created_at", { ascending: false });
+    .order("appointment_start", { ascending: false });
   if (error) {
     console.warn("[membershipService] consultation_requests table unavailable:", error.message);
     return [];
   }
   return data ?? [];
-}
-
-export interface ConsultationRequestInput {
-  consultationType: string;
-  preferredDate: string;
-  preferredTime: string;
-  timeZone: string;
-  reason: string;
-}
-
-export type RequestConsultationResult =
-  | { ok: true; request: ConsultationRequest }
-  | { ok: false; error: string };
-
-/**
- * Calls the `request_consultation` RPC (see supabase/schema.sql), which
- * checks credit availability inside the database — the frontend never
- * decides on its own whether a credit exists.
- */
-export async function requestConsultation(
-  input: ConsultationRequestInput,
-): Promise<RequestConsultationResult> {
-  if (!supabase) return { ok: false, error: "Consultation requests aren't connected yet." };
-  const { data, error } = await supabase.rpc("request_consultation", {
-    p_consultation_type: input.consultationType,
-    p_preferred_date: input.preferredDate,
-    p_preferred_time: input.preferredTime,
-    p_time_zone: input.timeZone,
-    p_reason: input.reason,
-  });
-  if (error) return { ok: false, error: error.message };
-  return { ok: true, request: data as ConsultationRequest };
 }

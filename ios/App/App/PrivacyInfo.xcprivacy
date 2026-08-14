@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	Apple privacy manifest for the app target itself. Audited against the 10
+	Capacitor plugins actually installed (see package.json) by grepping their
+	iOS Swift sources for Apple's documented "required reason" API
+	signatures (UserDefaults, file-timestamp APIs, systemUptime/
+	mach_absolute_time, disk-space APIs) — the app's own TypeScript/React
+	code makes no direct native API calls at all (it only talks to these
+	plugins through their JS bridges).
+
+	Result: only @capacitor/preferences uses a required-reason API
+	(UserDefaults — used for on-device-only prefs: onboarding-seen flag,
+	prayer/reminder settings, the native auth session store). No plugin uses
+	file-timestamp, system-boot-time, or disk-space APIs.
+
+	This was a source-code audit, not a real Xcode "Privacy Report" build
+	(REQUIRES MAC/XCODE — see IOS_IPHONE_IMPLEMENTATION_REPORT.md). Re-run
+	Xcode's own Privacy Report before submission to catch anything a
+	dependency update might add.
+	-->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<!-- CA92.1: access info from APIs used to read/write only this app's own data. -->
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,156 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Loader2, MessageCircle, UserMinus } from "lucide-react";
+
+import { AppScreen } from "@/app-native/components/AppScreen";
+import { Button } from "@/components/ui/button";
+import { getPublicProfile, type PublicProfileSummary } from "@/services/profileService";
+import { getMyFriends, removeFriendship, type FriendshipRow } from "@/services/friendsService";
+import { getOrCreateDirectConversation } from "@/services/messagingService";
+import { supabase } from "@/lib/supabase";
+
+interface SharedToday {
+  calories: number | null;
+  steps: number | null;
+  activityCalories: number | null;
+}
+
+export default function NativeFriendProfile() {
+  const { userId } = useParams<{ userId: string }>();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<PublicProfileSummary | null>(null);
+  const [friendship, setFriendship] = useState<FriendshipRow | null>(null);
+  const [today, setToday] = useState<SharedToday | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    Promise.all([getPublicProfile(userId), getMyFriends()]).then(([p, friends]) => {
+      setProfile(p);
+      setFriendship(friends.find((f) => f.other?.id === userId) ?? null);
+      setLoading(false);
+    });
+
+    if (supabase) {
+      const dateStr = new Date().toISOString().slice(0, 10);
+      Promise.all([
+        supabase
+          .from("meal_logs")
+          .select("total_calories")
+          .eq("user_id", userId)
+          .eq("shared_with_friends", true)
+          .gte("meal_time", `${dateStr}T00:00:00Z`),
+        supabase
+          .from("step_logs")
+          .select("steps")
+          .eq("user_id", userId)
+          .eq("date", dateStr)
+          .maybeSingle(),
+        supabase
+          .from("activity_logs")
+          .select("estimated_calories_burned")
+          .eq("user_id", userId)
+          .eq("shared_with_friends", true)
+          .gte("completed_at", `${dateStr}T00:00:00Z`),
+      ]).then(([meals, steps, activities]) => {
+        setToday({
+          calories: meals.data ? meals.data.reduce((s, m) => s + m.total_calories, 0) : null,
+          steps: steps.data?.steps ?? null,
+          activityCalories: activities.data
+            ? activities.data.reduce((s, a) => s + (a.estimated_calories_burned ?? 0), 0)
+            : null,
+        });
+      });
+    }
+  }, [userId]);
+
+  async function handleMessage() {
+    if (!userId) return;
+    const result = await getOrCreateDirectConversation(userId);
+    if (result.ok) navigate(`/social/messages/${result.conversationId}`);
+  }
+
+  async function handleRemove() {
+    if (!friendship) return;
+    await removeFriendship(friendship.id);
+    navigate("/social", { replace: true });
+  }
+
+  if (loading) {
+    return (
+      <AppScreen title="Profile" back className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+      </AppScreen>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <AppScreen title="Profile" back className="mx-auto w-full max-w-lg px-4 py-10 text-center">
+        <p className="text-sm text-muted-foreground">Profile not found.</p>
+      </AppScreen>
+    );
+  }
+
+  return (
+    <AppScreen
+      title={`@${profile.username ?? "member"}`}
+      back
+      className="mx-auto w-full max-w-lg px-4 pb-8 pt-3"
+    >
+      <div className="flex flex-col items-center text-center">
+        {profile.avatar_url ? (
+          <img src={profile.avatar_url} alt="" className="h-16 w-16 rounded-full object-cover" />
+        ) : (
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-xl font-bold text-primary">
+            {(profile.full_name ?? "?").charAt(0).toUpperCase()}
+          </span>
+        )}
+        <p className="mt-3 font-display text-lg font-bold text-navy">
+          {profile.full_name ?? "Member"}
+        </p>
+        <p className="text-xs text-muted-foreground">@{profile.username}</p>
+      </div>
+
+      {friendship?.status === "accepted" && (
+        <div className="mt-6 flex gap-2.5">
+          <Button onClick={handleMessage} className="flex-1 cursor-pointer">
+            <MessageCircle className="h-4 w-4" /> Message
+          </Button>
+          <Button onClick={handleRemove} variant="outline" className="flex-1 cursor-pointer">
+            <UserMinus className="h-4 w-4" /> Remove
+          </Button>
+        </div>
+      )}
+
+      {friendship?.status === "accepted" && today && (
+        <div className="mt-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Today
+          </p>
+          <div className="mt-2 grid grid-cols-3 gap-2.5">
+            <div className="rounded-xl border border-border/70 bg-card p-3 text-center shadow-sm">
+              <p className="font-display text-base font-bold text-navy">
+                {today.calories != null ? Math.round(today.calories) : "—"}
+              </p>
+              <p className="text-[0.65rem] text-muted-foreground">Calories</p>
+            </div>
+            <div className="rounded-xl border border-border/70 bg-card p-3 text-center shadow-sm">
+              <p className="font-display text-base font-bold text-navy">{today.steps ?? "—"}</p>
+              <p className="text-[0.65rem] text-muted-foreground">Steps</p>
+            </div>
+            <div className="rounded-xl border border-border/70 bg-card p-3 text-center shadow-sm">
+              <p className="font-display text-base font-bold text-navy">
+                {today.activityCalories != null ? Math.round(today.activityCalories) : "—"}
+              </p>
+              <p className="text-[0.65rem] text-muted-foreground">Activity</p>
+            </div>
+          </div>
+          <p className="mt-2 text-center text-[0.7rem] text-muted-foreground">
+            Only what @{profile.username} has chosen to share is shown.
+          </p>
+        </div>
+      )}
+    </AppScreen>
+  );
+}

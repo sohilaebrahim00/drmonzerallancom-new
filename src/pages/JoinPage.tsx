@@ -22,6 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 import { packages, type PackageTier } from "@/data/packages";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { startMembershipCheckout } from "@/services/checkoutService";
+import { openExternal } from "@/lib/externalLink";
 import { whatsappLink } from "@/config/contact";
 import { cn } from "@/lib/utils";
 
@@ -96,8 +97,9 @@ export default function JoinPage() {
     }
 
     // Hand off to Stripe's hosted Checkout page — the account is only
-    // created/activated after a verified webhook confirms payment.
-    window.location.href = result.url;
+    // created/activated after a verified webhook confirms payment. Opens as
+    // an in-app browser tab on native so the app shell isn't lost mid-checkout.
+    await openExternal(result.url);
   }
 
   return (

@@ -83,7 +83,7 @@ export const faqs: Faq[] = [
   {
     question: "Can I purchase products directly on the site?",
     answer:
-      "All products currently listed are marked Sold Out. You're welcome to ask about availability from any product page, and we'll follow up directly with updates.",
+      "All products currently listed are marked Out of Stock. You're welcome to ask about availability from any product page, and we'll follow up directly with updates.",
     category: "Products",
   },
   {

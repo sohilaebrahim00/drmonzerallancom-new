@@ -66,9 +66,20 @@ export function MemberExperiencePreview() {
             <div className="rounded-3xl border border-border/70 bg-card p-3 shadow-[0_30px_70px_-30px_rgba(23,35,59,0.3)] sm:p-5">
               <div className="rounded-2xl bg-gradient-to-br from-navy to-primary p-5 text-white">
                 <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
-                  Member Dashboard Preview
+                  Illustrative Preview — Not Real Account Data
                 </p>
-                <p className="mt-1 text-sm font-semibold">A preview of what&apos;s inside</p>
+                <p className="mt-2 font-display text-lg font-bold">Premium Membership</p>
+                <div className="mt-3 flex items-center justify-between text-sm">
+                  <span className="text-white/80">Consultation Credits</span>
+                  <span className="font-semibold">2 of 3 Remaining</span>
+                </div>
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/20">
+                  <div className="h-full w-2/3 rounded-full bg-turquoise" />
+                </div>
+                <div className="mt-3 flex items-center justify-between text-sm">
+                  <span className="text-white/80">Next Consultation</span>
+                  <span className="font-semibold">Request Anytime</span>
+                </div>
               </div>
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {PREVIEW_CARDS.map((card) => (
