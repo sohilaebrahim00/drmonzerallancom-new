@@ -5,6 +5,7 @@ import {
   Camera,
   Check,
   Compass,
+  Droplet,
   Flame,
   Footprints,
   Loader2,
@@ -33,6 +34,7 @@ import { getMyCurrentTarget, type DailyTarget } from "@/services/bodyProfileServ
 import { getMyMealsForDay, saveMealLog, type MealLog } from "@/services/mealLogService";
 import { createPostMealActivityTask } from "@/services/activityService";
 import { getMyPendingActivityTasks, type ActivityTask } from "@/services/activityService";
+import { getMyHydrationForDay, getMyHydrationGoal } from "@/services/hydrationService";
 import {
   currentProgramDayNumber,
   getMyActiveProgram,
@@ -75,6 +77,9 @@ export default function NativeHome() {
   const [activityTask, setActivityTask] = useState<ActivityTask | null>(null);
   const [program, setProgram] = useState<NutritionProgram | null>(null);
   const [recentMeals, setRecentMeals] = useState<MealLog[]>([]);
+  const [macrosToday, setMacrosToday] = useState({ protein: 0, carbs: 0, fat: 0 });
+  const [waterMl, setWaterMl] = useState(0);
+  const [waterGoalMl, setWaterGoalMl] = useState(2000);
   const [loading, setLoading] = useState(Boolean(user));
   const { coords } = useResolvedLocation();
   const [now, setNow] = useState(() => new Date());
@@ -96,15 +101,24 @@ export default function NativeHome() {
         : Promise.resolve({ data: null }),
       getMyPendingActivityTasks(),
       getMyActiveProgram(),
-    ]).then(([meals, currentTarget, steps, tasks, activeProgram]) => {
+      getMyHydrationForDay(new Date()),
+      getMyHydrationGoal(),
+    ]).then(([meals, currentTarget, steps, tasks, activeProgram, water, waterGoal]) => {
       if (cancelled) return;
       setFirstName((profile?.full_name ?? user.email ?? "").split(" ")[0].split("@")[0] || null);
       setCaloriesToday(meals.reduce((sum, m) => sum + m.total_calories, 0));
+      setMacrosToday({
+        protein: meals.reduce((sum, m) => sum + m.total_protein_g, 0),
+        carbs: meals.reduce((sum, m) => sum + m.total_carbs_g, 0),
+        fat: meals.reduce((sum, m) => sum + m.total_fat_g, 0),
+      });
       setRecentMeals(meals.slice(0, 3));
       setTarget(currentTarget);
       setStepsToday(steps.data?.steps ?? null);
       setActivityTask(tasks[0] ?? null);
       setProgram(activeProgram);
+      setWaterMl(water.reduce((sum, w) => sum + w.amount_ml, 0));
+      setWaterGoalMl(waterGoal.goal_ml);
       setLoading(false);
     });
     return () => {
@@ -192,12 +206,18 @@ export default function NativeHome() {
           ) : loading ? (
             <NutritionCardSkeleton />
           ) : (
-            <DailyNutritionCard
-              caloriesToday={caloriesToday}
-              target={target}
-              remaining={remaining}
-              ringValue={ringValue}
-            />
+            <>
+              <DailyNutritionCard
+                caloriesToday={caloriesToday}
+                target={target}
+                remaining={remaining}
+                ringValue={ringValue}
+              />
+              <AIInsightLine caloriesToday={caloriesToday} target={target} program={program} />
+              {(target?.protein_target_g || target?.carbs_target_g || target?.fat_target_g) && (
+                <MacroSummaryRow macros={macrosToday} target={target} />
+              )}
+            </>
           )}
 
           <ScanFeatureCard />
@@ -226,7 +246,7 @@ export default function NativeHome() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Recent Meals
                   </p>
-                  <Link to="/my-program" className="text-xs font-semibold text-primary">
+                  <Link to="/daily-log" className="text-xs font-semibold text-primary">
                     View Daily Log
                   </Link>
                 </div>
@@ -268,11 +288,31 @@ export default function NativeHome() {
                 label="Steps"
                 value={stepsToday != null ? stepsToday.toLocaleString() : "—"}
               />
+              <Link to="/hydration" className="block">
+                <StatChip
+                  icon={Droplet}
+                  label="Water"
+                  value={`${(waterMl / 1000).toFixed(1)}L / ${(waterGoalMl / 1000).toFixed(1)}L`}
+                />
+              </Link>
               <StatChip icon={Flame} label="Meals" value={String(recentMeals.length)} />
+              <Link to={activityTask ? "/activity-task" : "/activity-history"} className="block">
+                <StatChip
+                  icon={Sparkles}
+                  label="Movement"
+                  value={
+                    activityTask
+                      ? taskAvailable
+                        ? "Ready"
+                        : formatCountdown(new Date(activityTask.available_at), now)
+                      : "—"
+                  }
+                />
+              </Link>
             </div>
           )}
 
-          {user && taskAvailable && activityTask?.activity && (
+          {user && activityTask?.activity && (
             <Link
               to="/activity-task"
               className="flex items-center gap-3 rounded-2xl border border-turquoise/30 bg-turquoise/10 p-3.5"
@@ -284,7 +324,11 @@ export default function NativeHome() {
                 <span className="block text-sm font-bold text-navy">
                   {activityTask.activity.name}
                 </span>
-                <span className="block text-xs text-muted-foreground">Ready now</span>
+                <span className="block text-xs text-muted-foreground">
+                  {taskAvailable
+                    ? "Ready now"
+                    : `Ready ${formatCountdown(new Date(activityTask.available_at), now)}`}
+                </span>
               </span>
             </Link>
           )}
@@ -442,6 +486,86 @@ function DailyNutritionCard({
           <p className="text-[0.65rem] text-white/70">Remaining</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * One deterministic, template-based sentence from real numbers already on
+ * screen — never a Gemini call (§58: "Do not generate an insight if
+ * context is insufficient"). Renders nothing rather than a vague/empty
+ * insight when there isn't enough real data yet.
+ */
+function AIInsightLine({
+  caloriesToday,
+  target,
+  program,
+}: {
+  caloriesToday: number;
+  target: DailyTarget | null;
+  program: NutritionProgram | null;
+}) {
+  if (caloriesToday <= 0 && !program) return null;
+
+  let text: string | null = null;
+  if (caloriesToday > 0 && target) {
+    const remaining = Math.max(Math.round(target.daily_target - caloriesToday), 0);
+    text = `You've logged ${Math.round(caloriesToday)} kcal today — about ${remaining} kcal remaining based on your target.`;
+  } else if (caloriesToday > 0) {
+    text = `You've logged ${Math.round(caloriesToday)} kcal today.`;
+  }
+  if (!text) return null;
+
+  return (
+    <div className="flex items-start gap-2.5 rounded-2xl bg-secondary/50 px-3.5 py-3">
+      <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+      <p className="text-xs leading-relaxed text-navy/85">{text}</p>
+    </div>
+  );
+}
+
+function MacroRow({
+  label,
+  consumed,
+  target,
+}: {
+  label: string;
+  consumed: number;
+  target: number | null;
+}) {
+  const pct = target ? Math.min(consumed / target, 1) : 0;
+  return (
+    <div className="rounded-xl border border-border/60 bg-app-surface p-3">
+      <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-0.5 text-sm font-bold text-navy">
+        {Math.round(consumed)}
+        {target && (
+          <span className="font-normal text-muted-foreground"> / {Math.round(target)}g</span>
+        )}
+      </p>
+      {target && (
+        <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full rounded-full bg-primary" style={{ width: `${pct * 100}%` }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MacroSummaryRow({
+  macros,
+  target,
+}: {
+  macros: { protein: number; carbs: number; fat: number };
+  target: DailyTarget;
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-2.5">
+      <MacroRow label="Protein" consumed={macros.protein} target={target.protein_target_g} />
+      <MacroRow label="Carbs" consumed={macros.carbs} target={target.carbs_target_g} />
+      <MacroRow label="Fat" consumed={macros.fat} target={target.fat_target_g} />
     </div>
   );
 }

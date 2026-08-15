@@ -115,6 +115,49 @@ export async function endDoctorConnection(
   return { ok: true };
 }
 
+export interface PatientNeedsReview {
+  patientId: string;
+  full_name: string | null;
+  username: string | null;
+  reason: "no_recent_meals" | "no_weight_logged";
+}
+
+/**
+ * Operational reminders only (§84) — never framed as medical alerts. Reads
+ * from the doctor_patient_activity_summary view added in Phase H, which
+ * inherits its RLS from the underlying meal_logs/weight_logs tables, so a
+ * doctor only ever sees rows for their own active patients.
+ */
+export async function getPatientsNeedingReview(): Promise<PatientNeedsReview[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("doctor_patient_activity_summary")
+    .select("patient_id, last_meal_at, last_weight_at");
+  if (error || !data || data.length === 0) return [];
+
+  const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
+  const flagged = data.filter(
+    (row) => !row.last_meal_at || new Date(row.last_meal_at).getTime() < threeDaysAgo,
+  );
+  if (flagged.length === 0) return [];
+
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username, full_name")
+    .in(
+      "id",
+      flagged.map((f) => f.patient_id),
+    );
+  const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+
+  return flagged.map((f) => ({
+    patientId: f.patient_id,
+    full_name: byId.get(f.patient_id)?.full_name ?? null,
+    username: byId.get(f.patient_id)?.username ?? null,
+    reason: "no_recent_meals" as const,
+  }));
+}
+
 /** The single practice doctor/admin — used by "Connect With Doctor" in onboarding. Returns the first admin/doctor profile found. */
 export async function getPracticeDoctor(): Promise<{
   id: string;

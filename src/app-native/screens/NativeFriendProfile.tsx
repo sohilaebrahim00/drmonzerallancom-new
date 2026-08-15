@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Loader2, MessageCircle, UserMinus } from "lucide-react";
+import { Flag, Loader2, MessageCircle, ShieldOff, UserMinus } from "lucide-react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
+import { NativeSheet } from "@/app-native/components/NativeSheet";
 import { getPublicProfile, type PublicProfileSummary } from "@/services/profileService";
-import { getMyFriends, removeFriendship, type FriendshipRow } from "@/services/friendsService";
+import {
+  blockUser,
+  getMyFriends,
+  removeFriendship,
+  type FriendshipRow,
+} from "@/services/friendsService";
 import { getOrCreateDirectConversation } from "@/services/messagingService";
+import { reportUser, type ReportReason } from "@/services/reportService";
 import { supabase } from "@/lib/supabase";
+
+const REPORT_REASONS: { value: ReportReason; label: string }[] = [
+  { value: "spam", label: "Spam" },
+  { value: "harassment", label: "Harassment" },
+  { value: "other", label: "Other" },
+];
 
 interface SharedToday {
   calories: number | null;
@@ -22,6 +35,11 @@ export default function NativeFriendProfile() {
   const [profile, setProfile] = useState<PublicProfileSummary | null>(null);
   const [friendship, setFriendship] = useState<FriendshipRow | null>(null);
   const [today, setToday] = useState<SharedToday | null>(null);
+  const [blockSheetOpen, setBlockSheetOpen] = useState(false);
+  const [reportSheetOpen, setReportSheetOpen] = useState(false);
+  const [reportReason, setReportReason] = useState<ReportReason>("spam");
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [blocking, setBlocking] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -74,6 +92,20 @@ export default function NativeFriendProfile() {
     if (!friendship) return;
     await removeFriendship(friendship.id);
     navigate("/social", { replace: true });
+  }
+
+  async function handleBlock() {
+    if (!userId || blocking) return;
+    setBlocking(true);
+    const outcome = await blockUser(userId);
+    setBlocking(false);
+    if (outcome.ok) navigate("/social", { replace: true });
+  }
+
+  async function handleReport() {
+    if (!userId) return;
+    const outcome = await reportUser(userId, reportReason);
+    if (outcome.ok) setReportSubmitted(true);
   }
 
   if (loading) {
@@ -151,6 +183,72 @@ export default function NativeFriendProfile() {
           </p>
         </div>
       )}
+
+      <div className="mt-6 flex justify-center gap-4">
+        <button
+          type="button"
+          onClick={() => setBlockSheetOpen(true)}
+          className="flex items-center gap-1.5 text-xs font-semibold text-destructive"
+        >
+          <ShieldOff className="h-3.5 w-3.5" /> Block
+        </button>
+        <button
+          type="button"
+          onClick={() => setReportSheetOpen(true)}
+          className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"
+        >
+          <Flag className="h-3.5 w-3.5" /> Report
+        </button>
+      </div>
+
+      <NativeSheet
+        open={blockSheetOpen}
+        onOpenChange={setBlockSheetOpen}
+        title={`Block @${profile.username}?`}
+        description="They won't be able to message you, send a friend request, or see anything you share with friends."
+      >
+        <Button
+          onClick={handleBlock}
+          disabled={blocking}
+          variant="destructive"
+          className="w-full cursor-pointer justify-center"
+        >
+          {blocking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Block User"}
+        </Button>
+      </NativeSheet>
+
+      <NativeSheet
+        open={reportSheetOpen}
+        onOpenChange={(open) => {
+          setReportSheetOpen(open);
+          if (!open) setReportSubmitted(false);
+        }}
+        title="Report this user"
+      >
+        {reportSubmitted ? (
+          <p className="py-2 text-sm text-muted-foreground">
+            Thanks — this has been reported for review.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-2">
+              {REPORT_REASONS.map((r) => (
+                <button
+                  key={r.value}
+                  type="button"
+                  onClick={() => setReportReason(r.value)}
+                  className={`rounded-xl border px-2 py-2.5 text-xs font-semibold ${reportReason === r.value ? "border-primary bg-secondary/60 text-primary" : "border-border text-navy/70"}`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+            <Button onClick={handleReport} className="w-full cursor-pointer justify-center">
+              Submit Report
+            </Button>
+          </div>
+        )}
+      </NativeSheet>
     </AppScreen>
   );
 }

@@ -5,12 +5,16 @@ import {
   Bell,
   CalendarClock,
   CalendarCheck,
+  Camera,
+  CheckCircle2,
   CreditCard,
   Download,
+  Droplet,
   FileText,
   HeartPulse,
   HelpCircle,
   Info,
+  ListChecks,
   Loader2,
   LogOut,
   MessageCircle,
@@ -18,6 +22,7 @@ import {
   Settings2,
   Shield,
   Sparkles,
+  Star,
   Stethoscope,
   Sun,
   Trash2,
@@ -164,18 +169,17 @@ export default function NativeAccount() {
       <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
         <NativeListRow icon={HeartPulse} label="My Health" to="/my-health" />
         <NativeListRow icon={TrendingUp} label="Progress" to="/progress" />
-        <NativeListRow icon={CalendarCheck} label="My Program" to="/my-program" />
+        <NativeListRow icon={Droplet} label="Hydration" to="/hydration" />
+        <NativeListRow icon={ListChecks} label="Daily Log" to="/daily-log" />
+        <NativeListRow icon={CheckCircle2} label="Daily Check-In" to="/daily-checkin" />
+        <NativeListRow icon={Star} label="Favorites & Custom Meals" to="/favorites" />
+        <NativeListRow icon={Camera} label="Progress Photos" to="/progress-photos" />
         <NativeListRow icon={Zap} label="Movement History" to="/activity-history" />
-      </div>
-
-      <SectionLabel>Social</SectionLabel>
-      <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
-        <NativeListRow icon={Users} label="Friends & Privacy" to="/social" />
-        <NativeListRow icon={MessageCircle} label="Messages" to="/social" />
       </div>
 
       <SectionLabel>Care</SectionLabel>
       <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
+        <NativeListRow icon={CalendarCheck} label="My Program" to="/my-program" />
         <NativeListRow icon={Stethoscope} label="Doctor Connection" to="/account/help" />
         <NativeListRow icon={CalendarClock} label="Consultations" to="/consultations" />
         <NativeListRow
@@ -185,6 +189,13 @@ export default function NativeAccount() {
           to="/consultations"
         />
         <NativeListRow icon={CreditCard} label="Manage Billing" to="/account/billing" />
+      </div>
+
+      <SectionLabel>Social</SectionLabel>
+      <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
+        <NativeListRow icon={Users} label="Friends" to="/social" />
+        <NativeListRow icon={MessageCircle} label="Messages" to="/social" />
+        <NativeListRow icon={Shield} label="Privacy & Sharing" to="/account/privacy" />
       </div>
 
       {eligibleForHotline && (

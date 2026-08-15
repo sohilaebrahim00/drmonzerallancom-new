@@ -53,6 +53,13 @@ const NativeNotificationCenter = lazy(
   () => import("@/app-native/screens/NativeNotificationCenter"),
 );
 const NativeActivityHistory = lazy(() => import("@/app-native/screens/NativeActivityHistory"));
+const NativeHydration = lazy(() => import("@/app-native/screens/NativeHydration"));
+const NativeDailyCheckIn = lazy(() => import("@/app-native/screens/NativeDailyCheckIn"));
+const NativeFavorites = lazy(() => import("@/app-native/screens/NativeFavorites"));
+const NativeCustomMeal = lazy(() => import("@/app-native/screens/NativeCustomMeal"));
+const NativeProgressPhotos = lazy(() => import("@/app-native/screens/NativeProgressPhotos"));
+const NativePrivacyCenter = lazy(() => import("@/app-native/screens/NativePrivacyCenter"));
+const NativeDailyLog = lazy(() => import("@/app-native/screens/NativeDailyLog"));
 
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
@@ -183,6 +190,62 @@ function AppExperienceRoutes() {
           <Route path="/food-scanner" element={<NativeFoodScanner />} />
           <Route path="/food-scanner/result" element={<NativeFoodResult />} />
           <Route path="/food-scanner/search" element={<NativeFoodSearch />} />
+          <Route
+            path="/food-scanner/custom-meal"
+            element={
+              <ProtectedRoute>
+                <NativeCustomMeal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/favorites"
+            element={
+              <ProtectedRoute>
+                <NativeFavorites />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hydration"
+            element={
+              <ProtectedRoute>
+                <NativeHydration />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/daily-checkin"
+            element={
+              <ProtectedRoute>
+                <NativeDailyCheckIn />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/daily-log"
+            element={
+              <ProtectedRoute>
+                <NativeDailyLog />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/progress-photos"
+            element={
+              <ProtectedRoute>
+                <NativeProgressPhotos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/account/privacy"
+            element={
+              <ProtectedRoute>
+                <NativePrivacyCenter />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/prayer-times" element={<NativePrayerTimes />} />
           <Route path="/qibla" element={<NativeQibla />} />

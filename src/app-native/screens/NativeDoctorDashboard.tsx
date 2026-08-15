@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, Users } from "lucide-react";
+import { AlertCircle, Loader2, Users } from "lucide-react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
 import { useAuth } from "@/context/AuthContext";
 import {
   getMyPatients,
+  getPatientsNeedingReview,
   respondDoctorConnection,
+  type PatientNeedsReview,
   type PatientSummary,
 } from "@/services/doctorService";
 import { getMyConsultationRequests, type ConsultationRequest } from "@/services/membershipService";
@@ -30,14 +32,18 @@ export default function NativeDoctorDashboard() {
   const [loading, setLoading] = useState(true);
   const [patients, setPatients] = useState<PatientSummary[]>([]);
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
+  const [needsReview, setNeedsReview] = useState<PatientNeedsReview[]>([]);
 
   function refresh() {
     setLoading(true);
-    Promise.all([getMyPatients(), getMyConsultationRequests()]).then(([p, c]) => {
-      setPatients(p);
-      setConsultations(c);
-      setLoading(false);
-    });
+    Promise.all([getMyPatients(), getMyConsultationRequests(), getPatientsNeedingReview()]).then(
+      ([p, c, review]) => {
+        setPatients(p);
+        setConsultations(c);
+        setNeedsReview(review);
+        setLoading(false);
+      },
+    );
   }
 
   useEffect(refresh, []);
@@ -81,7 +87,7 @@ export default function NativeDoctorDashboard() {
           <p className="text-[0.65rem] text-muted-foreground">Patients</p>
         </div>
         <div className="rounded-2xl bg-app-surface p-3.5 text-center">
-          <p className="font-display text-xl font-extrabold text-navy">{pendingPatients.length}</p>
+          <p className="font-display text-xl font-extrabold text-navy">{needsReview.length}</p>
           <p className="text-[0.65rem] text-muted-foreground">Needs Review</p>
         </div>
         <div className="rounded-2xl bg-app-surface p-3.5 text-center">
@@ -114,6 +120,33 @@ export default function NativeDoctorDashboard() {
                   Accept
                 </button>
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {needsReview.length > 0 && (
+        <div className="mt-5">
+          <p className="mb-1.5 px-1 text-[0.65rem] font-bold uppercase tracking-wider text-muted-foreground/80">
+            Needs Review
+          </p>
+          <div className="divide-y divide-border/50 rounded-2xl bg-app-surface px-3">
+            {needsReview.map((r) => (
+              <Link
+                key={r.patientId}
+                to={`/doctor/patients/${r.patientId}`}
+                className="flex items-center gap-3 py-3"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                  <AlertCircle className="h-4.5 w-4.5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-navy">
+                    {r.full_name ?? "Patient"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">No meals logged in 3+ days</p>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

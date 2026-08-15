@@ -19,6 +19,7 @@ import {
   createBlankProgram,
   type NutritionProgram,
 } from "@/services/programService";
+import { getPatientCheckinsInRange, type DailyCheckin } from "@/services/checkinService";
 import { supabase } from "@/lib/supabase";
 
 export default function NativeDoctorPatientProfile() {
@@ -30,6 +31,8 @@ export default function NativeDoctorPatientProfile() {
   const [target, setTarget] = useState<DailyTarget | null>(null);
   const [meals7d, setMeals7d] = useState<MealLog[]>([]);
   const [program, setProgram] = useState<NutritionProgram | null>(null);
+  const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
+  const [waterToday, setWaterToday] = useState<number | null>(null);
   const [overrideTarget, setOverrideTarget] = useState("");
   const [note, setNote] = useState("");
   const [savingNote, setSavingNote] = useState(false);
@@ -44,12 +47,22 @@ export default function NativeDoctorPatientProfile() {
       getPatientCurrentTarget(patientId),
       getPatientMealsInRange(patientId, since, new Date()),
       getPatientProgram(patientId),
-    ]).then(([p, bp, t, meals, prog]) => {
+      getPatientCheckinsInRange(patientId, since, new Date()),
+      supabase
+        ? supabase
+            .from("hydration_logs")
+            .select("amount_ml")
+            .eq("user_id", patientId)
+            .gte("logged_at", new Date().toISOString().slice(0, 10))
+        : Promise.resolve({ data: null }),
+    ]).then(([p, bp, t, meals, prog, checkinRows, water]) => {
       setProfile(p);
       setBodyProfile(bp);
       setTarget(t);
       setMeals7d(meals);
       setProgram(prog);
+      setCheckins(checkinRows);
+      setWaterToday(water.data ? water.data.reduce((sum, w) => sum + w.amount_ml, 0) : null);
       setLoading(false);
     });
   }, [patientId]);
@@ -132,7 +145,46 @@ export default function NativeDoctorPatientProfile() {
             {Math.round(weekCalories)}
           </p>
         </div>
+        <div className="rounded-xl border border-border/70 bg-card p-3.5 shadow-sm">
+          <p className="text-[0.65rem] text-muted-foreground">Water Today</p>
+          <p className="mt-1 font-display text-sm font-bold text-navy">
+            {waterToday != null ? `${(waterToday / 1000).toFixed(1)} L` : "—"}
+          </p>
+        </div>
       </div>
+
+      {checkins.length > 0 && (
+        <div className="mt-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Daily Check-Ins (7 Days)
+          </p>
+          <div className="mt-2 space-y-2">
+            {checkins.map((c) => (
+              <div
+                key={c.id}
+                className="rounded-xl border border-border/70 bg-card p-3 text-xs shadow-sm"
+              >
+                <p className="font-semibold text-navy">
+                  {new Date(c.checkin_date).toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+                <p className="mt-0.5 text-muted-foreground">
+                  {[
+                    c.energy && `Energy: ${c.energy}`,
+                    c.hunger && `Hunger: ${c.hunger}`,
+                    c.mood && `Mood: ${c.mood}`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+                {c.note && <p className="mt-1 text-navy/80">&ldquo;{c.note}&rdquo;</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {bodyProfile &&
         (bodyProfile.food_allergies.length > 0 || bodyProfile.health_conditions.length > 0) && (

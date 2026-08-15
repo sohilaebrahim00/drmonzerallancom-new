@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Camera, Loader2, MessageCircle, ShieldAlert, Trash2 } from "lucide-react";
+import { Camera, Loader2, MessageCircle, ShieldAlert, Star, Trash2 } from "lucide-react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { getMyBodyProfile } from "@/services/bodyProfileService";
 import { saveMealLog, type MealLogItemInput } from "@/services/mealLogService";
 import { createPostMealActivityTask } from "@/services/activityService";
 import { getMyPrivacySettings } from "@/services/privacyService";
+import { saveFavorite } from "@/services/favoritesService";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 
@@ -55,6 +56,7 @@ export default function NativeFoodResult() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [favoriteState, setFavoriteState] = useState<"idle" | "saving" | "done">("idle");
 
   useEffect(() => {
     if (!user || !result?.foodDetected) return;
@@ -118,6 +120,24 @@ export default function NativeFoodResult() {
     setSaving(false);
     setSaved(true);
     hapticSuccess();
+  }
+
+  async function handleSaveFavorite() {
+    if (favoriteState !== "idle" || foods.length === 0) return;
+    setFavoriteState("saving");
+    const outcome = await saveFavorite(
+      foods[0]?.name || "Favorite meal",
+      mealType,
+      foods.map((f) => ({
+        name: f.name,
+        estimatedPortion: f.estimatedPortion,
+        estimatedCalories: f.estimatedCalories,
+        proteinGrams: f.proteinGrams,
+        carbohydrateGrams: f.carbohydrateGrams,
+        fatGrams: f.fatGrams,
+      })),
+    );
+    setFavoriteState(outcome.ok ? "done" : "idle");
   }
 
   function removeFood(index: number) {
@@ -305,6 +325,19 @@ export default function NativeFoodResult() {
             <span className="text-sm font-semibold text-navy">Share with Friends</span>
             <Switch checked={shareWithFriends} onCheckedChange={setShareWithFriends} />
           </div>
+          <button
+            type="button"
+            onClick={handleSaveFavorite}
+            disabled={favoriteState !== "idle"}
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border/70 py-2.5 text-xs font-semibold text-primary hover:border-turquoise disabled:opacity-70"
+          >
+            <Star className="h-3.5 w-3.5" />
+            {favoriteState === "done"
+              ? "Saved to Favorites"
+              : favoriteState === "saving"
+                ? "Saving..."
+                : "Save to Favorites"}
+          </button>
         </div>
       )}
 

@@ -10,10 +10,17 @@ export const features = {
   friendsEnabled: true,
   messagingEnabled: true,
   foodScannerEnabled: true,
+  barcodeEnabled: true,
+  foodSearchEnabled: true,
   activityTasksEnabled: true,
   stepTrackingEnabled: true,
   doctorProgramsEnabled: true,
   membershipsEnabled: true,
+  hydrationEnabled: true,
+  dailyCheckInEnabled: true,
+  favoritesEnabled: true,
+  customMealsEnabled: true,
+  progressPhotosEnabled: true,
 } as const;
 
 export type FeatureFlag = keyof typeof features;
@@ -32,3 +39,9 @@ export const FREE_DAILY_FOOD_SCAN_LIMIT = 15;
 
 /** Days in a doctor-assigned nutrition program. */
 export const PROGRAM_LENGTH_DAYS = 30;
+
+/** App-wide default hydration goal (ml), used only when neither the user nor a doctor has set one. */
+export const DEFAULT_HYDRATION_GOAL_ML = 2000;
+
+/** Quick-add hydration increments shown on the Water widget/screen. */
+export const HYDRATION_QUICK_ADD_ML = [250, 500] as const;

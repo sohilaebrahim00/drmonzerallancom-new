@@ -75,13 +75,20 @@ export interface DailyTarget {
   maintenance_estimate: number | null;
   source: "auto" | "doctor";
   calculated_at: string;
+  /** Doctor/admin-configurable — never invented by the auto calculator. Null unless a doctor has set them. */
+  protein_target_g: number | null;
+  carbs_target_g: number | null;
+  fat_target_g: number | null;
 }
+
+const DAILY_TARGET_COLUMNS =
+  "daily_target, bmr_estimate, maintenance_estimate, source, calculated_at, protein_target_g, carbs_target_g, fat_target_g";
 
 export async function getMyCurrentTarget(): Promise<DailyTarget | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("daily_targets")
-    .select("daily_target, bmr_estimate, maintenance_estimate, source, calculated_at")
+    .select(DAILY_TARGET_COLUMNS)
     .eq("is_current", true)
     .maybeSingle();
   if (error) return null;
@@ -92,7 +99,7 @@ export async function getPatientCurrentTarget(patientId: string): Promise<DailyT
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("daily_targets")
-    .select("daily_target, bmr_estimate, maintenance_estimate, source, calculated_at")
+    .select(DAILY_TARGET_COLUMNS)
     .eq("user_id", patientId)
     .eq("is_current", true)
     .maybeSingle();
@@ -142,16 +149,20 @@ export async function recalculateMyDailyTarget(): Promise<RecalculateOutcome> {
       daily_target: outcome.result.dailyTarget,
       bmr_estimate: outcome.result.bmrEstimate,
       maintenance_estimate: outcome.result.maintenanceEstimate,
+      protein_target_g: null,
+      carbs_target_g: null,
+      fat_target_g: null,
       source: "auto",
       calculated_at: new Date().toISOString(),
     },
   };
 }
 
-/** Doctor-only — requires an active doctor_patient_relationships row, enforced by RLS on insert. */
+/** Doctor-only — requires an active doctor_patient_relationships row, enforced by RLS on insert. Macro targets are optional and only ever doctor-set — the app never invents them. */
 export async function setDoctorOverrideTarget(
   patientId: string,
   dailyTarget: number,
+  macros?: { proteinGrams?: number; carbsGrams?: number; fatGrams?: number },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
@@ -164,6 +175,9 @@ export async function setDoctorOverrideTarget(
     source: "doctor",
     set_by: doctorId,
     is_current: true,
+    protein_target_g: macros?.proteinGrams ?? null,
+    carbs_target_g: macros?.carbsGrams ?? null,
+    fat_target_g: macros?.fatGrams ?? null,
   });
 
   if (error)

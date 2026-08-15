@@ -159,6 +159,22 @@ export default function NativeFoodScanner() {
               Search Food or Scan Barcode Instead
             </Link>
           </div>
+
+          <div className="mt-5 grid w-full max-w-xs grid-cols-2 gap-2">
+            <Link
+              to="/favorites"
+              className="rounded-xl border border-border/60 bg-app-surface px-3 py-2.5 text-center text-xs font-semibold text-navy transition-colors hover:border-primary/40"
+            >
+              Recent &amp; Favorites
+            </Link>
+            <Link
+              to="/food-scanner/custom-meal"
+              state={{ programItemId }}
+              className="rounded-xl border border-border/60 bg-app-surface px-3 py-2.5 text-center text-xs font-semibold text-navy transition-colors hover:border-primary/40"
+            >
+              Create Custom Meal
+            </Link>
+          </div>
         </div>
       )}
 

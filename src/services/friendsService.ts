@@ -120,3 +120,38 @@ export async function blockUser(targetUserId: string): Promise<FriendActionResul
   if (error) return { ok: false, error: mapFriendError(error.message) };
   return { ok: true };
 }
+
+export async function unblockUser(targetUserId: string): Promise<FriendActionResult> {
+  if (!supabase) return { ok: false, error: "Not connected." };
+  const { error } = await supabase.rpc("unblock_user", { p_target_id: targetUserId });
+  if (error) return { ok: false, error: "Could not unblock. Please try again." };
+  return { ok: true };
+}
+
+/** Only people I placed the block on — never reveals if someone else blocked me. */
+export async function getBlockedUsers(): Promise<FriendshipRow[]> {
+  if (!supabase) return [];
+  const userId = await currentUserId();
+  if (!userId) return [];
+  const { data, error } = await supabase
+    .from("friendships")
+    .select("id, requester_id, addressee_id, status, created_at")
+    .eq("status", "blocked")
+    .eq("blocked_by", userId)
+    .order("created_at", { ascending: false });
+  if (error || !data) return [];
+
+  const otherIds = data.map((row) =>
+    row.requester_id === userId ? row.addressee_id : row.requester_id,
+  );
+  if (otherIds.length === 0) return [];
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username, full_name, avatar_url")
+    .in("id", otherIds);
+  const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+  return data.map((row) => ({
+    ...row,
+    other: byId.get(row.requester_id === userId ? row.addressee_id : row.requester_id) ?? null,
+  })) as FriendshipRow[];
+}
