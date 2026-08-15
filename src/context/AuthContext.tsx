@@ -4,6 +4,8 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { getAppMode } from "@/hooks/use-native-platform";
 import { business } from "@/data/business";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_USER, DEMO_SESSION, DEMO_DOCTOR_USER, DEMO_DOCTOR_SESSION } from "@/dev/demoFixtures";
 
 interface AuthResult {
   error: string | null;
@@ -64,6 +66,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // DEV-ONLY demo preview (see src/dev/demoMode.ts): substitutes a fake
+    // signed-in identity instead of touching real Supabase auth at all —
+    // never runs in production (getDemoMode() is always null there).
+    const demoMode = getDemoMode();
+    if (demoMode) {
+      setSession(demoMode === "doctor" ? DEMO_DOCTOR_SESSION : DEMO_SESSION);
+      setUser(demoMode === "doctor" ? DEMO_DOCTOR_USER : DEMO_USER);
+      setLoading(false);
+      return;
+    }
+
     if (!supabase) {
       setLoading(false);
       return;

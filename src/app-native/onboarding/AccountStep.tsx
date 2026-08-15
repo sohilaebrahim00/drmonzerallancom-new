@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, LogIn } from "lucide-react";
+import { CircleNotch, SignIn } from "@phosphor-icons/react";
 
 import { FreeSignUpForm } from "@/app-native/components/FreeSignUpForm";
 import { Button } from "@/components/ui/button";
@@ -86,10 +86,10 @@ function QuickSignInForm({ onSuccess }: { onSuccess: () => void }) {
           className="w-full cursor-pointer justify-center"
         >
           {submitting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <CircleNotch className="h-4 w-4 animate-spin" />
           ) : (
             <>
-              <LogIn className="h-4 w-4" /> Sign In
+              <SignIn className="h-4 w-4" /> Sign In
             </>
           )}
         </Button>

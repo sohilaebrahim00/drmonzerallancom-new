@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -12,8 +13,26 @@ import { VitePWA } from "vite-plugin-pwa";
 // plugin active — this is the only build that ever gets a manifest/service
 // worker. Marketing and app builds never share an output folder, so there's
 // no risk of uploading the wrong one to the wrong Hostinger subdomain.
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const isAppBuild = mode === "app";
+  // The dedicated client-demo build (`vite build --mode client-demo`, see
+  // package.json's build:demo script and .env.client-demo) — a completely
+  // separate deployment target (demo.monzerallan.com) that DELIBERATELY
+  // ships the real demo fixtures. Never true for build:web/build:app.
+  const isClientDemoBuild = mode === "client-demo";
+  // DEV-ONLY demo preview (see src/dev/demoMode.ts): the runtime
+  // `import.meta.env.DEV` guard already makes every demo code path
+  // unreachable in a production build, but that alone still leaves the
+  // fixture DATA (names, sample health numbers) physically present in the
+  // bundle, since minifiers don't eliminate dead code across a function
+  // call boundary. The two REAL production builds (dist/ and dist-app/)
+  // swap the real fixture/mode modules for empty production stubs at the
+  // resolver level — the dev server AND the client-demo build always get
+  // the real ones (client-demo needs the real fixtures; that's its whole
+  // purpose). Belt-and-suspenders: verified empty by grepping dist/dist-app
+  // for the real fixture strings after every build, and verified PRESENT in
+  // dist-demo the same way.
+  const isProdBuild = command === "build" && !isClientDemoBuild;
 
   return {
     plugins: [
@@ -90,12 +109,43 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       tsconfigPaths: true,
+      alias: isProdBuild
+        ? [
+            {
+              find: "@/dev/demoFixtures",
+              replacement: fileURLToPath(
+                new URL("./src/dev/demoFixtures.prod-stub.ts", import.meta.url),
+              ),
+            },
+            {
+              find: "@/dev/demoMode",
+              replacement: fileURLToPath(
+                new URL("./src/dev/demoMode.prod-stub.ts", import.meta.url),
+              ),
+            },
+            {
+              find: "@/dev/ClientDemoApp",
+              replacement: fileURLToPath(
+                new URL("./src/dev/ClientDemoApp.prod-stub.tsx", import.meta.url),
+              ),
+            },
+            {
+              find: "@/dev/injectClientDemoHtmlMeta",
+              replacement: fileURLToPath(
+                new URL("./src/dev/injectClientDemoHtmlMeta.prod-stub.ts", import.meta.url),
+              ),
+            },
+          ]
+        : [],
     },
-    // VITE_APP_MODE itself comes from .env.app (loaded automatically because
-    // this is Vite's built-in `mode`, via `vite build --mode app") — read at
-    // runtime by getAppMode() in src/hooks/use-native-platform.ts.
+    // VITE_APP_MODE itself comes from .env.app / .env.client-demo (loaded
+    // automatically because this is Vite's built-in `mode`, via
+    // `vite build --mode app` / `--mode client-demo`) — read at runtime by
+    // getAppMode() / isClientDemoBuild(). Three distinct output folders,
+    // never shared, so there is no risk of uploading the wrong one to the
+    // wrong Hostinger subdomain.
     build: {
-      outDir: isAppBuild ? "dist-app" : "dist",
+      outDir: isClientDemoBuild ? "dist-demo" : isAppBuild ? "dist-app" : "dist",
     },
   };
 });

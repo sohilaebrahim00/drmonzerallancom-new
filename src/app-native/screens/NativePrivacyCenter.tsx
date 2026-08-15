@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Switch } from "@/components/ui/switch";
@@ -46,7 +46,7 @@ export default function NativePrivacyCenter() {
         back
         className="flex min-h-[50vh] items-center justify-center"
       >
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }

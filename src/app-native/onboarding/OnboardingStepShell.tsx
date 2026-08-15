@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -89,7 +89,7 @@ export function OnboardingStepShell({
             disabled={nextDisabled || saving}
             className="w-full cursor-pointer justify-center"
           >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : nextLabel}
+            {saving ? <CircleNotch className="h-4 w-4 animate-spin" /> : nextLabel}
           </Button>
         )}
         <div className="flex items-center justify-between">

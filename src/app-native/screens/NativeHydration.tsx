@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Droplet, Loader2, Plus, Trash2 } from "lucide-react";
+import { Drop, CircleNotch, Plus, Trash } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { CircularProgress } from "@/app-native/components/CircularProgress";
@@ -67,7 +67,7 @@ export default function NativeHydration() {
   if (loading) {
     return (
       <AppScreen title="Hydration" back className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }
@@ -129,7 +129,7 @@ export default function NativeHydration() {
             variant="outline"
             className="flex-1 cursor-pointer"
           >
-            <Droplet className="h-4 w-4" /> +{ml} ml
+            <Drop className="h-4 w-4" /> +{ml} ml
           </Button>
         ))}
       </div>
@@ -165,7 +165,7 @@ export default function NativeHydration() {
           {logs.map((l) => (
             <div key={l.id} className="flex items-center gap-3 py-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
-                <Droplet className="h-4 w-4" />
+                <Drop className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-navy">{l.amount_ml} ml</p>
@@ -182,7 +182,7 @@ export default function NativeHydration() {
                 aria-label="Delete entry"
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-destructive"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash className="h-4 w-4" />
               </button>
             </div>
           ))}

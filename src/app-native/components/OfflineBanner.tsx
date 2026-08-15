@@ -1,4 +1,4 @@
-import { WifiOff } from "lucide-react";
+import { WifiSlash } from "@phosphor-icons/react";
 
 import { useOnlineStatus } from "@/hooks/use-online-status";
 
@@ -18,7 +18,7 @@ export function OfflineBanner() {
       role="status"
       className="native-safe-top flex items-center justify-center gap-2 bg-navy px-3 py-1.5 text-xs font-semibold text-white"
     >
-      <WifiOff className="h-3.5 w-3.5" />
+      <WifiSlash className="h-3.5 w-3.5" />
       You&apos;re offline — some features need a connection.
     </div>
   );

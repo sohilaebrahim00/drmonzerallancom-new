@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Clock } from "lucide-react";
+import { Clock } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { articles, estimateReadingTime } from "@/data/articles";

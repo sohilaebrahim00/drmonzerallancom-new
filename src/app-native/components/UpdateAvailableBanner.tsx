@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RefreshCcw } from "lucide-react";
+import { ArrowsClockwise } from "@phosphor-icons/react";
 
 import {
   applyServiceWorkerUpdate,
@@ -29,7 +29,7 @@ export function UpdateAvailableBanner() {
         onClick={applyServiceWorkerUpdate}
         className="flex cursor-pointer items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 transition-colors hover:bg-white/25"
       >
-        <RefreshCcw className="h-3.5 w-3.5" /> Update
+        <ArrowsClockwise className="h-3.5 w-3.5" /> Update
       </button>
     </div>
   );

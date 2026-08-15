@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { PROGRAM_LENGTH_DAYS } from "@/config/features";
+import { getDemoMode, DEMO_PROGRAM_ID } from "@/dev/demoMode";
+import { DEMO_PROGRAM, DEMO_PROGRAM_DAY } from "@/dev/demoFixtures";
 
 export type ProgramStatus = "draft" | "active" | "completed" | "archived";
 export type MealType = "breakfast" | "snack" | "lunch" | "dinner";
@@ -48,6 +50,7 @@ async function currentUserId(): Promise<string | null> {
 
 /** Patient's currently active program, if any. */
 export async function getMyActiveProgram(): Promise<NutritionProgram | null> {
+  if (getDemoMode()) return DEMO_PROGRAM;
   if (!supabase) return null;
   const userId = await currentUserId();
   if (!userId) return null;
@@ -81,6 +84,10 @@ export async function getProgramDay(
   dayNumber: number,
   forUserId?: string,
 ): Promise<ProgramDay | null> {
+  // DEV-ONLY demo preview — the same representative day content regardless
+  // of which day number is requested, so the Program screen's day strip and
+  // the doctor's Program Builder are both browsable without a real backend.
+  if (getDemoMode()) return { ...DEMO_PROGRAM_DAY, day_number: dayNumber };
   if (!supabase) return null;
 
   const { data: day, error } = await supabase
@@ -122,6 +129,7 @@ export async function getProgramDay(
 }
 
 export async function markProgramItemSkipped(programItemId: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   const userId = await currentUserId();
   if (!userId) return;
@@ -136,6 +144,7 @@ export async function markProgramItemSkipped(programItemId: string): Promise<voi
 // ── Doctor-side ────────────────────────────────────────────────────────
 
 export async function getMyTemplates(): Promise<NutritionProgram[]> {
+  if (getDemoMode()) return [];
   if (!supabase) return [];
   const userId = await currentUserId();
   if (!userId) return [];
@@ -151,6 +160,7 @@ export async function getMyTemplates(): Promise<NutritionProgram[]> {
 }
 
 export async function getPatientProgram(patientId: string): Promise<NutritionProgram | null> {
+  if (getDemoMode()) return DEMO_PROGRAM;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("nutrition_programs")
@@ -170,6 +180,7 @@ export async function createBlankProgram(
   patientId: string,
   startDate: Date,
 ): Promise<{ ok: true; programId: string } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true, programId: DEMO_PROGRAM_ID };
   if (!supabase) return { ok: false, error: "Not connected." };
   const doctorId = await currentUserId();
   if (!doctorId) return { ok: false, error: "Not signed in." };
@@ -206,6 +217,7 @@ export async function createBlankProgram(
 export async function activateProgram(
   programId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const doctorId = await currentUserId();
   if (!doctorId) return { ok: false, error: "Not signed in." };
@@ -222,6 +234,7 @@ export async function saveProgramItem(
   programDayId: string,
   item: Omit<ProgramItem, "id" | "completion"> & { id?: string },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const payload = {
     program_day_id: programDayId,
@@ -247,6 +260,7 @@ export async function copyProgramDay(
   fromDayNumber: number,
   toDayNumber: number,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
 
   const [{ data: fromDay }, { data: toDay }] = await Promise.all([

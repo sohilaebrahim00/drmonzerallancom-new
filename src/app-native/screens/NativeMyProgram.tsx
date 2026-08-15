@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, CheckCircle2, Loader2, UtensilsCrossed } from "lucide-react";
+import { Camera, CheckCircle, CircleNotch, ForkKnife } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -127,7 +127,7 @@ export default function NativeMyProgram() {
     return (
       <AppScreen title="My Program" back className="mx-auto w-full max-w-lg px-4 py-10">
         <EmptyState
-          icon={UtensilsCrossed}
+          icon={ForkKnife}
           title="No active program yet"
           body="Connect with Dr. Monzer from your Account to get a personalized 30-day nutrition program."
         />
@@ -173,7 +173,7 @@ export default function NativeMyProgram() {
 
       <div className="mt-4 space-y-2.5">
         {dayLoading ? (
-          <Loader2 className="mx-auto h-5 w-5 animate-spin text-primary" />
+          <CircleNotch className="mx-auto h-5 w-5 animate-spin text-primary" />
         ) : (day?.items ?? []).length === 0 ? (
           <p className="py-6 text-center text-xs text-muted-foreground">
             No meals planned for this day.
@@ -210,7 +210,7 @@ export default function NativeMyProgram() {
                           : "bg-muted text-muted-foreground",
                       )}
                     >
-                      {completed && <CheckCircle2 className="h-3 w-3" />}
+                      {completed && <CheckCircle className="h-3 w-3" />}
                       {item.completion}
                     </span>
                   )}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, MapPin, Navigation2 } from "lucide-react";
+import { CircleNotch, MapPin, NavigationArrow } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ export default function NativeQibla() {
     >
       {locationState === "resolving" && (
         <div className="flex justify-center py-16" role="status">
-          <Loader2 className="h-7 w-7 animate-spin text-primary" />
+          <CircleNotch className="h-7 w-7 animate-spin text-primary" />
         </div>
       )}
 
@@ -60,7 +60,7 @@ export default function NativeQibla() {
           <div className="mt-4 flex flex-col items-center gap-2.5">
             <Button onClick={useMyLocation} disabled={requesting} className="w-full cursor-pointer">
               {requesting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <CircleNotch className="h-4 w-4 animate-spin" />
               ) : (
                 <MapPin className="h-4 w-4" />
               )}
@@ -93,7 +93,7 @@ export default function NativeQibla() {
               variant="outline"
               className="mb-4 w-full max-w-xs cursor-pointer"
             >
-              <Navigation2 className="h-4 w-4" /> Enable Compass
+              <NavigationArrow className="h-4 w-4" /> Enable Compass
             </Button>
           )}
 

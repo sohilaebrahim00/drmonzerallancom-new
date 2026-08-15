@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Camera, Compass, ShoppingBag, Sun } from "lucide-react";
+import { ArrowUpRight, Camera, Compass, ShoppingBag, Sun } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { articles } from "@/data/articles";

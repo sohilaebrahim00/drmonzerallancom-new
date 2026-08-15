@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Play, Repeat, SkipForward, Timer } from "lucide-react";
+import { CircleNotch, Play, Repeat, SkipForward, Timer } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ export default function NativeActivityTask() {
   if (loading) {
     return (
       <AppScreen title="Activity" back className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }
@@ -124,7 +124,7 @@ export default function NativeActivityTask() {
             </Button>
           ) : (
             <Button onClick={handleDone} disabled={saving} className="w-full cursor-pointer">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Done"}
+              {saving ? <CircleNotch className="h-4 w-4 animate-spin" /> : "Done"}
             </Button>
           )}
           <div className="grid grid-cols-2 gap-2.5">

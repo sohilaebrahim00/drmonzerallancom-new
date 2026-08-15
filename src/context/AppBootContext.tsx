@@ -10,6 +10,8 @@ import {
 } from "@/services/profileService";
 import { getSetting, setSetting } from "@/services/appSettingsService";
 import { ONBOARDING_SEEN_KEY } from "@/app-native/onboardingState";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_PROFILE, DEMO_DOCTOR_PROFILE } from "@/dev/demoFixtures";
 
 /**
  * Root cause of the "tap Next, screen doesn't advance, only a refresh
@@ -56,6 +58,17 @@ export function AppBootProvider({ children }: { children: ReactNode }) {
   const [welcomeSeen, setWelcomeSeen] = useState(false);
 
   const resolve = useCallback(async () => {
+    // DEV-ONLY demo preview (see src/dev/demoMode.ts) — skips onboarding
+    // and Preferences/localStorage entirely, resolving straight to a
+    // ready, fully-onboarded fixture profile. Never runs in production.
+    const demoMode = getDemoMode();
+    if (demoMode) {
+      setWelcomeSeen(true);
+      setProfile(demoMode === "doctor" ? DEMO_DOCTOR_PROFILE : DEMO_PROFILE);
+      setStatus("ready");
+      return;
+    }
+
     const [seen, fullProfile] = await Promise.all([
       getSetting(ONBOARDING_SEEN_KEY, false),
       user ? getFullProfile(user.id) : Promise.resolve(null),

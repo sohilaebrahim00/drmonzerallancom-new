@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_PROFILE, DEMO_DOCTOR_PROFILE, DEMO_FRIEND_PUBLIC_PROFILE } from "@/dev/demoFixtures";
 
 export type UserRole = "user" | "doctor" | "admin";
 
@@ -19,6 +21,8 @@ const PROFILE_COLUMNS =
   "id, full_name, username, avatar_url, bio, role, is_admin, timezone, onboarding_current_step, onboarding_completed_at";
 
 export async function getFullProfile(userId: string): Promise<FullProfile | null> {
+  const demoMode = getDemoMode();
+  if (demoMode) return demoMode === "doctor" ? DEMO_DOCTOR_PROFILE : DEMO_PROFILE;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("profiles")
@@ -112,6 +116,7 @@ export interface PublicProfileSummary {
 }
 
 export async function searchUsers(query: string): Promise<PublicProfileSummary[]> {
+  if (getDemoMode()) return Object.values(DEMO_FRIEND_PUBLIC_PROFILE);
   if (!supabase || query.trim().length < 2) return [];
   const { data, error } = await supabase.rpc("search_users", { p_query: query.trim() });
   if (error) {
@@ -122,6 +127,7 @@ export async function searchUsers(query: string): Promise<PublicProfileSummary[]
 }
 
 export async function getPublicProfile(userId: string): Promise<PublicProfileSummary | null> {
+  if (getDemoMode()) return DEMO_FRIEND_PUBLIC_PROFILE[userId] ?? null;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("profiles")

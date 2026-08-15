@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_ACTIVITY_FEED } from "@/dev/demoFixtures";
 
 export interface FeedEvent {
   id: string;
@@ -19,6 +21,7 @@ export interface FeedEvent {
  * visible to the caller.
  */
 export async function getFriendsActivityFeed(limit = 20): Promise<FeedEvent[]> {
+  if (getDemoMode()) return DEMO_ACTIVITY_FEED;
   if (!supabase) return [];
 
   const [{ data: meals }, { data: activities }] = await Promise.all([

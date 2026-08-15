@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Flag, Loader2, MessageCircle, ShieldOff, UserMinus } from "lucide-react";
+import { Flag, CircleNotch, ChatCircleDots, ShieldSlash, UserMinus } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
 import { getOrCreateDirectConversation } from "@/services/messagingService";
 import { reportUser, type ReportReason } from "@/services/reportService";
 import { supabase } from "@/lib/supabase";
+import { getDemoMode, DEMO_FRIEND_AHMED_ID } from "@/dev/demoMode";
 
 const REPORT_REASONS: { value: ReportReason; label: string }[] = [
   { value: "spam", label: "Spam" },
@@ -48,6 +49,18 @@ export default function NativeFriendProfile() {
       setFriendship(friends.find((f) => f.other?.id === userId) ?? null);
       setLoading(false);
     });
+
+    if (getDemoMode()) {
+      // DEV-ONLY demo preview — Ahmed shares a plausible "today" snapshot;
+      // Mona (who hasn't opted to share) shows nothing, matching the
+      // privacy-by-category rule the real query already enforces via RLS.
+      setToday(
+        userId === DEMO_FRIEND_AHMED_ID
+          ? { calories: 1680, steps: 9200, activityCalories: 210 }
+          : { calories: null, steps: null, activityCalories: null },
+      );
+      return;
+    }
 
     if (supabase) {
       const dateStr = new Date().toISOString().slice(0, 10);
@@ -111,7 +124,7 @@ export default function NativeFriendProfile() {
   if (loading) {
     return (
       <AppScreen title="Profile" back className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }
@@ -147,7 +160,7 @@ export default function NativeFriendProfile() {
       {friendship?.status === "accepted" && (
         <div className="mt-6 flex gap-2.5">
           <Button onClick={handleMessage} className="flex-1 cursor-pointer">
-            <MessageCircle className="h-4 w-4" /> Message
+            <ChatCircleDots className="h-4 w-4" /> Message
           </Button>
           <Button onClick={handleRemove} variant="outline" className="flex-1 cursor-pointer">
             <UserMinus className="h-4 w-4" /> Remove
@@ -190,7 +203,7 @@ export default function NativeFriendProfile() {
           onClick={() => setBlockSheetOpen(true)}
           className="flex items-center gap-1.5 text-xs font-semibold text-destructive"
         >
-          <ShieldOff className="h-3.5 w-3.5" /> Block
+          <ShieldSlash className="h-3.5 w-3.5" /> Block
         </button>
         <button
           type="button"
@@ -213,7 +226,7 @@ export default function NativeFriendProfile() {
           variant="destructive"
           className="w-full cursor-pointer justify-center"
         >
-          {blocking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Block User"}
+          {blocking ? <CircleNotch className="h-4 w-4 animate-spin" /> : "Block User"}
         </Button>
       </NativeSheet>
 

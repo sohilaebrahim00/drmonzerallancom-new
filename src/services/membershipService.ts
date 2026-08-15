@@ -1,4 +1,12 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
+import {
+  DEMO_PROFILE,
+  DEMO_DOCTOR_PROFILE,
+  DEMO_SUBSCRIPTION,
+  DEMO_CONSULTATION,
+  DEMO_DOCTOR_CONSULTATIONS,
+} from "@/dev/demoFixtures";
 
 export interface Subscription {
   id: string;
@@ -40,6 +48,8 @@ export interface Profile {
  */
 
 export async function getProfile(userId: string): Promise<Profile | null> {
+  const demoMode = getDemoMode();
+  if (demoMode) return demoMode === "doctor" ? DEMO_DOCTOR_PROFILE : DEMO_PROFILE;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("profiles")
@@ -54,6 +64,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 }
 
 export async function getMySubscription(): Promise<Subscription | null> {
+  if (getDemoMode()) return DEMO_SUBSCRIPTION;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("subscriptions")
@@ -72,6 +83,8 @@ export async function getMySubscription(): Promise<Subscription | null> {
 }
 
 export async function getMyConsultationRequests(): Promise<ConsultationRequest[]> {
+  const demoMode = getDemoMode();
+  if (demoMode) return demoMode === "doctor" ? DEMO_DOCTOR_CONSULTATIONS : [DEMO_CONSULTATION];
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("consultation_requests")

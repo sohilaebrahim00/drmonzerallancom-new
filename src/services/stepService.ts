@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_STEP_LOG } from "@/dev/demoFixtures";
 
 export interface StepLog {
   date: string;
@@ -22,6 +24,7 @@ export function supportsAutomaticSteps(): boolean {
 }
 
 export async function getMyStepsForDate(date: Date): Promise<StepLog | null> {
+  if (getDemoMode()) return DEMO_STEP_LOG;
   if (!supabase) return null;
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -42,6 +45,7 @@ export async function setMyStepsManually(
   date: Date,
   steps: number,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;

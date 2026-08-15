@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Loader2, Mail, MessageCircle, Send } from "lucide-react";
+import { CircleNotch, EnvelopeSimple, ChatCircleDots, PaperPlaneTilt } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ export default function NativeHelpSupport() {
           className="flex w-full cursor-pointer items-center gap-3 rounded-2xl border border-turquoise/40 bg-turquoise/10 p-4 text-left"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-turquoise/20 text-turquoise">
-            <MessageCircle className="h-4.5 w-4.5" />
+            <ChatCircleDots className="h-4.5 w-4.5" />
           </span>
           <span>
             <span className="block text-sm font-bold text-navy">Message us on WhatsApp</span>
@@ -66,7 +66,7 @@ export default function NativeHelpSupport() {
           className="mt-3 flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 shadow-sm"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-primary">
-            <Mail className="h-4.5 w-4.5" />
+            <EnvelopeSimple className="h-4.5 w-4.5" />
           </span>
           <span>
             <span className="block text-sm font-bold text-navy">Email</span>
@@ -112,7 +112,11 @@ export default function NativeHelpSupport() {
             required
           />
           <Button type="submit" disabled={sending} className="w-full cursor-pointer">
-            {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {sending ? (
+              <CircleNotch className="h-4 w-4 animate-spin" />
+            ) : (
+              <PaperPlaneTilt className="h-4 w-4" />
+            )}
             Send Message
           </Button>
         </form>

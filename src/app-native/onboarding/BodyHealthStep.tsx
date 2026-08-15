@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { CaretDown, CaretUp } from "@phosphor-icons/react";
 
 import { OnboardingStepShell } from "@/app-native/onboarding/OnboardingStepShell";
 import { Input } from "@/components/ui/input";
@@ -240,7 +240,7 @@ export function BodyHealthStep({
           className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-border/70 bg-secondary/30 px-3 py-2.5 text-sm font-semibold text-navy"
         >
           Health details (optional)
-          {showHealth ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          {showHealth ? <CaretUp className="h-4 w-4" /> : <CaretDown className="h-4 w-4" />}
         </button>
 
         {showHealth && (

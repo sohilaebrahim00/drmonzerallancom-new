@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { BellOff } from "lucide-react";
+import { BellSlash } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { useResolvedLocation } from "@/hooks/use-resolved-location";
@@ -76,7 +76,7 @@ export default function NativeNotificationSettings() {
 
       {!reminderSupportAvailable && (
         <Alert className="mt-4 border-border/70 bg-secondary/60">
-          <BellOff className="h-4 w-4" />
+          <BellSlash className="h-4 w-4" />
           <AlertDescription>
             Scheduled prayer reminders aren&apos;t available in the browser app yet — this requires
             the installed Android or iPhone app. Prayer times themselves still work here.

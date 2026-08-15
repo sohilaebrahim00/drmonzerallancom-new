@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { LogIn, Settings } from "lucide-react";
+import { SignIn, GearSix, Stethoscope } from "@phosphor-icons/react";
 
 import { APP_NAV_TABS } from "@/app-native/navTabs";
 import { useAuth } from "@/context/AuthContext";
+import { useAppBoot } from "@/context/AppBootContext";
 import { business } from "@/data/business";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,8 @@ export const DESKTOP_SIDEBAR_WIDTH_PX = 248;
 export function DesktopSidebar() {
   const { pathname } = useLocation();
   const { user } = useAuth();
+  const { profile, role } = useAppBoot();
+  const isDoctor = role === "doctor" || role === "admin";
 
   return (
     <aside
@@ -49,7 +52,7 @@ export function DesktopSidebar() {
             >
               <tab.icon
                 className={cn("h-[1.15rem] w-[1.15rem] shrink-0", active && "text-primary")}
-                strokeWidth={active ? 2.3 : 1.9}
+                weight={active ? "fill" : "regular"}
               />
               {tab.label}
             </Link>
@@ -63,20 +66,39 @@ export function DesktopSidebar() {
             to="/account"
             className="flex items-center gap-2.5 rounded-xl px-2 py-2 transition-colors hover:bg-app-surface-secondary"
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary">
-              {(user.email ?? "U").charAt(0).toUpperCase()}
-            </span>
+            {isDoctor ? (
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+                <Stethoscope className="h-4 w-4" />
+              </span>
+            ) : (
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary">
+                {(profile?.full_name ?? user.email ?? "U").charAt(0).toUpperCase()}
+              </span>
+            )}
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-semibold text-navy">{user.email}</span>
+              {/* Never a raw email in the sidebar — a doctor/admin always
+                  sees their real name + role, a regular user sees their
+                  display name (falling back to email only as a last
+                  resort, e.g. before onboarding sets a name). */}
+              <span className="block truncate text-xs font-semibold text-navy">
+                {isDoctor
+                  ? (profile?.full_name ?? business.doctorName)
+                  : (profile?.full_name ?? user.email)}
+              </span>
+              {isDoctor && (
+                <span className="block truncate text-[0.65rem] text-muted-foreground">
+                  Doctor Account
+                </span>
+              )}
             </span>
-            <Settings className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <GearSix className="h-4 w-4 shrink-0 text-muted-foreground" />
           </Link>
         ) : (
           <Link
             to="/login"
             className="flex items-center justify-center gap-1.5 rounded-xl bg-secondary px-3 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-secondary/70"
           >
-            <LogIn className="h-4 w-4" /> Sign In
+            <SignIn className="h-4 w-4" /> Sign In
           </Link>
         )}
       </div>

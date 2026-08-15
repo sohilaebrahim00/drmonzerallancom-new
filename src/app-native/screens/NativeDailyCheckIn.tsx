@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -91,7 +91,7 @@ export default function NativeDailyCheckIn() {
         back
         className="flex min-h-[50vh] items-center justify-center"
       >
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }
@@ -171,7 +171,7 @@ export default function NativeDailyCheckIn() {
         disabled={saving || (!energy && !hunger && !mood && !note.trim())}
         className="mt-6 w-full cursor-pointer"
       >
-        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Check-In"}
+        {saving ? <CircleNotch className="h-4 w-4 animate-spin" /> : "Save Check-In"}
       </Button>
     </AppScreen>
   );

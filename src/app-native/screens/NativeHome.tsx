@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ComponentType } from "react";
 import { Link } from "react-router-dom";
 import {
-  Bot,
   Camera,
+  CalendarCheck,
   Check,
   Compass,
-  Droplet,
-  Flame,
+  Drop,
+  Fire,
   Footprints,
-  Loader2,
+  CircleNotch,
   Repeat,
-  Scale,
-  Sparkles,
+  Sparkle,
   Sun,
-  UtensilsCrossed,
-} from "lucide-react";
+  ForkKnife,
+  VideoCamera,
+} from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { CircularProgress } from "@/app-native/components/CircularProgress";
@@ -25,22 +25,24 @@ import {
   ProgramCardSkeleton,
   MealListSkeleton,
 } from "@/app-native/components/AppSkeletons";
+import { AppIcon } from "@/app-native/icons";
+import { articles } from "@/data/articles";
 import { useAuth } from "@/context/AuthContext";
 import { useAppBoot } from "@/context/AppBootContext";
 import NativeDoctorDashboard from "@/app-native/screens/NativeDoctorDashboard";
-import { articles } from "@/data/articles";
-import { getFeaturedVideo } from "@/data/videos";
 import { getMyCurrentTarget, type DailyTarget } from "@/services/bodyProfileService";
 import { getMyMealsForDay, saveMealLog, type MealLog } from "@/services/mealLogService";
 import { createPostMealActivityTask } from "@/services/activityService";
 import { getMyPendingActivityTasks, type ActivityTask } from "@/services/activityService";
 import { getMyHydrationForDay, getMyHydrationGoal } from "@/services/hydrationService";
+import { getMyStepsForDate } from "@/services/stepService";
 import {
   currentProgramDayNumber,
   getMyActiveProgram,
+  getProgramDay,
   type NutritionProgram,
+  type ProgramItem,
 } from "@/services/programService";
-import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { useResolvedLocation } from "@/hooks/use-resolved-location";
 import {
@@ -76,6 +78,7 @@ export default function NativeHome() {
   const [stepsToday, setStepsToday] = useState<number | null>(null);
   const [activityTask, setActivityTask] = useState<ActivityTask | null>(null);
   const [program, setProgram] = useState<NutritionProgram | null>(null);
+  const [programItems, setProgramItems] = useState<ProgramItem[]>([]);
   const [recentMeals, setRecentMeals] = useState<MealLog[]>([]);
   const [macrosToday, setMacrosToday] = useState({ protein: 0, carbs: 0, fat: 0 });
   const [waterMl, setWaterMl] = useState(0);
@@ -92,13 +95,10 @@ export default function NativeHome() {
     let cancelled = false;
     setLoading(true);
 
-    const dateStr = new Date().toISOString().slice(0, 10);
     Promise.all([
       getMyMealsForDay(new Date()),
       getMyCurrentTarget(),
-      supabase
-        ? supabase.from("step_logs").select("steps").eq("date", dateStr).maybeSingle()
-        : Promise.resolve({ data: null }),
+      getMyStepsForDate(new Date()),
       getMyPendingActivityTasks(),
       getMyActiveProgram(),
       getMyHydrationForDay(new Date()),
@@ -114,12 +114,20 @@ export default function NativeHome() {
       });
       setRecentMeals(meals.slice(0, 3));
       setTarget(currentTarget);
-      setStepsToday(steps.data?.steps ?? null);
+      setStepsToday(steps?.steps ?? null);
       setActivityTask(tasks[0] ?? null);
       setProgram(activeProgram);
       setWaterMl(water.reduce((sum, w) => sum + w.amount_ml, 0));
       setWaterGoalMl(waterGoal.goal_ml);
       setLoading(false);
+
+      if (activeProgram) {
+        getProgramDay(activeProgram.id, currentProgramDayNumber(activeProgram), user.id).then(
+          (day) => {
+            if (!cancelled) setProgramItems(day?.items ?? []);
+          },
+        );
+      }
     });
     return () => {
       cancelled = true;
@@ -148,8 +156,6 @@ export default function NativeHome() {
     [coords],
   );
 
-  const featuredArticle = articles[0];
-
   // A doctor's Home IS the doctor dashboard — one persona, one destination
   // (see navTabs.ts). Wait for AppBoot to resolve the role first so a
   // patient never flashes the doctor dashboard for a frame.
@@ -160,6 +166,8 @@ export default function NativeHome() {
   const remaining = target ? Math.max(Math.round(target.daily_target - caloriesToday), 0) : null;
   const ringValue = target ? Math.min(caloriesToday / target.daily_target, 1) : 0;
   const taskAvailable = activityTask && new Date(activityTask.available_at) <= now;
+  const nextMealItem = programItems.find((i) => !i.completion) ?? null;
+  const completedCount = programItems.filter((i) => i.completion === "completed").length;
 
   return (
     <AppScreen tabBar hideHeader className="mx-auto w-full px-4 pb-6 pt-3">
@@ -185,7 +193,15 @@ export default function NativeHome() {
             </p>
           </div>
         </div>
-        {!user && (
+        {user ? (
+          <Link
+            to="/notifications"
+            aria-label="Notifications"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-navy transition-colors hover:bg-secondary"
+          >
+            <AppIcon name="notifications" size="nav" />
+          </Link>
+        ) : (
           <img
             src="/ma-logo.png"
             alt=""
@@ -198,6 +214,14 @@ export default function NativeHome() {
         <InstallAppCard />
       </div>
 
+      {/*
+        Information hierarchy (§14): Nutrition → Program → Scan → Recent
+        Meals dominate the main column; Daily Metrics → Movement → Quick
+        Actions → Care → Prayer/Qibla form a single utility panel in the
+        secondary column (§23). Program moved ABOVE Scan per §19 — one of
+        the two main product differentiators, previously buried below
+        several utilities.
+      */}
       <div className="mt-3 lg:grid lg:grid-cols-3 lg:items-start lg:gap-6">
         {/* ── MAIN column ─────────────────────────────────────────── */}
         <div className="space-y-4 lg:col-span-2">
@@ -220,66 +244,70 @@ export default function NativeHome() {
             </>
           )}
 
+          {user &&
+            (loading ? (
+              <ProgramCardSkeleton />
+            ) : program ? (
+              <TodayProgramCard
+                program={program}
+                nextMealItem={nextMealItem}
+                completedCount={completedCount}
+                totalCount={programItems.length}
+              />
+            ) : (
+              <EmptyState
+                icon={ForkKnife}
+                title="No active program yet"
+                body="Your assigned nutrition program will appear here once your doctor sets one up."
+                action={
+                  <Link to="/account" className="text-xs font-semibold text-primary">
+                    Connect With Doctor
+                  </Link>
+                }
+              />
+            ))}
+
           <ScanFeatureCard />
 
           {user && (
-            <>
+            <div>
+              <div className="mb-2 flex items-center justify-between px-0.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Recent Meals
+                </p>
+                <Link to="/daily-log" className="text-xs font-semibold text-primary">
+                  View Daily Log
+                </Link>
+              </div>
               {loading ? (
-                <ProgramCardSkeleton />
-              ) : program ? (
-                <TodayProgramCard program={program} />
-              ) : (
+                <MealListSkeleton />
+              ) : recentMeals.length === 0 ? (
                 <EmptyState
-                  icon={UtensilsCrossed}
-                  title="No active program yet"
-                  body="Your assigned nutrition program will appear here once your doctor sets one up."
+                  icon={Camera}
+                  title="No meals yet"
+                  body="Scan your first meal to start tracking today's nutrition."
                   action={
-                    <Link to="/account" className="text-xs font-semibold text-primary">
-                      Connect With Doctor
+                    <Link to="/food-scanner" className="text-xs font-semibold text-primary">
+                      Scan Meal
                     </Link>
                   }
                 />
-              )}
-
-              <div>
-                <div className="mb-2 flex items-center justify-between px-0.5">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Recent Meals
-                  </p>
-                  <Link to="/daily-log" className="text-xs font-semibold text-primary">
-                    View Daily Log
-                  </Link>
+              ) : (
+                <div className="space-y-2">
+                  {recentMeals.map((meal) => (
+                    <RecentMealRow
+                      key={meal.id}
+                      meal={meal}
+                      onLoggedAgain={(calories) => setCaloriesToday((c) => c + calories)}
+                    />
+                  ))}
                 </div>
-                {loading ? (
-                  <MealListSkeleton />
-                ) : recentMeals.length === 0 ? (
-                  <EmptyState
-                    icon={Camera}
-                    title="No meals yet"
-                    body="Scan your first meal to start tracking today's nutrition."
-                    action={
-                      <Link to="/food-scanner" className="text-xs font-semibold text-primary">
-                        Scan Meal
-                      </Link>
-                    }
-                  />
-                ) : (
-                  <div className="space-y-2">
-                    {recentMeals.map((meal) => (
-                      <RecentMealRow
-                        key={meal.id}
-                        meal={meal}
-                        onLoggedAgain={(calories) => setCaloriesToday((c) => c + calories)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </>
+              )}
+            </div>
           )}
         </div>
 
-        {/* ── SECONDARY column ────────────────────────────────────── */}
+        {/* ── SECONDARY column — one coherent utility panel (§23) ──── */}
         <div className="mt-4 space-y-3 lg:col-span-1 lg:mt-0">
           {user && !loading && (
             <div className="grid grid-cols-2 gap-2.5">
@@ -290,23 +318,20 @@ export default function NativeHome() {
               />
               <Link to="/hydration" className="block">
                 <StatChip
-                  icon={Droplet}
+                  icon={Drop}
                   label="Water"
                   value={`${(waterMl / 1000).toFixed(1)}L / ${(waterGoalMl / 1000).toFixed(1)}L`}
                 />
               </Link>
-              <StatChip icon={Flame} label="Meals" value={String(recentMeals.length)} />
-              <Link to={activityTask ? "/activity-task" : "/activity-history"} className="block">
+              <StatChip icon={Fire} label="Meals" value={String(recentMeals.length)} />
+              {/* Program X/Y replaces the metric that used to duplicate the
+                  Movement Task card below (§18) — the card itself remains
+                  the one place movement info lives. */}
+              <Link to={program ? "/my-program" : "/account"} className="block">
                 <StatChip
-                  icon={Sparkles}
-                  label="Movement"
-                  value={
-                    activityTask
-                      ? taskAvailable
-                        ? "Ready"
-                        : formatCountdown(new Date(activityTask.available_at), now)
-                      : "—"
-                  }
+                  icon={CalendarCheck}
+                  label="Program"
+                  value={program ? `${completedCount}/${programItems.length || "—"}` : "—"}
                 />
               </Link>
             </div>
@@ -318,9 +343,12 @@ export default function NativeHome() {
               className="flex items-center gap-3 rounded-2xl border border-turquoise/30 bg-turquoise/10 p-3.5"
             >
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-turquoise/20 text-turquoise">
-                <Sparkles className="h-4.5 w-4.5" />
+                <AppIcon name="movement" size="small" weight="duotone" />
               </span>
               <span className="min-w-0 flex-1">
+                <span className="block text-xs font-semibold uppercase tracking-wide text-turquoise/90">
+                  Suggested Movement
+                </span>
                 <span className="block text-sm font-bold text-navy">
                   {activityTask.activity.name}
                 </span>
@@ -334,10 +362,26 @@ export default function NativeHome() {
           )}
 
           <div className="grid grid-cols-3 gap-2">
-            <SmallQuickAction icon={Bot} label="Ask AI" to="/ai" />
-            <SmallQuickAction icon={Sparkles} label="Progress" to="/progress" />
-            <SmallQuickAction icon={Scale} label="Weight" to="/my-health" />
+            <SmallQuickAction iconName="ai" label="Ask AI" to="/ai" />
+            <SmallQuickAction iconName="progress" label="Progress" to="/progress" />
+            <SmallQuickAction iconName="weight" label="Weight" to="/my-health" />
           </div>
+
+          {/* Care / Consultation — a compact link, not a live-data card (§23/§14 item 9). */}
+          <Link
+            to="/consultations"
+            className="flex items-center gap-3 rounded-2xl border border-border/60 bg-app-surface p-3.5"
+          >
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+              <VideoCamera className="h-4.5 w-4.5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xs font-bold text-navy">Consultations</span>
+              <span className="block text-[0.65rem] text-muted-foreground">
+                Book or view your care team
+              </span>
+            </span>
+          </Link>
 
           {/* Prayer + Qibla — a compact utility, never competing with nutrition. */}
           <div className="flex divide-x divide-border/60 rounded-2xl border border-border/60 bg-app-surface">
@@ -363,27 +407,36 @@ export default function NativeHome() {
             </Link>
           </div>
 
-          {featuredArticle && (
-            <Link
-              to={`/blog/${featuredArticle.slug}`}
-              className="flex items-center gap-3 rounded-2xl border border-border/60 bg-app-surface p-3"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
-                <featuredArticle.icon className="h-4 w-4" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-xs font-semibold text-navy">
-                  {featuredArticle.title}
-                </span>
-                <span className="block truncate text-[0.65rem] text-muted-foreground">
-                  Recommended for you
-                </span>
-              </span>
-            </Link>
-          )}
+          <RecommendedArticleCard />
         </div>
       </div>
     </AppScreen>
+  );
+}
+
+/** "Recommended for You" — one educational recommendation, kept firmly at the bottom (§27), never competing with primary daily controls. Reuses src/data/articles.ts, which is deliberately left on its existing icon library (shared with the marketing website's Education pages — see the report's icon-migration exceptions). */
+function RecommendedArticleCard() {
+  const article = articles[0];
+  if (!article) return null;
+  const ArticleIcon: ComponentType<{ className?: string }> = article.icon;
+
+  return (
+    <div>
+      <p className="mb-1.5 px-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+        Recommended for You
+      </p>
+      <Link
+        to={`/blog/${article.slug}`}
+        className="flex items-center gap-3 rounded-2xl border border-border/60 bg-app-surface p-3"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+          <ArticleIcon className="h-4 w-4" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-xs font-semibold text-navy">{article.title}</span>
+        </span>
+      </Link>
+    </div>
   );
 }
 
@@ -423,7 +476,7 @@ function GuestWelcomeCard() {
               progressClassName="text-primary"
               trackClassName="text-primary/15"
             >
-              <Flame className="h-7 w-7 text-primary" />
+              <Fire className="h-7 w-7 text-primary" />
             </CircularProgress>
           </div>
         </div>
@@ -458,7 +511,9 @@ function DailyNutritionCard({
           </div>
         </CircularProgress>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Today</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
+            Today&apos;s Nutrition
+          </p>
           <p className="mt-0.5 font-display text-base font-bold">
             {Math.round(caloriesToday)}
             {target && (
@@ -518,7 +573,7 @@ function AIInsightLine({
 
   return (
     <div className="flex items-start gap-2.5 rounded-2xl bg-secondary/50 px-3.5 py-3">
-      <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+      <Sparkle className="mt-0.5 h-4 w-4 shrink-0 text-primary" weight="fill" />
       <p className="text-xs leading-relaxed text-navy/85">{text}</p>
     </div>
   );
@@ -577,12 +632,12 @@ function ScanFeatureCard() {
       className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-secondary via-secondary to-white p-5 transition-transform active:scale-[0.99]"
     >
       <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy to-primary text-white shadow-[0_10px_24px_-10px_rgba(37,63,164,0.6)] transition-transform group-hover:scale-105">
-        <Camera className="h-6 w-6" />
+        <Camera className="h-6 w-6" weight="duotone" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="font-display text-base font-bold text-navy">Scan Your Meal</p>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          Take a photo and get an estimated nutrition breakdown.
+          AI-estimated nutrition breakdown from a photo.
         </p>
       </div>
       <span className="shrink-0 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground">
@@ -592,14 +647,34 @@ function ScanFeatureCard() {
   );
 }
 
-function TodayProgramCard({ program }: { program: NutritionProgram }) {
+const MEAL_TYPE_LABEL: Record<string, string> = {
+  breakfast: "Breakfast",
+  lunch: "Lunch",
+  dinner: "Dinner",
+  snack: "Snack",
+};
+
+function TodayProgramCard({
+  program,
+  nextMealItem,
+  completedCount,
+  totalCount,
+}: {
+  program: NutritionProgram;
+  nextMealItem: ProgramItem | null;
+  completedCount: number;
+  totalCount: number;
+}) {
   const dayNumber = currentProgramDayNumber(program);
   return (
-    <div className="rounded-2xl border border-border/60 bg-app-surface p-4">
+    <div className="rounded-2xl border border-primary/15 bg-app-surface p-4 shadow-[0_2px_14px_-6px_rgba(23,35,59,0.12)]">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Today&apos;s Program
-        </p>
+        <div className="flex items-center gap-1.5">
+          <CalendarCheck className="h-4 w-4 text-primary" weight="duotone" />
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Today&apos;s Program
+          </p>
+        </div>
         <span className="text-xs font-semibold text-primary">Day {dayNumber} of 30</span>
       </div>
       <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
@@ -608,6 +683,24 @@ function TodayProgramCard({ program }: { program: NutritionProgram }) {
           style={{ width: `${(dayNumber / 30) * 100}%` }}
         />
       </div>
+      {totalCount > 0 && (
+        <p className="mt-1.5 text-[0.7rem] text-muted-foreground">
+          {completedCount} of {totalCount} completed today
+        </p>
+      )}
+
+      {nextMealItem && (
+        <div className="mt-3 rounded-xl bg-secondary/50 p-3">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-primary">
+            Next Meal — {MEAL_TYPE_LABEL[nextMealItem.meal_type] ?? nextMealItem.meal_type}
+          </p>
+          <p className="mt-0.5 text-sm font-bold text-navy">{nextMealItem.title}</p>
+          {nextMealItem.suggested_foods && (
+            <p className="text-xs text-muted-foreground">{nextMealItem.suggested_foods}</p>
+          )}
+        </div>
+      )}
+
       <div className="mt-3.5 flex gap-2.5">
         <Link
           to="/my-program"
@@ -617,9 +710,10 @@ function TodayProgramCard({ program }: { program: NutritionProgram }) {
         </Link>
         <Link
           to="/food-scanner"
+          state={nextMealItem ? { programItemId: nextMealItem.id } : undefined}
           className="flex-1 rounded-xl bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground"
         >
-          Scan Meal
+          Scan This Meal
         </Link>
       </div>
     </div>
@@ -665,7 +759,7 @@ function RecentMealRow({
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-app-surface p-3">
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
-        <UtensilsCrossed className="h-4.5 w-4.5" />
+        <ForkKnife className="h-4.5 w-4.5" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold capitalize text-navy">
@@ -687,9 +781,9 @@ function RecentMealRow({
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-primary disabled:opacity-60"
       >
         {state === "saving" ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <CircleNotch className="h-4 w-4 animate-spin" />
         ) : state === "done" ? (
-          <Check className="h-4 w-4 text-app-success" />
+          <Check className="h-4 w-4 text-app-success" weight="bold" />
         ) : (
           <Repeat className="h-4 w-4" />
         )}
@@ -699,7 +793,7 @@ function RecentMealRow({
 }
 
 function StatChip({
-  icon: Icon,
+  icon: IconComponent,
   label,
   value,
 }: {
@@ -709,7 +803,7 @@ function StatChip({
 }) {
   return (
     <div className="rounded-2xl border border-border/60 bg-app-surface p-3.5">
-      <Icon className="h-4 w-4 text-primary" />
+      <IconComponent className="h-4 w-4 text-primary" />
       <p className="mt-1.5 font-display text-base font-bold text-navy">{value}</p>
       <p className="text-[0.65rem] text-muted-foreground">{label}</p>
     </div>
@@ -717,11 +811,11 @@ function StatChip({
 }
 
 function SmallQuickAction({
-  icon: Icon,
+  iconName,
   label,
   to,
 }: {
-  icon: typeof Bot;
+  iconName: Parameters<typeof AppIcon>[0]["name"];
   label: string;
   to: string;
 }) {
@@ -732,7 +826,7 @@ function SmallQuickAction({
         "flex flex-col items-center gap-1.5 rounded-xl border border-border/60 bg-app-surface py-3 text-center transition-colors hover:bg-secondary active:scale-[0.97]",
       )}
     >
-      <Icon className="h-4 w-4 text-primary" />
+      <AppIcon name={iconName} size="small" tone="primary" />
       <span className="text-[0.65rem] font-semibold text-navy">{label}</span>
     </Link>
   );

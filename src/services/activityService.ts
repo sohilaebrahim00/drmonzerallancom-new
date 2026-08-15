@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { POST_MEAL_ACTIVITY_DELAY_MINUTES } from "@/config/features";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_ACTIVITY_LIBRARY, DEMO_ACTIVITY_TASK } from "@/dev/demoFixtures";
 
 export interface ActivityLibraryEntry {
   id: string;
@@ -27,6 +29,7 @@ async function currentUserId(): Promise<string | null> {
 }
 
 export async function getActivityLibrary(): Promise<ActivityLibraryEntry[]> {
+  if (getDemoMode()) return DEMO_ACTIVITY_LIBRARY;
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("activity_library")
@@ -57,6 +60,7 @@ function pickActivity(
 
 /** Called right after a meal is saved — creates a pending task available ~25 minutes later. Never blocks the save flow. */
 export async function createPostMealActivityTask(mealLogId: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   const userId = await currentUserId();
   if (!userId) return;
@@ -79,6 +83,7 @@ export async function createPostMealActivityTask(mealLogId: string): Promise<voi
 }
 
 export async function getMyPendingActivityTasks(): Promise<ActivityTask[]> {
+  if (getDemoMode()) return [DEMO_ACTIVITY_TASK];
   if (!supabase) return [];
   const userId = await currentUserId();
   if (!userId) return [];
@@ -121,6 +126,7 @@ export async function completeActivityTask(
   taskId: string,
   durationMinutes: number,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const userId = await currentUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
@@ -165,6 +171,7 @@ export async function completeActivityTask(
 }
 
 export async function skipActivityTask(taskId: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   await supabase.from("activity_tasks").update({ status: "skipped" }).eq("id", taskId);
 }

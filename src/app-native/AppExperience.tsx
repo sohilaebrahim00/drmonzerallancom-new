@@ -1,6 +1,6 @@
 import { lazy, Suspense, type ComponentType } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { NativeBackHandler } from "@/app-native/NativeBackHandler";
@@ -11,6 +11,7 @@ import { AppBootProvider, useAppBoot } from "@/context/AppBootContext";
 import { useAuth } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DoctorRoute } from "@/components/auth/DoctorRoute";
+import { DemoModeBanner } from "@/dev/DemoModeBanner";
 
 const NativeOnboarding = lazy(() => import("@/app-native/screens/NativeOnboarding"));
 const NativeHome = lazy(() => import("@/app-native/screens/NativeHome"));
@@ -76,7 +77,7 @@ function PageFallback() {
       role="status"
       aria-label="Loading"
     >
-      <Loader2 className="h-7 w-7 animate-spin text-primary" />
+      <CircleNotch className="h-7 w-7 animate-spin text-primary" />
     </div>
   );
 }
@@ -131,6 +132,7 @@ function AppExperienceRoutes() {
       <DeepLinkHandler />
       <UpdateAvailableBanner />
       <OfflineBanner />
+      <DemoModeBanner />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/onboarding" element={<NativeOnboarding />} />

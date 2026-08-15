@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Droplet, UtensilsCrossed, Zap } from "lucide-react";
+import { CircleNotch, Drop, ForkKnife, Lightning } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { getMyMealsForDay } from "@/services/mealLogService";
 import { getMyHydrationForDay } from "@/services/hydrationService";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_ACTIVITY_LOGS_TODAY } from "@/dev/demoFixtures";
 
 type Filter = "all" | "meals" | "activity" | "water";
 
@@ -26,10 +28,10 @@ function dayBounds(date: Date) {
   return { start: start.toISOString(), end: end.toISOString() };
 }
 
-const ICONS: Record<TimelineEntry["kind"], typeof UtensilsCrossed> = {
-  meal: UtensilsCrossed,
-  activity: Zap,
-  water: Droplet,
+const ICONS: Record<TimelineEntry["kind"], typeof ForkKnife> = {
+  meal: ForkKnife,
+  activity: Lightning,
+  water: Drop,
 };
 
 export default function NativeDailyLog() {
@@ -41,18 +43,26 @@ export default function NativeDailyLog() {
     const today = new Date();
     const { start, end } = dayBounds(today);
 
+    const demoMode = getDemoMode();
     Promise.all([
       getMyMealsForDay(today),
       getMyHydrationForDay(today),
-      supabase
-        ? supabase
-            .from("activity_logs")
-            .select(
-              "id, completed_at, duration_minutes, estimated_calories_burned, activity_library(name)",
-            )
-            .gte("completed_at", start)
-            .lt("completed_at", end)
-        : Promise.resolve({ data: [] }),
+      demoMode
+        ? Promise.resolve({
+            data: DEMO_ACTIVITY_LOGS_TODAY.map((a) => ({
+              ...a,
+              activity_library: { name: "20-Minute Walk" },
+            })),
+          })
+        : supabase
+          ? supabase
+              .from("activity_logs")
+              .select(
+                "id, completed_at, duration_minutes, estimated_calories_burned, activity_library(name)",
+              )
+              .gte("completed_at", start)
+              .lt("completed_at", end)
+          : Promise.resolve({ data: [] }),
     ]).then(([meals, water, activities]) => {
       const list: TimelineEntry[] = [
         ...meals.map((m) => ({
@@ -122,12 +132,12 @@ export default function NativeDailyLog() {
 
       {loading ? (
         <div className="mt-8 flex justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="mt-6">
           <EmptyState
-            icon={UtensilsCrossed}
+            icon={ForkKnife}
             title="Nothing logged yet today"
             body="Meals, activity, and water you log today will appear here in order."
           />

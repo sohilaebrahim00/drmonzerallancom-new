@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, UserPlus } from "lucide-react";
+import { CircleNotch, UserPlus } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -203,7 +203,7 @@ export function FreeSignUpForm({ onSuccess }: { onSuccess: () => void }) {
         >
           {submitting ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Creating your account…
+              <CircleNotch className="h-4 w-4 animate-spin" /> Creating your account…
             </>
           ) : (
             <>

@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { MealLogItemInput } from "@/services/mealLogService";
+import { getDemoMode } from "@/dev/demoMode";
 
 export interface FoodFavorite {
   id: string;
@@ -25,6 +26,7 @@ function totals(items: MealLogItemInput[]) {
 }
 
 export async function getMyFavorites(): Promise<FoodFavorite[]> {
+  if (getDemoMode()) return [];
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("food_favorites")
@@ -41,6 +43,7 @@ export async function saveFavorite(
   mealType: "breakfast" | "lunch" | "dinner" | "snack" | null,
   items: MealLogItemInput[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -64,6 +67,7 @@ export async function saveFavorite(
 }
 
 export async function deleteFavorite(id: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   await supabase.from("food_favorites").delete().eq("id", id);
 }

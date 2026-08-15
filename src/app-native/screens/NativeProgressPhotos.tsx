@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Camera, ImagePlus, Loader2, Trash2 } from "lucide-react";
+import { Camera, Image, CircleNotch, Trash } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
@@ -57,19 +57,19 @@ export default function NativeProgressPhotos() {
           disabled={uploading}
           className="flex items-center justify-center gap-1.5 rounded-xl border border-border py-3 text-sm font-semibold text-navy disabled:opacity-60"
         >
-          <ImagePlus className="h-4 w-4" /> From Gallery
+          <Image className="h-4 w-4" /> From Gallery
         </button>
       </div>
 
       {uploading && (
         <div className="mt-4 flex justify-center">
-          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <CircleNotch className="h-5 w-5 animate-spin text-primary" />
         </div>
       )}
 
       {loading ? (
         <div className="mt-8 flex justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : photos.length === 0 ? (
         <div className="mt-6">
@@ -113,7 +113,7 @@ export default function NativeProgressPhotos() {
                   aria-label="Delete photo"
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
                 </button>
               </div>
             </div>

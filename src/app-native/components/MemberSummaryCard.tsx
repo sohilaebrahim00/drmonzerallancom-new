@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CalendarClock, CalendarPlus, Sparkles, Video } from "lucide-react";
+import { Calendar, CalendarPlus, Sparkle, VideoCamera } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import type { PackageTier } from "@/data/packages";
@@ -49,7 +49,7 @@ export function MemberSummaryCard({
             className="cursor-pointer bg-turquoise text-navy hover:bg-turquoise/90"
           >
             <Link to="/join">
-              <Sparkles className="h-3.5 w-3.5" /> View Memberships
+              <Sparkle className="h-3.5 w-3.5" /> View Memberships
             </Link>
           </Button>
           <Button
@@ -74,7 +74,7 @@ export function MemberSummaryCard({
         </p>
         <Button asChild size="sm" className="mt-4 cursor-pointer">
           <Link to="/join">
-            <Sparkles className="h-3.5 w-3.5" /> View Memberships
+            <Sparkle className="h-3.5 w-3.5" /> View Memberships
           </Link>
         </Button>
       </div>
@@ -112,8 +112,7 @@ export function MemberSummaryCard({
         {upcoming ? (
           <div className="mt-1 flex items-center justify-between gap-2">
             <span className="flex items-center gap-1.5 text-sm font-semibold">
-              <CalendarClock className="h-3.5 w-3.5" />{" "}
-              {formatAppointment(upcoming.appointment_start)}
+              <Calendar className="h-3.5 w-3.5" /> {formatAppointment(upcoming.appointment_start)}
             </span>
             {upcoming.google_meet_url && (
               <a
@@ -122,7 +121,7 @@ export function MemberSummaryCard({
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-xs font-semibold text-turquoise"
               >
-                <Video className="h-3 w-3" /> Join
+                <VideoCamera className="h-3 w-3" /> Join
               </a>
             )}
           </div>

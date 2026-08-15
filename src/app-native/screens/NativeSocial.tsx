@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, MessageCircle, Search, Sparkles, UserPlus, Users } from "lucide-react";
+import {
+  CircleNotch,
+  ChatCircleDots,
+  MagnifyingGlass,
+  Sparkle,
+  UserPlus,
+  UsersThree,
+} from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
@@ -114,7 +121,7 @@ export default function NativeSocial() {
   return (
     <AppScreen title="Social" tabBar className="mx-auto w-full max-w-lg px-4 pb-6 pt-3">
       <div className="relative mb-3">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <MagnifyingGlass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={query}
           onChange={(e) => {
@@ -151,7 +158,7 @@ export default function NativeSocial() {
 
       {loading ? (
         <div className="mt-8 flex justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : (
         <div className="mt-4">
@@ -159,7 +166,7 @@ export default function NativeSocial() {
             <>
               {feed.length === 0 ? (
                 <EmptyState
-                  icon={Sparkles}
+                  icon={Sparkle}
                   title="No activity yet"
                   body="When friends share a meal or activity, it will show up here."
                 />
@@ -194,7 +201,7 @@ export default function NativeSocial() {
             <>
               {friends.length === 0 ? (
                 <EmptyState
-                  icon={Users}
+                  icon={UsersThree}
                   title="No friends yet"
                   body="Search for people by username to connect."
                   action={
@@ -308,7 +315,7 @@ export default function NativeSocial() {
 
           {tab === "find" && (
             <div className="space-y-2">
-              {searching && <Loader2 className="mx-auto h-5 w-5 animate-spin text-primary" />}
+              {searching && <CircleNotch className="mx-auto h-5 w-5 animate-spin text-primary" />}
               {!searching && query.trim().length >= 2 && searchResults.length === 0 && (
                 <p className="px-1 text-sm text-muted-foreground">
                   No one found for &quot;{query}&quot;.
@@ -349,7 +356,7 @@ export default function NativeSocial() {
             <>
               {conversations.length === 0 ? (
                 <EmptyState
-                  icon={MessageCircle}
+                  icon={ChatCircleDots}
                   title="No messages yet"
                   body="Message a friend from their profile to start a conversation."
                 />

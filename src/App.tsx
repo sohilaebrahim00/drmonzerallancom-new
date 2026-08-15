@@ -12,6 +12,8 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AppExperience } from "@/app-native/AppExperience";
 import { getAppMode } from "@/hooks/use-native-platform";
+import { isClientDemoBuild } from "@/dev/demoMode";
+import { ClientDemoApp } from "@/dev/ClientDemoApp";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
@@ -169,6 +171,25 @@ function WebApp() {
 }
 
 export default function App() {
+  // The dedicated client-demo build (`vite build --mode client-demo`, see
+  // vite.config.ts / .env.client-demo) is a completely separate deployment
+  // target (demo.monzerallan.com) — checked before touching getAppMode() at
+  // all, so this branch can never affect MARKETING_WEB/PWA_WEB_APP/
+  // CAPACITOR_NATIVE routing in the real builds. isClientDemoBuild() reads
+  // import.meta.env.VITE_APP_MODE, which is never "client-demo" in
+  // npm run build:web / build:app.
+  if (isClientDemoBuild()) {
+    return (
+      <BrowserRouter>
+        <MotionConfig reducedMotion="user">
+          <AuthProvider>
+            <ClientDemoApp />
+          </AuthProvider>
+        </MotionConfig>
+      </BrowserRouter>
+    );
+  }
+
   const appMode = getAppMode();
   return (
     <BrowserRouter>

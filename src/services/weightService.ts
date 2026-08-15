@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_WEIGHT_HISTORY } from "@/dev/demoFixtures";
 
 export interface WeightLog {
   id: string;
@@ -7,6 +9,7 @@ export interface WeightLog {
 }
 
 export async function getMyWeightHistory(days = 90): Promise<WeightLog[]> {
+  if (getDemoMode()) return DEMO_WEIGHT_HISTORY;
   if (!supabase) return [];
   const since = new Date();
   since.setDate(since.getDate() - days);
@@ -24,6 +27,7 @@ export async function getMyWeightHistory(days = 90): Promise<WeightLog[]> {
 export async function logMyWeight(
   weightKg: number,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;

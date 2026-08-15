@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ChevronLeft } from "lucide-react";
+import { CaretLeft } from "@phosphor-icons/react";
 
 import { cn } from "@/lib/utils";
 
@@ -41,7 +41,7 @@ export function AppHeader({
             aria-label="Back"
             className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-navy transition-colors hover:bg-secondary"
           >
-            <ChevronLeft className="h-5.5 w-5.5" />
+            <CaretLeft className="h-5.5 w-5.5" />
           </button>
         ) : (
           <span className="w-2 shrink-0" />

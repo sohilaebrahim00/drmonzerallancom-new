@@ -6,6 +6,8 @@ import {
   type BiologicalSex,
   type Goal,
 } from "@/lib/calorieCalculator";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_BODY_PROFILE, DEMO_TARGET, DEMO_PATIENT_DETAIL } from "@/dev/demoFixtures";
 
 export interface BodyProfile {
   date_of_birth: string | null;
@@ -30,6 +32,7 @@ const BODY_PROFILE_COLUMNS =
   "date_of_birth, height_cm, weight_kg, biological_sex, activity_level, goal, preferred_weight_unit, preferred_height_unit, health_conditions, health_conditions_other, food_allergies, food_allergies_other, food_intolerances, food_intolerances_other, dietary_preferences, medications";
 
 export async function getMyBodyProfile(): Promise<BodyProfile | null> {
+  if (getDemoMode()) return DEMO_BODY_PROFILE;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("body_profiles")
@@ -40,6 +43,7 @@ export async function getMyBodyProfile(): Promise<BodyProfile | null> {
 }
 
 export async function getPatientBodyProfile(patientId: string): Promise<BodyProfile | null> {
+  if (getDemoMode()) return DEMO_PATIENT_DETAIL[patientId]?.bodyProfile ?? DEMO_BODY_PROFILE;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("body_profiles")
@@ -53,6 +57,7 @@ export async function getPatientBodyProfile(patientId: string): Promise<BodyProf
 export async function upsertMyBodyProfile(
   patch: Partial<BodyProfile>,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -85,6 +90,7 @@ const DAILY_TARGET_COLUMNS =
   "daily_target, bmr_estimate, maintenance_estimate, source, calculated_at, protein_target_g, carbs_target_g, fat_target_g";
 
 export async function getMyCurrentTarget(): Promise<DailyTarget | null> {
+  if (getDemoMode()) return DEMO_TARGET;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("daily_targets")
@@ -96,6 +102,7 @@ export async function getMyCurrentTarget(): Promise<DailyTarget | null> {
 }
 
 export async function getPatientCurrentTarget(patientId: string): Promise<DailyTarget | null> {
+  if (getDemoMode()) return DEMO_PATIENT_DETAIL[patientId]?.target ?? DEMO_TARGET;
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("daily_targets")
@@ -113,6 +120,7 @@ export type RecalculateOutcome =
 
 /** Recomputes and stores a new auto daily_targets row from the caller's current body_profiles data. */
 export async function recalculateMyDailyTarget(): Promise<RecalculateOutcome> {
+  if (getDemoMode()) return { ok: true, target: DEMO_TARGET };
   if (!supabase) return { ok: false, reason: "NOT_CONNECTED" };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -164,6 +172,7 @@ export async function setDoctorOverrideTarget(
   dailyTarget: number,
   macros?: { proteinGrams?: number; carbsGrams?: number; fatGrams?: number },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const doctorId = userData.user?.id;

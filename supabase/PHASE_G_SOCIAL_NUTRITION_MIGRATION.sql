@@ -1,4 +1,4 @@
--- ═══════════════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════
 -- PHASE G — Social Nutrition & 30-Day Health Tracking Platform
 -- Incremental migration. Extends supabase/schema.sql — does NOT replace it.
 --
@@ -21,6 +21,7 @@
 -- code today vs. schema prepared for a later pass.
 -- ═══════════════════════════════════════════════════════════════════════
 
+BEGIN;
 
 -- ───────────────────────────────────────────────────────────────────────
 -- 1. ROLES
@@ -30,7 +31,13 @@
 -- the new authoritative, extensible source of truth (supports a future
 -- second doctor without repurposing "admin" to mean two different things).
 
-create type public.user_role as enum ('user', 'doctor', 'admin');
+do $$
+begin
+  create type public.user_role as enum ('user', 'doctor', 'admin');
+exception
+  when duplicate_object then null;
+end
+$$;
 
 alter table public.profiles add column if not exists role public.user_role not null default 'user';
 alter table public.profiles add column if not exists username text;
@@ -53,9 +60,20 @@ update public.profiles set role = 'admin' where is_admin = true and role = 'user
 
 -- Username: unique, case-insensitive, 3-24 chars, letters/digits/underscore/dot.
 -- Nullable (existing accounts have none yet; new signups always set one).
-alter table public.profiles
-  add constraint profiles_username_format
-  check (username is null or username ~ '^[a-z0-9_.]{3,24}$');
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'profiles_username_format'
+      and conrelid = 'public.profiles'::regclass
+  ) then
+    alter table public.profiles
+      add constraint profiles_username_format
+      check (username is null or username ~ '^[a-z0-9_.]{3,24}$');
+  end if;
+end
+$$;
 
 create unique index if not exists profiles_username_unique_idx
   on public.profiles (lower(username)) where username is not null;
@@ -70,9 +88,44 @@ insert into public.reserved_usernames (username) values
   ('doctor'), ('dr'), ('official'), ('team'), ('null'), ('undefined'), ('system')
 on conflict do nothing;
 
-alter table public.profiles
-  add constraint profiles_username_not_reserved
-  check (username is null or lower(username) not in (select username from public.reserved_usernames));
+alter table public.reserved_usernames enable row level security;
+revoke all on table public.reserved_usernames from anon, authenticated;
+
+create or replace function public.validate_profile_username()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.username is null then
+    return new;
+  end if;
+
+  new.username := lower(trim(new.username));
+
+  if new.username !~ '^[a-z0-9_.]{3,24}$' then
+    raise exception 'INVALID_USERNAME';
+  end if;
+
+  if exists (
+    select 1
+    from public.reserved_usernames r
+    where r.username = new.username
+  ) then
+    raise exception 'RESERVED_USERNAME';
+  end if;
+
+  return new;
+end;
+$$;
+
+revoke all on function public.validate_profile_username() from public, anon, authenticated;
+
+drop trigger if exists trg_validate_profile_username on public.profiles;
+create trigger trg_validate_profile_username
+  before insert or update of username on public.profiles
+  for each row execute procedure public.validate_profile_username();
 
 -- Role helper functions (is_admin() already exists in schema.sql — kept,
 -- and now also true for role='admin' so both flags stay in sync in either
@@ -80,7 +133,8 @@ alter table public.profiles
 create or replace function public.is_admin()
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
   select coalesce(
@@ -92,7 +146,8 @@ $$;
 create or replace function public.is_doctor()
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
   select coalesce(
@@ -100,6 +155,12 @@ as $$
     false
   );
 $$;
+
+
+revoke all on function public.is_admin() from public, anon;
+revoke all on function public.is_doctor() from public, anon;
+grant execute on function public.is_admin() to authenticated;
+grant execute on function public.is_doctor() to authenticated;
 
 -- SECURITY FIX: schema.sql's existing "Users can update their own profile"
 -- policy has a USING clause but no WITH CHECK, which means it does NOT
@@ -113,7 +174,8 @@ $$;
 create or replace function public.prevent_self_role_escalation()
 returns trigger
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 begin
   if (new.role is distinct from old.role or new.is_admin is distinct from old.is_admin) then
@@ -130,16 +192,71 @@ create trigger trg_prevent_self_role_escalation
   before update on public.profiles
   for each row execute procedure public.prevent_self_role_escalation();
 
-create policy "Anyone can view public profile fields"
+
+-- Browser-facing roles must never have broad UPDATE on profiles.
+revoke insert, delete, update on table public.profiles from anon, authenticated;
+grant select on table public.profiles to authenticated;
+grant update (
+  full_name,
+  username,
+  avatar_url,
+  bio,
+  timezone,
+  onboarding_current_step,
+  onboarding_completed_at,
+  updated_at
+) on table public.profiles to authenticated;
+
+
+alter policy "Users can update their own profile"
+  on public.profiles
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
+-- Admin-only RPC for assigning user/doctor/admin roles without exposing the
+-- sensitive columns to general UPDATE privileges.
+create or replace function public.set_user_role(
+  p_user_id uuid,
+  p_role public.user_role
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'FORBIDDEN';
+  end if;
+
+  update public.profiles
+  set role = p_role,
+      is_admin = (p_role = 'admin'),
+      updated_at = now()
+  where id = p_user_id;
+
+  if not found then
+    raise exception 'USER_NOT_FOUND';
+  end if;
+end;
+$$;
+
+revoke all on function public.set_user_role(uuid, public.user_role)
+  from public, anon;
+grant execute on function public.set_user_role(uuid, public.user_role)
+  to authenticated;
+
+-- Trigger functions are not API endpoints.
+revoke all on function public.prevent_self_role_escalation()
+  from public, anon, authenticated;
+
+create policy "Authenticated users can view public profiles"
   on public.profiles for select
-  using (true);
--- Note: this SELECT policy only controls ROW visibility, not COLUMN
--- visibility — Postgres RLS is row-level. Every client query in this
--- codebase explicitly lists safe columns (id, full_name, username,
--- avatar_url, bio, role) and never `select *` against profiles from
--- untrusted contexts; email/phone/medications/etc. live in auth.users or
--- body_profiles, which have their own, much stricter policies below —
--- so this broad row policy does not expose sensitive data.
+  to authenticated
+  using (deleted_at is null);
+-- Profiles deliberately contain no medical data or email/phone values.
+-- Health data remains in stricter tables below. Client code should still
+-- request only the public identity fields it needs.
 
 
 -- ───────────────────────────────────────────────────────────────────────
@@ -147,12 +264,12 @@ create policy "Anyone can view public profile fields"
 -- ───────────────────────────────────────────────────────────────────────
 create table if not exists public.user_privacy_settings (
   user_id uuid primary key references auth.users (id) on delete cascade,
-  share_meals_with_friends boolean not null default true,
+  share_meals_with_friends boolean not null default false,
   share_meal_photos_with_friends boolean not null default false,
-  share_calories_with_friends boolean not null default true,
-  share_steps_with_friends boolean not null default true,
-  share_activity_with_friends boolean not null default true,
-  share_program_progress_with_friends boolean not null default true,
+  share_calories_with_friends boolean not null default false,
+  share_steps_with_friends boolean not null default false,
+  share_activity_with_friends boolean not null default false,
+  share_program_progress_with_friends boolean not null default false,
   share_weight_with_friends boolean not null default false,
   updated_at timestamptz not null default now()
 );
@@ -174,7 +291,8 @@ create policy "Users manage their own privacy settings"
 create or replace function public.get_or_create_privacy_settings(p_user_id uuid)
 returns public.user_privacy_settings
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.user_privacy_settings;
@@ -229,7 +347,11 @@ alter table public.friendships enable row level security;
 
 create policy "Participants can view their own friendship rows"
   on public.friendships for select
-  using (auth.uid() = requester_id or auth.uid() = addressee_id);
+  to authenticated
+  using (
+    (auth.uid() = requester_id or auth.uid() = addressee_id)
+    and (status <> 'blocked' or blocked_by = auth.uid())
+  );
 
 -- No direct client insert/update/delete policy — every state change goes
 -- through the SECURITY DEFINER functions below, so self-friending,
@@ -239,7 +361,8 @@ create policy "Participants can view their own friendship rows"
 create or replace function public.send_friend_request(p_addressee_id uuid)
 returns public.friendships
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.friendships;
@@ -261,7 +384,8 @@ $$;
 create or replace function public.respond_friend_request(p_friendship_id uuid, p_accept boolean)
 returns public.friendships
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.friendships;
@@ -282,7 +406,8 @@ $$;
 create or replace function public.cancel_or_remove_friendship(p_friendship_id uuid)
 returns void
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 begin
   delete from public.friendships
@@ -295,7 +420,8 @@ $$;
 create or replace function public.block_user(p_target_id uuid)
 returns public.friendships
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.friendships;
@@ -327,30 +453,48 @@ grant execute on function public.block_user(uuid) to authenticated;
 create or replace function public.are_friends(p_user_a uuid, p_user_b uuid)
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
-  select exists (
-    select 1 from public.friendships
-    where status = 'accepted'
-      and ((requester_id = p_user_a and addressee_id = p_user_b)
-        or (requester_id = p_user_b and addressee_id = p_user_a))
-  );
+  select case
+    when auth.uid() is null
+      or (auth.uid() <> p_user_a and auth.uid() <> p_user_b)
+    then false
+    else exists (
+      select 1 from public.friendships
+      where status = 'accepted'
+        and ((requester_id = p_user_a and addressee_id = p_user_b)
+          or (requester_id = p_user_b and addressee_id = p_user_a))
+    )
+  end;
 $$;
 
 create or replace function public.is_blocked(p_user_a uuid, p_user_b uuid)
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
-  select exists (
-    select 1 from public.friendships
-    where status = 'blocked'
-      and ((requester_id = p_user_a and addressee_id = p_user_b)
-        or (requester_id = p_user_b and addressee_id = p_user_a))
-  );
+  select case
+    when auth.uid() is null
+      or (auth.uid() <> p_user_a and auth.uid() <> p_user_b)
+    then false
+    else exists (
+      select 1 from public.friendships
+      where status = 'blocked'
+        and ((requester_id = p_user_a and addressee_id = p_user_b)
+          or (requester_id = p_user_b and addressee_id = p_user_a))
+    )
+  end;
 $$;
+
+
+revoke all on function public.are_friends(uuid, uuid) from public, anon;
+revoke all on function public.is_blocked(uuid, uuid) from public, anon;
+grant execute on function public.are_friends(uuid, uuid) to authenticated;
+grant execute on function public.is_blocked(uuid, uuid) to authenticated;
 
 
 -- ───────────────────────────────────────────────────────────────────────
@@ -359,7 +503,8 @@ $$;
 create or replace function public.search_users(p_query text)
 returns table (id uuid, username text, full_name text, avatar_url text)
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
   select p.id, p.username, p.full_name, p.avatar_url
@@ -387,7 +532,8 @@ grant execute on function public.search_users(text) to authenticated;
 create or replace function public.check_username_available(p_username text)
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
   select p_username ~ '^[a-z0-9_.]{3,24}$'
@@ -395,8 +541,8 @@ as $$
     and not exists (select 1 from public.profiles where lower(username) = lower(p_username));
 $$;
 
-revoke all on function public.check_username_available(text) from public, anon;
-grant execute on function public.check_username_available(text) to authenticated;
+revoke all on function public.check_username_available(text) from public;
+grant execute on function public.check_username_available(text) to anon, authenticated;
 
 
 -- ───────────────────────────────────────────────────────────────────────
@@ -427,7 +573,8 @@ create policy "Doctor and patient can view their own relationship rows"
 create or replace function public.request_doctor_connection(p_doctor_id uuid)
 returns public.doctor_patient_relationships
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.doctor_patient_relationships;
@@ -452,7 +599,8 @@ $$;
 create or replace function public.respond_doctor_connection(p_relationship_id uuid, p_accept boolean)
 returns public.doctor_patient_relationships
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.doctor_patient_relationships;
@@ -474,7 +622,8 @@ $$;
 create or replace function public.end_doctor_connection(p_relationship_id uuid)
 returns public.doctor_patient_relationships
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_row public.doctor_patient_relationships;
@@ -501,14 +650,26 @@ grant execute on function public.end_doctor_connection(uuid) to authenticated;
 create or replace function public.has_active_doctor_relationship(p_doctor_id uuid, p_patient_id uuid)
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
-  select exists (
-    select 1 from public.doctor_patient_relationships
-    where doctor_id = p_doctor_id and patient_id = p_patient_id and status = 'active'
-  );
+  select case
+    when auth.uid() is null
+      or (auth.uid() <> p_doctor_id and auth.uid() <> p_patient_id)
+    then false
+    else exists (
+      select 1 from public.doctor_patient_relationships
+      where doctor_id = p_doctor_id and patient_id = p_patient_id and status = 'active'
+    )
+  end;
 $$;
+
+
+revoke all on function public.has_active_doctor_relationship(uuid, uuid)
+  from public, anon;
+grant execute on function public.has_active_doctor_relationship(uuid, uuid)
+  to authenticated;
 
 -- A doctor may see the identity (id/username/full_name/avatar) of every
 -- patient they have an active or pending relationship with — separate
@@ -556,7 +717,8 @@ alter table public.messages enable row level security;
 create or replace function public.is_conversation_participant(p_conversation_id uuid)
 returns boolean
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
   select exists (
@@ -564,6 +726,12 @@ as $$
     where conversation_id = p_conversation_id and user_id = auth.uid()
   );
 $$;
+
+
+revoke all on function public.is_conversation_participant(uuid)
+  from public, anon;
+grant execute on function public.is_conversation_participant(uuid)
+  to authenticated;
 
 create policy "Participants can view their conversations"
   on public.conversations for select
@@ -600,7 +768,8 @@ create policy "Participants can send messages if not blocked"
 create or replace function public.get_or_create_direct_conversation(p_other_user_id uuid)
 returns uuid
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_conversation_id uuid;
@@ -691,7 +860,7 @@ create table if not exists public.daily_targets (
   is_current boolean not null default true
 );
 
-create index if not exists daily_targets_user_current_idx
+create unique index if not exists daily_targets_user_current_idx
   on public.daily_targets (user_id) where is_current;
 
 alter table public.daily_targets enable row level security;
@@ -722,7 +891,8 @@ create policy "Doctor can insert an override target for their active patient"
 create or replace function public.unset_previous_daily_target()
 returns trigger
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 begin
   if new.is_current then
@@ -737,6 +907,10 @@ drop trigger if exists trg_unset_previous_daily_target on public.daily_targets;
 create trigger trg_unset_previous_daily_target
   before insert on public.daily_targets
   for each row execute procedure public.unset_previous_daily_target();
+
+
+revoke all on function public.unset_previous_daily_target()
+  from public, anon, authenticated;
 
 
 -- ───────────────────────────────────────────────────────────────────────
@@ -789,7 +963,7 @@ create policy "Friends can view shared meal logs"
   using (
     shared_with_friends
     and public.are_friends(user_id, auth.uid())
-    and coalesce((select share_meals_with_friends from public.user_privacy_settings where user_id = meal_logs.user_id), true)
+    and coalesce((select share_meals_with_friends from public.user_privacy_settings where user_id = meal_logs.user_id), false)
   );
 
 create policy "Doctor can view patient meal logs"
@@ -803,14 +977,24 @@ create policy "Users manage items of their own meal logs"
 
 create policy "Readers of a meal log can view its items"
   on public.meal_log_items for select
+  to authenticated
   using (exists (
-    select 1 from public.meal_logs m where m.id = meal_log_id
-    -- Reuses the exact same visibility rules as meal_logs itself.
-    and (
-      m.user_id = auth.uid()
-      or (m.shared_with_friends and public.are_friends(m.user_id, auth.uid()))
-      or public.has_active_doctor_relationship(auth.uid(), m.user_id)
-    )
+    select 1 from public.meal_logs m
+    where m.id = meal_log_id
+      and (
+        m.user_id = auth.uid()
+        or (
+          m.shared_with_friends
+          and public.are_friends(m.user_id, auth.uid())
+          and coalesce(
+            (select ups.share_meals_with_friends
+             from public.user_privacy_settings ups
+             where ups.user_id = m.user_id),
+            false
+          )
+        )
+        or public.has_active_doctor_relationship(auth.uid(), m.user_id)
+      )
   ));
 
 
@@ -834,8 +1018,9 @@ create table if not exists public.activity_library (
 
 alter table public.activity_library enable row level security;
 
-create policy "Anyone authenticated can view active activities"
+create policy "Authenticated users can view active activities"
   on public.activity_library for select
+  to authenticated
   using (active or public.is_admin());
 
 create policy "Admins manage the activity library"
@@ -905,7 +1090,7 @@ create policy "Friends can view shared activity logs"
   using (
     shared_with_friends
     and public.are_friends(user_id, auth.uid())
-    and coalesce((select share_activity_with_friends from public.user_privacy_settings where user_id = activity_logs.user_id), true)
+    and coalesce((select share_activity_with_friends from public.user_privacy_settings where user_id = activity_logs.user_id), false)
   );
 
 create policy "Doctor can view patient activity logs"
@@ -954,7 +1139,7 @@ create policy "Friends can view shared step logs"
   on public.step_logs for select
   using (
     public.are_friends(user_id, auth.uid())
-    and coalesce((select share_steps_with_friends from public.user_privacy_settings where user_id = step_logs.user_id), true)
+    and coalesce((select share_steps_with_friends from public.user_privacy_settings where user_id = step_logs.user_id), false)
   );
 
 create policy "Doctor can view patient step logs"
@@ -1036,9 +1221,42 @@ create table if not exists public.nutrition_program_item_completions (
 );
 
 -- Now that nutrition_program_items exists, wire up the FK deferred in §9.
-alter table public.meal_logs
-  add constraint meal_logs_program_item_fk
-  foreign key (program_item_id) references public.nutrition_program_items (id) on delete set null;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'meal_logs_program_item_fk'
+      and conrelid = 'public.meal_logs'::regclass
+  ) then
+    alter table public.meal_logs
+      add constraint meal_logs_program_item_fk
+      foreign key (program_item_id)
+      references public.nutrition_program_items (id)
+      on delete set null;
+  end if;
+end
+$$;
+
+-- A meal may only reference a program item from the same user's assigned program.
+alter policy "Users manage their own meal logs"
+  on public.meal_logs
+  using (auth.uid() = user_id)
+  with check (
+    auth.uid() = user_id
+    and (
+      program_item_id is null
+      or exists (
+        select 1
+        from public.nutrition_program_items i
+        join public.nutrition_program_days d on d.id = i.program_day_id
+        join public.nutrition_programs p on p.id = d.program_id
+        where i.id = meal_logs.program_item_id
+          and p.patient_id = auth.uid()
+      )
+    )
+  );
+
 
 alter table public.nutrition_programs enable row level security;
 alter table public.nutrition_program_days enable row level security;
@@ -1092,8 +1310,29 @@ create policy "Doctor manages items of programs they own"
 
 create policy "Patient manages their own item completions"
   on public.nutrition_program_item_completions for all
-  using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+  to authenticated
+  using (
+    auth.uid() = user_id
+    and exists (
+      select 1
+      from public.nutrition_program_items i
+      join public.nutrition_program_days d on d.id = i.program_day_id
+      join public.nutrition_programs p on p.id = d.program_id
+      where i.id = program_item_id
+        and p.patient_id = auth.uid()
+    )
+  )
+  with check (
+    auth.uid() = user_id
+    and exists (
+      select 1
+      from public.nutrition_program_items i
+      join public.nutrition_program_days d on d.id = i.program_day_id
+      join public.nutrition_programs p on p.id = d.program_id
+      where i.id = program_item_id
+        and p.patient_id = auth.uid()
+    )
+  );
 
 create policy "Doctor can view patient item completions"
   on public.nutrition_program_item_completions for select
@@ -1116,7 +1355,8 @@ create or replace function public.assign_program_from_template(
 )
 returns uuid
 language plpgsql
-security definer set search_path = public
+security definer
+set search_path = ''
 as $$
 declare
   v_template public.nutrition_programs;
@@ -1124,14 +1364,42 @@ declare
   v_day record;
   v_new_day_id uuid;
 begin
-  if not public.is_doctor() then raise exception 'FORBIDDEN'; end if;
+  if not public.is_doctor() then
+    raise exception 'FORBIDDEN';
+  end if;
+
   if not public.has_active_doctor_relationship(auth.uid(), p_patient_id) then
     raise exception 'NO_ACTIVE_RELATIONSHIP';
   end if;
 
-  select * into v_template from public.nutrition_programs
-  where id = p_template_id and is_template = true and doctor_id = auth.uid();
-  if v_template is null then raise exception 'TEMPLATE_NOT_FOUND'; end if;
+  if p_template_id is null then
+    insert into public.nutrition_programs (
+      patient_id, doctor_id, title, start_date, end_date,
+      status, updated_by
+    )
+    values (
+      p_patient_id, auth.uid(), '30-Day Nutrition Program',
+      p_start_date, p_start_date + 29, 'draft', auth.uid()
+    )
+    returning id into v_new_program_id;
+
+    insert into public.nutrition_program_days (program_id, day_number)
+    select v_new_program_id, gs
+    from generate_series(1, 30) as gs;
+
+    return v_new_program_id;
+  end if;
+
+  select *
+  into v_template
+  from public.nutrition_programs
+  where id = p_template_id
+    and is_template = true
+    and doctor_id = auth.uid();
+
+  if v_template is null then
+    raise exception 'TEMPLATE_NOT_FOUND';
+  end if;
 
   insert into public.nutrition_programs (
     patient_id, doctor_id, title, start_date, end_date, goal,
@@ -1139,20 +1407,33 @@ begin
   ) values (
     p_patient_id, auth.uid(), v_template.title, p_start_date, p_start_date + 29, v_template.goal,
     v_template.daily_calorie_target, v_template.general_instructions, 'draft', v_template.id, auth.uid()
-  ) returning id into v_new_program_id;
+  )
+  returning id into v_new_program_id;
 
-  for v_day in select * from public.nutrition_program_days where program_id = p_template_id order by day_number loop
-    insert into public.nutrition_program_days (program_id, day_number, water_goal_ml, movement_suggestion, doctor_instructions)
-    values (v_new_program_id, v_day.day_number, v_day.water_goal_ml, v_day.movement_suggestion, v_day.doctor_instructions)
+  for v_day in
+    select *
+    from public.nutrition_program_days
+    where program_id = p_template_id
+    order by day_number
+  loop
+    insert into public.nutrition_program_days (
+      program_id, day_number, water_goal_ml, movement_suggestion, doctor_instructions
+    )
+    values (
+      v_new_program_id, v_day.day_number, v_day.water_goal_ml,
+      v_day.movement_suggestion, v_day.doctor_instructions
+    )
     returning id into v_new_day_id;
 
     insert into public.nutrition_program_items (
       program_day_id, meal_type, title, description, suggested_foods,
       portion_guidance, approximate_calories, notes, image_path, time_suggestion, sort_order
     )
-    select v_new_day_id, meal_type, title, description, suggested_foods,
+    select
+      v_new_day_id, meal_type, title, description, suggested_foods,
       portion_guidance, approximate_calories, notes, image_path, time_suggestion, sort_order
-    from public.nutrition_program_items where program_day_id = v_day.id;
+    from public.nutrition_program_items
+    where program_day_id = v_day.id;
   end loop;
 
   return v_new_program_id;
@@ -1232,7 +1513,8 @@ returns table (
   weight_kg numeric
 )
 language sql
-security definer set search_path = public
+security definer
+set search_path = ''
 stable
 as $$
   -- SECURITY: this is SECURITY DEFINER, which bypasses RLS on every table
@@ -1287,7 +1569,7 @@ grant execute on function public.get_daily_summary(uuid, date, text) to authenti
 -- ───────────────────────────────────────────────────────────────────────
 create table if not exists public.food_scan_events (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
   created_at timestamptz not null default now()
 );
 
@@ -1299,6 +1581,67 @@ alter table public.food_scan_events enable row level security;
 -- service_role key (bypasses RLS). No policy is granted to
 -- anon/authenticated at all, so a direct client read/write is refused.
 
+
+-- ───────────────────────────────────────────────────────────────────────
+-- 16B. EXPLICIT DATA-API PRIVILEGES
+-- RLS controls rows, while GRANT controls which operations are reachable.
+-- Supabase public-schema defaults can be broad, so make this migration
+-- explicit and least-privilege.
+-- ───────────────────────────────────────────────────────────────────────
+
+revoke all on table
+  public.user_privacy_settings,
+  public.friendships,
+  public.doctor_patient_relationships,
+  public.conversations,
+  public.conversation_participants,
+  public.messages,
+  public.body_profiles,
+  public.daily_targets,
+  public.meal_logs,
+  public.meal_log_items,
+  public.activity_library,
+  public.activity_tasks,
+  public.activity_logs,
+  public.step_logs,
+  public.weight_logs,
+  public.nutrition_programs,
+  public.nutrition_program_days,
+  public.nutrition_program_items,
+  public.nutrition_program_item_completions,
+  public.doctor_notes,
+  public.notification_preferences,
+  public.food_scan_events
+from anon, authenticated;
+
+grant select, insert, update, delete on table
+  public.user_privacy_settings,
+  public.body_profiles,
+  public.meal_logs,
+  public.meal_log_items,
+  public.activity_tasks,
+  public.activity_logs,
+  public.step_logs,
+  public.weight_logs,
+  public.nutrition_programs,
+  public.nutrition_program_days,
+  public.nutrition_program_items,
+  public.nutrition_program_item_completions,
+  public.doctor_notes,
+  public.notification_preferences
+to authenticated;
+
+grant select on table public.friendships to authenticated;
+grant select on table public.doctor_patient_relationships to authenticated;
+grant select on table public.conversations to authenticated;
+grant select on table public.conversation_participants to authenticated;
+grant update (last_read_at) on table public.conversation_participants to authenticated;
+grant select, insert on table public.messages to authenticated;
+grant select on table public.daily_targets to authenticated;
+grant insert on table public.daily_targets to authenticated;
+grant select, insert, update, delete on table public.activity_library to authenticated;
+
+-- food_scan_events is service-role only: no anon/authenticated grants.
 
 -- ───────────────────────────────────────────────────────────────────────
 -- 17. STORAGE BUCKETS
@@ -1359,8 +1702,26 @@ create policy "Doctor manages program images they own"
   with check (bucket_id = 'program-images' and (storage.foldername(name))[1] = auth.uid()::text);
 
 
+create policy "Patient can view images referenced by their program items"
+  on storage.objects for select
+  to authenticated
+  using (
+    bucket_id = 'program-images'
+    and exists (
+      select 1
+      from public.nutrition_program_items i
+      join public.nutrition_program_days d on d.id = i.program_day_id
+      join public.nutrition_programs p on p.id = d.program_id
+      where i.image_path = storage.objects.name
+        and p.patient_id = auth.uid()
+    )
+  );
+
+
+COMMIT;
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- END OF MIGRATION — see PHASE_G_SOCIAL_NUTRITION_IMPLEMENTATION_REPORT.md
 -- for the RLS test plan run against this schema and exactly which tables
 -- above are wired to working application code vs. prepared for later use.
--- ═══════════════════════════════════════════════════════════════════════
+-- ════════════════════════════════════════

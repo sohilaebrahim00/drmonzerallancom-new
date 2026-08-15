@@ -1,36 +1,36 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  AlertTriangle,
+  Warning,
   Bell,
-  CalendarClock,
+  Calendar,
   CalendarCheck,
   Camera,
-  CheckCircle2,
+  CheckCircle,
   CreditCard,
   Download,
-  Droplet,
+  Drop,
   FileText,
-  HeartPulse,
-  HelpCircle,
+  Heartbeat,
+  Question,
   Info,
   ListChecks,
-  Loader2,
-  LogOut,
-  MessageCircle,
+  CircleNotch,
+  SignOut,
+  ChatCircleDots,
   PhoneCall,
-  Settings2,
+  Sliders,
   Shield,
-  Sparkles,
+  Sparkle,
   Star,
   Stethoscope,
   Sun,
-  Trash2,
-  TrendingUp,
+  Trash,
+  ChartLineUp,
   User as UserIcon,
-  Users,
-  Zap,
-} from "lucide-react";
+  UsersThree,
+  Lightning,
+} from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { NativeListRow } from "@/app-native/components/NativeListRow";
@@ -131,13 +131,13 @@ export default function NativeAccount() {
           </Button>
           <Button asChild variant="outline" className="cursor-pointer">
             <Link to="/join">
-              <Sparkles className="h-4 w-4" /> Create Account
+              <Sparkle className="h-4 w-4" /> Create Account
             </Link>
           </Button>
         </div>
 
         <div className="mt-8 space-y-0.5 rounded-2xl bg-app-surface p-1.5 text-left">
-          <NativeListRow icon={HelpCircle} label="Help & Support" to="/account/help" />
+          <NativeListRow icon={Question} label="Help & Support" to="/account/help" />
           <NativeListRow icon={Info} label="About Dr. Monzer Allan" to="/about" />
           <NativeListRow icon={Shield} label="Privacy & Security" to="/privacy-policy" />
         </div>
@@ -167,23 +167,23 @@ export default function NativeAccount() {
 
       <SectionLabel>Health</SectionLabel>
       <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
-        <NativeListRow icon={HeartPulse} label="My Health" to="/my-health" />
-        <NativeListRow icon={TrendingUp} label="Progress" to="/progress" />
-        <NativeListRow icon={Droplet} label="Hydration" to="/hydration" />
+        <NativeListRow icon={Heartbeat} label="My Health" to="/my-health" />
+        <NativeListRow icon={ChartLineUp} label="Progress" to="/progress" />
+        <NativeListRow icon={Drop} label="Hydration" to="/hydration" />
         <NativeListRow icon={ListChecks} label="Daily Log" to="/daily-log" />
-        <NativeListRow icon={CheckCircle2} label="Daily Check-In" to="/daily-checkin" />
+        <NativeListRow icon={CheckCircle} label="Daily Check-In" to="/daily-checkin" />
         <NativeListRow icon={Star} label="Favorites & Custom Meals" to="/favorites" />
         <NativeListRow icon={Camera} label="Progress Photos" to="/progress-photos" />
-        <NativeListRow icon={Zap} label="Movement History" to="/activity-history" />
+        <NativeListRow icon={Lightning} label="Movement History" to="/activity-history" />
       </div>
 
       <SectionLabel>Care</SectionLabel>
       <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
         <NativeListRow icon={CalendarCheck} label="My Program" to="/my-program" />
         <NativeListRow icon={Stethoscope} label="Doctor Connection" to="/account/help" />
-        <NativeListRow icon={CalendarClock} label="Consultations" to="/consultations" />
+        <NativeListRow icon={Calendar} label="Consultations" to="/consultations" />
         <NativeListRow
-          icon={Sparkles}
+          icon={Sparkle}
           label="Membership"
           value={packageInfo?.name ?? "Free account"}
           to="/consultations"
@@ -193,8 +193,8 @@ export default function NativeAccount() {
 
       <SectionLabel>Social</SectionLabel>
       <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
-        <NativeListRow icon={Users} label="Friends" to="/social" />
-        <NativeListRow icon={MessageCircle} label="Messages" to="/social" />
+        <NativeListRow icon={UsersThree} label="Friends" to="/social" />
+        <NativeListRow icon={ChatCircleDots} label="Messages" to="/social" />
         <NativeListRow icon={Shield} label="Privacy & Sharing" to="/account/privacy" />
       </div>
 
@@ -216,10 +216,10 @@ export default function NativeAccount() {
       <SectionLabel>App</SectionLabel>
       <div className="space-y-0.5 rounded-2xl bg-app-surface p-1.5">
         <NativeListRow icon={Bell} label="Notifications" to="/notifications" />
-        <NativeListRow icon={Settings2} label="Notification Settings" to="/account/notifications" />
+        <NativeListRow icon={Sliders} label="Notification Settings" to="/account/notifications" />
         <NativeListRow icon={Sun} label="Prayer Settings" to="/account/prayer-settings" />
         <NativeListRow icon={Shield} label="Privacy & Security" to="/privacy-policy" />
-        <NativeListRow icon={HelpCircle} label="Help & Support" to="/account/help" />
+        <NativeListRow icon={Question} label="Help & Support" to="/account/help" />
         <NativeListRow icon={Info} label="About Dr. Monzer Allan" to="/about" />
         <NativeListRow icon={FileText} label="Terms of Service" to="/terms" />
       </div>
@@ -232,13 +232,13 @@ export default function NativeAccount() {
           onClick={handleExport}
           right={
             exporting ? (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <CircleNotch className="h-4 w-4 animate-spin text-muted-foreground" />
             ) : undefined
           }
           chevron={!exporting}
         />
         <NativeListRow
-          icon={Trash2}
+          icon={Trash}
           label="Delete Account"
           onClick={() => setDeleteSheetOpen(true)}
           danger
@@ -247,7 +247,7 @@ export default function NativeAccount() {
 
       <div className="mt-4 rounded-2xl bg-app-surface p-1.5">
         <NativeListRow
-          icon={LogOut}
+          icon={SignOut}
           label="Sign Out"
           onClick={() => signOut()}
           danger
@@ -263,7 +263,7 @@ export default function NativeAccount() {
       >
         <div className="space-y-3">
           <div className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <Warning className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
               An active paid membership isn&apos;t automatically cancelled by this — contact support
               first if you have one.
@@ -281,7 +281,7 @@ export default function NativeAccount() {
             className="w-full cursor-pointer justify-center"
           >
             {deleting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <CircleNotch className="h-4 w-4 animate-spin" />
             ) : (
               "Permanently Delete My Account"
             )}

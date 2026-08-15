@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Camera, ImagePlus, Loader2, RotateCcw, Sparkles } from "lucide-react";
+import { Camera, Image, CircleNotch, ArrowCounterClockwise, Sparkle } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ import {
   scanFood,
   type CompressedImage,
 } from "@/services/foodScanService";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_SCAN_RESULT } from "@/dev/demoFixtures";
 
 type Screen = "idle" | "preview" | "analyzing" | "error";
 
@@ -64,6 +66,17 @@ export default function NativeFoodScanner() {
   }, [user]);
 
   async function handleCapture(source: "camera" | "gallery") {
+    // DEV-ONLY demo preview — skips the real camera/gallery picker AND the
+    // real Gemini Edge Function entirely, going straight to a canned,
+    // clearly-labelled result (see DEMO_SCAN_RESULT.notes) via the exact
+    // same review/save screen every other logging path uses.
+    if (getDemoMode()) {
+      navigate("/food-scanner/result", {
+        state: { result: DEMO_SCAN_RESULT, programItemId },
+        replace: true,
+      });
+      return;
+    }
     const photo = source === "camera" ? await capturePhoto() : await pickFromGallery();
     if (!photo) return;
     const compressed = await compressImage(photo.dataUrl);
@@ -99,7 +112,7 @@ export default function NativeFoodScanner() {
         back
         className="flex min-h-[50vh] items-center justify-center"
       >
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }
@@ -149,7 +162,7 @@ export default function NativeFoodScanner() {
               variant="outline"
               className="w-full cursor-pointer"
             >
-              <ImagePlus className="h-4 w-4" /> Choose From Gallery
+              <Image className="h-4 w-4" /> Choose From Gallery
             </Button>
             <Link
               to="/food-scanner/search"
@@ -188,7 +201,7 @@ export default function NativeFoodScanner() {
             />
             {screen === "analyzing" && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-navy/65 text-white backdrop-blur-[2px]">
-                <Loader2 className="h-7 w-7 animate-spin" />
+                <CircleNotch className="h-7 w-7 animate-spin" />
                 <p className="text-sm font-semibold transition-opacity duration-300">
                   {ANALYZING_STAGES[stageIndex]}
                 </p>
@@ -198,10 +211,10 @@ export default function NativeFoodScanner() {
           {screen === "preview" && (
             <div className="mt-4 flex gap-3">
               <Button onClick={handleRetake} variant="outline" className="flex-1 cursor-pointer">
-                <RotateCcw className="h-4 w-4" /> Retake
+                <ArrowCounterClockwise className="h-4 w-4" /> Retake
               </Button>
               <Button onClick={handleAnalyze} className="flex-1 cursor-pointer">
-                <Sparkles className="h-4 w-4" /> Analyze
+                <Sparkle className="h-4 w-4" /> Analyze
               </Button>
             </div>
           )}

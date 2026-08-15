@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import type { FoodItem } from "@/services/foodScanService";
+import { getDemoMode, DEMO_USER_ID } from "@/dev/demoMode";
+import { DEMO_MEALS_TODAY } from "@/dev/demoFixtures";
 
 export interface MealLogItemInput {
   name: string;
@@ -51,6 +53,8 @@ function totals(items: MealLogItemInput[]) {
 export async function saveMealLog(
   input: SaveMealInput,
 ): Promise<{ ok: true; mealLogId: string } | { ok: false; error: string }> {
+  // DEV-ONLY demo preview — a believable success with no Supabase write at all.
+  if (getDemoMode()) return { ok: true, mealLogId: `demo-meal-${Date.now()}` };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -158,6 +162,7 @@ async function fetchMealLogsInRange(
 
 /** `date` boundaries are computed in the caller's local timezone (browser Date), then sent as UTC ISO strings. */
 export async function getMyMealsForDay(date: Date): Promise<MealLog[]> {
+  if (getDemoMode()) return DEMO_MEALS_TODAY;
   if (!supabase) return [];
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -172,6 +177,7 @@ export async function getMyMealsForDay(date: Date): Promise<MealLog[]> {
 }
 
 export async function getMyMealsInRange(startDate: Date, endDate: Date): Promise<MealLog[]> {
+  if (getDemoMode()) return DEMO_MEALS_TODAY;
   if (!supabase) return [];
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -184,5 +190,9 @@ export async function getPatientMealsInRange(
   startDate: Date,
   endDate: Date,
 ): Promise<MealLog[]> {
+  // DEV-ONLY demo preview — only Sarah (the demo patient) has fixture meal
+  // history; other demo patients (Ahmed/Mona) correctly show no logs here,
+  // matching their DEMO_PATIENT_OVERVIEWS figures on the doctor dashboard.
+  if (getDemoMode()) return patientId === DEMO_USER_ID ? DEMO_MEALS_TODAY : [];
   return fetchMealLogsInRange(patientId, startDate.toISOString(), endDate.toISOString());
 }

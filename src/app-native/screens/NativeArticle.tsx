@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
-import { Clock } from "lucide-react";
+import { Clock } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { getArticleBySlug, estimateReadingTime } from "@/data/articles";

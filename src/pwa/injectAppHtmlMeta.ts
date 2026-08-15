@@ -1,4 +1,6 @@
 import { getAppMode } from "@/hooks/use-native-platform";
+import { isClientDemoBuild } from "@/dev/demoMode";
+import { injectClientDemoHtmlMeta } from "@/dev/injectClientDemoHtmlMeta";
 
 /**
  * index.html is one shared file for both the marketing build and the app
@@ -10,8 +12,23 @@ import { getAppMode } from "@/hooks/use-native-platform";
  * story if it ever needs one).
  */
 export function injectAppHtmlMeta() {
-  if (getAppMode() !== "PWA_WEB_APP") return;
   if (typeof document === "undefined") return;
+
+  // The client-demo build (demo.monzerallan.com) is a separate deployment
+  // target from the real Web App — checked first and returns early, so it
+  // never falls through to the PWA_WEB_APP branch below (which would add a
+  // manifest link/apple-touch-icon meant for app.monzerallan.com). Its only
+  // needs here are: a distinct tab title, and noindex/nofollow so it's
+  // never picked up by a search engine (see also public robots.txt handling
+  // in scripts/write-client-demo-assets.cjs — this is the runtime layer for
+  // crawlers that execute JS; that script is the authoritative layer for
+  // ones that don't).
+  if (isClientDemoBuild()) {
+    injectClientDemoHtmlMeta();
+    return;
+  }
+
+  if (getAppMode() !== "PWA_WEB_APP") return;
 
   const head = document.head;
 

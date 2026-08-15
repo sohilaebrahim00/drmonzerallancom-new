@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bot, HeartPulse, Sparkles } from "lucide-react";
+import { Robot, Heartbeat, Sparkle } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { hapticTap } from "@/lib/haptics";
@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils";
 
 const SLIDES = [
   {
-    icon: Sparkles,
+    icon: Sparkle,
     title: "Your Nutrition, Tracked",
     body: "Scan meals, see your calories, and follow a program built around your goals.",
   },
   {
-    icon: HeartPulse,
+    icon: Heartbeat,
     title: "A Real Doctor Behind It",
     body: "Dr. Monzer Allan can assign a personalized 30-day nutrition program and review your progress.",
   },
   {
-    icon: Bot,
+    icon: Robot,
     title: "Friends & Support",
     body: "Connect with friends, share progress if you choose, and get help from the AI Concierge.",
   },

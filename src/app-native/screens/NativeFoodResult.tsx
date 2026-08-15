@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Camera, Loader2, MessageCircle, ShieldAlert, Star, Trash2 } from "lucide-react";
+import {
+  Camera,
+  CircleNotch,
+  ChatCircleDots,
+  ShieldWarning,
+  Star,
+  Trash,
+} from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -17,6 +24,8 @@ import { getMyPrivacySettings } from "@/services/privacyService";
 import { saveFavorite } from "@/services/favoritesService";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_PROGRAM_DAY } from "@/dev/demoFixtures";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 const MEAL_TYPES: { value: MealType; label: string }[] = [
@@ -74,7 +83,13 @@ export default function NativeFoodResult() {
   }, [user]);
 
   useEffect(() => {
-    if (!programItemId || !supabase) return;
+    if (!programItemId) return;
+    if (getDemoMode()) {
+      const item = DEMO_PROGRAM_DAY.items.find((i) => i.id === programItemId);
+      setPlannedMeal(item ? { title: item.title, suggested_foods: item.suggested_foods } : null);
+      return;
+    }
+    if (!supabase) return;
     supabase
       .from("nutrition_program_items")
       .select("title, suggested_foods")
@@ -260,7 +275,7 @@ export default function NativeFoodResult() {
               aria-label={`Remove ${food.name || "item"}`}
               className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash className="h-4 w-4" />
             </button>
           </div>
         ))}
@@ -281,7 +296,7 @@ export default function NativeFoodResult() {
 
       {allergyMatches.length > 0 && (
         <Alert className="mt-4 border-amber-300 bg-amber-50 text-amber-900">
-          <ShieldAlert className="h-4 w-4" />
+          <ShieldWarning className="h-4 w-4" />
           <AlertDescription>
             This meal may contain an ingredient you listed as an allergy (
             {allergyMatches.join(", ")}). This is a text match on the detected food names, not a
@@ -359,7 +374,13 @@ export default function NativeFoodResult() {
       <div className="mt-5 flex flex-col gap-2.5">
         {user && (
           <Button onClick={handleSave} disabled={saving || saved} className="w-full cursor-pointer">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? "Saved" : "Save Meal"}
+            {saving ? (
+              <CircleNotch className="h-4 w-4 animate-spin" />
+            ) : saved ? (
+              "Saved"
+            ) : (
+              "Save Meal"
+            )}
           </Button>
         )}
         <Button
@@ -377,7 +398,7 @@ export default function NativeFoodResult() {
           variant="outline"
           className="w-full cursor-pointer"
         >
-          <MessageCircle className="h-4 w-4" /> Ask AI About This Meal
+          <ChatCircleDots className="h-4 w-4" /> Ask AI About This Meal
         </Button>
         <Button
           onClick={() => navigate("/food-scanner")}

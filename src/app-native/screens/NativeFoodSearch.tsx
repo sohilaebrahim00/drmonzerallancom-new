@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Barcode, Loader2, Search, X } from "lucide-react";
+import { Barcode, CircleNotch, MagnifyingGlass, X } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -103,7 +103,7 @@ export default function NativeFoodSearch() {
           onClick={() => setMode("search")}
           className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors ${mode === "search" ? "border-primary bg-secondary/60 text-primary" : "border-border text-navy/70"}`}
         >
-          <Search className="mr-1.5 inline h-4 w-4" /> Search
+          <MagnifyingGlass className="mr-1.5 inline h-4 w-4" /> Search
         </button>
         <button
           type="button"
@@ -117,7 +117,7 @@ export default function NativeFoodSearch() {
       {mode === "search" ? (
         <div className="mt-4">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -140,12 +140,12 @@ export default function NativeFoodSearch() {
           <div className="mt-3 space-y-2">
             {searching && (
               <div className="flex justify-center py-6">
-                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <CircleNotch className="h-5 w-5 animate-spin text-primary" />
               </div>
             )}
             {!searching && query.trim().length >= 2 && results.length === 0 && (
               <EmptyState
-                icon={Search}
+                icon={MagnifyingGlass}
                 title="No matches found"
                 body="Try a simpler search term, or use the camera scanner instead."
               />
@@ -196,7 +196,7 @@ export default function NativeFoodSearch() {
               disabled={!barcodeInput.trim() || lookingUp}
               className="shrink-0 cursor-pointer"
             >
-              {lookingUp ? <Loader2 className="h-4 w-4 animate-spin" /> : "Look Up"}
+              {lookingUp ? <CircleNotch className="h-4 w-4 animate-spin" /> : "Look Up"}
             </Button>
           </div>
           {barcodeError && (

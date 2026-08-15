@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Bell, Loader2, MapPin, Sun } from "lucide-react";
+import { Bell, CircleNotch, MapPin, Sun } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { NativeSheet } from "@/app-native/components/NativeSheet";
@@ -83,7 +83,7 @@ export default function NativePrayerTimes() {
     >
       {locationState === "resolving" && (
         <div className="flex justify-center py-16" role="status">
-          <Loader2 className="h-7 w-7 animate-spin text-primary" />
+          <CircleNotch className="h-7 w-7 animate-spin text-primary" />
         </div>
       )}
 
@@ -107,7 +107,7 @@ export default function NativePrayerTimes() {
               className="w-full max-w-xs cursor-pointer"
             >
               {requesting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <CircleNotch className="h-4 w-4 animate-spin" />
               ) : (
                 <MapPin className="h-4 w-4" />
               )}

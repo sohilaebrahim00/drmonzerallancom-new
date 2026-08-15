@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
 
 export interface CustomMeal {
   id: string;
@@ -22,6 +23,7 @@ export interface CustomMealInput {
 }
 
 export async function getMyCustomMeals(): Promise<CustomMeal[]> {
+  if (getDemoMode()) return [];
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("custom_meals")
@@ -34,6 +36,7 @@ export async function getMyCustomMeals(): Promise<CustomMeal[]> {
 export async function createCustomMeal(
   input: CustomMealInput,
 ): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true, id: `demo-custom-meal-${Date.now()}` };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -61,6 +64,7 @@ export async function createCustomMeal(
 }
 
 export async function deleteCustomMeal(id: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   await supabase.from("custom_meals").delete().eq("id", id);
 }

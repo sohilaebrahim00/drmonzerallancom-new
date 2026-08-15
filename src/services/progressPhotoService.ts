@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
 
 export interface ProgressPhoto {
   id: string;
@@ -26,6 +27,7 @@ async function signUrls(paths: string[]): Promise<Map<string, string>> {
 }
 
 export async function getMyProgressPhotos(): Promise<ProgressPhoto[]> {
+  if (getDemoMode()) return [];
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("progress_photos")
@@ -41,6 +43,7 @@ export async function uploadProgressPhoto(
   dataUrl: string,
   sharedWithDoctor: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: false, error: "Photo upload is disabled in the demo preview." };
   if (!supabase) return { ok: false, error: "Not connected." };
   const userId = await currentUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
@@ -62,12 +65,14 @@ export async function uploadProgressPhoto(
 }
 
 export async function deleteProgressPhoto(id: string, imagePath: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   await supabase.from("progress_photos").delete().eq("id", id);
   await supabase.storage.from("progress-photos").remove([imagePath]);
 }
 
 export async function setProgressPhotoSharing(id: string, shared: boolean): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   await supabase.from("progress_photos").update({ shared_with_doctor: shared }).eq("id", id);
 }

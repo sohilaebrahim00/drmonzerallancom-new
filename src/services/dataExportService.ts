@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
 
 /**
  * "Download My Data" — exports only the caller's own rows (every query
@@ -11,6 +12,16 @@ import { supabase } from "@/lib/supabase";
 export async function exportMyData(): Promise<
   { ok: true; json: string } | { ok: false; error: string }
 > {
+  if (getDemoMode()) {
+    return {
+      ok: true,
+      json: JSON.stringify(
+        { exportedAt: new Date().toISOString(), note: "Demo preview export — fixture data only." },
+        null,
+        2,
+      ),
+    };
+  }
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;

@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, CheckCircle2, Loader2, MessageCircle, Sparkles, Video } from "lucide-react";
+import {
+  Check,
+  CheckCircle,
+  CircleNotch,
+  ChatCircleDots,
+  Sparkle,
+  VideoCamera,
+} from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -196,7 +203,7 @@ export default function NativeBookConsultation() {
         </p>
         <Button asChild className="mt-5 cursor-pointer">
           <Link to="/join">
-            <Sparkles className="h-4 w-4" /> View Memberships
+            <Sparkle className="h-4 w-4" /> View Memberships
           </Link>
         </Button>
       </AppScreen>
@@ -311,7 +318,7 @@ export default function NativeBookConsultation() {
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Format</dt>
               <dd className="flex items-center gap-1.5 text-right font-semibold text-navy">
-                <Video className="h-3.5 w-3.5" /> Google Meet
+                <VideoCamera className="h-3.5 w-3.5" /> Google Meet
               </dd>
             </div>
           </dl>
@@ -359,7 +366,7 @@ export default function NativeBookConsultation() {
           >
             {booking ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Confirming…
+                <CircleNotch className="h-4 w-4 animate-spin" /> Confirming…
               </>
             ) : (
               <>
@@ -372,7 +379,7 @@ export default function NativeBookConsultation() {
         <div className="py-4 text-center">
           {result.ok ? (
             <>
-              <CheckCircle2 className="mx-auto h-10 w-10 text-turquoise" />
+              <CheckCircle className="mx-auto h-10 w-10 text-turquoise" />
               <p className="mt-4 font-display text-lg font-bold text-navy">
                 Consultation Confirmed
               </p>
@@ -385,7 +392,7 @@ export default function NativeBookConsultation() {
                 rel="noopener noreferrer"
                 className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
               >
-                <Video className="h-4 w-4" /> Join Google Meet
+                <VideoCamera className="h-4 w-4" /> Join Google Meet
               </a>
               <p className="mt-4 text-xs text-muted-foreground">
                 {result.creditsRemaining} of {result.creditsLimit} credits remaining
@@ -423,7 +430,7 @@ export default function NativeBookConsultation() {
                   to="/account/help"
                   className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-semibold text-navy hover:border-turquoise"
                 >
-                  <MessageCircle className="h-3.5 w-3.5" /> Help &amp; Support
+                  <ChatCircleDots className="h-3.5 w-3.5" /> Help &amp; Support
                 </Link>
               </div>
             </>

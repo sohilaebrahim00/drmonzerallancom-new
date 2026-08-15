@@ -8,7 +8,9 @@ import { useAuth } from "@/context/AuthContext";
 import { getMyMealsInRange, type MealLog } from "@/services/mealLogService";
 import { getMyWeightHistory } from "@/services/weightService";
 import { supabase } from "@/lib/supabase";
-import { TrendingUp } from "lucide-react";
+import { ChartLineUp } from "@phosphor-icons/react";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_ACTIVITY_LOGS_TODAY, DEMO_STEP_LOG } from "@/dev/demoFixtures";
 
 type Range = "today" | "7" | "30";
 const RANGES: { value: Range; label: string; days: number }[] = [
@@ -53,11 +55,36 @@ export default function NativeProgress() {
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!user || !supabase) {
+    if (!user) {
       setLoading(false);
       return;
     }
     setLoading(true);
+
+    // DEV-ONLY demo preview — the same fixed "today" snapshot regardless of
+    // the selected range, since there's no real multi-day history to trend.
+    if (getDemoMode()) {
+      const activityCalories = DEMO_ACTIVITY_LOGS_TODAY.reduce(
+        (sum, a) => sum + a.estimated_calories_burned,
+        0,
+      );
+      setSummary({
+        calories: 1540,
+        meals: 4,
+        activityCalories,
+        activitiesCompleted: DEMO_ACTIVITY_LOGS_TODAY.length,
+        avgSteps: DEMO_STEP_LOG.steps,
+      });
+      setChartMeals([]);
+      setLatestWeight(68);
+      setLoading(false);
+      return;
+    }
+
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     const days = RANGES.find((r) => r.value === range)!.days;
     const end = new Date();
     const start = new Date();
@@ -172,7 +199,7 @@ export default function NativeProgress() {
             ) : (
               <div className="mt-2">
                 <EmptyState
-                  icon={TrendingUp}
+                  icon={ChartLineUp}
                   title="No data yet"
                   body="Log a meal to see your trend here."
                 />

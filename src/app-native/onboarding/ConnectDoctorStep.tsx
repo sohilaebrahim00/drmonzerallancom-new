@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stethoscope } from "lucide-react";
+import { Stethoscope } from "@phosphor-icons/react";
 
 import { OnboardingStepShell } from "@/app-native/onboarding/OnboardingStepShell";
 import { getPracticeDoctor, requestDoctorConnection } from "@/services/doctorService";

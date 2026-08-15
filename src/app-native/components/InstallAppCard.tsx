@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Download, Share, SquarePlus, X } from "lucide-react";
+import { Download, Share, PlusCircle, X } from "@phosphor-icons/react";
 
 import { getAppMode } from "@/hooks/use-native-platform";
 import { usePwaInstallPrompt } from "@/hooks/use-pwa-install";
@@ -53,7 +53,7 @@ export function InstallAppCard() {
         {ios && !canPromptInstall ? (
           <p className="mt-0.5 flex flex-wrap items-center gap-1 text-xs leading-relaxed text-muted-foreground">
             Tap <Share className="inline h-3.5 w-3.5" /> Share, then{" "}
-            <SquarePlus className="inline h-3.5 w-3.5" /> Add to Home Screen.
+            <PlusCircle className="inline h-3.5 w-3.5" /> Add to Home Screen.
           </p>
         ) : (
           <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">

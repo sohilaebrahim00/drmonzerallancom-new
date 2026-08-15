@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarClock, CalendarPlus, Sparkles, Video } from "lucide-react";
+import { Calendar, CalendarPlus, Sparkle, VideoCamera } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ function ConsultationRow({ request }: { request: ConsultationRequest }) {
           {request.consultation_type ?? "Consultation"}
         </p>
         <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <CalendarClock className="h-3.5 w-3.5 shrink-0" />
+          <Calendar className="h-3.5 w-3.5 shrink-0" />
           {formatAppointment(request.appointment_start)}
         </p>
         {request.google_meet_url && (
@@ -61,7 +61,7 @@ function ConsultationRow({ request }: { request: ConsultationRequest }) {
             rel="noopener noreferrer"
             className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-primary"
           >
-            <Video className="h-3 w-3" /> Join Google Meet
+            <VideoCamera className="h-3 w-3" /> Join Google Meet
           </a>
         )}
       </div>
@@ -160,7 +160,7 @@ export default function NativeConsultations() {
           </p>
           <Button asChild className="mt-4 cursor-pointer">
             <Link to="/join">
-              <Sparkles className="h-4 w-4" /> View Memberships
+              <Sparkle className="h-4 w-4" /> View Memberships
             </Link>
           </Button>
         </div>

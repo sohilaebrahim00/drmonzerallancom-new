@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Zap } from "lucide-react";
+import { CircleNotch, Lightning } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
@@ -48,11 +48,11 @@ export default function NativeActivityHistory() {
     <AppScreen title="Movement History" back className="mx-auto w-full max-w-lg px-4 pb-8 pt-3">
       {loading ? (
         <div className="flex justify-center py-10">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : entries.length === 0 ? (
         <EmptyState
-          icon={Zap}
+          icon={Lightning}
           title="No activity yet"
           body="Completed movement tasks will appear here."
         />
@@ -64,7 +64,7 @@ export default function NativeActivityHistory() {
               className="flex items-center gap-3 rounded-xl border border-border/60 bg-app-surface p-3.5"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
-                <Zap className="h-4.5 w-4.5" />
+                <Lightning className="h-4.5 w-4.5" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-navy">

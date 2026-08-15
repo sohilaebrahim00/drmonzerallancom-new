@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CreditCard, MessageCircle } from "lucide-react";
+import { CreditCard, ChatCircleDots } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export default function NativeBilling() {
       </p>
       <Button asChild className="mt-5 cursor-pointer">
         <Link to="/account/help">
-          <MessageCircle className="h-4 w-4" /> Contact Support
+          <ChatCircleDots className="h-4 w-4" /> Contact Support
         </Link>
       </Button>
     </AppScreen>

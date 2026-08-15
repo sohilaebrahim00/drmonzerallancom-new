@@ -41,7 +41,7 @@ export function BottomNavigation() {
                     active && "scale-105",
                   )}
                 >
-                  <tab.icon className="h-5.5 w-5.5" />
+                  <tab.icon className="h-5.5 w-5.5" weight="duotone" />
                 </span>
                 <span
                   className={cn(
@@ -66,7 +66,7 @@ export function BottomNavigation() {
                 active ? "text-primary" : "text-muted-foreground",
               )}
             >
-              <tab.icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
+              <tab.icon className="h-5 w-5" weight={active ? "fill" : "regular"} />
               <span className="truncate">{tab.label}</span>
             </Link>
           );

@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { DEFAULT_HYDRATION_GOAL_ML } from "@/config/features";
+import { getDemoMode } from "@/dev/demoMode";
+import { DEMO_HYDRATION_LOGS, DEMO_HYDRATION_GOAL } from "@/dev/demoFixtures";
 
 export interface HydrationLog {
   id: string;
@@ -27,6 +29,7 @@ function dayBounds(date: Date): { start: string; end: string } {
 }
 
 export async function getMyHydrationGoal(): Promise<HydrationGoal> {
+  if (getDemoMode()) return DEMO_HYDRATION_GOAL;
   if (!supabase) return { goal_ml: DEFAULT_HYDRATION_GOAL_ML, source: "user" };
   const { data, error } = await supabase
     .from("hydration_goals")
@@ -39,6 +42,7 @@ export async function getMyHydrationGoal(): Promise<HydrationGoal> {
 export async function setMyHydrationGoal(
   goalMl: number,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const userId = await currentUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
@@ -66,6 +70,7 @@ export async function setMyHydrationGoal(
 }
 
 export async function getMyHydrationForDay(date: Date): Promise<HydrationLog[]> {
+  if (getDemoMode()) return DEMO_HYDRATION_LOGS;
   if (!supabase) return [];
   const userId = await currentUserId();
   if (!userId) return [];
@@ -84,6 +89,7 @@ export async function getMyHydrationForDay(date: Date): Promise<HydrationLog[]> 
 export async function logHydration(
   amountMl: number,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const userId = await currentUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
@@ -98,6 +104,7 @@ export async function logHydration(
 }
 
 export async function deleteHydrationLog(id: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   await supabase.from("hydration_logs").delete().eq("id", id);
 }

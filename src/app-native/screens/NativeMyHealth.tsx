@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Sparkles } from "lucide-react";
+import { CircleNotch, Sparkle } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,7 @@ export default function NativeMyHealth() {
   if (loading) {
     return (
       <AppScreen title="My Health" back className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        <CircleNotch className="h-7 w-7 animate-spin text-primary" />
       </AppScreen>
     );
   }
@@ -238,10 +238,10 @@ export default function NativeMyHealth() {
           className="w-full cursor-pointer justify-center"
         >
           {saving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <CircleNotch className="h-4 w-4 animate-spin" />
           ) : (
             <>
-              <Sparkles className="h-4 w-4" /> Save &amp; Recalculate
+              <Sparkle className="h-4 w-4" /> Save &amp; Recalculate
             </>
           )}
         </Button>

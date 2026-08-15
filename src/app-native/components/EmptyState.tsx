@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
+import type { Icon } from "@phosphor-icons/react";
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  icon: Icon;
   title: string;
   body?: string;
   action?: ReactNode;

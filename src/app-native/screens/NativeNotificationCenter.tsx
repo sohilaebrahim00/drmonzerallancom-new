@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Loader2, MessageCircle, UserPlus } from "lucide-react";
+import { Bell, CircleNotch, ChatCircleDots, UserPlus } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
@@ -40,7 +40,7 @@ export default function NativeNotificationCenter() {
     <AppScreen title="Notifications" back className="mx-auto w-full max-w-lg px-4 pb-8 pt-3">
       {loading ? (
         <div className="flex justify-center py-10">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : !hasAny ? (
         <EmptyState
@@ -91,7 +91,7 @@ export default function NativeNotificationCenter() {
               className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-app-surface p-3.5 text-left"
             >
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
-                <MessageCircle className="h-4.5 w-4.5" />
+                <ChatCircleDots className="h-4.5 w-4.5" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-bold text-navy">

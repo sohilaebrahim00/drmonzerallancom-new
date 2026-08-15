@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode } from "@/dev/demoMode";
 
 export type ReportReason = "spam" | "harassment" | "other";
 
@@ -7,6 +8,7 @@ export async function reportUser(
   reason: ReportReason,
   details?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;

@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { getDemoMode, DEMO_CONVERSATION_ID } from "@/dev/demoMode";
+import { DEMO_CONVERSATIONS, DEMO_MESSAGES } from "@/dev/demoFixtures";
 
 export interface Conversation {
   id: string;
@@ -30,6 +32,7 @@ async function currentUserId(): Promise<string | null> {
 export async function getOrCreateDirectConversation(
   otherUserId: string,
 ): Promise<{ ok: true; conversationId: string } | { ok: false; error: string }> {
+  if (getDemoMode()) return { ok: true, conversationId: DEMO_CONVERSATION_ID };
   if (!supabase) return { ok: false, error: "Not connected." };
   const { data, error } = await supabase.rpc("get_or_create_direct_conversation", {
     p_other_user_id: otherUserId,
@@ -45,6 +48,7 @@ export async function getOrCreateDirectConversation(
 }
 
 export async function getMyConversations(): Promise<Conversation[]> {
+  if (getDemoMode()) return DEMO_CONVERSATIONS;
   if (!supabase) return [];
   const userId = await currentUserId();
   if (!userId) return [];
@@ -116,6 +120,7 @@ export async function getMyConversations(): Promise<Conversation[]> {
 }
 
 export async function getMessages(conversationId: string): Promise<Message[]> {
+  if (getDemoMode()) return DEMO_MESSAGES;
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("messages")
@@ -131,6 +136,11 @@ export async function sendMessage(
   conversationId: string,
   content: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  // DEV-ONLY demo preview — accepted as sent but not persisted or echoed
+  // back via realtime (subscribeToConversation() is also a no-op below),
+  // so the demo conversation intentionally stays static rather than fake
+  // a live chat.
+  if (getDemoMode()) return { ok: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const userId = await currentUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
@@ -147,6 +157,7 @@ export async function sendMessage(
 }
 
 export async function markConversationRead(conversationId: string): Promise<void> {
+  if (getDemoMode()) return;
   if (!supabase) return;
   const userId = await currentUserId();
   if (!userId) return;
@@ -161,7 +172,7 @@ export function subscribeToConversation(
   conversationId: string,
   onMessage: (message: Message) => void,
 ) {
-  if (!supabase) return () => {};
+  if (getDemoMode() || !supabase) return () => {};
   const channel = supabase
     .channel(`messages:${conversationId}`)
     .on(

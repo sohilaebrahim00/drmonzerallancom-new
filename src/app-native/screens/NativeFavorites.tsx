@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, ChefHat, Loader2, Plus, Repeat, Star, Trash2 } from "lucide-react";
+import { Check, ChefHat, CircleNotch, Plus, Repeat, Star, Trash } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { EmptyState } from "@/app-native/components/EmptyState";
@@ -50,7 +50,7 @@ function FavoriteRow({ favorite, onRemoved }: { favorite: FoodFavorite; onRemove
         aria-label="Log again"
       >
         {state === "saving" ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <CircleNotch className="h-4 w-4 animate-spin" />
         ) : state === "done" ? (
           <Check className="h-4 w-4 text-app-success" />
         ) : (
@@ -63,7 +63,7 @@ function FavoriteRow({ favorite, onRemoved }: { favorite: FoodFavorite; onRemove
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
         aria-label="Remove favorite"
       >
-        <Trash2 className="h-4 w-4" />
+        <Trash className="h-4 w-4" />
       </button>
     </div>
   );
@@ -115,7 +115,7 @@ function CustomMealRow({ meal, onRemoved }: { meal: CustomMeal; onRemoved: () =>
         aria-label="Log this meal"
       >
         {state === "saving" ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <CircleNotch className="h-4 w-4 animate-spin" />
         ) : state === "done" ? (
           <Check className="h-4 w-4 text-app-success" />
         ) : (
@@ -128,7 +128,7 @@ function CustomMealRow({ meal, onRemoved }: { meal: CustomMeal; onRemoved: () =>
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
         aria-label="Delete custom meal"
       >
-        <Trash2 className="h-4 w-4" />
+        <Trash className="h-4 w-4" />
       </button>
     </div>
   );
@@ -173,7 +173,7 @@ export default function NativeFavorites() {
 
       {loading ? (
         <div className="mt-8 flex justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : (
         <div className="mt-4 space-y-2">

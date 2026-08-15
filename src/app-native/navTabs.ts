@@ -1,9 +1,10 @@
-import { Camera, CalendarCheck, Home, User, Users } from "lucide-react";
+import { Camera, CalendarCheck, House, UserCircle, UsersThree } from "@phosphor-icons/react";
+import type { Icon } from "@phosphor-icons/react";
 
 export interface AppNavTab {
   label: string;
   to: string;
-  icon: typeof Home;
+  icon: Icon;
   match: (pathname: string) => boolean;
 }
 
@@ -25,7 +26,7 @@ export const APP_NAV_TABS: AppNavTab[] = [
   {
     label: "Home",
     to: "/",
-    icon: Home,
+    icon: House,
     // Doctor accounts see the doctor dashboard AS their Home tab (see
     // NativeHome.tsx) rather than a separate top-level tab — one persona,
     // one Home destination, just different content.
@@ -49,13 +50,13 @@ export const APP_NAV_TABS: AppNavTab[] = [
   {
     label: "Social",
     to: "/social",
-    icon: Users,
+    icon: UsersThree,
     match: (p) => p.startsWith("/social"),
   },
   {
     label: "Account",
     to: "/account",
-    icon: User,
+    icon: UserCircle,
     match: (p) =>
       p.startsWith("/account") ||
       p.startsWith("/login") ||

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { MessageCircle, PackageSearch } from "lucide-react";
+import { ChatCircleDots, Package } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { SoldOutBadge } from "@/components/products/SoldOutBadge";
@@ -37,7 +37,7 @@ export default function NativeProductDetails() {
           />
         ) : (
           <div className="flex aspect-square w-full items-center justify-center">
-            <PackageSearch className="h-14 w-14 text-primary/40" />
+            <Package className="h-14 w-14 text-primary/40" />
           </div>
         )}
         {isSoldOut && <SoldOutBadge className="absolute left-3 top-3" />}
@@ -98,7 +98,7 @@ export default function NativeProductDetails() {
           onClick={() => openExternal(ctaHref)}
           className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
         >
-          <MessageCircle className="h-4 w-4" /> {ctaLabel}
+          <ChatCircleDots className="h-4 w-4" /> {ctaLabel}
         </button>
       ) : null}
 

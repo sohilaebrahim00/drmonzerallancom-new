@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useParams } from "react-router-dom";
-import { Loader2, Send } from "lucide-react";
+import { CircleNotch, PaperPlaneTilt } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import { isClientDemoBuild } from "@/dev/demoMode";
 import {
   getMessages,
   markConversationRead,
@@ -55,10 +56,13 @@ export default function NativeMessageThread() {
   return (
     <AppScreen title="Message" back scroll={false}>
       <div className="flex h-full min-h-0 flex-col">
-        <div ref={listRef} className="flex-1 space-y-2 overflow-y-auto p-4">
+        <div
+          ref={listRef}
+          className={cn("flex-1 space-y-2 overflow-y-auto p-4", isClientDemoBuild() && "pt-14")}
+        >
           {loading ? (
             <div className="flex justify-center pt-8">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              <CircleNotch className="h-6 w-6 animate-spin text-primary" />
             </div>
           ) : (
             messages.map((m) => {
@@ -99,7 +103,7 @@ export default function NativeMessageThread() {
             aria-label="Send message"
             className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Send className="h-4 w-4" />
+            <PaperPlaneTilt className="h-4 w-4" />
           </button>
         </form>
       </div>

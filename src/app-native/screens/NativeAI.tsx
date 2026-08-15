@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 
 import { AppScreen } from "@/app-native/components/AppScreen";
 import { useLocationState } from "@/app-native/useLocationState";
@@ -9,7 +9,7 @@ const ChatBody = lazy(() => import("@/components/chat/ChatBody"));
 function ChatFallback() {
   return (
     <div className="flex h-full items-center justify-center">
-      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <CircleNotch className="h-6 w-6 animate-spin text-primary" />
     </div>
   );
 }
