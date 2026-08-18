@@ -1,25 +1,26 @@
 // Supabase Edge Function (Deno) — starts a real Stripe Checkout session for
-// a one-time, pay-per-consultation package (Single/Double Consultation).
-// This is deliberately a SEPARATE function from create-checkout-session
-// (which handles recurring memberships) rather than a branch inside it, so
-// the existing, already-working membership checkout path is provably
-// untouched by this addition.
+// a one-time Diet or Treatment program package (6 tiers total: Diet
+// Basic/Plus/Premium, Treatment Basic/Plus/Premium). This is deliberately a
+// SEPARATE function from create-checkout-session (which handles recurring
+// memberships) rather than a branch inside it, so the existing,
+// already-working membership checkout path is provably untouched by this
+// addition.
 //
 // NOT DEPLOYED. Deploy with
 // `supabase functions deploy create-consultation-checkout-session` after
 // setting its secrets (`supabase secrets set ...`):
 //   STRIPE_SECRET_KEY
-//   STRIPE_PRODUCT_SINGLE   (a Stripe Product id, e.g. prod_...)
-//   STRIPE_PRODUCT_DOUBLE
+//   STRIPE_PRODUCT_DIET_BASIC / STRIPE_PRODUCT_DIET_PLUS / STRIPE_PRODUCT_DIET_PREMIUM
+//   STRIPE_PRODUCT_TREATMENT_BASIC / STRIPE_PRODUCT_TREATMENT_PLUS / STRIPE_PRODUCT_TREATMENT_PREMIUM
 //   SUPABASE_SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
 //
-// The browser only ever sends a safe package identifier ("single_consultation"
-// | "double_consultation") — never a price or amount. This function maps
-// that identifier server-side to a trusted Stripe Product id AND the exact
-// charge amount (PACKAGE_AMOUNT_CENTS below), building the Checkout line
-// item via `price_data` (an ad-hoc, one-time price tied to that product)
-// rather than requiring a separately pre-created Price id — so a tampered
-// client request can never change what a customer is charged.
+// The browser only ever sends a safe package identifier (one of the 6 slugs
+// below) — never a price or amount. This function maps that identifier
+// server-side to a trusted Stripe Product id AND the exact charge amount
+// (PACKAGE_AMOUNT_CENTS below), building the Checkout line item via
+// `price_data` (an ad-hoc, one-time price tied to that product) rather than
+// requiring a separately pre-created Price id — so a tampered client
+// request can never change what a customer is charged.
 // See supabase/PHASE_I_CONSULTATION_PACKAGES_PAYMENTS_MIGRATION.sql for the
 // `payments`/`consultation_credits` tables this writes to, and
 // supabase/functions/stripe-webhook for how a completed payment grants
@@ -38,22 +39,56 @@ const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
-const PACKAGE_TO_PRODUCT: Record<string, string | undefined> = {
-  single_consultation: Deno.env.get("STRIPE_PRODUCT_SINGLE"),
-  double_consultation: Deno.env.get("STRIPE_PRODUCT_DOUBLE"),
-};
+type PackageType = "diet" | "treatment";
 
-// Source of truth for what each package actually charges — never trust an
-// amount from the client. Kept in sync with src/data/consultationPackages.ts
-// by convention (both are reference copies of the real Stripe catalog).
-const PACKAGE_AMOUNT_CENTS: Record<string, number> = {
-  single_consultation: 4900,
-  double_consultation: 11900,
-};
+interface PackageDefinition {
+  productEnvVar: string;
+  amountCents: number;
+  consultationCount: 1 | 2 | 3;
+  packageType: PackageType;
+}
 
-const PACKAGE_CREDITS: Record<string, number> = {
-  single_consultation: 1,
-  double_consultation: 2,
+// Source of truth for what each package actually charges and grants — never
+// trust an amount from the client. Kept in sync with
+// src/data/programPackages.ts by convention (both are reference copies of
+// the real Stripe catalog).
+const PACKAGES: Record<string, PackageDefinition> = {
+  diet_basic: {
+    productEnvVar: "STRIPE_PRODUCT_DIET_BASIC",
+    amountCents: 4900,
+    consultationCount: 1,
+    packageType: "diet",
+  },
+  diet_plus: {
+    productEnvVar: "STRIPE_PRODUCT_DIET_PLUS",
+    amountCents: 6900,
+    consultationCount: 2,
+    packageType: "diet",
+  },
+  diet_premium: {
+    productEnvVar: "STRIPE_PRODUCT_DIET_PREMIUM",
+    amountCents: 8900,
+    consultationCount: 3,
+    packageType: "diet",
+  },
+  treatment_basic: {
+    productEnvVar: "STRIPE_PRODUCT_TREATMENT_BASIC",
+    amountCents: 11900,
+    consultationCount: 1,
+    packageType: "treatment",
+  },
+  treatment_plus: {
+    productEnvVar: "STRIPE_PRODUCT_TREATMENT_PLUS",
+    amountCents: 13900,
+    consultationCount: 2,
+    packageType: "treatment",
+  },
+  treatment_premium: {
+    productEnvVar: "STRIPE_PRODUCT_TREATMENT_PREMIUM",
+    amountCents: 15900,
+    consultationCount: 3,
+    packageType: "treatment",
+  },
 };
 
 const CORS_HEADERS = {
@@ -109,11 +144,10 @@ serve(async (req) => {
     });
   }
 
-  const productId = PACKAGE_TO_PRODUCT[packageId];
-  const amountCents = PACKAGE_AMOUNT_CENTS[packageId];
-  const credits = PACKAGE_CREDITS[packageId];
-  if (!productId || !amountCents || !credits) {
-    return new Response(JSON.stringify({ error: "This consultation package isn't available yet." }), {
+  const def = PACKAGES[packageId];
+  const productId = def ? Deno.env.get(def.productEnvVar) : undefined;
+  if (!def || !productId) {
+    return new Response(JSON.stringify({ error: "This program package isn't available yet." }), {
       status: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
@@ -129,9 +163,11 @@ serve(async (req) => {
       full_name: fullName,
       email,
       package_id: packageId,
+      package_type: def.packageType,
+      consultation_count: def.consultationCount,
       product_id: productId,
-      amount: amountCents,
-      credits_granted: credits,
+      amount: def.amountCents,
+      credits_granted: def.consultationCount,
       status: "pending",
     })
     .select("id")
@@ -151,7 +187,7 @@ serve(async (req) => {
         price_data: {
           currency: "usd",
           product: productId,
-          unit_amount: amountCents,
+          unit_amount: def.amountCents,
         },
         quantity: 1,
       },

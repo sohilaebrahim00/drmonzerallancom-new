@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { PackageSlug } from "@/config/booking";
-import type { ConsultationPackageSlug } from "@/data/consultationPackages";
+import type { ProgramPackageSlug } from "@/data/programPackages";
 
 export interface StartCheckoutInput {
   fullName: string;
@@ -51,20 +51,20 @@ export async function startMembershipCheckout(
   }
 }
 
-export interface StartConsultationCheckoutInput {
+export interface StartProgramCheckoutInput {
   fullName: string;
   email: string;
-  packageId: ConsultationPackageSlug;
+  packageId: ProgramPackageSlug;
 }
 
 /**
  * Calls the create-consultation-checkout-session Edge Function — a one-time
- * (non-recurring) Stripe Checkout for a pay-per-consultation package, kept
- * separate from startMembershipCheckout above so the recurring-membership
- * flow is never touched by this addition.
+ * (non-recurring) Stripe Checkout for a Diet or Treatment program package,
+ * kept separate from startMembershipCheckout above so the recurring-
+ * membership flow is never touched by this addition.
  */
-export async function startConsultationPackageCheckout(
-  input: StartConsultationCheckoutInput,
+export async function startProgramPackageCheckout(
+  input: StartProgramCheckoutInput,
 ): Promise<StartCheckoutResult> {
   if (!supabase) {
     return { ok: false, error: "Checkout isn't connected yet." };

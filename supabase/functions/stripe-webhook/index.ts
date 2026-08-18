@@ -81,17 +81,63 @@ function packageIdFromPriceId(priceId: string | undefined): string | undefined {
   return Object.entries(PACKAGE_INFO).find(([, info]) => info.priceId === priceId)?.[0];
 }
 
-// One-time, pay-per-consultation packages (see
+// One-time Diet/Treatment program packages (see
 // supabase/functions/create-consultation-checkout-session and
-// src/data/consultationPackages.ts) — deliberately kept separate from
+// src/data/programPackages.ts) — deliberately kept separate from
 // PACKAGE_INFO above, which is monthly-membership-specific (priceLabel reads
 // "/ Month" there, which would be wrong for a one-time purchase).
 const CONSULTATION_PACKAGE_INFO: Record<
   string,
-  { creditLimit: number; name: string; priceLabel: string }
+  {
+    creditLimit: number;
+    name: string;
+    priceLabel: string;
+    packageType: "diet" | "treatment";
+    consultationCount: 1 | 2 | 3;
+  }
 > = {
-  single_consultation: { creditLimit: 1, name: "Single Consultation", priceLabel: "$49" },
-  double_consultation: { creditLimit: 2, name: "Double Consultation", priceLabel: "$119" },
+  diet_basic: {
+    creditLimit: 1,
+    name: "Diet Basic",
+    priceLabel: "$49",
+    packageType: "diet",
+    consultationCount: 1,
+  },
+  diet_plus: {
+    creditLimit: 2,
+    name: "Diet Plus",
+    priceLabel: "$69",
+    packageType: "diet",
+    consultationCount: 2,
+  },
+  diet_premium: {
+    creditLimit: 3,
+    name: "Diet Premium",
+    priceLabel: "$89",
+    packageType: "diet",
+    consultationCount: 3,
+  },
+  treatment_basic: {
+    creditLimit: 1,
+    name: "Treatment Basic",
+    priceLabel: "$119",
+    packageType: "treatment",
+    consultationCount: 1,
+  },
+  treatment_plus: {
+    creditLimit: 2,
+    name: "Treatment Plus",
+    priceLabel: "$139",
+    packageType: "treatment",
+    consultationCount: 2,
+  },
+  treatment_premium: {
+    creditLimit: 3,
+    name: "Treatment Premium",
+    priceLabel: "$159",
+    packageType: "treatment",
+    consultationCount: 3,
+  },
 };
 
 /** Finds an existing auth user by email, or invites a new one. Never creates a duplicate. */
@@ -196,8 +242,8 @@ async function activateMembership(subscription: Stripe.Subscription) {
 }
 
 /**
- * Activates a one-time consultation-pack purchase (Single/Double
- * Consultation — Stripe Checkout mode "payment", never "subscription").
+ * Activates a one-time Diet/Treatment program-pack purchase (Stripe
+ * Checkout mode "payment", never "subscription").
  * Grants credits by writing the SAME `subscriptions` row shape a recurring
  * membership uses (status "active", consultation_credit_limit set), so the
  * existing credit-spend RPC (book_consultation_slot, see supabase/schema.sql)
@@ -260,6 +306,8 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
     .update({
       status: "succeeded",
       user_id: userId,
+      package_type: info.packageType,
+      consultation_count: info.consultationCount,
       amount: session.amount_total ?? undefined,
       stripe_payment_id:
         typeof session.payment_intent === "string"

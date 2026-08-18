@@ -4,7 +4,7 @@ import { CalendarCheck, PhoneCall, UserPlus, Video } from "lucide-react";
 import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
 import { Packages } from "@/components/sections/Packages";
-import { ConsultationPackages } from "@/components/sections/ConsultationPackages";
+import { ProgramPackages } from "@/components/sections/ProgramPackages";
 import {
   Accordion,
   AccordionContent,
@@ -35,7 +35,7 @@ export default function PackagesPage() {
     <div>
       <Seo
         title="Membership Packages"
-        description="Compare Basic, Premium, and VIP Elite membership packages, or book a single pay-per-consultation session — consultation credits, pricing, and everything included."
+        description="Compare Basic, Premium, and VIP Elite membership packages, or start a one-time Weight Loss or Treatment program — pricing, consultations, and everything included."
         path="/packages"
         jsonLd={jsonLd}
       />
@@ -134,7 +134,7 @@ export default function PackagesPage() {
         </div>
       </section>
 
-      <ConsultationPackages />
+      <ProgramPackages />
 
       {/* FAQ */}
       {relevantFaqs.length > 0 && (

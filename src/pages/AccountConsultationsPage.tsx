@@ -32,7 +32,7 @@ import {
   type BookConsultationResult,
 } from "@/services/consultationBookingService";
 import { packages } from "@/data/packages";
-import { getConsultationPackageBySlug } from "@/data/consultationPackages";
+import { getProgramPackageBySlug } from "@/data/programPackages";
 import { DOCTOR_TIMEZONE, MINIMUM_BOOKING_NOTICE_HOURS } from "@/config/consultations";
 import { hapticSuccess } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -93,11 +93,11 @@ export default function AccountConsultationsPage() {
   const packageInfo = subscription
     ? packages.find((p) => p.slug === subscription.package_id)
     : undefined;
-  // One-time consultation packs (see src/data/consultationPackages.ts) share
-  // this same subscriptions/credits system but aren't in the monthly
+  // One-time Diet/Treatment program packs (see src/data/programPackages.ts)
+  // share this same subscriptions/credits system but aren't in the monthly
   // `packages` array — fall back to a readable label instead of "undefined".
   const oneTimePackageInfo = subscription
-    ? getConsultationPackageBySlug(subscription.package_id)
+    ? getProgramPackageBySlug(subscription.package_id)
     : undefined;
   const membershipLabel = packageInfo?.name ?? oneTimePackageInfo?.name ?? "Membership";
   const hasActiveMembership = Boolean(subscription);
