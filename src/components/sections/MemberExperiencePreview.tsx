@@ -7,13 +7,13 @@ import { useAuth } from "@/context/AuthContext";
 const PREVIEW_CARDS = [
   {
     icon: UserRound,
-    title: "Active Membership",
-    detail: "Plan, status, and renewal date at a glance",
+    title: "Your Program",
+    detail: "Program type and consultation credits at a glance",
   },
   {
     icon: CreditCard,
     title: "Consultation Credits",
-    detail: "See how many credits you have left this month",
+    detail: "See how many credits you have left to use",
   },
   {
     icon: CalendarClock,
@@ -48,17 +48,17 @@ export function MemberExperiencePreview() {
               id="member-preview-heading"
               className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl"
             >
-              Your Membership, All in One Place
+              Your Program, All in One Place
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Once you join, your dashboard keeps your membership, consultation credits, and
-              upcoming sessions organized in a single, simple view.
+              Once you start a program, your dashboard keeps your consultation credits and upcoming
+              sessions organized in a single, simple view.
             </p>
             <Link
               to="/packages"
               className="mt-6 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
             >
-              <Sparkles className="h-4 w-4" /> Explore Memberships
+              <Sparkles className="h-4 w-4" /> Explore Programs
             </Link>
           </Reveal>
 
@@ -68,13 +68,13 @@ export function MemberExperiencePreview() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
                   Illustrative Preview — Not Real Account Data
                 </p>
-                <p className="mt-2 font-display text-lg font-bold">Premium Membership</p>
+                <p className="mt-2 font-display text-lg font-bold">Diet Plus Program</p>
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <span className="text-white/80">Consultation Credits</span>
-                  <span className="font-semibold">2 of 3 Remaining</span>
+                  <span className="font-semibold">1 of 2 Remaining</span>
                 </div>
                 <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/20">
-                  <div className="h-full w-2/3 rounded-full bg-turquoise" />
+                  <div className="h-full w-1/2 rounded-full bg-turquoise" />
                 </div>
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <span className="text-white/80">Next Consultation</span>

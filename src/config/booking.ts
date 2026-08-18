@@ -1,59 +1,9 @@
-// Booking is provider-independent: the UI talks to this module, which
-// resolves to a concrete embeddable scheduler. Today only Google Calendar
-// Appointment Schedules are implemented; adding Cal.com later means adding a
-// "calcom" case here and in <SchedulerEmbed />, without touching the booking
-// pages themselves.
-export type BookingProviderId = "google" | "calcom";
-
+// The recurring-membership tier slug — still used by the (dormant) monthly
+// membership Stripe flow (src/services/checkoutService.ts, src/data/packages.ts)
+// even though the site no longer sells memberships as the primary product.
+// The anonymous package-scheduling flow that used to live in this file
+// (SchedulingRule, getBookingProvider, etc.) was retired along with
+// BookingPage.tsx — booking a real slot now happens after a one-time
+// program-package purchase, from the authenticated Account -> Consultations
+// page, not from an anonymous pre-payment scheduler.
 export type PackageSlug = "basic" | "premium" | "vip-elite";
-
-export interface SchedulingRule {
-  minNoticeDays: number;
-  minNoticeLabel: string;
-  sessionsPerMonth: number;
-  priorityLabel: string;
-}
-
-export const schedulingRules: Record<PackageSlug, SchedulingRule> = {
-  basic: {
-    minNoticeDays: 3,
-    minNoticeLabel: "Booked at least 3 days in advance",
-    sessionsPerMonth: 2,
-    priorityLabel: "Standard booking",
-  },
-  premium: {
-    minNoticeDays: 2,
-    minNoticeLabel: "Priority booking at least 2 days in advance",
-    sessionsPerMonth: 3,
-    priorityLabel: "Priority booking",
-  },
-  "vip-elite": {
-    minNoticeDays: 0,
-    minNoticeLabel: "Same-day sessions, subject to availability",
-    sessionsPerMonth: 5,
-    priorityLabel: "Highest priority",
-  },
-};
-
-// Real Google Calendar Appointment Schedule links, one per package. Each
-// schedule should be configured in Google Calendar with Google Meet as the
-// location, and with the minimum-notice / buffer settings that match the
-// rules above — this app cannot enforce those from the outside.
-const googleEmbedUrls: Record<PackageSlug, string | undefined> = {
-  basic: import.meta.env.VITE_GOOGLE_BOOKING_BASIC_URL,
-  premium: import.meta.env.VITE_GOOGLE_BOOKING_PREMIUM_URL,
-  "vip-elite": import.meta.env.VITE_GOOGLE_BOOKING_VIP_URL,
-};
-
-export interface BookingProviderConfig {
-  id: BookingProviderId;
-  embedUrl?: string;
-}
-
-export function getBookingProvider(packageSlug: PackageSlug): BookingProviderConfig {
-  return { id: "google", embedUrl: googleEmbedUrls[packageSlug]?.trim() || undefined };
-}
-
-export function isBookingConfigured(packageSlug: PackageSlug) {
-  return Boolean(getBookingProvider(packageSlug).embedUrl);
-}

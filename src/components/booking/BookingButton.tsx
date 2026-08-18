@@ -6,15 +6,17 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface BookingButtonProps extends Omit<LinkProps, "to">, VariantProps<typeof buttonVariants> {
-  packageSlug?: string;
-  serviceSlug?: string;
   showIcon?: boolean;
   label?: string;
 }
 
+/**
+ * Routes to the packages page — booking a consultation now starts with
+ * choosing a one-time program package (a real appointment slot is picked
+ * afterward, from the authenticated Account -> Consultations page, once a
+ * purchase has granted consultation credits).
+ */
 export function BookingButton({
-  packageSlug,
-  serviceSlug,
   showIcon = true,
   label = "Book a Session",
   className,
@@ -22,14 +24,9 @@ export function BookingButton({
   size,
   ...props
 }: BookingButtonProps) {
-  const params = new URLSearchParams();
-  if (packageSlug) params.set("package", packageSlug);
-  if (serviceSlug) params.set("service", serviceSlug);
-  const to = params.toString() ? `/booking?${params.toString()}` : "/booking";
-
   return (
     <Link
-      to={to}
+      to="/packages"
       className={cn(buttonVariants({ variant, size }), "group cursor-pointer", className)}
       {...props}
     >

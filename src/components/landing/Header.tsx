@@ -94,7 +94,7 @@ export function Header() {
                   Sign In
                 </Link>
                 <Link
-                  to="/join"
+                  to="/packages"
                   className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
                 >
                   <UserPlus className="h-4 w-4" /> Create Account
@@ -143,7 +143,7 @@ export function Header() {
                   ) : (
                     <>
                       <Link
-                        to="/join"
+                        to="/packages"
                         onClick={() => setDrawerOpen(false)}
                         className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-primary px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
                       >

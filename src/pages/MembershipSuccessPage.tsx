@@ -29,8 +29,8 @@ export default function MembershipSuccessPage() {
   return (
     <div className="mx-auto flex min-h-[60vh] w-full max-w-xl flex-col items-center justify-center px-6 py-24 text-center sm:px-10">
       <Seo
-        title="Membership Payment"
-        description="Confirming your Monzer Allan membership payment."
+        title="Payment Confirmation"
+        description="Confirming your Monzer Allan program payment."
         path="/membership/success"
         noindex
       />

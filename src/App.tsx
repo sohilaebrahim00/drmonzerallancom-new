@@ -22,14 +22,11 @@ const FaqPage = lazy(() => import("@/pages/FaqPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const ProductsIndexPage = lazy(() => import("@/pages/ProductsIndexPage"));
 const ProductDetailPage = lazy(() => import("@/pages/ProductDetailPage"));
-const BookingPage = lazy(() => import("@/pages/BookingPage"));
-const BookingSuccessPage = lazy(() => import("@/pages/BookingSuccessPage"));
 const EducationIndexPage = lazy(() => import("@/pages/EducationIndexPage"));
 const EducationArticlePage = lazy(() => import("@/pages/EducationArticlePage"));
 const GalleryPage = lazy(() => import("@/pages/GalleryPage"));
 const VideosPage = lazy(() => import("@/pages/VideosPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
-const JoinPage = lazy(() => import("@/pages/JoinPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const AccountPage = lazy(() => import("@/pages/AccountPage"));
@@ -115,8 +112,12 @@ function WebApp() {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/products" element={<ProductsIndexPage />} />
                 <Route path="/products/:slug" element={<ProductDetailPage />} />
-                <Route path="/booking" element={<BookingPage />} />
-                <Route path="/booking/success" element={<BookingSuccessPage />} />
+                {/* The anonymous package-tier scheduling flow (BookingPage.tsx)
+                    doesn't map onto the one-time program-package model — booking
+                    a real slot now happens after purchase, from the authenticated
+                    Account -> Consultations page. Redirect old links here. */}
+                <Route path="/booking" element={<Navigate to="/packages" replace />} />
+                <Route path="/booking/success" element={<Navigate to="/packages" replace />} />
                 <Route path="/blog" element={<EducationIndexPage />} />
                 <Route path="/blog/:slug" element={<EducationArticlePage />} />
                 <Route path="/education" element={<Navigate to="/blog" replace />} />
@@ -124,7 +125,11 @@ function WebApp() {
                 <Route path="/gallery" element={<GalleryPage />} />
                 <Route path="/videos" element={<VideosPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/join" element={<JoinPage />} />
+                {/* The old membership-tier signup form (JoinPage.tsx) is
+                    retired — buying any program package now creates the
+                    account automatically (see stripe-webhook's
+                    findOrInviteUser). Redirect old links to the packages page. */}
+                <Route path="/join" element={<Navigate to="/packages" replace />} />
                 <Route path="/membership/success" element={<MembershipSuccessPage />} />
                 <Route path="/membership/cancelled" element={<MembershipCancelledPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />

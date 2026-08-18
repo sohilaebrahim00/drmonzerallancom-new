@@ -49,7 +49,7 @@ export default function FaqPage() {
     <div className="mx-auto w-full max-w-4xl px-6 py-16 sm:px-10 sm:py-20">
       <Seo
         title="Frequently Asked Questions"
-        description="Answers about membership, consultation credits, online meetings, account & billing, products, and nutrition services."
+        description="Answers about programs, consultation credits, online meetings, account & billing, products, and nutrition services."
         path="/faq"
         jsonLd={jsonLd}
       />
@@ -74,7 +74,7 @@ export default function FaqPage() {
           Frequently Asked Questions
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Search or filter by topic to find answers about membership, consultations, billing, and
+          Search or filter by topic to find answers about programs, consultations, billing, and
           more.
         </p>
       </Reveal>
@@ -152,14 +152,14 @@ export default function FaqPage() {
       >
         <h2 className="font-display text-lg font-bold text-navy">Still Have a Question?</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Ask directly, or explore memberships to see what's included in each plan.
+          Ask directly, or explore programs to see what's included in each package.
         </p>
         <div className="mt-5 flex flex-wrap justify-center gap-3">
           <Link
             to="/packages"
             className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
           >
-            <CalendarCheck className="h-4 w-4" /> Explore Memberships
+            <CalendarCheck className="h-4 w-4" /> Explore Programs
           </Link>
           <Link
             to="/contact"

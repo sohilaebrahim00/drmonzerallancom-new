@@ -222,15 +222,14 @@ export default function AboutPage() {
               Start Your Nutrition Journey
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
-              Choose a membership for ongoing support, or reach out to ask a question before you
-              begin.
+              Choose a program for guided support, or reach out to ask a question before you begin.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/packages"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-turquoise px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
               >
-                <Sparkles className="h-4 w-4" /> Explore Memberships
+                <Sparkles className="h-4 w-4" /> Explore Programs
               </Link>
               <Link
                 to="/contact"

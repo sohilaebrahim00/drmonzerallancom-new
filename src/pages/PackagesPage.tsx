@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { CalendarCheck, PhoneCall, UserPlus, Video } from "lucide-react";
+import { CalendarCheck, MessageCircle, ShieldCheck, Video } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
-import { Packages } from "@/components/sections/Packages";
 import { ProgramPackages } from "@/components/sections/ProgramPackages";
 import {
   Accordion,
@@ -22,7 +21,7 @@ import {
 import { faqs } from "@/data/faqs";
 import { breadcrumbSchema } from "@/lib/schema";
 
-const RELEVANT_CATEGORIES = new Set(["Membership", "Consultation Credits", "Online Meetings"]);
+const RELEVANT_CATEGORIES = new Set(["Consultation Credits", "Online Meetings"]);
 const relevantFaqs = faqs.filter((faq) => RELEVANT_CATEGORIES.has(faq.category));
 
 export default function PackagesPage() {
@@ -34,8 +33,8 @@ export default function PackagesPage() {
   return (
     <div>
       <Seo
-        title="Membership Packages"
-        description="Compare Basic, Premium, and VIP Elite membership packages, or start a one-time Weight Loss or Treatment program — pricing, consultations, and everything included."
+        title="Programs & Pricing"
+        description="Choose a one-time Weight Loss or Treatment program — pricing, doctor consultations, and everything included, with no recurring billing."
         path="/packages"
         jsonLd={jsonLd}
       />
@@ -54,7 +53,7 @@ export default function PackagesPage() {
         </Breadcrumb>
       </div>
 
-      {/* Page hero — pricing/membership-led */}
+      {/* Page hero — one-time program pricing */}
       <section className="relative py-14 sm:py-16">
         <div
           className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-full bg-gradient-to-b from-secondary/50 via-transparent to-transparent"
@@ -63,22 +62,23 @@ export default function PackagesPage() {
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
           <Reveal direction="up">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-              Membership
+              Programs
             </p>
             <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl">
-              Find Your Level of Support
+              Choose Your Program
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Every plan includes monthly consultation credits, a member account, and ongoing
-              nutrition guidance — the difference is how much support fits your goals.
+              A one-time payment for a guided nutrition or treatment program — the difference
+              between tiers is simply how many doctor consultations are included. No recurring
+              billing, no subscription.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <Packages />
+      <ProgramPackages />
 
-      {/* How credits work + hotline */}
+      {/* How credits work */}
       <section className="border-t border-border/60 bg-secondary/20 py-16 sm:py-24">
         <div className="mx-auto w-full max-w-5xl px-6 sm:px-10">
           <Reveal direction="up" className="mx-auto max-w-2xl text-center">
@@ -96,10 +96,10 @@ export default function PackagesPage() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <CalendarCheck className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 font-display text-base font-bold text-navy">Monthly Credits</h3>
+                <h3 className="mt-4 font-display text-base font-bold text-navy">Program Credits</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Each membership includes a fixed number of consultation credits every month.
-                  Request a consultation from your member account, and one credit is used per
+                  Each program includes a fixed number of consultation credits, granted once at
+                  purchase. Request a consultation from your account, and one credit is used per
                   confirmed session.
                 </p>
               </div>
@@ -119,22 +119,20 @@ export default function PackagesPage() {
             <Reveal direction="up" delay={0.15}>
               <div className="h-full rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
-                  <PhoneCall className="h-5 w-5" />
+                  <ShieldCheck className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-display text-base font-bold text-navy">
-                  VIP Priority Hotline
+                  No Recurring Billing
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  VIP Elite members get a private priority contact channel for faster response —
-                  shared directly with active VIP members after joining.
+                  Every program is a single, one-time payment. There is nothing to cancel and
+                  nothing that renews automatically.
                 </p>
               </div>
             </Reveal>
           </div>
         </div>
       </section>
-
-      <ProgramPackages />
 
       {/* FAQ */}
       {relevantFaqs.length > 0 && (
@@ -143,7 +141,7 @@ export default function PackagesPage() {
             <Reveal direction="up" className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">FAQ</p>
               <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
-                Membership Questions
+                Program Questions
               </h2>
             </Reveal>
             <Reveal direction="up" delay={0.1} className="mt-10">
@@ -177,7 +175,7 @@ export default function PackagesPage() {
         </section>
       )}
 
-      {/* Join CTA */}
+      {/* Questions CTA */}
       <section className="pb-16 sm:pb-24">
         <div className="mx-auto w-full max-w-3xl px-6 text-center sm:px-10">
           <Reveal
@@ -185,17 +183,17 @@ export default function PackagesPage() {
             className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14"
           >
             <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
-              Ready to Join?
+              Not Sure Which Program Fits?
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
-              Choose your package above, or create your account now to get started.
+              Choose your program above, or reach out and we&apos;ll help you pick the right one.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
-                to="/join"
+                to="/contact"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-turquoise px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
               >
-                <UserPlus className="h-4 w-4" /> Create Account
+                <MessageCircle className="h-4 w-4" /> Contact Us
               </Link>
             </div>
           </Reveal>

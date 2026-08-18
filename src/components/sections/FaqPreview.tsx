@@ -12,7 +12,7 @@ import {
 import { faqs } from "@/data/faqs";
 
 const PREVIEW_QUESTIONS = [
-  "What's included in a membership?",
+  "What's included in a program?",
   "How do consultation credits work?",
   "Do you offer online consultations?",
   "How soon will I see results?",

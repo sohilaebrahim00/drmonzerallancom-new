@@ -4,8 +4,8 @@ import { useLocation } from "react-router-dom";
 import { Hero } from "@/components/landing/Hero";
 import { AboutPreview } from "@/components/sections/AboutPreview";
 import { Services } from "@/components/sections/Services";
-import { Packages } from "@/components/sections/Packages";
-import { HowMembershipWorks } from "@/components/sections/HowMembershipWorks";
+import { ProgramPackages } from "@/components/sections/ProgramPackages";
+import { HowProgramsWork } from "@/components/sections/HowProgramsWork";
 import { ProductsPreview } from "@/components/sections/ProductsPreview";
 import { MemberExperiencePreview } from "@/components/sections/MemberExperiencePreview";
 import { YouTubeSection } from "@/components/sections/YouTubeSection";
@@ -16,7 +16,7 @@ import { BeforeAfter } from "@/components/sections/BeforeAfter";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { FaqPreview } from "@/components/sections/FaqPreview";
 import { SocialCommunity } from "@/components/sections/SocialCommunity";
-import { MembershipCta } from "@/components/sections/MembershipCta";
+import { ProgramCta } from "@/components/sections/ProgramCta";
 import { Seo } from "@/components/seo/Seo";
 import { medicalBusinessSchema, personSchema, faqSchema } from "@/lib/schema";
 import { faqs } from "@/data/faqs";
@@ -37,15 +37,15 @@ export default function HomePage() {
     <>
       <Seo
         title="Monzer Allan | Nutrition, Health & Wellness"
-        description="Trusted nutrition, health, and wellness guidance from Monzer Allan, Nutrition Specialist and Pharmacist. Join a membership or book a consultation today."
+        description="Trusted nutrition, health, and wellness guidance from Monzer Allan, Nutrition Specialist and Pharmacist. Choose a one-time Weight Loss or Treatment program today."
         path="/"
         jsonLd={[medicalBusinessSchema(), personSchema(), faqSchema(faqs)]}
       />
       <Hero />
       <AboutPreview />
       <Services />
-      <Packages />
-      <HowMembershipWorks />
+      <ProgramPackages />
+      <HowProgramsWork />
       <ProductsPreview />
       <MemberExperiencePreview />
       <YouTubeSection />
@@ -56,7 +56,7 @@ export default function HomePage() {
       <Testimonials />
       <FaqPreview />
       <SocialCommunity />
-      <MembershipCta />
+      <ProgramCta />
     </>
   );
 }

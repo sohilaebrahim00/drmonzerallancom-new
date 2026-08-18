@@ -24,8 +24,7 @@ interface DisplayMessage extends ChatMessage {
 }
 
 const PAGE_PROMPTS: { prefix: string; prompt: string; authedPrompt?: string }[] = [
-  { prefix: "/packages", prompt: "Need help choosing a membership?" },
-  { prefix: "/join", prompt: "Need help choosing a membership?" },
+  { prefix: "/packages", prompt: "Need help choosing a program?" },
   { prefix: "/products", prompt: "Looking for information about one of our products?" },
   { prefix: "/blog", prompt: "Looking for educational content on a specific topic?" },
   { prefix: "/gallery", prompt: "Want to see more from the practice?" },
@@ -33,7 +32,7 @@ const PAGE_PROMPTS: { prefix: string; prompt: string; authedPrompt?: string }[] 
   {
     prefix: "/account",
     prompt: "Have a question about signing in or your account?",
-    authedPrompt: "How can I help with your membership or consultations?",
+    authedPrompt: "How can I help with your program or consultations?",
   },
 ];
 
@@ -45,7 +44,7 @@ function usePagePrompt(isAuthed: boolean) {
 }
 
 const QUICK_ACTIONS = [
-  { label: "Find the Right Membership", icon: Sparkles },
+  { label: "Find the Right Program", icon: Sparkles },
   { label: "Check Consultation Credits", icon: CreditCard },
   { label: "Request a Consultation", icon: CalendarCheck },
   { label: "Explore Products", icon: Package },

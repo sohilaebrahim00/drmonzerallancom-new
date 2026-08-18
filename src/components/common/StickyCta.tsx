@@ -41,7 +41,7 @@ export function StickyCta() {
             to="/packages"
             className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-navy transition-colors hover:text-primary"
           >
-            <Sparkles className="h-4 w-4 text-primary" /> Join Membership
+            <Sparkles className="h-4 w-4 text-primary" /> View Programs
           </Link>
           <button
             type="button"

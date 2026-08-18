@@ -6,7 +6,6 @@ import {
   Loader2,
   LogOut,
   Package as PackageIcon,
-  PhoneCall,
   Sparkles,
   User as UserIcon,
   Video,
@@ -17,8 +16,8 @@ import { Reveal } from "@/components/common/Reveal";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/context/AuthContext";
-import { packages } from "@/data/packages";
-import { business, tel } from "@/data/business";
+import { getProgramPackageBySlug } from "@/data/programPackages";
+import { business } from "@/data/business";
 import {
   getMyConsultationRequests,
   getMySubscription,
@@ -80,9 +79,7 @@ export default function AccountPage() {
     };
   }, [user]);
 
-  const packageInfo = subscription
-    ? packages.find((p) => p.slug === subscription.package_id)
-    : undefined;
+  const packageInfo = subscription ? getProgramPackageBySlug(subscription.package_id) : undefined;
   const creditsRemaining = subscription
     ? Math.max(subscription.consultation_credit_limit - subscription.consultation_credits_used, 0)
     : 0;
@@ -132,7 +129,7 @@ export default function AccountPage() {
       {!configured && (
         <Alert className="mt-6 border-amber-300 bg-amber-50 text-amber-900">
           <AlertDescription>
-            Membership data isn&apos;t connected yet — set up Supabase to see real membership and
+            Program data isn&apos;t connected yet — set up Supabase to see real program and
             consultation data here.
           </AlertDescription>
         </Alert>
@@ -141,7 +138,7 @@ export default function AccountPage() {
       {dataLoading ? (
         <div className="mt-10 flex flex-col items-center justify-center gap-3 py-16" role="status">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading your membership…</p>
+          <p className="text-sm text-muted-foreground">Loading your program…</p>
         </div>
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -156,7 +153,7 @@ export default function AccountPage() {
                       </span>
                       <div>
                         <p className="font-display text-lg font-bold text-navy">
-                          {packageInfo.name} Membership
+                          {packageInfo.name}
                         </p>
                         <p className="text-sm text-muted-foreground">{packageInfo.priceLabel}</p>
                       </div>
@@ -182,42 +179,21 @@ export default function AccountPage() {
                       />
                     </div>
                   </div>
-
-                  {packageInfo.hotline && (
-                    <div className="mt-6 rounded-xl border border-turquoise/40 bg-turquoise/10 p-4">
-                      <p className="flex items-center gap-2 text-sm font-semibold text-navy">
-                        <PhoneCall className="h-4 w-4 text-turquoise" /> VIP Priority Hotline
-                      </p>
-                      {business.vipHotlinePhone ? (
-                        <a
-                          href={tel(business.vipHotlinePhone)}
-                          className="mt-1 inline-block text-sm font-semibold text-turquoise hover:underline"
-                        >
-                          {business.vipHotlinePhone}
-                        </a>
-                      ) : (
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Hotline access will appear here once activated.
-                        </p>
-                      )}
-                    </div>
-                  )}
                 </>
               ) : (
                 <div className="text-center">
                   <p className="font-display text-lg font-bold text-navy">
-                    Your membership is not currently active
+                    You don&apos;t have an active program yet
                   </p>
                   <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                    Choose a package to unlock consultation credits, priority booking, and member
-                    benefits.
+                    Choose a program to unlock consultation credits and get started.
                   </p>
                   <div className="mt-5 flex flex-wrap justify-center gap-3">
                     <Link
                       to="/packages"
                       className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
                     >
-                      <Sparkles className="h-4 w-4" /> View Memberships
+                      <Sparkles className="h-4 w-4" /> View Programs
                     </Link>
                   </div>
                 </div>
@@ -236,19 +212,16 @@ export default function AccountPage() {
 
               {!hasActiveMembership && (
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Requesting a consultation requires an active membership.
+                  Requesting a consultation requires an active program.
                 </p>
               )}
               {hasActiveMembership && creditsRemaining === 0 && (
                 <p className="mt-3 text-xs text-muted-foreground">
-                  You have no consultation credits remaining in your current membership.{" "}
+                  You have no consultation credits remaining.{" "}
                   <Link to="/packages" className="font-semibold text-primary hover:text-turquoise">
-                    Upgrade Membership
+                    Purchase another program
                   </Link>{" "}
-                  ·{" "}
-                  <Link to="/packages" className="font-semibold text-primary hover:text-turquoise">
-                    Renew Membership
-                  </Link>
+                  to get more credits.
                 </p>
               )}
 
@@ -341,17 +314,9 @@ export default function AccountPage() {
                 <div className="flex items-center gap-2.5">
                   <span className="h-4 w-4 shrink-0" />
                   <dd className="text-navy">
-                    {packageInfo ? `${packageInfo.name} Membership` : "No active membership"}
+                    {packageInfo ? packageInfo.name : "No active program"}
                   </dd>
                 </div>
-                {subscription?.current_period_end && (
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-4 w-4 shrink-0" />
-                    <dd className="text-navy">
-                      Renews {new Date(subscription.current_period_end).toLocaleDateString()}
-                    </dd>
-                  </div>
-                )}
               </dl>
             </div>
 
@@ -364,7 +329,7 @@ export default function AccountPage() {
                   to="/packages"
                   className="text-sm font-semibold text-primary hover:text-turquoise"
                 >
-                  Upgrade / Manage Membership
+                  View Programs
                 </Link>
                 <Link
                   to="/products"
@@ -388,7 +353,7 @@ export default function AccountPage() {
             </div>
 
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Your account is used for identity, membership, booking, and saved products only.
+              Your account is used for identity, your program, booking, and saved products only.
               Please don&apos;t share diagnoses, lab reports, or medication details here — that
               information stays with your consultation with {business.doctorName}.
             </p>

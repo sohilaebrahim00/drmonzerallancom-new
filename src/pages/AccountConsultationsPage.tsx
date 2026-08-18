@@ -31,7 +31,6 @@ import {
   bookConsultation,
   type BookConsultationResult,
 } from "@/services/consultationBookingService";
-import { packages } from "@/data/packages";
 import { getProgramPackageBySlug } from "@/data/programPackages";
 import { DOCTOR_TIMEZONE, MINIMUM_BOOKING_NOTICE_HOURS } from "@/config/consultations";
 import { hapticSuccess } from "@/lib/haptics";
@@ -90,16 +89,8 @@ export default function AccountConsultationsPage() {
   const creditsRemaining = subscription
     ? Math.max(subscription.consultation_credit_limit - subscription.consultation_credits_used, 0)
     : 0;
-  const packageInfo = subscription
-    ? packages.find((p) => p.slug === subscription.package_id)
-    : undefined;
-  // One-time Diet/Treatment program packs (see src/data/programPackages.ts)
-  // share this same subscriptions/credits system but aren't in the monthly
-  // `packages` array — fall back to a readable label instead of "undefined".
-  const oneTimePackageInfo = subscription
-    ? getProgramPackageBySlug(subscription.package_id)
-    : undefined;
-  const membershipLabel = packageInfo?.name ?? oneTimePackageInfo?.name ?? "Membership";
+  const packageInfo = subscription ? getProgramPackageBySlug(subscription.package_id) : undefined;
+  const membershipLabel = packageInfo?.name ?? "Program";
   const hasActiveMembership = Boolean(subscription);
   const canBook = hasActiveMembership && creditsRemaining > 0;
 
@@ -209,7 +200,7 @@ export default function AccountConsultationsPage() {
       {loading ? (
         <div className="mt-10 flex flex-col items-center justify-center gap-3 py-16" role="status">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading your membership…</p>
+          <p className="text-sm text-muted-foreground">Loading your program…</p>
         </div>
       ) : !hasActiveMembership ? (
         <Reveal
@@ -217,17 +208,17 @@ export default function AccountConsultationsPage() {
           className="mt-10 rounded-2xl border border-border/70 bg-card p-8 text-center shadow-sm"
         >
           <p className="font-display text-lg font-bold text-navy">
-            Online consultations are available to active members.
+            Online consultations are available once you&apos;ve purchased a program.
           </p>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Choose a membership to unlock consultation credits and book your first session.
+            Choose a program to unlock consultation credits and book your first session.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
               to="/packages"
               className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
             >
-              <Sparkles className="h-4 w-4" /> View Memberships
+              <Sparkles className="h-4 w-4" /> View Programs
             </Link>
           </div>
         </Reveal>
@@ -261,15 +252,11 @@ export default function AccountConsultationsPage() {
           {!canBook && step !== "confirm" && (
             <Alert className="mt-6 border-amber-300 bg-amber-50 text-amber-900">
               <AlertDescription>
-                You have no consultation credits remaining in your current membership.{" "}
+                You have no consultation credits remaining.{" "}
                 <Link to="/packages" className="font-semibold underline">
-                  Upgrade Membership
+                  Purchase another program
                 </Link>{" "}
-                or{" "}
-                <Link to="/packages" className="font-semibold underline">
-                  Renew Membership
-                </Link>
-                .
+                to get more credits.
               </AlertDescription>
             </Alert>
           )}
@@ -375,7 +362,7 @@ export default function AccountConsultationsPage() {
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">Membership</dt>
+                      <dt className="text-muted-foreground">Program</dt>
                       <dd className="text-right font-semibold text-navy">{membershipLabel}</dd>
                     </div>
                     <div className="flex justify-between gap-4">

@@ -1,5 +1,5 @@
 export type FaqCategory =
-  | "Membership"
+  | "Programs"
   | "Consultations"
   | "Consultation Credits"
   | "Online Meetings"
@@ -9,7 +9,7 @@ export type FaqCategory =
   | "General Questions";
 
 export const faqCategories: FaqCategory[] = [
-  "Membership",
+  "Programs",
   "Consultations",
   "Consultation Credits",
   "Online Meetings",
@@ -27,16 +27,16 @@ export interface Faq {
 
 export const faqs: Faq[] = [
   {
-    question: "What's included in a membership?",
+    question: "What's included in a program?",
     answer:
-      "Every membership includes a set number of monthly consultation credits, access to your member account and consultation history, and ongoing nutrition support. Basic, Premium, and VIP Elite differ in credit allowance and included features — compare them on the Packages page.",
-    category: "Membership",
+      "Every program is a one-time purchase that includes a set number of doctor consultation credits, access to your account and consultation history, and ongoing nutrition or treatment support. Weight Loss and Treatment programs each come in Basic, Plus, and Premium tiers that differ only in how many consultations are included — compare them on the Packages page.",
+    category: "Programs",
   },
   {
-    question: "Can I change or cancel my membership?",
+    question: "Is this a subscription? Will I be billed again?",
     answer:
-      "Yes, memberships are designed to be flexible. Membership billing and self-service cancellation will be available once online payment is fully connected — in the meantime, reach out directly for any changes to your plan.",
-    category: "Membership",
+      "No. Every program is a single, one-time payment — there is no recurring billing, and nothing renews automatically. If you'd like more consultations later, you can purchase another program at any time.",
+    category: "Programs",
   },
   {
     question: "What happens in the first consultation?",
@@ -47,37 +47,37 @@ export const faqs: Faq[] = [
   {
     question: "Do you offer online consultations?",
     answer:
-      "Yes. Membership consultations are conducted online over Google Meet, and every service can also be booked in person — choose whichever fits your schedule and comfort best.",
+      "Yes. Program consultations are conducted online over Google Meet, and every service can also be booked in person — choose whichever fits your schedule and comfort best.",
     category: "Consultations",
   },
   {
     question: "How do consultation credits work?",
     answer:
-      "Each membership includes a fixed number of consultation credits per month (1 for Basic, 3 for Premium, more for VIP Elite). You use one credit each time you request an online consultation from your member account.",
+      "Each program includes a fixed number of consultation credits, granted once when you purchase (1, 2, or 3, depending on the tier you choose). You use one credit each time you request an online consultation from your account.",
     category: "Consultation Credits",
   },
   {
     question: "What happens if I don't use all my credits?",
     answer:
-      "Credits are tied to your active membership period. A formal rollover policy will be confirmed once billing is fully connected — nothing is promised beyond your current cycle at this time.",
+      "Your credits stay on your account — they're granted once at purchase and don't expire on a monthly cycle, since there's no recurring billing to tie them to. They are tied to your account and are non-transferable.",
     category: "Consultation Credits",
   },
   {
     question: "How do I join my online consultation?",
     answer:
-      "Once a consultation request is approved, a Google Meet link is attached to that appointment in your member account. You'll be able to join directly from there at your scheduled time.",
+      "Once a consultation request is approved, a Google Meet link is attached to that appointment in your account. You'll be able to join directly from there at your scheduled time.",
     category: "Online Meetings",
   },
   {
-    question: "How do I create a member account?",
+    question: "How do I create an account?",
     answer:
-      "Creating an account is part of choosing a membership package. Visit the Packages page, select a plan, and follow the Create Account steps to set up your login and begin the payment process.",
+      "Creating an account happens automatically when you purchase a program. Visit the Packages page, choose a Weight Loss or Treatment program, and complete secure payment — your account activates and you'll set your password from there.",
     category: "Account & Billing",
   },
   {
     question: "Is my payment information secure?",
     answer:
-      "Membership payments are intended to be processed through a secure, PCI-compliant payment provider — this website will never ask you to send card details directly. Full checkout is not yet live; the Packages and Join pages will show current status.",
+      "Payments are processed through Stripe, a secure, PCI-compliant payment provider — this website will never ask you to send card details directly, and we never see or store them.",
     category: "Account & Billing",
   },
   {
