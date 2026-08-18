@@ -58,7 +58,7 @@ const purchaseSchema = z.object({
 
 type PurchaseValues = z.infer<typeof purchaseSchema>;
 
-export function ProgramPackages() {
+export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean }) {
   const [activePackage, setActivePackage] = useState<ProgramPackage | null>(null);
 
   return (
@@ -68,13 +68,15 @@ export function ProgramPackages() {
       aria-labelledby="program-packages-heading"
     >
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
-        <SectionHeading
-          eyebrow="Programs"
-          title="Choose Your Path Forward"
-          description="A guided nutrition program for weight-loss goals, or a closer-follow-up treatment program — pick the level of consultation support you need, with no recurring billing."
-        />
+        {!hideHeading && (
+          <SectionHeading
+            eyebrow="Programs"
+            title="Choose Your Path Forward"
+            description="A guided nutrition program for weight-loss goals, or a closer-follow-up treatment program — pick the level of consultation support you need, with no recurring billing."
+          />
+        )}
 
-        <Tabs defaultValue="diet" className="mt-14">
+        <Tabs defaultValue="diet" className={hideHeading ? "" : "mt-14"}>
           <TabsList className="mx-auto grid h-auto w-full max-w-md grid-cols-2 rounded-full border border-border/70 bg-card p-1.5 shadow-sm">
             {CATEGORIES.map((cat) => (
               <TabsTrigger

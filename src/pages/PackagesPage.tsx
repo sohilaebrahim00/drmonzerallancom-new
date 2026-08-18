@@ -76,7 +76,7 @@ export default function PackagesPage() {
         </div>
       </section>
 
-      <ProgramPackages />
+      <ProgramPackages hideHeading />
 
       {/* How credits work */}
       <section className="border-t border-border/60 bg-secondary/20 py-16 sm:py-24">
