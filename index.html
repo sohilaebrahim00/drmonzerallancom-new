@@ -36,11 +36,16 @@
     />
     <meta name="twitter:image" content="https://monzerallan.com/monzer-portrait.jpg" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/ma-logo.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <!-- Favicon — generated from the official transparent logo
+         (public/ma-logo.png) via scripts/build-website-favicons.cjs.
+         Deliberately separate from public/icons/* (the Capacitor/PWA app's
+         own icon set, composited on a navy background square for that
+         context) — these stay transparent, no background, no container. -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
