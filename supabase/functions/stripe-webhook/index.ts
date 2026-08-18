@@ -257,8 +257,27 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
 
   await supabaseAdmin
     .from("payments")
-    .update({ status: "succeeded", amount_cents: session.amount_total ?? null })
+    .update({
+      status: "succeeded",
+      user_id: userId,
+      amount: session.amount_total ?? undefined,
+      stripe_payment_id:
+        typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : (session.payment_intent?.id ?? null),
+    })
     .eq("id", paymentId);
+
+  // Audit-trail ledger row for this grant (see
+  // supabase/PHASE_I_CONSULTATION_PACKAGES_PAYMENTS_MIGRATION.sql) —
+  // subscriptions.consultation_credit_limit above is the real spendable
+  // balance; this is purely a queryable history of how it got there.
+  await supabaseAdmin.from("consultation_credits").insert({
+    user_id: userId,
+    credits: info.creditLimit,
+    source: "stripe_payment",
+    payment_id: paymentId,
+  });
 
   const { subject, html } = customerWelcomeEmail({
     siteUrl,
@@ -282,6 +301,37 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
     });
     await sendEmail(ADMIN_NOTIFICATION_EMAIL, admin.subject, admin.html);
   }
+}
+
+/**
+ * `payment_intent.succeeded` / `payment_intent.payment_failed` fire for the
+ * one-time consultation-package flow (Checkout Sessions in mode "payment"
+ * always create a PaymentIntent under the hood). The PaymentIntent carries
+ * the same `internal_payment_id` metadata create-consultation-checkout-session
+ * set via `payment_intent_data.metadata` at session-creation time, so both
+ * handlers can find the right `payments` row directly — no session lookup
+ * needed. `checkout.session.completed` (handled above) remains the ONLY
+ * place credits are granted; these two handlers only ever update `payments`
+ * status, so a payment can never be credited twice.
+ */
+async function markPaymentFailed(paymentIntent: Stripe.PaymentIntent) {
+  const paymentId = paymentIntent.metadata?.internal_payment_id;
+  if (!paymentId) return;
+  await supabaseAdmin
+    .from("payments")
+    .update({ status: "failed" })
+    .eq("id", paymentId)
+    .eq("status", "pending"); // never overwrite an already-succeeded payment
+}
+
+async function markPaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent) {
+  const paymentId = paymentIntent.metadata?.internal_payment_id;
+  if (!paymentId) return;
+  await supabaseAdmin
+    .from("payments")
+    .update({ stripe_payment_id: paymentIntent.id })
+    .eq("id", paymentId)
+    .is("stripe_payment_id", null);
 }
 
 serve(async (req) => {
@@ -346,6 +396,16 @@ serve(async (req) => {
             .update({ status: "past_due" })
             .eq("stripe_subscription_id", invoice.subscription as string);
         }
+        break;
+      }
+
+      case "payment_intent.succeeded": {
+        await markPaymentIntentSucceeded(event.data.object as Stripe.PaymentIntent);
+        break;
+      }
+
+      case "payment_intent.payment_failed": {
+        await markPaymentFailed(event.data.object as Stripe.PaymentIntent);
         break;
       }
 

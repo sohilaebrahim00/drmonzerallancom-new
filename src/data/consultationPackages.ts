@@ -5,6 +5,12 @@
 // use (see supabase/PHASE_I_CONSULTATION_PACKAGES_PAYMENTS_MIGRATION.sql for
 // how that reuse is modeled) — so booking, credit tracking, and the Account
 // Consultations page all work for these buyers with no separate code path.
+//
+// `stripeProductId` is documentation/reference only — the browser never
+// sends it to Stripe. The real, trusted mapping lives server-side in
+// supabase/functions/create-consultation-checkout-session (env vars
+// STRIPE_PRODUCT_SINGLE / STRIPE_PRODUCT_DOUBLE), keyed off `slug`, so a
+// tampered client request can never change what a customer is charged.
 export type ConsultationPackageSlug = "single_consultation" | "double_consultation";
 
 export interface ConsultationPackage {
@@ -18,6 +24,8 @@ export interface ConsultationPackage {
   features: string[];
   cta: string;
   popular?: boolean;
+  /** Reference only — see file header. Real Stripe live-mode product id. */
+  stripeProductId: string;
 }
 
 export const consultationPackages: ConsultationPackage[] = [
@@ -29,8 +37,14 @@ export const consultationPackages: ConsultationPackage[] = [
     priceLabel: "$49",
     credits: 1,
     callDurationMinutes: 20,
-    features: ["1 consultation call", "20 minutes, online via Google Meet", "No recurring billing"],
+    features: [
+      "20-minute consultation",
+      "1 consultation credit",
+      "Online via Google Meet",
+      "No recurring billing",
+    ],
     cta: "Book Single Consultation",
+    stripeProductId: "prod_V65LDqOWTMszsA",
   },
   {
     slug: "double_consultation",
@@ -41,13 +55,15 @@ export const consultationPackages: ConsultationPackage[] = [
     credits: 2,
     callDurationMinutes: 20,
     features: [
-      "2 consultation calls",
-      "20 minutes each, online via Google Meet",
+      "Two 20-minute consultations",
+      "2 consultation credits",
+      "Online via Google Meet",
       "Ideal for an initial session plus a follow-up",
       "No recurring billing",
     ],
     cta: "Book Double Consultation",
     popular: true,
+    stripeProductId: "prod_V65LiK6qbXvnqy",
   },
 ];
 

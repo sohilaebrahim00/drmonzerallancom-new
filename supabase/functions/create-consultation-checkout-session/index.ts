@@ -9,17 +9,21 @@
 // `supabase functions deploy create-consultation-checkout-session` after
 // setting its secrets (`supabase secrets set ...`):
 //   STRIPE_SECRET_KEY
-//   STRIPE_PRICE_SINGLE
-//   STRIPE_PRICE_DOUBLE
+//   STRIPE_PRODUCT_SINGLE   (a Stripe Product id, e.g. prod_...)
+//   STRIPE_PRODUCT_DOUBLE
 //   SUPABASE_SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
 //
 // The browser only ever sends a safe package identifier ("single_consultation"
 // | "double_consultation") — never a price or amount. This function maps
-// that identifier to a trusted, pre-created Stripe one-time Price ID, so a
-// tampered client request can never change what a customer is charged.
+// that identifier server-side to a trusted Stripe Product id AND the exact
+// charge amount (PACKAGE_AMOUNT_CENTS below), building the Checkout line
+// item via `price_data` (an ad-hoc, one-time price tied to that product)
+// rather than requiring a separately pre-created Price id — so a tampered
+// client request can never change what a customer is charged.
 // See supabase/PHASE_I_CONSULTATION_PACKAGES_PAYMENTS_MIGRATION.sql for the
-// `payments` table this writes to, and supabase/functions/stripe-webhook for
-// how a completed payment grants consultation credits.
+// `payments`/`consultation_credits` tables this writes to, and
+// supabase/functions/stripe-webhook for how a completed payment grants
+// consultation credits.
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@16?target=deno";
@@ -34,9 +38,17 @@ const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
-const PACKAGE_TO_PRICE: Record<string, string | undefined> = {
-  single_consultation: Deno.env.get("STRIPE_PRICE_SINGLE"),
-  double_consultation: Deno.env.get("STRIPE_PRICE_DOUBLE"),
+const PACKAGE_TO_PRODUCT: Record<string, string | undefined> = {
+  single_consultation: Deno.env.get("STRIPE_PRODUCT_SINGLE"),
+  double_consultation: Deno.env.get("STRIPE_PRODUCT_DOUBLE"),
+};
+
+// Source of truth for what each package actually charges — never trust an
+// amount from the client. Kept in sync with src/data/consultationPackages.ts
+// by convention (both are reference copies of the real Stripe catalog).
+const PACKAGE_AMOUNT_CENTS: Record<string, number> = {
+  single_consultation: 4900,
+  double_consultation: 11900,
 };
 
 const PACKAGE_CREDITS: Record<string, number> = {
@@ -97,9 +109,10 @@ serve(async (req) => {
     });
   }
 
-  const priceId = PACKAGE_TO_PRICE[packageId];
+  const productId = PACKAGE_TO_PRODUCT[packageId];
+  const amountCents = PACKAGE_AMOUNT_CENTS[packageId];
   const credits = PACKAGE_CREDITS[packageId];
-  if (!priceId || !credits) {
+  if (!productId || !amountCents || !credits) {
     return new Response(JSON.stringify({ error: "This consultation package isn't available yet." }), {
       status: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -116,7 +129,8 @@ serve(async (req) => {
       full_name: fullName,
       email,
       package_id: packageId,
-      amount_cents: null, // filled in from the real Stripe amount once paid
+      product_id: productId,
+      amount: amountCents,
       credits_granted: credits,
       status: "pending",
     })
@@ -132,7 +146,16 @@ serve(async (req) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
-    line_items: [{ price: priceId, quantity: 1 }],
+    line_items: [
+      {
+        price_data: {
+          currency: "usd",
+          product: productId,
+          unit_amount: amountCents,
+        },
+        quantity: 1,
+      },
+    ],
     customer_email: email,
     success_url: `${siteUrl}/membership/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${siteUrl}/membership/cancelled`,
@@ -141,11 +164,20 @@ serve(async (req) => {
       internal_payment_id: payment.id,
       full_name: fullName,
     },
+    // Propagated onto the resulting PaymentIntent too, so the
+    // payment_intent.succeeded / payment_intent.payment_failed webhook
+    // handlers can find this same payments row without a second lookup.
+    payment_intent_data: {
+      metadata: {
+        package_id: packageId,
+        internal_payment_id: payment.id,
+      },
+    },
   });
 
   await supabaseAdmin
     .from("payments")
-    .update({ stripe_checkout_session_id: session.id })
+    .update({ stripe_session_id: session.id })
     .eq("id", payment.id);
 
   return new Response(JSON.stringify({ url: session.url }), {
