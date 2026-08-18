@@ -38,7 +38,7 @@ export function Footer() {
               <img
                 src="/ma-logo.png"
                 alt="Monzer Allan logo"
-                width={56}
+                width={65}
                 height={56}
                 className="h-12 w-auto"
               />

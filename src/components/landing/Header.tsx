@@ -50,7 +50,7 @@ export function Header() {
           <img
             src="/ma-logo.png"
             alt="Monzer Allan logo"
-            width={140}
+            width={163}
             height={140}
             className="h-12 w-auto sm:h-14"
           />

@@ -39,21 +39,19 @@ export default function MembershipSuccessPage() {
           <>
             <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
             <h1 className="mt-5 font-display text-2xl font-bold text-navy">
-              We&apos;re confirming your membership…
+              We&apos;re confirming your payment…
             </h1>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Checking your current membership status.
+              Checking your current account status.
             </p>
           </>
         ) : subscription?.status === "active" ? (
           <>
             <CheckCircle2 className="mx-auto h-12 w-12 text-turquoise" />
-            <h1 className="mt-5 font-display text-2xl font-bold text-navy">
-              Your Membership Is Active
-            </h1>
+            <h1 className="mt-5 font-display text-2xl font-bold text-navy">You&apos;re All Set</h1>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Thank you for joining. Head to your account to see your consultation credits and
-              request your first session.
+              Thank you. Head to your account to see your consultation credits and request your
+              first session.
             </p>
             <Link
               to="/account"
@@ -66,7 +64,7 @@ export default function MembershipSuccessPage() {
           <>
             <Mail className="mx-auto h-12 w-12 text-primary" />
             <h1 className="mt-5 font-display text-2xl font-bold text-navy">
-              Payment Received — Activating Your Membership
+              Payment Received — Setting Up Your Account
             </h1>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
               Your payment was submitted to Stripe. We&apos;re now confirming it and setting up your

@@ -1,7 +1,11 @@
+import { Link } from "react-router-dom";
+import { ArrowUpRight, CalendarCheck } from "lucide-react";
+
 import { HeroBackground } from "@/components/landing/HeroBackground";
 import { Portrait } from "@/components/landing/Portrait";
 import { InstagramIcon } from "@/components/landing/instagram";
 import { business } from "@/data/business";
+import { credentials } from "@/data/about";
 
 export function Hero() {
   return (
@@ -31,33 +35,59 @@ export function Hero() {
               className="animate-fade-up mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg"
               style={{ animationDelay: "0.25s" }}
             >
-              Trusted nutrition and wellness guidance by Monzer Allan, Nutrition Specialist &amp;
-              Pharmacist.
-            </p>
-
-            <p
-              className="animate-fade-up mt-4 text-sm font-medium text-navy/70"
-              style={{ animationDelay: "0.32s" }}
-            >
-              Something healthier is taking shape.
+              Personalized nutrition programs and one-to-one online consultations from{" "}
+              {business.doctorName}, {business.professionalTitle} — grounded in clinical expertise,
+              delivered with real accountability.
             </p>
 
             <div
-              className="animate-fade-up mt-8 flex flex-col items-start gap-3"
+              className="animate-fade-up mt-6 flex flex-wrap gap-2.5"
+              style={{ animationDelay: "0.3s" }}
+            >
+              {credentials.map((credential) => (
+                <span
+                  key={credential.title}
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/80 px-4 py-2 text-xs font-semibold text-navy/80 backdrop-blur-sm"
+                >
+                  <credential.icon className="h-3.5 w-3.5 text-primary" />
+                  {credential.title}
+                </span>
+              ))}
+              <span className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/80 px-4 py-2 text-xs font-semibold text-navy/80 backdrop-blur-sm">
+                <CalendarCheck className="h-3.5 w-3.5 text-primary" />
+                Secure Video Consultations
+              </span>
+            </div>
+
+            <div
+              className="animate-fade-up mt-8 flex flex-col items-start gap-4"
               style={{ animationDelay: "0.42s" }}
             >
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  to="/booking"
+                  className="group relative z-30 inline-flex cursor-pointer items-center gap-2.5 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_14px_30px_-12px_rgba(37,63,164,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise hover:shadow-[0_20px_40px_-14px_rgba(56,183,199,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <CalendarCheck className="h-[1.15rem] w-[1.15rem] transition-transform duration-300 group-hover:scale-110" />
+                  Book a Consultation
+                </Link>
+                <Link
+                  to="/packages"
+                  className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/70 px-6 py-3.5 text-sm font-semibold text-navy backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-turquoise/60"
+                >
+                  View Packages
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </div>
               <a
                 href={business.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative z-30 inline-flex cursor-pointer items-center gap-2.5 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_14px_30px_-12px_rgba(37,63,164,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise hover:shadow-[0_20px_40px_-14px_rgba(56,183,199,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="group inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-navy/55 transition-colors hover:text-primary"
               >
-                <InstagramIcon className="h-[1.15rem] w-[1.15rem] transition-transform duration-300 group-hover:scale-110" />
-                Follow on Instagram
+                <InstagramIcon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+                Follow along on Instagram
               </a>
-              <p className="text-sm text-navy/55">
-                Understand more. Choose better. Live healthier.
-              </p>
             </div>
           </div>
 

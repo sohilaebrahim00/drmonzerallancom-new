@@ -32,6 +32,7 @@ import {
   type BookConsultationResult,
 } from "@/services/consultationBookingService";
 import { packages } from "@/data/packages";
+import { getConsultationPackageBySlug } from "@/data/consultationPackages";
 import { DOCTOR_TIMEZONE, MINIMUM_BOOKING_NOTICE_HOURS } from "@/config/consultations";
 import { hapticSuccess } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -92,6 +93,13 @@ export default function AccountConsultationsPage() {
   const packageInfo = subscription
     ? packages.find((p) => p.slug === subscription.package_id)
     : undefined;
+  // One-time consultation packs (see src/data/consultationPackages.ts) share
+  // this same subscriptions/credits system but aren't in the monthly
+  // `packages` array — fall back to a readable label instead of "undefined".
+  const oneTimePackageInfo = subscription
+    ? getConsultationPackageBySlug(subscription.package_id)
+    : undefined;
+  const membershipLabel = packageInfo?.name ?? oneTimePackageInfo?.name ?? "Membership";
   const hasActiveMembership = Boolean(subscription);
   const canBook = hasActiveMembership && creditsRemaining > 0;
 
@@ -233,7 +241,7 @@ export default function AccountConsultationsPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {packageInfo?.name ?? "Membership"}
+                  {membershipLabel}
                 </p>
                 <p className="font-display text-lg font-bold text-primary">
                   {creditsRemaining} of {creditsLimit} Credits Remaining
@@ -368,7 +376,7 @@ export default function AccountConsultationsPage() {
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">Membership</dt>
-                      <dd className="text-right font-semibold text-navy">{packageInfo?.name}</dd>
+                      <dd className="text-right font-semibold text-navy">{membershipLabel}</dd>
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">Credits After Booking</dt>

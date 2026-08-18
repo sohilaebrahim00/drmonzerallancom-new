@@ -81,6 +81,19 @@ function packageIdFromPriceId(priceId: string | undefined): string | undefined {
   return Object.entries(PACKAGE_INFO).find(([, info]) => info.priceId === priceId)?.[0];
 }
 
+// One-time, pay-per-consultation packages (see
+// supabase/functions/create-consultation-checkout-session and
+// src/data/consultationPackages.ts) — deliberately kept separate from
+// PACKAGE_INFO above, which is monthly-membership-specific (priceLabel reads
+// "/ Month" there, which would be wrong for a one-time purchase).
+const CONSULTATION_PACKAGE_INFO: Record<
+  string,
+  { creditLimit: number; name: string; priceLabel: string }
+> = {
+  single_consultation: { creditLimit: 1, name: "Single Consultation", priceLabel: "$49" },
+  double_consultation: { creditLimit: 2, name: "Double Consultation", priceLabel: "$119" },
+};
+
 /** Finds an existing auth user by email, or invites a new one. Never creates a duplicate. */
 async function findOrInviteUser(email: string, fullName: string): Promise<string | null> {
   const { data: existingId } = await supabaseAdmin.rpc("get_user_id_by_email", { p_email: email });
@@ -182,6 +195,95 @@ async function activateMembership(subscription: Stripe.Subscription) {
   }
 }
 
+/**
+ * Activates a one-time consultation-pack purchase (Single/Double
+ * Consultation — Stripe Checkout mode "payment", never "subscription").
+ * Grants credits by writing the SAME `subscriptions` row shape a recurring
+ * membership uses (status "active", consultation_credit_limit set), so the
+ * existing credit-spend RPC (book_consultation_slot, see supabase/schema.sql)
+ * and the Account Consultations page work for these buyers with no changes.
+ * Idempotency key is `stripe_checkout_session_id` (a one-time payment has no
+ * Stripe Subscription object to key off, unlike activateMembership above).
+ */
+async function activateConsultationPackage(session: Stripe.Checkout.Session) {
+  const packageId = session.metadata?.package_id;
+  const paymentId = session.metadata?.internal_payment_id;
+  const fullName = session.metadata?.full_name ?? "";
+  const info = packageId ? CONSULTATION_PACKAGE_INFO[packageId] : undefined;
+  if (!info || !paymentId) {
+    console.error("[stripe-webhook] Could not resolve consultation package for session", session.id);
+    return;
+  }
+
+  // Idempotent: Stripe may redeliver checkout.session.completed. Never grant
+  // the same one-time credits twice for the same payment.
+  const { data: existingPayment } = await supabaseAdmin
+    .from("payments")
+    .select("status")
+    .eq("id", paymentId)
+    .maybeSingle();
+  if (existingPayment?.status === "succeeded") return;
+
+  const email = session.customer_details?.email ?? session.customer_email;
+  if (!email) {
+    console.error("[stripe-webhook] Checkout session has no email", session.id);
+    return;
+  }
+
+  const userId = await findOrInviteUser(email, fullName || email);
+  if (!userId) return;
+
+  const { error: upsertError } = await supabaseAdmin.from("subscriptions").upsert(
+    {
+      user_id: userId,
+      package_id: packageId,
+      status: "active",
+      stripe_checkout_session_id: session.id,
+      current_period_start: new Date().toISOString(),
+      // One-time packs don't recur — a long, informational validity window.
+      // The credit-spend RPC never checks this column, only credit balance.
+      current_period_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      consultation_credit_limit: info.creditLimit,
+    },
+    { onConflict: "stripe_checkout_session_id" },
+  );
+  if (upsertError) {
+    console.error(
+      "[stripe-webhook] Failed to upsert one-time consultation package:",
+      upsertError.message,
+    );
+    return;
+  }
+
+  await supabaseAdmin
+    .from("payments")
+    .update({ status: "succeeded", amount_cents: session.amount_total ?? null })
+    .eq("id", paymentId);
+
+  const { subject, html } = customerWelcomeEmail({
+    siteUrl,
+    fullName: fullName || email,
+    packageName: info.name,
+    consultationCredits: info.creditLimit,
+    isVip: false,
+  });
+  await sendEmail(email, subject, html);
+
+  if (ADMIN_NOTIFICATION_EMAIL) {
+    const admin = adminNewMemberEmail({
+      siteUrl,
+      fullName: fullName || email,
+      email,
+      phone: null,
+      preferredContactMethod: "either",
+      packageName: info.name,
+      priceLabel: info.priceLabel,
+      stripeCustomerId: typeof session.customer === "string" ? session.customer : "",
+    });
+    await sendEmail(ADMIN_NOTIFICATION_EMAIL, admin.subject, admin.html);
+  }
+}
+
 serve(async (req) => {
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
@@ -204,6 +306,8 @@ serve(async (req) => {
         if (session.mode === "subscription" && session.subscription) {
           const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
           await activateMembership(subscription);
+        } else if (session.mode === "payment") {
+          await activateConsultationPackage(session);
         }
         break;
       }

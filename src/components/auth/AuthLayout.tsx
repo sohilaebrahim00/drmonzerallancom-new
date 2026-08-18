@@ -24,7 +24,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
               <img
                 src="/ma-logo.png"
                 alt="Monzer Allan logo"
-                width={140}
+                width={163}
                 height={140}
                 className="mx-auto h-12 w-auto"
               />

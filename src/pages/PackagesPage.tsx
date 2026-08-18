@@ -4,6 +4,7 @@ import { CalendarCheck, PhoneCall, UserPlus, Video } from "lucide-react";
 import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
 import { Packages } from "@/components/sections/Packages";
+import { ConsultationPackages } from "@/components/sections/ConsultationPackages";
 import {
   Accordion,
   AccordionContent,
@@ -34,7 +35,7 @@ export default function PackagesPage() {
     <div>
       <Seo
         title="Membership Packages"
-        description="Compare Basic, Premium, and VIP Elite membership packages — consultation credits, pricing, and everything included."
+        description="Compare Basic, Premium, and VIP Elite membership packages, or book a single pay-per-consultation session — consultation credits, pricing, and everything included."
         path="/packages"
         jsonLd={jsonLd}
       />
@@ -132,6 +133,8 @@ export default function PackagesPage() {
           </div>
         </div>
       </section>
+
+      <ConsultationPackages />
 
       {/* FAQ */}
       {relevantFaqs.length > 0 && (

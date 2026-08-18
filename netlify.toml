@@ -1,0 +1,40 @@
+# Netlify deployment config for the Dr. Monzer Allan MARKETING WEBSITE only.
+#
+# This project also produces two other builds (`npm run build:app` →
+# dist-app/ for the installed Web App/PWA, `npm run build:demo` → dist-demo/
+# for the sales/client-preview demo) — neither should ever be deployed from
+# this netlify.toml. If either needs its own Netlify site later, give it a
+# separate site with its own base/publish/command, never this one.
+[build]
+  command = "npm run build:web"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Single-page app: let React Router handle every non-file path client-side
+# instead of Netlify returning a 404 for deep links (e.g. /packages, /blog/x).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
