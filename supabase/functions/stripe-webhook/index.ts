@@ -11,7 +11,7 @@
 //   STRIPE_SECRET_KEY
 //   STRIPE_WEBHOOK_SECRET
 //   STRIPE_PRICE_BASIC / STRIPE_PRICE_PREMIUM / STRIPE_PRICE_VIP
-//   SUPABASE_SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
+//   SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
 //   RESEND_API_KEY, EMAIL_FROM, ADMIN_NOTIFICATION_EMAIL (for notification emails)
 //
 // This function is the only thing that should ever write to
@@ -40,7 +40,7 @@ const siteUrl = Deno.env.get("SITE_URL") ?? "https://monzerallan.com";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  Deno.env.get("SERVICE_ROLE_KEY") ?? "",
 );
 
 const PACKAGE_INFO: Record<

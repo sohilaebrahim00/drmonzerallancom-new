@@ -12,7 +12,7 @@
 //   STRIPE_SECRET_KEY
 //   STRIPE_PRODUCT_DIET_BASIC / STRIPE_PRODUCT_DIET_PLUS / STRIPE_PRODUCT_DIET_PREMIUM
 //   STRIPE_PRODUCT_TREATMENT_BASIC / STRIPE_PRODUCT_TREATMENT_PLUS / STRIPE_PRODUCT_TREATMENT_PREMIUM
-//   SUPABASE_SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
+//   SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
 //
 // The browser only ever sends a safe package identifier (one of the 6 slugs
 // below) — never a price or amount. This function maps that identifier
@@ -36,7 +36,7 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  Deno.env.get("SERVICE_ROLE_KEY") ?? "",
 );
 
 type PackageType = "diet" | "treatment";
