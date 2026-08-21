@@ -8,7 +8,12 @@
 // lives right here (DEFAULT_GEMINI_MODEL) so it's never hardcoded in more
 // than one place.
 
-const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash";
+// "gemini-2.0-flash" (and even "gemini-2.5-flash") were retired by Google —
+// requests now fail with 404 NOT_FOUND ("no longer available to new users").
+// "gemini-flash-latest" is Google's own stable alias that always points at
+// their current recommended flash model, so this file never needs to be
+// updated again just because a dated model name is deprecated.
+const DEFAULT_GEMINI_MODEL = "gemini-flash-latest";
 const REQUEST_TIMEOUT_MS = 15_000;
 
 export function getGeminiModel(): string {
@@ -67,8 +72,22 @@ export async function callGemini(params: {
     });
 
     if (!res.ok) {
-      // Never surface the raw response (may echo back parts of the request/key context).
-      return { ok: false, error: `Gemini request failed with status ${res.status}` };
+      // Google's error body is structured ({error: {code, status, message}})
+      // and never echoes back the API key or request content, so it's safe
+      // to log server-side (never returned to the client) — this is what
+      // makes a future failure (wrong model name, billing/access issue,
+      // quota) diagnosable from `supabase functions logs ai-chat` instead of
+      // requiring a manual curl reproduction every time.
+      let detail = `status ${res.status}`;
+      try {
+        const errBody = await res.json();
+        if (errBody?.error?.status || errBody?.error?.message) {
+          detail = `${errBody.error.status ?? res.status}: ${errBody.error.message ?? ""}`.trim();
+        }
+      } catch {
+        /* body wasn't JSON — keep the plain status */
+      }
+      return { ok: false, error: `Gemini request failed (${detail})` };
     }
 
     const data = await res.json();
