@@ -1,0 +1,33 @@
+# Normalise line endings.
+#
+# This repo has core.autocrlf=true and, until now, no attributes file. That
+# combination rewrites working-tree files to CRLF on any checkout — including
+# the one a `git stash pop` performs — while Prettier's endOfLine default is
+# "lf". The result was hundreds of phantom `Delete ␍` errors from
+# eslint-plugin-prettier on files nobody had edited.
+#
+# `text=auto eol=lf` stores text as LF in the repository (which is already the
+# case) AND checks it out as LF, so the working tree, the blobs and Prettier
+# finally agree.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending-converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.icns binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.mp4 binary
+*.webm binary
+*.zip binary
+*.jar binary
+*.keystore binary

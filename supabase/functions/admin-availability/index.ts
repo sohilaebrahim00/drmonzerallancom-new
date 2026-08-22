@@ -79,7 +79,7 @@ serve(async (req) => {
     }
 
     case "update-availability": {
-      const { id, isActive, startTime, endTime, slotDurationMinutes } = body as {
+      const { id, isActive, startTime, endTime, slotDurationMinutes } = body as unknown as {
         id: string;
         isActive?: boolean;
         startTime?: string;
@@ -116,7 +116,7 @@ serve(async (req) => {
     }
 
     case "create-exception": {
-      const { date, type, startTime, endTime, reason, isAvailable } = body as {
+      const { date, type, startTime, endTime, reason, isAvailable } = body as unknown as {
         date: string;
         type: string;
         startTime?: string;
@@ -142,7 +142,7 @@ serve(async (req) => {
     }
 
     case "delete-exception": {
-      const { id } = body as { id: string };
+      const { id } = body as unknown as { id: string };
       if (!id) return json({ error: "id is required." }, 400);
       const { error } = await supabaseAdmin.from("availability_exceptions").delete().eq("id", id);
       if (error) return json({ error: error.message }, 500);
