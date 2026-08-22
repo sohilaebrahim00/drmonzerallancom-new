@@ -11,14 +11,18 @@ export interface FullProfile {
   avatar_url: string | null;
   bio: string | null;
   role: UserRole;
-  is_admin?: boolean;
   timezone: string | null;
   onboarding_current_step: string | null;
   onboarding_completed_at: string | null;
 }
 
+// `is_admin` is deliberately absent: PHASE_J_FIXES_MIGRATION.sql (J.3)
+// revokes it from the `authenticated` role so a signed-in user can no longer
+// read off which account is the administrator. Selecting it here would make
+// every profile read fail with 42501. Admin checks go through the
+// security-definer public.is_admin() RPC instead — see AdminRoute.tsx.
 const PROFILE_COLUMNS =
-  "id, full_name, username, avatar_url, bio, role, is_admin, timezone, onboarding_current_step, onboarding_completed_at";
+  "id, full_name, username, avatar_url, bio, role, timezone, onboarding_current_step, onboarding_completed_at";
 
 export async function getFullProfile(userId: string): Promise<FullProfile | null> {
   const demoMode = getDemoMode();

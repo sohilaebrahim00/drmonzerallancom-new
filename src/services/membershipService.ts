@@ -36,7 +36,6 @@ export interface ConsultationRequest {
 export interface Profile {
   id: string;
   full_name: string | null;
-  is_admin?: boolean;
 }
 
 /**
@@ -53,7 +52,9 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, full_name, is_admin")
+    // `is_admin` is not selectable by the `authenticated` role any more —
+    // see PHASE_J_FIXES_MIGRATION.sql (J.3) and AdminRoute.tsx.
+    .select("id, full_name")
     .eq("id", userId)
     .maybeSingle();
   if (error) {

@@ -18,7 +18,8 @@ import {
   sendEmail,
   ADMIN_NOTIFICATION_EMAIL,
 } from "../_shared/email.ts";
-import { CORS_HEADERS } from "../_shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
+import { clientIp, isRateLimited } from "../_shared/rateLimit.ts";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -38,17 +39,56 @@ interface RequestBody {
   companyWebsite?: string;
 }
 
-// Extremely lightweight in-memory rate limit — resets on cold start. A real
-// deployment behind Supabase's platform should pair this with platform-level
-// abuse protection; this only guards against rapid repeat submissions from
-// the same function instance.
-const recentSubmissions = new Map<string, number>();
+// In-memory rate limits — reset on cold start. A real deployment behind
+// Supabase's platform should pair this with platform-level abuse protection
+// and a CAPTCHA; these only guard against repeat submissions seen by the
+// same function instance.
+//
+// The limit used to be keyed on the email address in the REQUEST BODY, which
+// the sender chooses. Since a successful submission sends a "thanks for
+// reaching out" mail to that address from the practice's verified domain, a
+// script posting victim+1@…, victim+2@… passed the limit every time and used
+// this endpoint as a mail bomb aimed at whoever it liked. The caller's IP is
+// now the primary key; the email address stays as an ADDITIONAL limit so one
+// person cannot spam one inbox from many addresses of their own.
 const RATE_LIMIT_WINDOW_MS = 60_000;
+/** Per caller IP. Above 1 because offices and mobile carriers share an IP. */
+const MAX_PER_IP_PER_WINDOW = 5;
+/** Per email address in the body — preserves the previous 1/minute rule. */
+const MAX_PER_EMAIL_PER_WINDOW = 1;
+/**
+ * Per-isolate ceiling across ALL keys, so a distributed flood cannot turn
+ * this function into an untargeted mail relay even when no single IP or
+ * address trips its own limit.
+ */
+const MAX_TOTAL_PER_WINDOW = 60;
+
+// A pragmatic address check: local part, "@", and a dotted domain whose
+// labels are alphanumeric/hyphen. Replaces `email.includes("@")`, which
+// accepted values like `"><a href=…` and let them reach the admin's inbox.
+const EMAIL_PATTERN =
+  /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
 
 serve(async (req) => {
+  const CORS_HEADERS = corsHeaders(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS_HEADERS });
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
+  }
+
+  const tooBusy = (): Response =>
+    new Response(JSON.stringify({ error: "Please wait a moment before submitting again." }), {
+      status: 429,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    });
+
+  // Charged before any work is done, so a flood costs this function almost
+  // nothing. Both counters are incremented by the call that reads them.
+  if (isRateLimited("contact:all", RATE_LIMIT_WINDOW_MS, MAX_TOTAL_PER_WINDOW)) return tooBusy();
+  if (
+    isRateLimited(`contact:ip:${clientIp(req)}`, RATE_LIMIT_WINDOW_MS, MAX_PER_IP_PER_WINDOW)
+  ) {
+    return tooBusy();
   }
 
   let body: RequestBody;
@@ -76,25 +116,24 @@ serve(async (req) => {
   const message = (body.message ?? "").trim().slice(0, 4000);
   const sourcePage = (body.sourcePage ?? "").trim().slice(0, 200);
 
-  if (!fullName || !email.includes("@") || message.length < 10) {
+  if (!fullName || !EMAIL_PATTERN.test(email) || message.length < 10) {
     return new Response(JSON.stringify({ error: "Please fill in all required fields." }), {
       status: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
   }
 
-  const rateKey = email.toLowerCase();
-  const last = recentSubmissions.get(rateKey);
-  if (last && Date.now() - last < RATE_LIMIT_WINDOW_MS) {
-    return new Response(
-      JSON.stringify({ error: "Please wait a moment before submitting again." }),
-      {
-        status: 429,
-        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-      },
-    );
+  // Second, additional limit — the IP ceiling above is the one that actually
+  // bounds abuse, since this key is chosen by the sender.
+  if (
+    isRateLimited(
+      `contact:email:${email.toLowerCase()}`,
+      RATE_LIMIT_WINDOW_MS,
+      MAX_PER_EMAIL_PER_WINDOW,
+    )
+  ) {
+    return tooBusy();
   }
-  recentSubmissions.set(rateKey, Date.now());
 
   const { error: insertError } = await supabaseAdmin.from("contact_inquiries").insert({
     full_name: fullName,

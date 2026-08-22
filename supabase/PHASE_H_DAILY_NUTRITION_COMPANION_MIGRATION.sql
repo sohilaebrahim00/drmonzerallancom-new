@@ -358,12 +358,10 @@ select
 from public.doctor_patient_relationships r
 where r.status = 'active';
 
--- Views don't carry their own RLS — access is governed entirely by the
--- underlying tables' existing policies (meal_logs/weight_logs already
--- grant doctor SELECT via has_active_doctor_relationship(); messages via
--- is_conversation_participant()), so a doctor querying this view only ever
--- sees rows for their own active patients regardless of who else's data
--- exists in the underlying tables.
+-- WRONG AS WRITTEN — corrected in PHASE_J_FIXES_MIGRATION.sql (J.1): without
+-- `with (security_invoker = true)` this view runs with its OWNER's rights and
+-- the underlying tables' RLS never applies, so the grant below exposed the
+-- whole doctor/patient roster to every signed-in user. Apply PHASE_J.
 grant select on public.doctor_patient_activity_summary to authenticated;
 
 

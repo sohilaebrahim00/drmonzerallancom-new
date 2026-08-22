@@ -67,6 +67,10 @@ function shell(bodyHtml: string): string {
   </div>`;
 }
 
+// `href` is interpolated into an HTML attribute, so every caller passing a
+// value that originated in a request body MUST escapeHtml() it first —
+// escaping the double quote is what stops the value closing the attribute
+// and injecting a phishing link into the doctor's own inbox.
 function ctaButton(label: string, href: string): string {
   return `<a href="${href}" style="display:inline-block;margin-top:16px;background:${TURQUOISE};color:${NAVY};text-decoration:none;font-weight:700;font-size:14px;padding:12px 24px;border-radius:999px;">${label}</a>`;
 }
@@ -96,7 +100,7 @@ export function adminNewMemberEmail(input: NewMemberEmailInput) {
       <tr><td style="padding:4px 0;color:#8a94a6;">Stripe customer</td><td>${escapeHtml(input.stripeCustomerId)}</td></tr>
       <tr><td style="padding:4px 0;color:#8a94a6;">Date</td><td>${new Date().toLocaleString()}</td></tr>
     </table>
-    ${ctaButton("Email Customer", `mailto:${input.email}`)}
+    ${ctaButton("Email Customer", `mailto:${escapeHtml(input.email)}`)}
     ${waHref ? " " + ctaButton("WhatsApp Customer", waHref) : ""}
   `;
   return { subject: `New Dr. Monzer Allan Membership — ${input.packageName}`, html: shell(body) };
@@ -149,7 +153,7 @@ export function adminContactInquiryEmail(input: ContactInquiryEmailInput) {
       <tr><td style="padding:4px 0;color:#8a94a6;">Date</td><td>${new Date().toLocaleString()}</td></tr>
     </table>
     <p style="margin-top:16px;padding:12px;background:${LIGHT};border-radius:8px;">${escapeHtml(input.message)}</p>
-    ${ctaButton("Reply by Email", `mailto:${input.email}`)}
+    ${ctaButton("Reply by Email", `mailto:${escapeHtml(input.email)}`)}
     ${waHref ? " " + ctaButton("Follow Up on WhatsApp", waHref) : ""}
   `;
   return { subject: `New Website Inquiry — ${input.subject || "General"}`, html: shell(body) };

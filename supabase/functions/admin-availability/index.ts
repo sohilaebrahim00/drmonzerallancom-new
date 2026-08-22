@@ -8,7 +8,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-import { CORS_HEADERS } from "../_shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -34,11 +34,15 @@ async function resolveAdminUser(req: Request) {
   return data.user;
 }
 
-function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-  });
+// Curried so the per-request CORS headers (which now depend on the caller's
+// Origin) can be bound once inside the handler without touching any of the
+// 17 json(...) call sites below.
+function jsonWith(cors: Record<string, string>) {
+  return (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), {
+      status,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
 }
 
 interface RequestBody {
@@ -47,6 +51,8 @@ interface RequestBody {
 }
 
 serve(async (req) => {
+  const CORS_HEADERS = corsHeaders(req);
+  const json = jsonWith(CORS_HEADERS);
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS_HEADERS });
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
 

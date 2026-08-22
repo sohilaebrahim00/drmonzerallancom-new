@@ -3,9 +3,20 @@ import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
-import { getProfile } from "@/services/membershipService";
+import { supabase } from "@/lib/supabase";
 
-/** Gates a route behind sign-in AND profiles.is_admin, checked from the real database — never a client-side flag. */
+/**
+ * Gates a route behind sign-in AND administrator status, checked from the
+ * real database — never a client-side flag.
+ *
+ * The check is the security-definer `public.is_admin()` RPC (defined in
+ * PHASE_G_SOCIAL_NUTRITION_MIGRATION.sql, `is_admin or role = 'admin'`),
+ * not a `profiles.is_admin` column read. Two reasons: it is the same
+ * predicate every RLS policy uses, so this gate cannot drift from them; and
+ * PHASE_J_FIXES_MIGRATION.sql (J.3) revokes the `is_admin` column from the
+ * `authenticated` role so an ordinary member can no longer read off which
+ * account is the administrator. The RPC answers only about the caller.
+ */
 export function AdminRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const [checking, setChecking] = useState(true);
@@ -13,14 +24,15 @@ export function AdminRoute({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) {
+    if (!user || !supabase) {
       setChecking(false);
       return;
     }
     let cancelled = false;
-    getProfile(user.id).then((profile) => {
+    supabase.rpc("is_admin").then(({ data, error }) => {
       if (cancelled) return;
-      setIsAdmin(Boolean(profile?.is_admin));
+      // Any failure denies access — this must never fail open.
+      setIsAdmin(!error && data === true);
       setChecking(false);
     });
     return () => {

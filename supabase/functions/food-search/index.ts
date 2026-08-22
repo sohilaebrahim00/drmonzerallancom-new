@@ -15,19 +15,22 @@
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
-import { CORS_HEADERS } from "../_shared/cors.ts";
-import { isRateLimited } from "../_shared/rateLimit.ts";
+import { corsHeaders } from "../_shared/cors.ts";
+import { clientIp, isRateLimited } from "../_shared/rateLimit.ts";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 30;
 
 serve(async (req) => {
+  const CORS_HEADERS = corsHeaders(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS_HEADERS });
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
   }
 
-  const rateLimitKey = req.headers.get("x-forwarded-for") ?? "anonymous";
+  // The one hop of x-forwarded-for a client cannot forge — keying on the raw
+  // header meant a fresh bucket per request and no limit at all.
+  const rateLimitKey = `ip:${clientIp(req)}`;
   if (isRateLimited(rateLimitKey, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS)) {
     return new Response(JSON.stringify({ error: "Too many requests." }), {
       status: 429,

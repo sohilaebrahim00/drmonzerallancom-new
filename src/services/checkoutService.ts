@@ -37,7 +37,6 @@ export async function startMembershipCheckout(
           phone: input.phone,
           preferredContactMethod: input.preferredContactMethod,
           packageId: input.packageId,
-          siteUrl: window.location.origin,
         },
       },
     );
@@ -78,7 +77,6 @@ export async function startProgramPackageCheckout(
           fullName: input.fullName,
           email: input.email,
           packageId: input.packageId,
-          siteUrl: window.location.origin,
         },
       },
     );

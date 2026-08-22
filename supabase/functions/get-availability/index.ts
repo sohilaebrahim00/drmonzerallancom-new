@@ -10,7 +10,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-import { CORS_HEADERS } from "../_shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 import { generateAvailableSlots } from "../_shared/availability.ts";
 
 const supabaseAdmin = createClient(
@@ -19,6 +19,7 @@ const supabaseAdmin = createClient(
 );
 
 serve(async (req) => {
+  const CORS_HEADERS = corsHeaders(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS_HEADERS });
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });

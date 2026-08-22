@@ -142,16 +142,21 @@ export interface PatientNeedsReview {
 
 /**
  * Operational reminders only (§84) — never framed as medical alerts. Reads
- * from the doctor_patient_activity_summary view added in Phase H, which
- * inherits its RLS from the underlying meal_logs/weight_logs tables, so a
- * doctor only ever sees rows for their own active patients.
+ * from the doctor_patient_activity_summary view added in Phase H. That view
+ * is security_invoker (PHASE_J_FIXES_MIGRATION.sql J.1), so the caller's own
+ * RLS on the underlying tables scopes the rows; the explicit doctor_id filter
+ * below is defence in depth, not the only thing standing between one doctor
+ * and another doctor's roster.
  */
 export async function getPatientsNeedingReview(): Promise<PatientNeedsReview[]> {
   if (getDemoMode()) return DEMO_NEEDS_REVIEW;
   if (!supabase) return [];
+  const userId = await currentUserId();
+  if (!userId) return [];
   const { data, error } = await supabase
     .from("doctor_patient_activity_summary")
-    .select("patient_id, last_meal_at, last_weight_at");
+    .select("patient_id, last_meal_at, last_weight_at")
+    .eq("doctor_id", userId);
   if (error || !data || data.length === 0) return [];
 
   const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;

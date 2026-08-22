@@ -9,6 +9,13 @@ export interface ContactPayload {
   preferredContactMethod: "whatsapp" | "email" | "either";
   subject: string;
   message: string;
+  /**
+   * Honeypot — the hidden field rendered at Contact.tsx. Real visitors leave
+   * it empty. It MUST be forwarded: contact-submit's server-side honeypot
+   * check reads `companyWebsite`, and while this field was dropped here that
+   * check could never fire.
+   */
+  companyWebsite?: string;
 }
 
 export type ContactSubmitResult =
@@ -75,6 +82,7 @@ export async function submitContact(payload: ContactPayload): Promise<ContactSub
           preferredContactMethod: payload.preferredContactMethod,
           subject: payload.subject,
           message: payload.message,
+          companyWebsite: payload.companyWebsite ?? "",
           sourcePage: window.location.pathname,
         },
       },

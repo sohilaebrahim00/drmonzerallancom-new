@@ -7,6 +7,8 @@
 //   STRIPE_PRICE_PREMIUM
 //   STRIPE_PRICE_VIP
 //   SUPABASE_SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
+//   SITE_URL              (required — the success/cancel redirect origin.
+//                          Never taken from the request body.)
 //
 // The browser only ever sends a safe package identifier ("basic" |
 // "premium" | "vip-elite") — never a price or amount. This function maps
@@ -17,6 +19,8 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@16?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+import { corsHeaders } from "../_shared/cors.ts";
+
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: "2024-06-20",
 });
@@ -26,16 +30,19 @@ const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
+// Where Stripe sends the buyer after checkout. Read from the server's own
+// secret and NEVER from the request: this endpoint is unauthenticated, so a
+// client-supplied siteUrl let anyone mint a genuine Checkout session on the
+// clinic's live Stripe account whose success_url pointed at their own site —
+// the victim paying on a real Stripe page in the doctor's name, then being
+// redirected to the attacker with the session_id in the query string.
+// `contact-submit` already reads this same secret.
+const SITE_URL = (Deno.env.get("SITE_URL") ?? "").replace(/\/$/, "");
+
 const PACKAGE_TO_PRICE: Record<string, string | undefined> = {
   basic: Deno.env.get("STRIPE_PRICE_BASIC"),
   premium: Deno.env.get("STRIPE_PRICE_PREMIUM"),
   "vip-elite": Deno.env.get("STRIPE_PRICE_VIP"),
-};
-
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface RequestBody {
@@ -44,12 +51,12 @@ interface RequestBody {
   phone?: string;
   preferredContactMethod: "whatsapp" | "email" | "either";
   packageId: string;
-  siteUrl: string;
   /** Honeypot — real visitors never fill this in. */
   companyWebsite?: string;
 }
 
 serve(async (req) => {
+  const CORS_HEADERS = corsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
   }
@@ -80,9 +87,16 @@ serve(async (req) => {
   const phone = (body.phone ?? "").trim().slice(0, 40);
   const preferredContactMethod = body.preferredContactMethod ?? "either";
   const packageId = body.packageId;
-  const siteUrl = (body.siteUrl ?? "").replace(/\/$/, "");
 
-  if (!fullName || !email.includes("@") || !siteUrl) {
+  if (!SITE_URL) {
+    console.error("[create-checkout-session] SITE_URL secret is not set — refusing to build a redirect URL.");
+    return new Response(JSON.stringify({ error: "Checkout is not configured. Please contact us." }), {
+      status: 500,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    });
+  }
+
+  if (!fullName || !email.includes("@")) {
     return new Response(JSON.stringify({ error: "Missing required fields." }), {
       status: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -124,8 +138,8 @@ serve(async (req) => {
     line_items: [{ price: priceId, quantity: 1 }],
     customer_email: email,
     phone_number_collection: { enabled: true },
-    success_url: `${siteUrl}/membership/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl}/membership/cancelled`,
+    success_url: `${SITE_URL}/membership/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${SITE_URL}/membership/cancelled`,
     metadata: {
       package_id: packageId,
       internal_lead_id: lead.id,
