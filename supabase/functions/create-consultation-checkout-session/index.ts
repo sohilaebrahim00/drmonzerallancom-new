@@ -12,7 +12,10 @@
 //   STRIPE_SECRET_KEY
 //   STRIPE_PRODUCT_DIET_BASIC / STRIPE_PRODUCT_DIET_PLUS / STRIPE_PRODUCT_DIET_PREMIUM
 //   STRIPE_PRODUCT_TREATMENT_BASIC / STRIPE_PRODUCT_TREATMENT_PLUS / STRIPE_PRODUCT_TREATMENT_PREMIUM
-//   SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
+//   SUPABASE_SERVICE_ROLE_KEY  (injected by the platform automatically, along
+//                       with SUPABASE_URL — do NOT use the name
+//                       SERVICE_ROLE_KEY, which is never set and silently
+//                       yields an empty-key client whose writes return 401)
 //   SITE_URL           (required — the success/cancel redirect origin.
 //                       Never taken from the request body.)
 //
@@ -40,7 +43,7 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SERVICE_ROLE_KEY") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
 // Where Stripe sends the buyer after checkout. Read from the server's own
@@ -140,7 +143,9 @@ serve(async (req) => {
   }
 
   const fullName = (body.fullName ?? "").trim().slice(0, 200);
-  const email = (body.email ?? "").trim().slice(0, 320);
+  // Lower-cased here so the address stored on the lead/payment row matches
+  // what GoTrue will hold, and what the webhook will look up later.
+  const email = (body.email ?? "").trim().toLowerCase().slice(0, 320);
   const packageId = body.packageId;
 
   if (!SITE_URL) {

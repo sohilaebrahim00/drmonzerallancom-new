@@ -64,6 +64,18 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   return data;
 }
 
+/**
+ * The caller's active entitlement, with credits SUMMED across every active
+ * subscriptions row.
+ *
+ * Each one-time program purchase inserts its own row, so `limit 1` here
+ * reported only the newest one: a buyer who bought Diet Premium (3 credits)
+ * and then Treatment Basic (1) saw "1 of 1" and could never spend the other
+ * three. Identity fields (id, package_id, dates) still come from the newest
+ * row — that is what the Account page names — but the balance is the real
+ * combined one, which is what makes AccountPage's "purchase another program
+ * to get more credits" prompt actually true.
+ */
 export async function getMySubscription(): Promise<Subscription | null> {
   if (getDemoMode()) return DEMO_SUBSCRIPTION;
   if (!supabase) return null;
@@ -73,14 +85,19 @@ export async function getMySubscription(): Promise<Subscription | null> {
       "id, package_id, status, current_period_start, current_period_end, consultation_credit_limit, consultation_credits_used",
     )
     .eq("status", "active")
-    .order("current_period_start", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .order("current_period_start", { ascending: false });
   if (error) {
     console.warn("[membershipService] subscriptions table unavailable:", error.message);
     return null;
   }
-  return data;
+  const rows = (data ?? []) as Subscription[];
+  if (rows.length === 0) return null;
+
+  return {
+    ...rows[0],
+    consultation_credit_limit: rows.reduce((sum, r) => sum + r.consultation_credit_limit, 0),
+    consultation_credits_used: rows.reduce((sum, r) => sum + r.consultation_credits_used, 0),
+  };
 }
 
 export async function getMyConsultationRequests(): Promise<ConsultationRequest[]> {

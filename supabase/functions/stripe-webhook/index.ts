@@ -5,13 +5,20 @@
 // writing subscription/credit rows with the service_role key. Deploy with
 // `supabase functions deploy stripe-webhook` and register its URL in the
 // Stripe Dashboard (Developers > Webhooks), subscribed to the event types
-// handled below.
+// handled below — note that checkout.session.async_payment_succeeded,
+// checkout.session.async_payment_failed, charge.refunded and
+// charge.dispute.created must all be ticked in that endpoint's event list, or
+// delayed payments and refunds will simply never be delivered.
 //
 // Required secrets (`supabase secrets set ...`, never in the frontend):
 //   STRIPE_SECRET_KEY
 //   STRIPE_WEBHOOK_SECRET
 //   STRIPE_PRICE_BASIC / STRIPE_PRICE_PREMIUM / STRIPE_PRICE_VIP
-//   SERVICE_ROLE_KEY   (SUPABASE_URL is provided automatically)
+//   SUPABASE_SERVICE_ROLE_KEY   (injected by the platform automatically,
+//                                along with SUPABASE_URL — do NOT use the
+//                                name SERVICE_ROLE_KEY, which is never set
+//                                and silently yields an empty-key client
+//                                whose every write returns 401)
 //   RESEND_API_KEY, EMAIL_FROM, ADMIN_NOTIFICATION_EMAIL (for notification emails)
 //
 // This function is the only thing that should ever write to
@@ -40,7 +47,7 @@ const siteUrl = Deno.env.get("SITE_URL") ?? "https://monzerallan.com";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SERVICE_ROLE_KEY") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
 const PACKAGE_INFO: Record<
@@ -140,8 +147,23 @@ const CONSULTATION_PACKAGE_INFO: Record<
   },
 };
 
+/**
+ * GoTrue stores every address lower-cased. Normalising at every boundary is
+ * what stops a buyer who typed `Jane@Example.com` from being invisible to
+ * get_user_id_by_email, whose lookup then missed, whose invite then failed as
+ * "already registered", whose retry missed identically — leaving
+ * findOrInviteUser returning null and the handler returning with the payment
+ * taken and nothing recorded.
+ */
+function normalizeEmail(email: string | null | undefined): string {
+  return (email ?? "").trim().toLowerCase();
+}
+
 /** Finds an existing auth user by email, or invites a new one. Never creates a duplicate. */
-async function findOrInviteUser(email: string, fullName: string): Promise<string | null> {
+async function findOrInviteUser(rawEmail: string, fullName: string): Promise<string | null> {
+  const email = normalizeEmail(rawEmail);
+  if (!email) return null;
+
   const { data: existingId } = await supabaseAdmin.rpc("get_user_id_by_email", { p_email: email });
   if (existingId) return existingId as string;
 
@@ -172,7 +194,7 @@ async function activateMembership(subscription: Stripe.Subscription) {
 
   const customer = await stripe.customers.retrieve(subscription.customer as string);
   if (customer.deleted) return;
-  const email = customer.email;
+  const email = normalizeEmail(customer.email);
   if (!email) {
     console.error("[stripe-webhook] Stripe customer has no email", customer.id);
     return;
@@ -181,6 +203,16 @@ async function activateMembership(subscription: Stripe.Subscription) {
 
   const userId = await findOrInviteUser(email, fullName);
   if (!userId) return;
+
+  // Counted BEFORE the upsert. Counting after it always returned 1 (the row
+  // the upsert had just written), so isFirstActivation was true by
+  // construction and the welcome + admin emails fired again on every renewal
+  // and on every redelivered webhook.
+  const { count: priorCount } = await supabaseAdmin
+    .from("subscriptions")
+    .select("id", { count: "exact", head: true })
+    .eq("stripe_subscription_id", subscription.id);
+  const isFirstActivation = (priorCount ?? 0) === 0;
 
   // Idempotent: re-running with the same stripe_subscription_id updates the
   // same row rather than inserting a new one.
@@ -208,13 +240,8 @@ async function activateMembership(subscription: Stripe.Subscription) {
   }
 
   // Only send the "welcome" + admin emails the first time this subscription
-  // becomes active, not on every renewal-triggered webhook.
-  const { data: priorRows } = await supabaseAdmin
-    .from("subscriptions")
-    .select("id")
-    .eq("stripe_subscription_id", subscription.id);
-  const isFirstActivation = (priorRows?.length ?? 0) <= 1;
-
+  // becomes active, not on every renewal-triggered webhook. `isFirstActivation`
+  // was computed above, before the upsert.
   if (isFirstActivation) {
     const { subject, html } = customerWelcomeEmail({
       siteUrl,
@@ -261,6 +288,20 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
     return;
   }
 
+  // The money must actually have arrived. Stripe's dynamic payment methods
+  // include delayed-notification types (ACH, SEPA debit, Klarna) where
+  // checkout.session.completed fires with payment_status "unpaid" and the
+  // funds settle days later — granting on "completed" alone handed out
+  // credits before any money moved. For those, the grant happens instead in
+  // the checkout.session.async_payment_succeeded handler, which re-enters
+  // this function once payment_status has flipped to "paid".
+  if (session.payment_status !== "paid") {
+    console.log(
+      `[stripe-webhook] Session ${session.id} is ${session.payment_status}; deferring credit grant until payment settles.`,
+    );
+    return;
+  }
+
   // Idempotent: Stripe may redeliver checkout.session.completed. Never grant
   // the same one-time credits twice for the same payment.
   const { data: existingPayment } = await supabaseAdmin
@@ -270,7 +311,7 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
     .maybeSingle();
   if (existingPayment?.status === "succeeded") return;
 
-  const email = session.customer_details?.email ?? session.customer_email;
+  const email = normalizeEmail(session.customer_details?.email ?? session.customer_email);
   if (!email) {
     console.error("[stripe-webhook] Checkout session has no email", session.id);
     return;
@@ -333,6 +374,8 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
     packageName: info.name,
     consultationCredits: info.creditLimit,
     isVip: false,
+    // One-time program pack — credits do not renew monthly.
+    packageKind: "program",
   });
   await sendEmail(email, subject, html);
 
@@ -382,6 +425,101 @@ async function markPaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent) {
     .is("stripe_payment_id", null);
 }
 
+/**
+ * Marks a one-time purchase as not-paid after a delayed payment method fails.
+ * Only ever touches a row still sitting at 'pending' — a payment that already
+ * succeeded (e.g. a retry that went through) must never be walked backwards.
+ */
+async function markSessionPaymentFailed(session: Stripe.Checkout.Session) {
+  const paymentId = session.metadata?.internal_payment_id;
+  if (!paymentId) return;
+  await supabaseAdmin
+    .from("payments")
+    .update({ status: "failed" })
+    .eq("id", paymentId)
+    .eq("status", "pending");
+}
+
+/**
+ * Reverses a one-time purchase after a refund or a dispute.
+ *
+ * Three things must move together, and all three are idempotent because
+ * Stripe delivers at least once:
+ *   1. `payments.status` -> 'refunded' (only from 'succeeded', so a redelivery
+ *      is a no-op and a never-succeeded row is left alone).
+ *   2. The `subscriptions` row that granted the credits -> 'cancelled', so
+ *      book_consultation_slot stops finding it. Keyed on the checkout session
+ *      id, which is exactly what activateConsultationPackage wrote.
+ *   3. A NEGATIVE `consultation_credits` ledger row, so the audit trail stays
+ *      append-only and still balances to the real entitlement. PHASE_J drops
+ *      the original `credits > 0` check constraint that made this impossible.
+ *
+ * Step 3 is guarded by a lookup for an existing reversal row for the same
+ * payment, so a redelivered charge.refunded cannot double-debit the ledger.
+ */
+async function reverseConsultationPackage(
+  paymentIntentId: string | null,
+  reason: "refund" | "dispute",
+) {
+  if (!paymentIntentId) return;
+
+  const { data: payment } = await supabaseAdmin
+    .from("payments")
+    .select("id, user_id, status, credits_granted")
+    .eq("stripe_payment_id", paymentIntentId)
+    .maybeSingle();
+  if (!payment) {
+    console.error(`[stripe-webhook] No payments row for payment_intent ${paymentIntentId}`);
+    return;
+  }
+  if (payment.status !== "succeeded") return; // already reversed, or never granted
+
+  await supabaseAdmin.from("payments").update({ status: "refunded" }).eq("id", payment.id);
+
+  // The subscriptions row this payment created, found via the same Stripe
+  // checkout session that activateConsultationPackage keyed its upsert on.
+  let sessionId: string | undefined;
+  try {
+    const sessions = await stripe.checkout.sessions.list({
+      payment_intent: paymentIntentId,
+      limit: 1,
+    });
+    sessionId = sessions.data[0]?.id;
+  } catch (err) {
+    console.error(
+      `[stripe-webhook] Could not list checkout sessions for ${paymentIntentId}:`,
+      (err as Error).message,
+    );
+  }
+  if (sessionId) {
+    await supabaseAdmin
+      .from("subscriptions")
+      .update({ status: "cancelled", updated_at: new Date().toISOString() })
+      .eq("stripe_checkout_session_id", sessionId);
+  } else {
+    console.error(
+      `[stripe-webhook] Could not resolve a checkout session for ${paymentIntentId}; payments row marked refunded but the subscription row was left untouched.`,
+    );
+  }
+
+  if (payment.user_id && payment.credits_granted > 0) {
+    const { data: alreadyReversed } = await supabaseAdmin
+      .from("consultation_credits")
+      .select("id")
+      .eq("payment_id", payment.id)
+      .lt("credits", 0)
+      .maybeSingle();
+    if (!alreadyReversed) {
+      await supabaseAdmin.from("consultation_credits").insert({
+        user_id: payment.user_id,
+        credits: -payment.credits_granted,
+        source: reason === "dispute" ? "stripe_dispute" : "stripe_refund",
+        payment_id: payment.id,
+      });
+    }
+  }
+}
+
 serve(async (req) => {
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
@@ -407,6 +545,44 @@ serve(async (req) => {
         } else if (session.mode === "payment") {
           await activateConsultationPackage(session);
         }
+        break;
+      }
+
+      // Delayed-notification payment methods (ACH, SEPA, Klarna). The
+      // "completed" event above returns without granting when payment_status
+      // is not yet "paid"; this is where that grant actually happens.
+      case "checkout.session.async_payment_succeeded": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        if (session.mode === "payment") {
+          await activateConsultationPackage(session);
+        }
+        break;
+      }
+
+      case "checkout.session.async_payment_failed": {
+        await markSessionPaymentFailed(event.data.object as Stripe.Checkout.Session);
+        break;
+      }
+
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge;
+        await reverseConsultationPackage(
+          typeof charge.payment_intent === "string"
+            ? charge.payment_intent
+            : (charge.payment_intent?.id ?? null),
+          "refund",
+        );
+        break;
+      }
+
+      case "charge.dispute.created": {
+        const dispute = event.data.object as Stripe.Dispute;
+        await reverseConsultationPackage(
+          typeof dispute.payment_intent === "string"
+            ? dispute.payment_intent
+            : (dispute.payment_intent?.id ?? null),
+          "dispute",
+        );
         break;
       }
 

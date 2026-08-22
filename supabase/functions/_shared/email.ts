@@ -112,14 +112,27 @@ interface WelcomeEmailInput {
   packageName: string;
   consultationCredits: number;
   isVip: boolean;
+  /**
+   * "membership" = a recurring monthly plan, where the credits genuinely do
+   * renew each month. "program" = a one-time Diet/Treatment package, where
+   * they do not. Defaults to "membership" so existing callers keep their
+   * wording, but the one-time path MUST pass "program": telling a one-time
+   * buyer they get N credits "per month" promises something never delivered.
+   */
+  packageKind?: "membership" | "program";
 }
 
 export function customerWelcomeEmail(input: WelcomeEmailInput) {
+  const credits = `<strong>${input.consultationCredits} consultation credit${input.consultationCredits === 1 ? "" : "s"}</strong>`;
+  const entitlement =
+    input.packageKind === "program"
+      ? `Your <strong>${escapeHtml(input.packageName)}</strong> program is now active, including
+    ${credits} to use whenever you're ready — they don't expire monthly.`
+      : `Your <strong>${escapeHtml(input.packageName)}</strong> membership is now active, including
+    ${credits} per month.`;
   const body = `
     <h2 style="margin:0 0 12px;font-size:18px;">Welcome, ${escapeHtml(input.fullName)}</h2>
-    <p>Your <strong>${escapeHtml(input.packageName)}</strong> membership is now active, including
-    <strong>${input.consultationCredits} consultation credit${input.consultationCredits === 1 ? "" : "s"}</strong>
-    per month.</p>
+    <p>${entitlement}</p>
     <p>Set your password to sign in and access your member dashboard, where you can request
     consultations and track your credits.</p>
     ${input.isVip ? `<p>As a VIP Elite member, your Priority Hotline details will appear inside your authenticated dashboard.</p>` : ""}

@@ -14,7 +14,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/cors.ts";
 import { callGemini, isGeminiConfigured } from "../_shared/gemini.ts";
-import { isRateLimited } from "../_shared/rateLimit.ts";
+import { clientIp, isRateLimited } from "../_shared/rateLimit.ts";
 
 // Mirrors `foodScannerRequiresMembership` in src/config/mobileApp.ts — see
 // the comment there for why this can't be a single shared import.
@@ -179,7 +179,12 @@ serve(async (req) => {
     }
   }
 
-  const rateLimitKey = userId ?? req.headers.get("x-forwarded-for") ?? "anonymous";
+  // Authenticated callers are keyed on their user id; anonymous ones on the
+  // one hop of x-forwarded-for they cannot forge (see clientIp). Keying on
+  // the raw header let a caller send a random value per request and get
+  // unlimited paid Gemini calls — and this is the most expensive of the three
+  // Gemini paths, because it sends an image.
+  const rateLimitKey = userId ?? `ip:${clientIp(req)}`;
   if (isRateLimited(rateLimitKey, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS)) {
     return new Response(
       JSON.stringify({ error: "We're receiving a high number of scans right now. Please try again shortly." }),

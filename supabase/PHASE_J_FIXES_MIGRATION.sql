@@ -172,5 +172,303 @@ comment on column public.profiles.is_admin is
 
 
 -- ═══════════════════════════════════════════════════════════════════════
+-- PHASE 2 — PAYMENTS (FIX_PLAN.md Phase 2)
+--
+-- Live state verified on 2026-08-23 via `supabase db query --linked` before
+-- any of this was written:
+--
+--   J.4  subscriptions_stripe_checkout_session_id_idx EXISTS and IS PARTIAL
+--        (`WHERE (stripe_checkout_session_id IS NOT NULL)`) — the 42P10 in
+--        FIX_PLAN 2.1 is real on this database today.
+--   J.5  subscriptions has NO index on stripe_subscription_id at all
+--        (pg_index over the table lists only subscriptions_pkey and the
+--        partial checkout-session one) — FIX_PLAN 2.2 confirmed.
+--   J.6  consultation_credits carries CHECK ((credits > 0)), which makes the
+--        negative reversal ledger row FIX_PLAN 2.6 requires impossible until
+--        the constraint is replaced. See J.6.
+--
+-- Everything below is idempotent and re-runnable.
+-- ═══════════════════════════════════════════════════════════════════════
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.4 — ON CONFLICT cannot match a partial index (FIX_PLAN.md 2.1)
+--
+-- PostgREST emits `ON CONFLICT (stripe_checkout_session_id)` with no
+-- predicate. Postgres cannot match that to a partial index, so the upsert in
+-- stripe-webhook raised 42P10, the handler returned, and the webhook still
+-- answered 200 — Stripe never retried, and the buyer was charged for nothing.
+--
+-- A plain unique index is correct here: Postgres treats NULLs as distinct by
+-- default, so membership rows (which leave this column null) still do not
+-- collide with each other.
+-- ───────────────────────────────────────────────────────────────────────
+drop index if exists public.subscriptions_stripe_checkout_session_id_idx;
+create unique index if not exists subscriptions_stripe_checkout_session_id_idx
+  on public.subscriptions (stripe_checkout_session_id);
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.5 — the recurring path had no arbiter index at all (FIX_PLAN.md 2.2)
+--
+-- Same 42P10, on `onConflict: "stripe_subscription_id"` — which means every
+-- monthly renewal of every existing member was failing silently.
+-- ───────────────────────────────────────────────────────────────────────
+create unique index if not exists subscriptions_stripe_subscription_id_idx
+  on public.subscriptions (stripe_subscription_id);
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.6 — allow negative consultation_credits rows (needed by FIX_PLAN.md 2.6)
+--
+-- 2.6 requires a NEGATIVE ledger row on refund/dispute so the audit trail
+-- stays append-only and still balances. The original constraint
+-- `check (credits > 0)` forbids exactly that, so the reversal insert in
+-- stripe-webhook would fail with 23514 and the ledger would silently drift
+-- from the real entitlement.
+--
+-- Zero stays forbidden — a zero-credit ledger row carries no information and
+-- is always a bug.
+-- ───────────────────────────────────────────────────────────────────────
+alter table public.consultation_credits
+  drop constraint if exists consultation_credits_credits_check;
+alter table public.consultation_credits
+  add constraint consultation_credits_credits_check check (credits <> 0);
+
+comment on column public.consultation_credits.credits is
+  'Signed. Positive rows are grants; negative rows are reversals written by the stripe-webhook refund/dispute handlers. Never zero. The spendable balance remains subscriptions.consultation_credit_limit - consultation_credits_used; this table is the append-only history of how it got there.';
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.7 — email lookup must be case-insensitive (FIX_PLAN.md 2.5)
+--
+-- GoTrue stores addresses lower-cased. `where email = p_email` therefore
+-- never matched a buyer who typed `Jane@Example.com`: the lookup missed, the
+-- invite failed as "already registered", the retry missed identically,
+-- findOrInviteUser returned null and the handler returned — payment taken,
+-- nothing recorded.
+--
+-- Also mirrored into supabase/schema.sql so a fresh setup is correct.
+-- ───────────────────────────────────────────────────────────────────────
+create or replace function public.get_user_id_by_email(p_email text)
+returns uuid
+language sql
+security definer set search_path = public, auth
+as $$
+  select id from auth.users where lower(email) = lower(trim(p_email)) limit 1;
+$$;
+
+revoke all on function public.get_user_id_by_email(text) from public, anon, authenticated;
+grant execute on function public.get_user_id_by_email(text) to service_role;
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.8 — spend credits from the OLDEST active row (FIX_PLAN.md 2.8)
+--
+-- Every one-time purchase inserts its own subscriptions row, but this RPC
+-- locked exactly one (`order by current_period_start desc limit 1`). A buyer
+-- who bought Diet Premium (3 credits), spent one, then bought Treatment Basic
+-- (1 credit) could book once and the remaining two were stranded forever.
+--
+-- Now it takes the OLDEST active row that still has credit, so entitlements
+-- are consumed in the order they were bought. Everything stays inside the
+-- caller's transaction and every existing failure mode is preserved:
+-- NO_ACTIVE_MEMBERSHIP when there is no active row at all,
+-- NO_CREDITS_REMAINING when active rows exist but none has credit left,
+-- MINIMUM_NOTICE_NOT_MET and SLOT_TAKEN unchanged.
+--
+-- Also mirrored into supabase/schema.sql so a fresh setup is correct.
+-- ───────────────────────────────────────────────────────────────────────
+create or replace function public.book_consultation_slot(
+  p_user_id uuid,
+  p_appointment_start timestamptz,
+  p_appointment_end timestamptz,
+  p_timezone text,
+  p_consultation_type text,
+  p_reason text
+)
+returns public.consultation_requests
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  v_subscription public.subscriptions;
+  v_has_active boolean;
+  v_result public.consultation_requests;
+begin
+  -- Distinguishes "no membership at all" from "membership(s), but no credit
+  -- left" so the two existing error codes keep their original meanings.
+  select exists (
+    select 1 from public.subscriptions
+    where user_id = p_user_id and status = 'active'
+  ) into v_has_active;
+
+  if not v_has_active then
+    raise exception 'NO_ACTIVE_MEMBERSHIP';
+  end if;
+
+  -- Row lock prevents the same user from spending two credits via parallel
+  -- requests. Oldest-first: spend what was bought first.
+  select * into v_subscription
+  from public.subscriptions
+  where user_id = p_user_id
+    and status = 'active'
+    and consultation_credits_used < consultation_credit_limit
+  order by current_period_start asc
+  limit 1
+  for update;
+
+  if v_subscription is null then
+    raise exception 'NO_CREDITS_REMAINING';
+  end if;
+
+  if p_appointment_start < (now() + interval '48 hours') then
+    raise exception 'MINIMUM_NOTICE_NOT_MET';
+  end if;
+
+  begin
+    insert into public.consultation_requests (
+      user_id, subscription_id, appointment_start, appointment_end,
+      client_timezone, consultation_type, reason, status, credit_status
+    ) values (
+      p_user_id, v_subscription.id, p_appointment_start, p_appointment_end,
+      p_timezone, p_consultation_type, p_reason, 'pending', 'reserved'
+    )
+    returning * into v_result;
+  exception when unique_violation then
+    raise exception 'SLOT_TAKEN';
+  end;
+
+  update public.subscriptions
+  set consultation_credits_used = consultation_credits_used + 1,
+      updated_at = now()
+  where id = v_subscription.id;
+
+  return v_result;
+end;
+$$;
+
+revoke all on function public.book_consultation_slot(uuid, timestamptz, timestamptz, text, text, text) from public, anon, authenticated;
+grant execute on function public.book_consultation_slot(uuid, timestamptz, timestamptz, text, text, text) to service_role;
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.9 — my_active_subscription must report the COMBINED balance
+--       (FIX_PLAN.md 2.8)
+--
+-- Same `limit 1` defect as the RPC above: the view showed only the newest
+-- row's credits. It now reports one row per user carrying the summed
+-- entitlement, with the newest row's identity columns for display.
+-- ───────────────────────────────────────────────────────────────────────
+drop view if exists public.my_active_subscription;
+create view public.my_active_subscription
+  with (security_invoker = true) as
+  select
+    (array_agg(s.id order by s.current_period_start desc))[1] as id,
+    s.user_id,
+    (array_agg(s.package_id order by s.current_period_start desc))[1] as package_id,
+    'active'::public.subscription_status as status,
+    (array_agg(s.stripe_customer_id order by s.current_period_start desc))[1] as stripe_customer_id,
+    (array_agg(s.stripe_subscription_id order by s.current_period_start desc))[1] as stripe_subscription_id,
+    min(s.started_at) as started_at,
+    max(s.current_period_start) as current_period_start,
+    max(s.current_period_end) as current_period_end,
+    sum(s.consultation_credit_limit)::integer as consultation_credit_limit,
+    sum(s.consultation_credits_used)::integer as consultation_credits_used,
+    greatest(
+      sum(s.consultation_credit_limit)::integer - sum(s.consultation_credits_used)::integer,
+      0
+    ) as consultation_credits_remaining
+  from public.subscriptions s
+  where s.user_id = auth.uid()
+    and s.status = 'active'
+  group by s.user_id;
+
+grant select on public.my_active_subscription to authenticated;
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.10 — cancelling must return the credit (FIX_PLAN.md 2.9)
+--
+-- cancel_my_consultation marked the row cancelled without decrementing
+-- consultation_credits_used or setting credit_status = 'released', directly
+-- contradicting the enum comment in schema.sql ("'released' — the hold was
+-- rolled back ... and the credit was restored"). A member who cancelled lost
+-- the credit outright.
+--
+-- The credit is only ever returned for a row that still HOLDS one
+-- (credit_status = 'reserved' or 'confirmed'), and the decrement targets the
+-- exact subscriptions row the booking was made against, so with several
+-- active packs the credit goes back where it came from. Both statements run
+-- in the caller's transaction; a double-cancel is impossible because the
+-- update's `status in ('pending','confirmed')` predicate matches nothing the
+-- second time.
+--
+-- Also mirrored into supabase/schema.sql so a fresh setup is correct.
+-- ───────────────────────────────────────────────────────────────────────
+create or replace function public.cancel_my_consultation(p_request_id uuid)
+returns public.consultation_requests
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  v_result public.consultation_requests;
+  v_had_credit boolean;
+begin
+  select (credit_status in ('reserved', 'confirmed')) into v_had_credit
+  from public.consultation_requests
+  where id = p_request_id and user_id = auth.uid()
+  for update;
+
+  update public.consultation_requests
+  set status = 'cancelled',
+      credit_status = case
+        when credit_status in ('reserved', 'confirmed') then 'released'::public.credit_status
+        else credit_status
+      end,
+      cancelled_at = now(),
+      updated_at = now()
+  where id = p_request_id and user_id = auth.uid() and status in ('pending', 'confirmed')
+  returning * into v_result;
+
+  if v_result is null then
+    raise exception 'REQUEST_NOT_FOUND_OR_NOT_CANCELLABLE';
+  end if;
+
+  if coalesce(v_had_credit, false) and v_result.subscription_id is not null then
+    update public.subscriptions
+    set consultation_credits_used = greatest(consultation_credits_used - 1, 0),
+        updated_at = now()
+    where id = v_result.subscription_id;
+  end if;
+
+  return v_result;
+end;
+$$;
+
+revoke all on function public.cancel_my_consultation(uuid) from public, anon;
+grant execute on function public.cancel_my_consultation(uuid) to authenticated;
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.11 — FIX_PLAN.md 2.12: NO ACTION REQUIRED, recorded so nobody "fixes"
+--        something that is already correct.
+--
+-- The Phase 1 report claimed `authenticated` holds no UPDATE on
+-- public.profiles. That was read from information_schema.role_table_grants,
+-- which only lists TABLE-level grants. Re-checked against the catalog on
+-- 2026-08-23 with the query FIX_PLAN 2.12 specifies: `authenticated` DOES
+-- hold UPDATE, granted per column on exactly
+--   avatar_url, bio, full_name, onboarding_completed_at,
+--   onboarding_current_step, timezone, updated_at, username
+--
+-- That is already the correct shape — it excludes `role` and `is_admin`, so
+-- privilege alone blocks self-promotion to admin, on top of the
+-- prevent_self_role_escalation trigger. profileService's own-row updates work
+-- today. DO NOT add a table-wide update grant here.
+-- ───────────────────────────────────────────────────────────────────────
+
+
+-- ═══════════════════════════════════════════════════════════════════════
 -- END OF PHASE J
 -- ═══════════════════════════════════════════════════════════════════════

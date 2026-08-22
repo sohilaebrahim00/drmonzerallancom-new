@@ -90,6 +90,10 @@ create view public.my_active_subscription as
     and status = 'active'
   order by current_period_start desc
   limit 1;
+-- SUPERSEDED by PHASE_J_FIXES_MIGRATION.sql J.9, which replaces this view
+-- with one that SUMS credits across every active row. Each one-time program
+-- purchase inserts its own subscriptions row, so the `limit 1` above reports
+-- only the newest pack's balance and strands the rest.
 
 -- ── consultation_requests ───────────────────────────────────────────────
 -- Redesigned around real, atomic slot booking (see book_consultation_slot
@@ -160,21 +164,32 @@ security definer set search_path = public
 as $$
 declare
   v_subscription public.subscriptions;
+  v_has_active boolean;
   v_result public.consultation_requests;
 begin
+  -- Oldest-active-row-with-credit, not newest: each one-time program purchase
+  -- inserts its own subscriptions row, so picking the newest stranded every
+  -- earlier pack's credits. See PHASE_J_FIXES_MIGRATION.sql J.8.
+  select exists (
+    select 1 from public.subscriptions
+    where user_id = p_user_id and status = 'active'
+  ) into v_has_active;
+
+  if not v_has_active then
+    raise exception 'NO_ACTIVE_MEMBERSHIP';
+  end if;
+
   -- Row lock prevents the same user from spending two credits via parallel requests.
   select * into v_subscription
   from public.subscriptions
-  where user_id = p_user_id and status = 'active'
-  order by current_period_start desc
+  where user_id = p_user_id
+    and status = 'active'
+    and consultation_credits_used < consultation_credit_limit
+  order by current_period_start asc
   limit 1
   for update;
 
   if v_subscription is null then
-    raise exception 'NO_ACTIVE_MEMBERSHIP';
-  end if;
-
-  if (v_subscription.consultation_credit_limit - v_subscription.consultation_credits_used) <= 0 then
     raise exception 'NO_CREDITS_REMAINING';
   end if;
 
@@ -296,14 +311,36 @@ security definer set search_path = public
 as $$
 declare
   v_result public.consultation_requests;
+  v_had_credit boolean;
 begin
+  -- Returns the credit as well as cancelling: without this the member lost
+  -- the credit outright, contradicting the 'released' enum comment above.
+  -- See PHASE_J_FIXES_MIGRATION.sql J.10.
+  select (credit_status in ('reserved', 'confirmed')) into v_had_credit
+  from public.consultation_requests
+  where id = p_request_id and user_id = auth.uid()
+  for update;
+
   update public.consultation_requests
-  set status = 'cancelled', cancelled_at = now(), updated_at = now()
+  set status = 'cancelled',
+      credit_status = case
+        when credit_status in ('reserved', 'confirmed') then 'released'::public.credit_status
+        else credit_status
+      end,
+      cancelled_at = now(),
+      updated_at = now()
   where id = p_request_id and user_id = auth.uid() and status in ('pending', 'confirmed')
   returning * into v_result;
 
   if v_result is null then
     raise exception 'REQUEST_NOT_FOUND_OR_NOT_CANCELLABLE';
+  end if;
+
+  if coalesce(v_had_credit, false) and v_result.subscription_id is not null then
+    update public.subscriptions
+    set consultation_credits_used = greatest(consultation_credits_used - 1, 0),
+        updated_at = now()
+    where id = v_result.subscription_id;
   end if;
 
   return v_result;
@@ -382,7 +419,10 @@ returns uuid
 language sql
 security definer set search_path = public, auth
 as $$
-  select id from auth.users where email = p_email limit 1;
+  -- lower()/trim(): GoTrue stores every address lower-cased, so an exact
+  -- match missed any buyer who typed mixed case — and the webhook then took
+  -- the payment and recorded nothing. See PHASE_J_FIXES_MIGRATION.sql J.7.
+  select id from auth.users where lower(email) = lower(trim(p_email)) limit 1;
 $$;
 
 revoke all on function public.get_user_id_by_email(text) from public, anon, authenticated;

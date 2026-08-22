@@ -1,0 +1,19 @@
+# Supabase CLI project configuration.
+#
+# This file exists for exactly one reason: Stripe does not send a Supabase
+# JWT. Edge Functions verify a JWT by default, so without the block below the
+# webhook endpoint answers 401 before a single line of its handler runs — the
+# signature check inside stripe-webhook never gets the chance to do its job,
+# and every payment silently records nothing.
+#
+# The endpoint is NOT left unauthenticated by doing this: stripe-webhook
+# verifies the Stripe signature itself (constructEventAsync against
+# STRIPE_WEBHOOK_SECRET) and returns 400 on a missing or bad signature before
+# touching the database. That signature, not a JWT, is this endpoint's auth.
+#
+# Every other function keeps the default verify_jwt = true.
+
+project_id = "nkvycfmxabtwmoirrjxv"
+
+[functions.stripe-webhook]
+verify_jwt = false

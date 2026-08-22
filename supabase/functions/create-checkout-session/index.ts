@@ -83,7 +83,9 @@ serve(async (req) => {
   }
 
   const fullName = (body.fullName ?? "").trim().slice(0, 200);
-  const email = (body.email ?? "").trim().slice(0, 320);
+  // Lower-cased here so the address stored on the lead/payment row matches
+  // what GoTrue will hold, and what the webhook will look up later.
+  const email = (body.email ?? "").trim().toLowerCase().slice(0, 320);
   const phone = (body.phone ?? "").trim().slice(0, 40);
   const preferredContactMethod = body.preferredContactMethod ?? "either";
   const packageId = body.packageId;

@@ -77,8 +77,16 @@ create unique index if not exists subscriptions_stripe_checkout_session_id_idx
 -- 'pending', before redirecting to Stripe) and flipped to
 -- 'succeeded'/'failed' only by the verified stripe-webhook Edge Function —
 -- never by the client, same source-of-truth discipline as `subscriptions`.
-create type public.payment_status as enum ('pending', 'succeeded', 'failed', 'refunded');
-create type public.program_package_type as enum ('diet', 'treatment');
+-- Guarded so this file can be re-run: a bare `create type` aborts the whole
+-- script on the second run. Reproducibility only — both types already exist
+-- on the live project, so this changes nothing there.
+do $$ begin
+  create type public.payment_status as enum ('pending', 'succeeded', 'failed', 'refunded');
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  create type public.program_package_type as enum ('diet', 'treatment');
+exception when duplicate_object then null; end $$;
 
 create table if not exists public.payments (
   id uuid primary key default gen_random_uuid(),
@@ -121,6 +129,9 @@ alter table public.payments enable row level security;
 -- payments are only ever written by the two Stripe-related Edge Functions,
 -- which use the service_role key and therefore bypass RLS entirely — same
 -- pattern as `subscriptions`.
+-- Dropped first so this file can be re-run: `create policy` has no
+-- `if not exists` form and aborts the script on a second run.
+drop policy if exists "Users can view their own payments" on public.payments;
 create policy "Users can view their own payments"
   on public.payments for select
   using (auth.uid() = user_id);
@@ -154,6 +165,7 @@ create table if not exists public.consultation_credits (
 
 alter table public.consultation_credits enable row level security;
 
+drop policy if exists "Users can view their own consultation credit history" on public.consultation_credits;
 create policy "Users can view their own consultation credit history"
   on public.consultation_credits for select
   using (auth.uid() = user_id);

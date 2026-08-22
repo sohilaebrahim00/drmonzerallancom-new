@@ -280,6 +280,17 @@ prices, webhook endpoints, and keys). To go live:
    supabase functions deploy create-consultation-checkout-session
    supabase functions deploy stripe-webhook
    ```
+   `supabase/config.toml` sets `verify_jwt = false` for `stripe-webhook`, and
+   the deploy above picks that up. Stripe does not send a Supabase JWT, so
+   without it the endpoint answers **401 before the handler runs** and every
+   payment records nothing. If you deploy that one function from a directory
+   without `config.toml`, pass the flag explicitly instead:
+   ```
+   supabase functions deploy stripe-webhook --no-verify-jwt
+   ```
+   This does not leave the endpoint open: `stripe-webhook` verifies the Stripe
+   signature against `STRIPE_WEBHOOK_SECRET` and returns 400 on a missing or
+   invalid signature before touching the database.
 6. Register the webhook endpoint in the Stripe Dashboard (§3).
 7. Set `VITE_STRIPE_PUBLISHABLE_KEY`, `VITE_SUPABASE_URL`,
    `VITE_SUPABASE_PUBLISHABLE_KEY` in your Netlify site's environment
