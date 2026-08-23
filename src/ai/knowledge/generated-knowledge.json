@@ -312,25 +312,6 @@
       ]
     },
     {
-      "id": "service-child-nutrition",
-      "category": "services",
-      "title": "Child Nutrition",
-      "content": "Child Nutrition: Family-friendly nutrition plans that support healthy growth, energy, and positive eating habits in kids. Highlights: Growth-focused planning, Picky-eater strategies, Family meal guidance.",
-      "keywords": [
-        "child",
-        "nutrition",
-        "growth",
-        "focused",
-        "planning",
-        "picky",
-        "eater",
-        "strategies",
-        "family",
-        "meal",
-        "guidance"
-      ]
-    },
-    {
       "id": "service-senior-nutrition",
       "category": "services",
       "title": "Senior Nutrition",
@@ -347,6 +328,36 @@
         "medication",
         "aware",
         "planning"
+      ]
+    },
+    {
+      "id": "service-oncology-nutrition",
+      "category": "services",
+      "title": "Nutrition Support for Cancer Patients",
+      "content": "Nutrition Support for Cancer Patients: Nutritional support during and after cancer treatment, working alongside your oncology team. The focus is practical: keeping your weight and strength up, and helping you keep eating when treatment makes that hard. This is supportive care that complements — never replaces — the treatment plan from your oncologist. Highlights: Weight & muscle maintenance, Appetite loss, nausea & taste changes, Eating through side effects, Coordinated with your oncology team.",
+      "keywords": [
+        "nutrition",
+        "support",
+        "for",
+        "cancer",
+        "patients",
+        "weight",
+        "muscle",
+        "maintenance",
+        "appetite",
+        "loss",
+        "nausea",
+        "taste",
+        "changes",
+        "eating",
+        "through",
+        "side",
+        "effects",
+        "coordinated",
+        "with",
+        "your",
+        "oncology",
+        "team"
       ]
     },
     {
@@ -754,24 +765,27 @@
     {
       "id": "faq-0",
       "category": "faq",
-      "title": "What's included in a membership?",
-      "content": "Every membership includes a set number of monthly consultation credits, access to your member account and consultation history, and ongoing nutrition support. Basic, Premium, and VIP Elite differ in credit allowance and included features — compare them on the Packages page.",
+      "title": "What's included in a program?",
+      "content": "Every program is a one-time purchase that includes a set number of doctor consultation credits, access to your account and consultation history, and ongoing nutrition or treatment support. Weight Loss and Treatment programs each come in Basic, Plus, and Premium tiers that differ only in how many consultations are included — compare them on the Packages page.",
       "keywords": [
         "what",
         "included",
-        "membership"
+        "program",
+        "programs"
       ]
     },
     {
       "id": "faq-1",
       "category": "faq",
-      "title": "Can I change or cancel my membership?",
-      "content": "Yes, memberships are designed to be flexible. Membership billing and self-service cancellation will be available once online payment is fully connected — in the meantime, reach out directly for any changes to your plan.",
+      "title": "Is this a subscription? Will I be billed again?",
+      "content": "No. Every program is a single, one-time payment — there is no recurring billing, and nothing renews automatically. If you'd like more consultations later, you can purchase another program at any time.",
       "keywords": [
-        "can",
-        "change",
-        "cancel",
-        "membership"
+        "this",
+        "subscription",
+        "will",
+        "billed",
+        "again",
+        "programs"
       ]
     },
     {
@@ -792,7 +806,7 @@
       "id": "faq-3",
       "category": "faq",
       "title": "Do you offer online consultations?",
-      "content": "Yes. Membership consultations are conducted online over Google Meet, and every service can also be booked in person — choose whichever fits your schedule and comfort best.",
+      "content": "Yes. Program consultations are conducted online over Google Meet, and every service can also be booked in person — choose whichever fits your schedule and comfort best.",
       "keywords": [
         "you",
         "offer",
@@ -804,7 +818,7 @@
       "id": "faq-4",
       "category": "faq",
       "title": "How do consultation credits work?",
-      "content": "Each membership includes a fixed number of consultation credits per month (1 for Basic, 3 for Premium, more for VIP Elite). You use one credit each time you request an online consultation from your member account.",
+      "content": "Each program includes a fixed number of consultation credits, granted once when you purchase (1, 2, or 3, depending on the tier you choose). You use one credit each time you request an online consultation from your account.",
       "keywords": [
         "how",
         "consultation",
@@ -816,7 +830,7 @@
       "id": "faq-5",
       "category": "faq",
       "title": "What happens if I don't use all my credits?",
-      "content": "Credits are tied to your active membership period. A formal rollover policy will be confirmed once billing is fully connected — nothing is promised beyond your current cycle at this time.",
+      "content": "Your credits stay on your account — they're granted once at purchase and don't expire on a monthly cycle, since there's no recurring billing to tie them to. They are tied to your account and are non-transferable.",
       "keywords": [
         "what",
         "happens",
@@ -831,7 +845,7 @@
       "id": "faq-6",
       "category": "faq",
       "title": "How do I join my online consultation?",
-      "content": "Once a consultation request is approved, a Google Meet link is attached to that appointment in your member account. You'll be able to join directly from there at your scheduled time.",
+      "content": "Once a consultation request is approved, a Google Meet link is attached to that appointment in your account. You'll be able to join directly from there at your scheduled time.",
       "keywords": [
         "how",
         "join",
@@ -843,12 +857,11 @@
     {
       "id": "faq-7",
       "category": "faq",
-      "title": "How do I create a member account?",
-      "content": "Creating an account is part of choosing a membership package. Visit the Packages page, select a plan, and follow the Create Account steps to set up your login and begin the payment process.",
+      "title": "How do I create an account?",
+      "content": "Creating an account happens automatically when you purchase a program. Visit the Packages page, choose a Weight Loss or Treatment program, and complete secure payment — your account activates and you'll set your password from there.",
       "keywords": [
         "how",
         "create",
-        "member",
         "account",
         "billing"
       ]
@@ -857,7 +870,7 @@
       "id": "faq-8",
       "category": "faq",
       "title": "Is my payment information secure?",
-      "content": "Membership payments are intended to be processed through a secure, PCI-compliant payment provider — this website will never ask you to send card details directly. Full checkout is not yet live; the Packages and Join pages will show current status.",
+      "content": "Payments are processed through Stripe, a secure, PCI-compliant payment provider — this website will never ask you to send card details directly, and we never see or store them.",
       "keywords": [
         "payment",
         "information",
@@ -932,14 +945,13 @@
     {
       "id": "faq-13",
       "category": "faq",
-      "title": "Do you provide guidance for children or seniors?",
-      "content": "Yes — both child nutrition and senior nutrition are dedicated services, each tailored to the specific needs of those life stages.",
+      "title": "Do you provide guidance for seniors?",
+      "content": "Yes — senior nutrition is a dedicated service, covering bone and muscle support, appetite-friendly menus, and medication-aware planning for later life.",
       "keywords": [
         "you",
         "provide",
         "guidance",
         "for",
-        "children",
         "seniors",
         "nutrition",
         "services"
@@ -947,6 +959,23 @@
     },
     {
       "id": "faq-14",
+      "category": "faq",
+      "title": "Do you support patients going through cancer treatment?",
+      "content": "Yes — nutrition support for cancer patients is a dedicated service, for during and after treatment. It focuses on maintaining weight and muscle, and on managing appetite loss, nausea, and taste changes so you can keep eating well through side effects. It is supportive nutritional care that works alongside your oncology team and complements — never replaces — the treatment plan from your oncologist. Questions about your treatment, prognosis, or whether a specific food or supplement is safe during chemotherapy need to go to the doctor together with your oncology team, not to a general answer.",
+      "keywords": [
+        "you",
+        "support",
+        "patients",
+        "going",
+        "through",
+        "cancer",
+        "treatment",
+        "nutrition",
+        "services"
+      ]
+    },
+    {
+      "id": "faq-15",
       "category": "faq",
       "title": "How do I book a session?",
       "content": "Use the “Book a Session” button anywhere on the site to choose your service, preferred date and time, and session type. You'll receive a confirmation immediately after booking.",
@@ -959,7 +988,7 @@
       ]
     },
     {
-      "id": "faq-15",
+      "id": "faq-16",
       "category": "faq",
       "title": "What is your cancellation policy?",
       "content": "We ask for at least 24 hours' notice to reschedule or cancel a session so the time slot can be offered to another client. Reach out via WhatsApp or the Contact page and we'll take care of it.",
@@ -1035,23 +1064,6 @@
         "health"
       ],
       "route": "/blog/nutrition-through-every-trimester-of-pregnancy"
-    },
-    {
-      "id": "blog-raising-healthy-eaters-without-the-battles",
-      "category": "blog",
-      "title": "Raising Healthy Eaters Without the Battles",
-      "content": "Raising Healthy Eaters Without the Battles (Family Nutrition): Practical, low-stress strategies for encouraging balanced eating habits in children — including picky eaters.",
-      "keywords": [
-        "raising",
-        "healthy",
-        "eaters",
-        "without",
-        "the",
-        "battles",
-        "family",
-        "nutrition"
-      ],
-      "route": "/blog/raising-healthy-eaters-without-the-battles"
     },
     {
       "id": "blog-understanding-food-and-digestive-comfort",

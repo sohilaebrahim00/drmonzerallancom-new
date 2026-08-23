@@ -8,9 +8,11 @@
 -- Pricing model: two package categories (Diet, Treatment), each with 3
 -- tiers (Basic/Plus/Premium) that differ only in how many doctor
 -- consultations are included (1/2/3 — treatment is capped at 3). See
--- src/data/programPackages.ts for the full catalog (6 packages total:
--- diet_basic $49, diet_plus $69, diet_premium $89, treatment_basic $119,
--- treatment_plus $139, treatment_premium $159).
+-- src/data/programPackages.ts for the full catalog (6 packages total).
+-- Prices were revised on 22 Aug 2026 (Phase 2.5) and are deliberately NOT
+-- restated here: the only figures that charge a card live in
+-- supabase/functions/create-consultation-checkout-session (amountCents),
+-- and a copy in this comment could only ever drift out of date.
 --
 -- What this adds, and why it's additive/low-risk:
 --   1. `public.payments` — a ledger row per Stripe Checkout attempt for a

@@ -113,14 +113,14 @@ const CONSULTATION_PACKAGE_INFO: Record<
   diet_plus: {
     creditLimit: 2,
     name: "Diet Plus",
-    priceLabel: "$69",
+    priceLabel: "$89",
     packageType: "diet",
     consultationCount: 2,
   },
   diet_premium: {
     creditLimit: 3,
     name: "Diet Premium",
-    priceLabel: "$89",
+    priceLabel: "$119",
     packageType: "diet",
     consultationCount: 3,
   },
@@ -134,14 +134,14 @@ const CONSULTATION_PACKAGE_INFO: Record<
   treatment_plus: {
     creditLimit: 2,
     name: "Treatment Plus",
-    priceLabel: "$139",
+    priceLabel: "$169",
     packageType: "treatment",
     consultationCount: 2,
   },
   treatment_premium: {
     creditLimit: 3,
     name: "Treatment Premium",
-    priceLabel: "$159",
+    priceLabel: "$199",
     packageType: "treatment",
     consultationCount: 3,
   },

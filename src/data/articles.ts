@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Apple, Baby, Bike, Droplets, HeartPulse, Salad, Scale, Soup } from "lucide-react";
+import { Baby, Bike, Droplets, HeartPulse, Salad, Scale, Soup } from "lucide-react";
 
 export type ArticleCategory =
   | "Weight Management"
@@ -154,35 +154,6 @@ export const articles: Article[] = [
         body: [
           "Iron and protein needs peak as your baby gains weight quickly. Smaller, more frequent meals often feel more comfortable as physical space for a full stomach decreases.",
           "Every pregnancy is different, and a personalized plan accounts for pre-existing conditions, appetite changes, and any complications along the way.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "raising-healthy-eaters-without-the-battles",
-    title: "Raising Healthy Eaters Without the Battles",
-    excerpt:
-      "Practical, low-stress strategies for encouraging balanced eating habits in children — including picky eaters.",
-    category: "Family Nutrition",
-    icon: Apple,
-    date: "2026-02-20",
-    sections: [
-      {
-        heading: "Why pressure backfires",
-        body: [
-          "Pressuring a child to finish a plate or try a food often increases resistance rather than reducing it. Children tend to build healthier long-term relationships with food when the pressure is removed from mealtimes.",
-        ],
-      },
-      {
-        heading: "The division of responsibility",
-        body: [
-          "A well-known approach in pediatric nutrition splits responsibility clearly: parents decide what, when, and where food is offered; children decide whether and how much to eat from what's offered. This structure reduces power struggles while still exposing kids to a variety of foods.",
-        ],
-      },
-      {
-        heading: "Repeated exposure works",
-        body: [
-          "New foods often need to be offered many times, without pressure, before a child accepts them. Consistency — not persuasion — is usually what shifts a picky eater's preferences over time.",
         ],
       },
     ],

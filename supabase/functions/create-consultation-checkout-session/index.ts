@@ -77,13 +77,13 @@ const PACKAGES: Record<string, PackageDefinition> = {
   },
   diet_plus: {
     productEnvVar: "STRIPE_PRODUCT_DIET_PLUS",
-    amountCents: 6900,
+    amountCents: 8900,
     consultationCount: 2,
     packageType: "diet",
   },
   diet_premium: {
     productEnvVar: "STRIPE_PRODUCT_DIET_PREMIUM",
-    amountCents: 8900,
+    amountCents: 11900,
     consultationCount: 3,
     packageType: "diet",
   },
@@ -95,13 +95,13 @@ const PACKAGES: Record<string, PackageDefinition> = {
   },
   treatment_plus: {
     productEnvVar: "STRIPE_PRODUCT_TREATMENT_PLUS",
-    amountCents: 13900,
+    amountCents: 16900,
     consultationCount: 2,
     packageType: "treatment",
   },
   treatment_premium: {
     productEnvVar: "STRIPE_PRODUCT_TREATMENT_PREMIUM",
-    amountCents: 15900,
+    amountCents: 19900,
     consultationCount: 3,
     packageType: "treatment",
   },

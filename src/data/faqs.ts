@@ -105,9 +105,15 @@ export const faqs: Faq[] = [
     category: "Nutrition Services",
   },
   {
-    question: "Do you provide guidance for children or seniors?",
+    question: "Do you provide guidance for seniors?",
     answer:
-      "Yes — both child nutrition and senior nutrition are dedicated services, each tailored to the specific needs of those life stages.",
+      "Yes — senior nutrition is a dedicated service, covering bone and muscle support, appetite-friendly menus, and medication-aware planning for later life.",
+    category: "Nutrition Services",
+  },
+  {
+    question: "Do you support patients going through cancer treatment?",
+    answer:
+      "Yes — nutrition support for cancer patients is a dedicated service, for during and after treatment. It focuses on maintaining weight and muscle, and on managing appetite loss, nausea, and taste changes so you can keep eating well through side effects. It is supportive nutritional care that works alongside your oncology team and complements — never replaces — the treatment plan from your oncologist. Questions about your treatment, prognosis, or whether a specific food or supplement is safe during chemotherapy need to go to the doctor together with your oncology team, not to a general answer.",
     category: "Nutrition Services",
   },
   {

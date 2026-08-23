@@ -140,11 +140,11 @@ at least a placeholder price to save a product; it's ignored either way.
 | Package | Includes | Amount | Env var |
 |---|---|---|---|
 | Diet Basic | Nutrition program, 1 consultation, monthly follow-up | $49.00 | `STRIPE_PRODUCT_DIET_BASIC` |
-| Diet Plus | Nutrition program, 2 consultations, monthly follow-up | $69.00 | `STRIPE_PRODUCT_DIET_PLUS` |
-| Diet Premium | Nutrition program, 3 consultations, monthly follow-up | $89.00 | `STRIPE_PRODUCT_DIET_PREMIUM` |
+| Diet Plus | Nutrition program, 2 consultations, monthly follow-up | $89.00 | `STRIPE_PRODUCT_DIET_PLUS` |
+| Diet Premium | Nutrition program, 3 consultations, monthly follow-up | $119.00 | `STRIPE_PRODUCT_DIET_PREMIUM` |
 | Treatment Basic | Treatment plan, 1 consultation | $119.00 | `STRIPE_PRODUCT_TREATMENT_BASIC` |
-| Treatment Plus | Treatment plan, 2 consultations | $139.00 | `STRIPE_PRODUCT_TREATMENT_PLUS` |
-| Treatment Premium | Treatment plan, 3 consultations | $159.00 | `STRIPE_PRODUCT_TREATMENT_PREMIUM` |
+| Treatment Plus | Treatment plan, 2 consultations | $169.00 | `STRIPE_PRODUCT_TREATMENT_PLUS` |
+| Treatment Premium | Treatment plan, 3 consultations | $199.00 | `STRIPE_PRODUCT_TREATMENT_PREMIUM` |
 
 None of these 6 products exist in your Stripe account yet — create them,
 then:

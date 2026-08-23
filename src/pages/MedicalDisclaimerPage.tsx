@@ -59,6 +59,22 @@ export default function MedicalDisclaimerPage() {
           encourage coordination between our guidance and your existing medical care.
         </p>
 
+        <h2>Nutrition Support for Cancer Patients</h2>
+        <p>
+          Our nutrition support for cancer patients is{" "}
+          <strong>supportive nutritional care only</strong>. It is intended to help with maintaining
+          weight and muscle, appetite loss, nausea, taste changes, and eating through the side
+          effects of treatment. It complements — and never replaces — the treatment plan prescribed
+          by your oncologist and oncology team.
+        </p>
+        <p>
+          Nothing offered by this practice treats, cures, shrinks, slows, or prevents cancer, and we
+          make no claim about survival, remission, or recurrence. Never start, stop, or change any
+          treatment, medication, or supplement on the basis of nutritional guidance. Decisions about
+          your treatment, and questions about whether a particular food or supplement is safe during
+          chemotherapy, radiotherapy, immunotherapy, or surgery, belong with your oncology team.
+        </p>
+
         <h2>No Doctor-Patient Relationship</h2>
         <p>
           Use of this website or engagement with our nutrition consultation services does not create
