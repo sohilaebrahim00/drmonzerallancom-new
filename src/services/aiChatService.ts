@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { getAppMode } from "@/hooks/use-native-platform";
 
 export interface ChatMessage {
@@ -40,6 +40,16 @@ const UNAVAILABLE_MESSAGE =
 const RATE_LIMIT_MESSAGE =
   "We're receiving a high number of requests right now. Please try again shortly.";
 
+// Client-side failsafe so the chat UI can never sit in "Thinking..."
+// indefinitely, regardless of what happens between the browser and the
+// Edge Function (not just inside it). The ai-chat function's own Gemini
+// client bounds itself to ~24.5s worst case (2 attempts x 12s + one short
+// backoff — see supabase/functions/_shared/gemini.ts); this is set a few
+// seconds above that so a normal slow-but-completing request isn't cut off
+// early, while a genuine hang still resolves to the same fallback message
+// well under a minute.
+const CLIENT_TIMEOUT_MS = 27_000;
+
 /**
  * Calls the ai-chat Edge Function — the only place the Gemini API key is
  * ever used. The Supabase client automatically forwards the current user's
@@ -62,6 +72,20 @@ export async function sendChatMessage(input: {
   history: ChatMessage[];
 }): Promise<SendChatMessageResult> {
   if (!supabase) {
+    // The single most common cause of a permanently "unavailable" assistant:
+    // this build was produced without VITE_SUPABASE_URL /
+    // VITE_SUPABASE_PUBLISHABLE_KEY set (e.g. missing from the Netlify site's
+    // environment variables at build time — .env.local never reaches a
+    // deployed build). When that happens `supabase` is null and every call
+    // here returns instantly, with no network request and no SDK error to
+    // inspect — which is exactly why this needs its own explicit log rather
+    // than falling through to the generic catch below. Logs only the two
+    // env var NAMES, never a value/secret.
+    console.error(
+      "[aiChatService] Supabase client is not configured (isSupabaseConfigured =",
+      isSupabaseConfigured,
+      "). VITE_SUPABASE_URL and/or VITE_SUPABASE_PUBLISHABLE_KEY were not set when this build was produced — check the deployment's environment variables.",
+    );
     return { ok: false, error: UNAVAILABLE_MESSAGE };
   }
 
@@ -80,11 +104,23 @@ export async function sendChatMessage(input: {
                 ? "pwa"
                 : "web",
         },
+        timeout: CLIENT_TIMEOUT_MS,
       },
     );
 
     if (error) {
-      const status = (error as { context?: { status?: number } }).context?.status;
+      // FunctionsHttpError/FunctionsRelayError/FunctionsFetchError from the
+      // Supabase SDK — .context is the underlying fetch Response (status,
+      // statusText) when available. Never contains the Gemini key or any
+      // secret; safe to log in full for diagnosis.
+      const context = (error as { context?: { status?: number; statusText?: string } }).context;
+      const status = context?.status;
+      console.error("[aiChatService] ai-chat invocation failed:", {
+        name: (error as Error).name,
+        message: (error as Error).message,
+        status,
+        statusText: context?.statusText,
+      });
       if (status === 429) {
         return { ok: false, error: RATE_LIMIT_MESSAGE, rateLimited: true };
       }
@@ -92,6 +128,7 @@ export async function sendChatMessage(input: {
     }
 
     if (!data || typeof data.answer !== "string") {
+      console.error("[aiChatService] ai-chat returned an unexpected response shape:", data);
       return { ok: false, error: UNAVAILABLE_MESSAGE };
     }
 
@@ -104,7 +141,11 @@ export async function sendChatMessage(input: {
         needsHuman: Boolean(data.needsHuman),
       },
     };
-  } catch {
+  } catch (err) {
+    // A genuine thrown exception (network failure, CORS block, etc.) rather
+    // than an SDK-reported error — previously swallowed silently, which is
+    // exactly what made this class of bug invisible in the browser console.
+    console.error("[aiChatService] Unexpected exception calling ai-chat:", err);
     return { ok: false, error: UNAVAILABLE_MESSAGE };
   }
 }
