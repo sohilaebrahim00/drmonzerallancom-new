@@ -403,6 +403,10 @@ export default function NativeBookConsultation() {
                 {result.appointment.clientLocalTime} ({tz}) · {result.appointment.doctorLocalTime} (
                 {result.appointment.doctorTimeZone.split("/").pop()?.replace("_", " ")})
               </p>
+              <p className="mx-auto mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                A calendar invitation has been emailed to you. Accept it to add this appointment to
+                your calendar.
+              </p>
               <a
                 href={result.appointment.meetUrl}
                 target="_blank"

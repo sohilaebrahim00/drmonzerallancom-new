@@ -43,7 +43,26 @@ const NOT_CONFIGURED_MESSAGE =
 const SLOT_TAKEN_MESSAGE = "This time is no longer available. Please choose another appointment.";
 const MEMBERSHIP_REQUIRED_MESSAGE = "Online consultations are available to active members.";
 
-const PACKAGE_NAMES: Record<string, string> = { basic: "Basic", premium: "Premium", "vip-elite": "VIP Elite" };
+// The six real program slugs (src/data/programPackages.ts). The previous map
+// held basic/premium/vip-elite — the retired monthly-membership slugs — so no
+// key ever matched, packageName fell through to the raw slug, and every
+// confirmation email said "diet_premium". Confirmed against the live booking
+// of 2026-08-25, whose subscription row carries package_id = 'diet_premium'.
+const PACKAGE_NAMES: Record<string, string> = {
+  diet_basic: "Diet Basic",
+  diet_plus: "Diet Plus",
+  diet_premium: "Diet Premium",
+  treatment_basic: "Treatment Basic",
+  treatment_plus: "Treatment Plus",
+  treatment_premium: "Treatment Premium",
+};
+
+/**
+ * The name shown on the calendar invite. Deliberately here and not inside
+ * _shared/googleCalendar.ts: that module is about talking to Google, and the
+ * practice's identity should have exactly one place to change.
+ */
+const DOCTOR_DISPLAY_NAME = "Dr. Monzer Allan";
 
 const requestLog = new Map<string, number[]>();
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -210,8 +229,28 @@ serve(async (req) => {
       .maybeSingle(),
   ]);
 
-  const clientName = profile?.full_name ?? user.email ?? "Member";
+  // Falls back to the local part of the address, never the whole address:
+  // this value goes into the calendar invite title, which the patient sees.
+  // handle_new_user (supabase/schema.sql) populates full_name from the signup
+  // metadata, so normal accounts have a real name — but an account created
+  // outside that path has null, and "sohilaebrahim6789@gmail.com" in an event
+  // title is both unprofessional and needless exposure of the address.
+  const clientName = profile?.full_name ?? user.email?.split("@")[0] ?? "Member";
   const clientEmail = user.email ?? "";
+
+  // Computed here, BEFORE the calendar event is created, because the invite
+  // title and description need them. They used to be derived further down,
+  // after the event already existed.
+  //
+  // sessionNumber reads consultation_credits_used directly: book_consultation_slot
+  // (called above) increments it inside the same RPC before returning, so by
+  // the time this row is read the credit for THIS booking is already counted.
+  // The first booking therefore reads 1, giving "(1 of 4)" — verified against
+  // the live booking of 2026-08-25 (limit 4, used 1).
+  const packageName = PACKAGE_NAMES[subscription?.package_id ?? ""] ?? subscription?.package_id ?? "Membership";
+  const creditsLimit = subscription?.consultation_credit_limit ?? 0;
+  const creditsRemaining = Math.max(creditsLimit - (subscription?.consultation_credits_used ?? 0), 0);
+  const sessionNumber = subscription?.consultation_credits_used ?? 0;
 
   let eventResult: { eventId: string; meetUrl: string };
   try {
@@ -221,6 +260,10 @@ serve(async (req) => {
       startUtcIso: matchedSlot.startUtc,
       endUtcIso: matchedSlot.endUtc,
       consultationType,
+      doctorName: DOCTOR_DISPLAY_NAME,
+      sessionNumber,
+      sessionTotal: creditsLimit,
+      packageName,
     });
   } catch (err) {
     console.error("[create-consultation] Google Calendar creation failed:", err instanceof Error ? err.message : err);
@@ -249,9 +292,8 @@ serve(async (req) => {
   // email contradict the time the patient just picked.
   const doctorTimeZone = matchedSlot.timezone;
   const doctorLocalTime = formatInZone(startDate, doctorTimeZone);
-  const packageName = PACKAGE_NAMES[subscription?.package_id ?? ""] ?? subscription?.package_id ?? "Membership";
-  const creditsLimit = subscription?.consultation_credit_limit ?? 0;
-  const creditsRemaining = Math.max(creditsLimit - (subscription?.consultation_credits_used ?? 0), 0);
+  // packageName / creditsLimit / creditsRemaining are computed above, before
+  // the calendar event is created, because the invite needs them too.
 
   if (clientEmail) {
     const clientMail = consultationConfirmedClientEmail({
