@@ -179,6 +179,28 @@ verification if you sent an unsigned one) — **not** a 401. A 401 means `--no-v
 
 ---
 
+## 4.5 Connect Google Meet — prerequisite for steps 5.5 and 5.6
+
+Booking does not merely lose its meeting link without Google credentials — it is **refused
+outright**. `create-consultation/index.ts:199` checks `isGoogleCalendarConfigured()` before anything
+else and, when it fails, rolls the credit hold back and returns "Online scheduling is being
+activated… live meeting scheduling is not yet connected." A patient who has paid and holds credits
+cannot book at all.
+
+Work through `دليل_ربط_جوجل_ميت.md` before continuing. It needs the doctor's Google account and
+about half an hour, and sets four secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
+`GOOGLE_REFRESH_TOKEN`, `GOOGLE_CALENDAR_ID`.
+
+Two things in that guide that silently break later if missed: an **External** consent screen left in
+Testing mode issues refresh tokens that expire after **7 days**, and `GOOGLE_CALENDAR_ID` must be the
+doctor's real email — the code uses it both as the target calendar and as the doctor's attendee
+address, so `primary` half-works and then fails.
+
+Steps 5.1–5.4 (the two purchases and the credit total) can run without this. Steps 5.5 and 5.6
+cannot, and the gate is not met until booking and cancellation have both been exercised.
+
+---
+
 ## 5. Buy two packages on ONE account
 
 Two purchases, not one — that is what proves item 2.8 (credits summing across rows) and the
