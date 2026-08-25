@@ -125,6 +125,19 @@ export default function NativeBookConsultation() {
     }).format(approx);
   }
 
+  /**
+   * Derived from the slots, never hardcoded — the doctor's timezone is
+   * editable per day at /doctor/availability, so the practice is not
+   * necessarily on Dubai time. DOCTOR_TIMEZONE is only the "nothing loaded
+   * yet" fallback.
+   */
+  const scheduleTimezoneLabel = (() => {
+    const zones = Array.from(new Set((slots ?? []).map((s) => s.timezone))).filter(Boolean);
+    if (zones.length === 0) return `${DOCTOR_TIMEZONE.replace("_", " ")} time`;
+    if (zones.length === 1) return `${zones[0].replace("_", " ")} time`;
+    return "the doctor's local time, shown on each slot";
+  })();
+
   function formatTime(iso: string, timeZone: string) {
     return new Intl.DateTimeFormat("en-US", {
       timeZone,
@@ -248,8 +261,8 @@ export default function NativeBookConsultation() {
       ) : step === "date" ? (
         <div>
           <p className="text-xs text-muted-foreground">
-            Standard hours: {DOCTOR_TIMEZONE.replace("_", " ")} time. Booked at least{" "}
-            {MINIMUM_BOOKING_NOTICE_HOURS} hours in advance.
+            Standard hours: {scheduleTimezoneLabel}. Booked at least {MINIMUM_BOOKING_NOTICE_HOURS}{" "}
+            hours in advance.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2.5">
             {dateGroups.map(([dateKey]) => (
@@ -287,7 +300,8 @@ export default function NativeBookConsultation() {
                   {formatTime(slot.startUtc, tz)}
                 </span>
                 <span className="block text-[0.65rem] text-muted-foreground">
-                  {formatTime(slot.startUtc, DOCTOR_TIMEZONE)} Dubai
+                  {formatTime(slot.startUtc, slot.timezone)}{" "}
+                  {slot.timezone.split("/").pop()?.replace("_", " ")}
                 </span>
               </button>
             ))}
@@ -304,9 +318,11 @@ export default function NativeBookConsultation() {
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">Doctor&apos;s Time — Dubai</dt>
+              <dt className="text-muted-foreground">
+                Doctor&apos;s Time — {selectedSlot.timezone.split("/").pop()?.replace("_", " ")}
+              </dt>
               <dd className="text-right font-semibold text-navy">
-                {formatTime(selectedSlot.startUtc, DOCTOR_TIMEZONE)} Dubai
+                {formatTime(selectedSlot.startUtc, selectedSlot.timezone)}
               </dd>
             </div>
             <div className="flex justify-between gap-4">

@@ -11,15 +11,42 @@ import {
   listAvailabilityExceptions,
   listDoctorAvailability,
   createAvailabilityException,
+  createDoctorAvailability,
   deleteAvailabilityException,
+  deleteDoctorAvailability,
   updateDoctorAvailability,
   type AdminAppointment,
   type AvailabilityException,
   type DoctorAvailabilityRow,
 } from "@/services/adminAvailabilityService";
+import { DOCTOR_TIMEZONE } from "@/config/consultations";
 import { cn } from "@/lib/utils";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+/**
+ * Suggestions only — the input accepts any IANA name and the Edge Function
+ * validates it against Intl before storing, so this list never limits where
+ * the practice can be.
+ */
+const TIMEZONE_SUGGESTIONS = [
+  "Asia/Dubai",
+  "Asia/Riyadh",
+  "Asia/Qatar",
+  "Asia/Kuwait",
+  "Africa/Cairo",
+  "Asia/Amman",
+  "Asia/Beirut",
+  "Europe/London",
+  "Europe/Berlin",
+  "America/New_York",
+];
+
+const DEFAULT_NEW_BLOCK = {
+  startTime: "16:00",
+  endTime: "21:00",
+  slotDurationMinutes: 30,
+};
 const EXCEPTION_TYPES = [
   "unavailable",
   "custom_hours",
@@ -48,6 +75,15 @@ export default function AdminAvailabilityPage() {
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
   const [range, setRange] = useState<"today" | "week" | "upcoming">("upcoming");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+
+  /** Which day's "add hours" form is open, 0-6, or null for none. */
+  const [addingForDay, setAddingForDay] = useState<number | null>(null);
+  const [newBlock, setNewBlock] = useState({
+    ...DEFAULT_NEW_BLOCK,
+    timezone: DOCTOR_TIMEZONE,
+  });
+  const [savingNewBlock, setSavingNewBlock] = useState(false);
 
   const [newException, setNewException] = useState({
     date: "",
@@ -83,16 +119,64 @@ export default function AdminAvailabilityPage() {
     patch: Partial<DoctorAvailabilityRow>,
   ) {
     setSavingId(row.id);
+    setScheduleError(null);
     const res = await updateDoctorAvailability({
       id: row.id,
       isActive: patch.is_active,
       startTime: patch.start_time,
       endTime: patch.end_time,
       slotDurationMinutes: patch.slot_duration_minutes,
+      timezone: patch.timezone,
     });
     setSavingId(null);
     if (res.ok) {
       setAvailability((prev) => prev.map((r) => (r.id === row.id ? res.data.availability : r)));
+    } else {
+      // Previously a rejected edit failed silently and the input kept showing
+      // the value the doctor typed, so an invalid end time looked saved.
+      setScheduleError(res.error);
+      await reloadSchedule();
+    }
+  }
+
+  async function reloadSchedule() {
+    const res = await listDoctorAvailability();
+    if (res.ok) setAvailability(res.data.availability);
+  }
+
+  async function handleAddBlock(dayOfWeek: number) {
+    setSavingNewBlock(true);
+    setScheduleError(null);
+    const res = await createDoctorAvailability({
+      dayOfWeek,
+      startTime: newBlock.startTime,
+      endTime: newBlock.endTime,
+      timezone: newBlock.timezone.trim(),
+      slotDurationMinutes: newBlock.slotDurationMinutes,
+    });
+    setSavingNewBlock(false);
+    if (res.ok) {
+      setAvailability((prev) =>
+        [...prev, res.data.availability].sort(
+          (a, b) => a.day_of_week - b.day_of_week || a.start_time.localeCompare(b.start_time),
+        ),
+      );
+      setAddingForDay(null);
+      setNewBlock({ ...DEFAULT_NEW_BLOCK, timezone: newBlock.timezone });
+    } else {
+      setScheduleError(res.error);
+    }
+  }
+
+  async function handleDeleteBlock(row: DoctorAvailabilityRow) {
+    setSavingId(row.id);
+    setScheduleError(null);
+    const res = await deleteDoctorAvailability(row.id);
+    setSavingId(null);
+    if (res.ok) {
+      setAvailability((prev) => prev.filter((r) => r.id !== row.id));
+    } else {
+      setScheduleError(res.error);
     }
   }
 
@@ -125,14 +209,14 @@ export default function AdminAvailabilityPage() {
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
       <Seo
-        title="Availability — Admin"
-        description="Manage doctor availability."
-        path="/admin/availability"
+        title="Availability — Doctor"
+        description="Manage consultation availability."
+        path="/doctor/availability"
         noindex
       />
 
       <Reveal direction="up">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Admin</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Doctor</p>
         <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
           Consultation Availability
         </h1>
@@ -148,68 +232,248 @@ export default function AdminAvailabilityPage() {
         </Alert>
       ) : (
         <div className="mt-8 space-y-10">
-          {/* Recurring schedule */}
+          {/* Recurring schedule — every day of the week is listed, including
+              the ones with no hours set. Before Phase 6A this mapped over the
+              rows that happened to exist, so the four days the seed migration
+              never created were simply invisible and could not be opened. */}
           <section>
-            <h2 className="font-display text-lg font-bold text-navy">Recurring Weekly Schedule</h2>
-            <div className="mt-4 space-y-3">
-              {availability.map((row) => (
-                <div
-                  key={row.id}
-                  className="flex flex-wrap items-center gap-4 rounded-xl border border-border/70 bg-card p-4"
-                >
-                  <label className="flex w-32 shrink-0 cursor-pointer items-center gap-2 text-sm font-semibold text-navy">
-                    <input
-                      type="checkbox"
-                      checked={row.is_active}
-                      onChange={(e) =>
-                        handleAvailabilityChange(row, { is_active: e.target.checked })
-                      }
-                      className="h-4 w-4 cursor-pointer rounded border-border text-primary"
-                    />
-                    {DAY_NAMES[row.day_of_week]}
-                  </label>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Input
-                      type="time"
-                      defaultValue={row.start_time.slice(0, 5)}
-                      onBlur={(e) => handleAvailabilityChange(row, { start_time: e.target.value })}
-                      className="w-28"
-                    />
-                    <span className="text-muted-foreground">to</span>
-                    <Input
-                      type="time"
-                      defaultValue={row.end_time.slice(0, 5)}
-                      onBlur={(e) => handleAvailabilityChange(row, { end_time: e.target.value })}
-                      className="w-28"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Slot</span>
-                    <Input
-                      type="number"
-                      min={5}
-                      defaultValue={row.slot_duration_minutes}
-                      onBlur={(e) =>
-                        handleAvailabilityChange(row, {
-                          slot_duration_minutes: Number(e.target.value),
-                        })
-                      }
-                      className="w-20"
-                    />
-                    <span className="text-muted-foreground">min</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">{row.timezone}</span>
-                  {savingId === row.id && (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                  )}
-                </div>
-              ))}
-              {availability.length === 0 && (
-                <p className="text-sm text-muted-foreground">
-                  No recurring schedule configured yet.
-                </p>
-              )}
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="font-display text-lg font-bold text-navy">
+                Recurring Weekly Schedule
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Times are in each block&apos;s own timezone. Patients see both their local time and
+                yours.
+              </p>
             </div>
+
+            {scheduleError && (
+              <Alert className="mt-4 border-amber-300 bg-amber-50 text-amber-900">
+                <AlertDescription>{scheduleError}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="mt-4 space-y-3">
+              {DAY_NAMES.map((dayName, dayOfWeek) => {
+                const rows = availability
+                  .filter((r) => r.day_of_week === dayOfWeek)
+                  .sort((a, b) => a.start_time.localeCompare(b.start_time));
+                const isAdding = addingForDay === dayOfWeek;
+
+                return (
+                  <div
+                    key={dayName}
+                    className={cn(
+                      "rounded-xl border p-4",
+                      rows.length > 0 ? "border-border/70 bg-card" : "border-dashed border-border",
+                    )}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <h3
+                        className={cn(
+                          "text-sm font-semibold",
+                          rows.length > 0 ? "text-navy" : "text-muted-foreground",
+                        )}
+                      >
+                        {dayName}
+                        {rows.length === 0 && (
+                          <span className="ml-2 font-normal">— no consultation hours</span>
+                        )}
+                      </h3>
+                      {!isAdding && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="cursor-pointer"
+                          onClick={() => {
+                            setAddingForDay(dayOfWeek);
+                            setScheduleError(null);
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                          {rows.length === 0 ? "Add hours" : "Add another block"}
+                        </Button>
+                      )}
+                    </div>
+
+                    {rows.map((row) => (
+                      <div
+                        key={row.id}
+                        className="mt-3 flex flex-wrap items-center gap-3 rounded-lg bg-secondary/40 p-3"
+                      >
+                        <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-navy">
+                          <input
+                            type="checkbox"
+                            checked={row.is_active}
+                            onChange={(e) =>
+                              handleAvailabilityChange(row, { is_active: e.target.checked })
+                            }
+                            className="h-4 w-4 cursor-pointer rounded border-border text-primary"
+                          />
+                          Active
+                        </label>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Input
+                            type="time"
+                            defaultValue={row.start_time.slice(0, 5)}
+                            onBlur={(e) =>
+                              handleAvailabilityChange(row, { start_time: e.target.value })
+                            }
+                            className="w-28"
+                            aria-label={`${dayName} start time`}
+                          />
+                          <span className="text-muted-foreground">to</span>
+                          <Input
+                            type="time"
+                            defaultValue={row.end_time.slice(0, 5)}
+                            onBlur={(e) =>
+                              handleAvailabilityChange(row, { end_time: e.target.value })
+                            }
+                            className="w-28"
+                            aria-label={`${dayName} end time`}
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-muted-foreground">Slot</span>
+                          <Input
+                            type="number"
+                            min={5}
+                            defaultValue={row.slot_duration_minutes}
+                            onBlur={(e) =>
+                              handleAvailabilityChange(row, {
+                                slot_duration_minutes: Number(e.target.value),
+                              })
+                            }
+                            className="w-20"
+                            aria-label={`${dayName} slot length in minutes`}
+                          />
+                          <span className="text-muted-foreground">min</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-muted-foreground">Timezone</span>
+                          <Input
+                            list="timezone-suggestions"
+                            defaultValue={row.timezone}
+                            onBlur={(e) => {
+                              const next = e.target.value.trim();
+                              if (next && next !== row.timezone) {
+                                handleAvailabilityChange(row, { timezone: next });
+                              }
+                            }}
+                            className="w-44"
+                            aria-label={`${dayName} timezone`}
+                          />
+                        </div>
+                        {savingId === row.id && (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                        )}
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="ml-auto cursor-pointer text-destructive hover:text-destructive"
+                          onClick={() => handleDeleteBlock(row)}
+                          aria-label={`Remove ${dayName} ${row.start_time.slice(0, 5)} block`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+
+                    {isAdding && (
+                      <div className="mt-3 flex flex-wrap items-end gap-3 rounded-lg border border-turquoise/40 bg-turquoise/5 p-3">
+                        <div>
+                          <label className="block text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                            From
+                          </label>
+                          <Input
+                            type="time"
+                            value={newBlock.startTime}
+                            onChange={(e) =>
+                              setNewBlock((p) => ({ ...p, startTime: e.target.value }))
+                            }
+                            className="mt-1 w-28"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                            To
+                          </label>
+                          <Input
+                            type="time"
+                            value={newBlock.endTime}
+                            onChange={(e) =>
+                              setNewBlock((p) => ({ ...p, endTime: e.target.value }))
+                            }
+                            className="mt-1 w-28"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                            Slot (min)
+                          </label>
+                          <Input
+                            type="number"
+                            min={5}
+                            value={newBlock.slotDurationMinutes}
+                            onChange={(e) =>
+                              setNewBlock((p) => ({
+                                ...p,
+                                slotDurationMinutes: Number(e.target.value),
+                              }))
+                            }
+                            className="mt-1 w-20"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                            Timezone
+                          </label>
+                          <Input
+                            list="timezone-suggestions"
+                            value={newBlock.timezone}
+                            onChange={(e) =>
+                              setNewBlock((p) => ({ ...p, timezone: e.target.value }))
+                            }
+                            className="mt-1 w-44"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="cursor-pointer"
+                          disabled={savingNewBlock}
+                          onClick={() => handleAddBlock(dayOfWeek)}
+                        >
+                          {savingNewBlock ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Plus className="h-4 w-4" />
+                          )}
+                          Save {dayName}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="cursor-pointer"
+                          onClick={() => setAddingForDay(null)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <datalist id="timezone-suggestions">
+              {TIMEZONE_SUGGESTIONS.map((tz) => (
+                <option key={tz} value={tz} />
+              ))}
+            </datalist>
           </section>
 
           {/* Exceptions */}

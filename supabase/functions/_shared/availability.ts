@@ -14,6 +14,13 @@ export interface SlotInfo {
   /** ISO 8601 UTC instant. */
   startUtc: string;
   endUtc: string;
+  /**
+   * The IANA timezone of the doctor_availability row this slot came from.
+   * Carried through so patient-facing screens can label the slot with the
+   * doctor's REAL timezone instead of a hardcoded "Dubai" — the timezone is
+   * per-row and editable, so it is not safe to assume one for the practice.
+   */
+  timezone: string;
 }
 
 /** Timezone offset, in minutes to ADD to a UTC instant to get local wall-clock time. */
@@ -162,7 +169,11 @@ export async function generateAvailableSlots(
       while (cursor.getTime() + w.duration * 60_000 <= windowEndUtc.getTime()) {
         const slotEnd = new Date(cursor.getTime() + w.duration * 60_000);
         if (cursor.getTime() >= minStart.getTime() && !bookedSet.has(cursor.getTime())) {
-          slots.push({ startUtc: cursor.toISOString(), endUtc: slotEnd.toISOString() });
+          slots.push({
+            startUtc: cursor.toISOString(),
+            endUtc: slotEnd.toISOString(),
+            timezone: w.timezone,
+          });
         }
         cursor = slotEnd;
       }

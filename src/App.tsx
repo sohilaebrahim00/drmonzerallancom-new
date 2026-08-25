@@ -9,7 +9,7 @@ import { ChatWidget } from "@/components/chat/ChatWidget";
 import { StickyCta } from "@/components/common/StickyCta";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { AdminRoute } from "@/components/auth/AdminRoute";
+import { DoctorRoute } from "@/components/auth/DoctorRoute";
 import { AppExperience } from "@/app-native/AppExperience";
 import { getAppMode } from "@/hooks/use-native-platform";
 import { isClientDemoBuild } from "@/dev/demoMode";
@@ -31,7 +31,9 @@ const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const AccountPage = lazy(() => import("@/pages/AccountPage"));
 const AccountConsultationsPage = lazy(() => import("@/pages/AccountConsultationsPage"));
-const AdminAvailabilityPage = lazy(() => import("@/pages/AdminAvailabilityPage"));
+// Still AdminAvailabilityPage.tsx on disk — the file was rebuilt in place for
+// Phase 6A rather than renamed, so git keeps its history.
+const DoctorAvailabilityPage = lazy(() => import("@/pages/AdminAvailabilityPage"));
 const MembershipSuccessPage = lazy(() => import("@/pages/MembershipSuccessPage"));
 const MembershipCancelledPage = lazy(() => import("@/pages/MembershipCancelledPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
@@ -89,7 +91,50 @@ function PageTransition({ children }: { children: React.ReactNode }) {
  * structure/behavior from before the native rebuild. Never rendered inside
  * Capacitor or the PWA/Web App; see AppExperience for that presentation layer.
  */
+/**
+ * The doctor's own shell. Deliberately NOT the marketing chrome: no Header,
+ * Footer, StickyCta or ChatWidget. Those exist to sell to visitors, and the
+ * doctor working through his week is not a visitor — a "Book a Session" CTA
+ * and a sales chat bubble on top of his own schedule would be noise at best
+ * and confusing at worst.
+ *
+ * Access is gated twice, and the two are independent: DoctorRoute here (a UI
+ * gate resolved via the is_doctor() RPC), and the admin-availability Edge
+ * Function, which re-checks the caller server-side under the service_role key
+ * and will refuse regardless of what the browser believes.
+ */
+function DoctorShell() {
+  return (
+    <div className="relative flex min-h-screen w-full flex-col bg-secondary/20">
+      <ScrollRestoration />
+      <main id="main-content" className="relative z-10 flex-1">
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route path="/doctor/availability" element={<DoctorAvailabilityPage />} />
+            {/* /doctor itself is the 6B dashboard, not built yet — send it to
+                the one screen that does exist rather than a blank route. */}
+            <Route path="*" element={<Navigate to="/doctor/availability" replace />} />
+          </Routes>
+        </Suspense>
+      </main>
+    </div>
+  );
+}
+
 function WebApp() {
+  const { pathname } = useLocation();
+
+  // The doctor's screens get their own shell. Rendering them inside the
+  // marketing layout below would wrap the schedule in a sales header, footer
+  // and chat widget.
+  if (pathname.startsWith("/doctor")) {
+    return (
+      <DoctorRoute>
+        <DoctorShell />
+      </DoctorRoute>
+    );
+  }
+
   return (
     <>
       <a
@@ -150,13 +195,12 @@ function WebApp() {
                     </ProtectedRoute>
                   }
                 />
+                {/* Moved to /doctor/availability, which renders in the doctor
+                    shell below (no marketing chrome). Kept as a redirect so a
+                    bookmark the doctor already has keeps working. */}
                 <Route
                   path="/admin/availability"
-                  element={
-                    <AdminRoute>
-                      <AdminAvailabilityPage />
-                    </AdminRoute>
-                  }
+                  element={<Navigate to="/doctor/availability" replace />}
                 />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                 <Route path="/terms" element={<TermsPage />} />

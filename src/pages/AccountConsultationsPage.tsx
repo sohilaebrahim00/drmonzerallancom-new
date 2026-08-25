@@ -122,6 +122,20 @@ export default function AccountConsultationsPage() {
     }).format(approx);
   }
 
+  /**
+   * How the doctor's own timezone is described to the patient. Derived from
+   * the slots themselves, never hardcoded: the timezone is editable per day
+   * (see /doctor/availability), so the practice is not necessarily on Dubai
+   * time and different days may differ. DOCTOR_TIMEZONE is only the fallback
+   * for "no slots loaded yet".
+   */
+  const scheduleTimezoneLabel = (() => {
+    const zones = Array.from(new Set((slots ?? []).map((s) => s.timezone))).filter(Boolean);
+    if (zones.length === 0) return `${DOCTOR_TIMEZONE.replace("_", " ")} time`;
+    if (zones.length === 1) return `${zones[0].replace("_", " ")} time`;
+    return "the doctor's local time, shown on each slot";
+  })();
+
   function formatTime(iso: string, timeZone: string) {
     return new Intl.DateTimeFormat("en-US", {
       timeZone,
@@ -283,8 +297,8 @@ export default function AccountConsultationsPage() {
                     Step 1 — Select a Date
                   </h2>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Standard hours: {DOCTOR_TIMEZONE.replace("_", " ")} time. Appointments must be
-                    booked at least {MINIMUM_BOOKING_NOTICE_HOURS} hours in advance.
+                    Standard hours: {scheduleTimezoneLabel}. Appointments must be booked at least{" "}
+                    {MINIMUM_BOOKING_NOTICE_HOURS} hours in advance.
                   </p>
                   <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                     {dateGroups.map(([dateKey]) => (
@@ -329,7 +343,8 @@ export default function AccountConsultationsPage() {
                           {formatTime(slot.startUtc, tz)}
                         </span>
                         <span className="block text-[0.65rem] text-muted-foreground">
-                          {formatTime(slot.startUtc, DOCTOR_TIMEZONE)} Dubai
+                          {formatTime(slot.startUtc, slot.timezone)}{" "}
+                          {slot.timezone.split("/").pop()?.replace("_", " ")}
                         </span>
                       </button>
                     ))}
@@ -356,9 +371,12 @@ export default function AccountConsultationsPage() {
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">Doctor&apos;s Time — Dubai</dt>
+                      <dt className="text-muted-foreground">
+                        Doctor&apos;s Time —{" "}
+                        {selectedSlot.timezone.split("/").pop()?.replace("_", " ")}
+                      </dt>
                       <dd className="text-right font-semibold text-navy">
-                        {formatTime(selectedSlot.startUtc, DOCTOR_TIMEZONE)} Dubai
+                        {formatTime(selectedSlot.startUtc, selectedSlot.timezone)}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">

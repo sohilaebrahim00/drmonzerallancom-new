@@ -50,6 +50,25 @@ interface RequestBody {
   [key: string]: unknown;
 }
 
+const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+/**
+ * An unrecognised timezone would be written straight into
+ * doctor_availability.timezone (the column is plain text), and
+ * _shared/availability.ts feeds it to Intl.DateTimeFormat when generating
+ * slots — where it throws, taking down availability for EVERY day, not just
+ * the bad row. Validate on the way in.
+ */
+function isValidTimeZone(tz: string): boolean {
+  if (!tz || tz.length > 64) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 serve(async (req) => {
   const CORS_HEADERS = corsHeaders(req);
   const json = jsonWith(CORS_HEADERS);
@@ -79,20 +98,34 @@ serve(async (req) => {
     }
 
     case "update-availability": {
-      const { id, isActive, startTime, endTime, slotDurationMinutes } = body as unknown as {
-        id: string;
-        isActive?: boolean;
-        startTime?: string;
-        endTime?: string;
-        slotDurationMinutes?: number;
-      };
+      const { id, isActive, startTime, endTime, slotDurationMinutes, timezone } =
+        body as unknown as {
+          id: string;
+          isActive?: boolean;
+          startTime?: string;
+          endTime?: string;
+          slotDurationMinutes?: number;
+          timezone?: string;
+        };
       if (!id) return json({ error: "id is required." }, 400);
       const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (typeof isActive === "boolean") patch.is_active = isActive;
-      if (typeof startTime === "string") patch.start_time = startTime;
-      if (typeof endTime === "string") patch.end_time = endTime;
+      if (typeof startTime === "string") {
+        if (!TIME_PATTERN.test(startTime)) return json({ error: "Start time must be HH:MM." }, 400);
+        patch.start_time = startTime;
+      }
+      if (typeof endTime === "string") {
+        if (!TIME_PATTERN.test(endTime)) return json({ error: "End time must be HH:MM." }, 400);
+        patch.end_time = endTime;
+      }
       if (typeof slotDurationMinutes === "number" && slotDurationMinutes > 0) {
-        patch.slot_duration_minutes = slotDurationMinutes;
+        patch.slot_duration_minutes = Math.floor(slotDurationMinutes);
+      }
+      if (typeof timezone === "string") {
+        if (!isValidTimeZone(timezone)) {
+          return json({ error: `"${timezone}" is not a recognised timezone.` }, 400);
+        }
+        patch.timezone = timezone;
       }
       const { data, error } = await supabaseAdmin
         .from("doctor_availability")
@@ -100,8 +133,71 @@ serve(async (req) => {
         .eq("id", id)
         .select()
         .maybeSingle();
-      if (error) return json({ error: error.message }, 500);
+      // The table's `check (end_time > start_time)` can reject an otherwise
+      // valid-looking patch (e.g. moving start past the existing end), so this
+      // surfaces the real reason rather than a generic failure.
+      if (error) return json({ error: error.message }, 400);
+      if (!data) return json({ error: "That schedule row no longer exists." }, 404);
       return json({ availability: data });
+    }
+
+    case "create-availability": {
+      const { dayOfWeek, startTime, endTime, timezone, slotDurationMinutes, isActive } =
+        body as unknown as {
+          dayOfWeek: number;
+          startTime: string;
+          endTime: string;
+          timezone: string;
+          slotDurationMinutes?: number;
+          isActive?: boolean;
+        };
+
+      if (typeof dayOfWeek !== "number" || !Number.isInteger(dayOfWeek) || dayOfWeek < 0 || dayOfWeek > 6) {
+        return json({ error: "dayOfWeek must be an integer 0-6 (0 = Sunday)." }, 400);
+      }
+      if (typeof startTime !== "string" || !TIME_PATTERN.test(startTime)) {
+        return json({ error: "Start time must be HH:MM." }, 400);
+      }
+      if (typeof endTime !== "string" || !TIME_PATTERN.test(endTime)) {
+        return json({ error: "End time must be HH:MM." }, 400);
+      }
+      if (endTime <= startTime) {
+        return json({ error: "End time must be after start time." }, 400);
+      }
+      if (typeof timezone !== "string" || !isValidTimeZone(timezone)) {
+        return json({ error: "A recognised timezone is required." }, 400);
+      }
+      const duration =
+        typeof slotDurationMinutes === "number" && slotDurationMinutes > 0
+          ? Math.floor(slotDurationMinutes)
+          : 30;
+
+      const { data, error } = await supabaseAdmin
+        .from("doctor_availability")
+        .insert({
+          day_of_week: dayOfWeek,
+          start_time: startTime,
+          end_time: endTime,
+          timezone,
+          slot_duration_minutes: duration,
+          is_active: typeof isActive === "boolean" ? isActive : true,
+        })
+        .select()
+        .maybeSingle();
+      if (error) return json({ error: error.message }, 400);
+      return json({ availability: data });
+    }
+
+    case "delete-availability": {
+      const { id } = body as unknown as { id: string };
+      if (!id) return json({ error: "id is required." }, 400);
+      // Deleting a schedule row only stops FUTURE slots being generated;
+      // consultation_requests already booked against those times are separate
+      // rows and are deliberately left untouched. The doctor cancels those
+      // from the appointments list, which also returns the member's credit.
+      const { error } = await supabaseAdmin.from("doctor_availability").delete().eq("id", id);
+      if (error) return json({ error: error.message }, 500);
+      return json({ ok: true });
     }
 
     case "list-exceptions": {

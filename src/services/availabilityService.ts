@@ -4,6 +4,12 @@ export interface SlotInfo {
   /** ISO 8601 UTC instant. */
   startUtc: string;
   endUtc: string;
+  /**
+   * IANA timezone of the doctor's schedule row this slot came from. Shown
+   * beside the slot so the patient sees the doctor's real local time — the
+   * timezone is editable per day and is not necessarily Dubai.
+   */
+  timezone: string;
 }
 
 export type GetAvailabilityResult = { ok: true; slots: SlotInfo[] } | { ok: false; error: string };

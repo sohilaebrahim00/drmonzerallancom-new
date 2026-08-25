@@ -67,8 +67,35 @@ export function updateDoctorAvailability(input: {
   startTime?: string;
   endTime?: string;
   slotDurationMinutes?: number;
+  /** IANA name, e.g. "Asia/Dubai". Validated server-side before it is stored. */
+  timezone?: string;
 }) {
   return callAdmin<{ availability: DoctorAvailabilityRow }>("update-availability", input);
+}
+
+/**
+ * Adds a recurring weekly block. The seed migration created only Monday,
+ * Wednesday and Friday, and until this existed there was no way to open a
+ * fourth day — the page could only ever edit rows that already existed.
+ *
+ * More than one block per day is allowed on purpose: the table has no unique
+ * constraint on day_of_week, and generateAvailableSlots() iterates every
+ * matching row, so a split day (morning and evening) works.
+ */
+export function createDoctorAvailability(input: {
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  timezone: string;
+  slotDurationMinutes?: number;
+  isActive?: boolean;
+}) {
+  return callAdmin<{ availability: DoctorAvailabilityRow }>("create-availability", input);
+}
+
+/** Removes a recurring block. Already-booked appointments are unaffected. */
+export function deleteDoctorAvailability(id: string) {
+  return callAdmin<{ ok: true }>("delete-availability", { id });
 }
 
 export function listAvailabilityExceptions() {
