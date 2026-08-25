@@ -89,7 +89,7 @@ export default function NativeConsultations() {
       return;
     }
     let cancelled = false;
-    Promise.all([getMySubscription(), getMyConsultationRequests()]).then(([sub, reqs]) => {
+    Promise.all([getMySubscription(), getMyConsultationRequests(user.id)]).then(([sub, reqs]) => {
       if (cancelled) return;
       setSubscription(sub);
       setRequests(reqs);

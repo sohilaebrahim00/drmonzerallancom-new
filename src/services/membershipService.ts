@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { getDemoMode } from "@/dev/demoMode";
+import type { UserRole } from "@/services/profileService";
 import {
   DEMO_PROFILE,
   DEMO_DOCTOR_PROFILE,
@@ -36,6 +37,14 @@ export interface ConsultationRequest {
 export interface Profile {
   id: string;
   full_name: string | null;
+  /**
+   * Lets a page tell a practitioner viewer from a patient one without a
+   * second round trip. `is_admin` is deliberately not here: PHASE_J J.3
+   * revoked that column from the `authenticated` role, so the client cannot
+   * read it. role covers the same accounts — PHASE_G backfilled role='admin'
+   * for every is_admin account, and set_user_role keeps the two in step.
+   */
+  role?: UserRole;
 }
 
 /**
@@ -53,8 +62,9 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   const { data, error } = await supabase
     .from("profiles")
     // `is_admin` is not selectable by the `authenticated` role any more —
-    // see PHASE_J_FIXES_MIGRATION.sql (J.3) and AdminRoute.tsx.
-    .select("id, full_name")
+    // see PHASE_J_FIXES_MIGRATION.sql (J.3) and AdminRoute.tsx. `role` is
+    // granted, and is what tells a practitioner viewer from a patient.
+    .select("id, full_name, role")
     .eq("id", userId)
     .maybeSingle();
   if (error) {
@@ -100,15 +110,55 @@ export async function getMySubscription(): Promise<Subscription | null> {
   };
 }
 
-export async function getMyConsultationRequests(): Promise<ConsultationRequest[]> {
+const CONSULTATION_COLUMNS =
+  "id, appointment_start, appointment_end, client_timezone, consultation_type, reason, status, credit_status, google_calendar_event_id, google_meet_url, cancelled_at, created_at";
+
+/**
+ * The signed-in viewer's OWN consultations.
+ *
+ * The user_id filter is not redundant with RLS. consultation_requests carries
+ * an "Admins can view all consultation requests" policy (using is_admin()),
+ * so for the doctor's account the unfiltered query returned every patient's
+ * bookings — and /account rendered a stranger's appointment as the viewer's
+ * own upcoming consultation, Join Meet button and all. Reproduced live on
+ * 2026-08-25. RLS is the floor here, not the scoping.
+ *
+ * The id is passed in, matching getProfile(userId) above; both callers of
+ * this function already hold the user object.
+ *
+ * For the doctor's all-patients view, use getAllConsultationRequests().
+ */
+export async function getMyConsultationRequests(userId: string): Promise<ConsultationRequest[]> {
   const demoMode = getDemoMode();
   if (demoMode) return demoMode === "doctor" ? DEMO_DOCTOR_CONSULTATIONS : [DEMO_CONSULTATION];
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("consultation_requests")
-    .select(
-      "id, appointment_start, appointment_end, client_timezone, consultation_type, reason, status, credit_status, google_calendar_event_id, google_meet_url, cancelled_at, created_at",
-    )
+    .select(CONSULTATION_COLUMNS)
+    .eq("user_id", userId)
+    .order("appointment_start", { ascending: false });
+  if (error) {
+    console.warn("[membershipService] consultation_requests table unavailable:", error.message);
+    return [];
+  }
+  return data ?? [];
+}
+
+/**
+ * EVERY patient's consultations — deliberately unscoped, for the doctor's
+ * dashboard. Returns rows only for a viewer the "Admins can view all
+ * consultation requests" policy admits; anyone else gets their own rows, so
+ * this can never leak. Split out from getMyConsultationRequests so that a
+ * screen wanting all patients has to say so at the call site, rather than
+ * depending on an RLS side effect that looks identical to a personal query.
+ */
+export async function getAllConsultationRequests(): Promise<ConsultationRequest[]> {
+  const demoMode = getDemoMode();
+  if (demoMode) return demoMode === "doctor" ? DEMO_DOCTOR_CONSULTATIONS : [DEMO_CONSULTATION];
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("consultation_requests")
+    .select(CONSULTATION_COLUMNS)
     .order("appointment_start", { ascending: false });
   if (error) {
     console.warn("[membershipService] consultation_requests table unavailable:", error.message);

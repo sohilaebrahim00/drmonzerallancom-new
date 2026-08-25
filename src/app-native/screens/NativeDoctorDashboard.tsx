@@ -34,7 +34,10 @@ import {
   type PatientActivityEvent,
   type DoctorActivityKind,
 } from "@/services/doctorService";
-import { getMyConsultationRequests, type ConsultationRequest } from "@/services/membershipService";
+// All patients' consultations, not the doctor's own — this screen is the
+// all-patients view, so it says so explicitly rather than relying on the
+// admin RLS policy quietly widening a "getMy…" call.
+import { getAllConsultationRequests, type ConsultationRequest } from "@/services/membershipService";
 import { cn } from "@/lib/utils";
 
 function isToday(iso: string): boolean {
@@ -110,7 +113,7 @@ export default function NativeDoctorDashboard() {
     Promise.all([
       getMyPatients(),
       getMyPatientOverviews(),
-      getMyConsultationRequests(),
+      getAllConsultationRequests(),
       getPatientsNeedingReview(),
       getRecentPatientActivity(8),
       getActiveProgramsSummary(),

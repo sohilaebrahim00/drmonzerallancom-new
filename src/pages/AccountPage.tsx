@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/context/AuthContext";
 import { getProgramPackageBySlug } from "@/data/programPackages";
+import type { UserRole } from "@/services/profileService";
 import { business } from "@/data/business";
 import {
   getMyConsultationRequests,
@@ -54,9 +55,40 @@ function formatAppointment(iso: string) {
   }).format(new Date(iso));
 }
 
+/** Titles skipped when picking a greeting name, so "Dr. Monzer Allan" greets "Monzer", not "Dr.". */
+const HONORIFICS = new Set(["dr", "mr", "mrs", "ms", "miss", "prof", "professor", "sir", "dame"]);
+
+/**
+ * First name for the greeting.
+ *
+ * Skips a leading honorific — either one of the list above, or any short
+ * leading token ending in "." — and falls through to the next token. Any
+ * patient who types a title into their name hit this too; the doctor's
+ * account just made it obvious ("Welcome, Dr.").
+ *
+ * Falls back to the whole input when every token looks like a title, so this
+ * can never return an empty greeting. Email input still yields the local
+ * part, as before.
+ */
+function firstNameFrom(source: string): string {
+  const tokens = source.trim().split(/\s+/).filter(Boolean);
+  const name =
+    tokens.find((token) => {
+      const bare = token.replace(/\.$/, "").toLowerCase();
+      if (HONORIFICS.has(bare)) return false;
+      // A short token ending in "." is a title or an initial, not a name.
+      if (token.endsWith(".") && bare.length <= 4) return false;
+      return true;
+    }) ??
+    tokens[0] ??
+    source;
+  return name.split("@")[0];
+}
+
 export default function AccountPage() {
   const { user, signOut, configured } = useAuth();
   const [fullName, setFullName] = useState<string | null>(null);
+  const [viewerRole, setViewerRole] = useState<UserRole | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [requests, setRequests] = useState<ConsultationRequest[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
@@ -65,15 +97,18 @@ export default function AccountPage() {
     if (!user) return;
     let cancelled = false;
     setDataLoading(true);
-    Promise.all([getProfile(user.id), getMySubscription(), getMyConsultationRequests()]).then(
-      ([profile, sub, reqs]) => {
-        if (cancelled) return;
-        setFullName(profile?.full_name ?? null);
-        setSubscription(sub);
-        setRequests(reqs);
-        setDataLoading(false);
-      },
-    );
+    Promise.all([
+      getProfile(user.id),
+      getMySubscription(),
+      getMyConsultationRequests(user.id),
+    ]).then(([profile, sub, reqs]) => {
+      if (cancelled) return;
+      setFullName(profile?.full_name ?? null);
+      setViewerRole(profile?.role ?? null);
+      setSubscription(sub);
+      setRequests(reqs);
+      setDataLoading(false);
+    });
     return () => {
       cancelled = true;
     };
@@ -84,7 +119,8 @@ export default function AccountPage() {
     ? Math.max(subscription.consultation_credit_limit - subscription.consultation_credits_used, 0)
     : 0;
   const hasActiveMembership = Boolean(subscription);
-  const firstName = (fullName ?? user?.email ?? "there").split(" ")[0].split("@")[0];
+  const isPractitioner = viewerRole === "doctor" || viewerRole === "admin";
+  const firstName = firstNameFrom(fullName ?? user?.email ?? "there");
 
   const now = Date.now();
   const upcoming = requests
@@ -180,6 +216,26 @@ export default function AccountPage() {
                     </div>
                   </div>
                 </>
+              ) : isPractitioner ? (
+                /* A practitioner has no program and never will — selling one
+                   to the doctor is nonsense. This is a neutral placeholder,
+                   not a dashboard: the patient list, patient profiles and the
+                   program builder are Phase 6B. */
+                <div className="text-center">
+                  <p className="font-display text-lg font-bold text-navy">Practitioner account</p>
+                  <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                    This is your personal account page. Consultation programs are for patients, so
+                    there is nothing to buy here.
+                  </p>
+                  <div className="mt-5 flex flex-wrap justify-center gap-3">
+                    <Link
+                      to="/doctor/availability"
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
+                    >
+                      <CalendarClock className="h-4 w-4" /> Manage Availability
+                    </Link>
+                  </div>
+                </div>
               ) : (
                 <div className="text-center">
                   <p className="font-display text-lg font-bold text-navy">
@@ -325,6 +381,16 @@ export default function AccountPage() {
                 Quick Actions
               </h2>
               <div className="mt-4 flex flex-col gap-2">
+                {/* The availability screen had no link anywhere in the app —
+                    the doctor had to type the URL. Practitioners only. */}
+                {isPractitioner && (
+                  <Link
+                    to="/doctor/availability"
+                    className="text-sm font-semibold text-primary hover:text-turquoise"
+                  >
+                    Manage Consultation Availability
+                  </Link>
+                )}
                 <Link
                   to="/packages"
                   className="text-sm font-semibold text-primary hover:text-turquoise"
