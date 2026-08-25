@@ -1,6 +1,8 @@
-// Supabase Edge Function (Deno) — admin-only doctor availability management
-// and appointment schedule view. Every request is checked against
-// profiles.is_admin server-side; this is never exposed to ordinary members.
+// Supabase Edge Function (Deno) — doctor/admin availability management and
+// appointment schedule view. Every request is checked server-side against
+// profiles.role in ('doctor','admin'); this is never exposed to ordinary
+// members. See resolveStaffUser below, including why widening that check does
+// not make the booking system multi-doctor.
 //
 // NOT DEPLOYED. Deploy with `supabase functions deploy admin-availability`.
 // Required secret: SUPABASE_SERVICE_ROLE_KEY (SUPABASE_URL is automatic).
@@ -17,7 +19,33 @@ const supabaseAdmin = createClient(
 
 const PACKAGE_NAMES: Record<string, string> = { basic: "Basic", premium: "Premium", "vip-elite": "VIP Elite" };
 
-async function resolveAdminUser(req: Request) {
+/**
+ * Allows role in ('doctor', 'admin') — the same predicate as the SQL helper
+ * public.is_doctor() and as DoctorRoute on the client. Until Phase 6A this
+ * accepted only profiles.is_admin, which meant a user with role = 'doctor'
+ * passed the UI gate, saw the availability screen, and then had every call
+ * rejected with 403. The two gates now agree.
+ *
+ * `is_admin` is still honoured on its own: CONSULTATION_BOOKING_MIGRATION.sql
+ * documents making someone an admin by setting that column by hand, which
+ * leaves role = 'user'. public.is_admin() has the same `is_admin or role =
+ * 'admin'` shape for the same reason.
+ *
+ * SINGLE-DOCTOR BY DESIGN — read before adding a second doctor. Widening this
+ * check does NOT make the booking system multi-doctor. Verified against the
+ * live catalogue on 2026-08-25:
+ *   doctor_availability  — id, day_of_week, start_time, end_time, timezone,
+ *                          is_active, slot_duration_minutes, created_at, updated_at
+ *   consultation_requests — id, user_id (the PATIENT), subscription_id,
+ *                          appointment_start, appointment_end, ...
+ * Neither table has a doctor_id. There is exactly one weekly schedule and one
+ * appointment book for the whole practice, so a second doctor here would edit
+ * the first doctor's hours and see the first doctor's appointments. Supporting
+ * two doctors needs a schema change — doctor_id on both tables, RLS and slot
+ * generation scoped to it, and a doctor picker in the booking flow — not just
+ * this widening.
+ */
+async function resolveStaffUser(req: Request) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader?.startsWith("Bearer ")) return null;
   const token = authHeader.slice("Bearer ".length);
@@ -26,10 +54,12 @@ async function resolveAdminUser(req: Request) {
 
   const { data: profile } = await supabaseAdmin
     .from("profiles")
-    .select("is_admin")
+    .select("is_admin, role")
     .eq("id", data.user.id)
     .maybeSingle();
-  if (!profile?.is_admin) return null;
+  if (!profile) return null;
+  const allowed = profile.is_admin === true || profile.role === "doctor" || profile.role === "admin";
+  if (!allowed) return null;
 
   return data.user;
 }
@@ -75,8 +105,8 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS_HEADERS });
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
 
-  const admin = await resolveAdminUser(req);
-  if (!admin) {
+  const staff = await resolveStaffUser(req);
+  if (!staff) {
     return json({ error: "Not authorized." }, 403);
   }
 
