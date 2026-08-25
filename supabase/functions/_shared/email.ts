@@ -181,6 +181,33 @@ export function customerContactAckEmail(input: { fullName: string; siteUrl: stri
   return { subject: "We've Received Your Message", html: shell(body) };
 }
 
+interface ProgramActivatedClientEmailInput {
+  /** The APP, not the marketing site — the program only exists in the app experience. */
+  appUrl: string;
+  clientName: string;
+  programTitle: string;
+  /** Already formatted for display; this template does no date maths. */
+  startDate: string;
+  endDate: string;
+}
+
+export function programActivatedClientEmail(input: ProgramActivatedClientEmailInput) {
+  const body = `
+    <h2 style="margin:0 0 12px;font-size:18px;">Your nutrition program is ready, ${escapeHtml(input.clientName)}</h2>
+    <p>Dr. Monzer Allan has prepared your personal nutrition program. It is in your app now, with
+    each day's meals and guidance laid out for you.</p>
+    <table role="presentation" style="width:100%;font-size:13px;">
+      <tr><td style="padding:4px 0;color:#8a94a6;">Program</td><td>${escapeHtml(input.programTitle)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Starts</td><td>${escapeHtml(input.startDate)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Ends</td><td>${escapeHtml(input.endDate)}</td></tr>
+    </table>
+    ${ctaButton("Open My Program", `${input.appUrl}/my-program`)}
+    <p style="margin-top:20px;">Follow it at your own pace, and log your meals as you go so the
+    doctor can see how you are getting on.</p>
+  `;
+  return { subject: "Your Nutrition Program Is Ready", html: shell(body) };
+}
+
 interface ConsultationConfirmedClientEmailInput {
   siteUrl: string;
   clientName: string;

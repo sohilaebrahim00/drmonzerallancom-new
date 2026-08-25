@@ -260,6 +260,7 @@ serve(async (req) => {
       startUtcIso: matchedSlot.startUtc,
       endUtcIso: matchedSlot.endUtc,
       consultationType,
+      siteUrl,
       doctorName: DOCTOR_DISPLAY_NAME,
       sessionNumber,
       sessionTotal: creditsLimit,

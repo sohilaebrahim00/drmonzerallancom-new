@@ -214,10 +214,23 @@ export async function createBlankProgram(
   return { ok: true, programId: program.id };
 }
 
-export async function activateProgram(
-  programId: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (getDemoMode()) return { ok: true };
+export type ActivateProgramResult = { ok: true; notified: boolean } | { ok: false; error: string };
+
+/**
+ * Activates the program and then tells the patient it exists.
+ *
+ * The email is BEST EFFORT and deliberately cannot fail the activation: once
+ * the update succeeds the program really is active, and reporting failure
+ * would be a lie that makes the doctor press the button again. But it is not
+ * silent either — `notified` distinguishes "activated and the patient knows"
+ * from "activated, patient not told", so the caller can say which happened.
+ *
+ * The mail itself goes through the notify-program-activated Edge Function:
+ * RESEND_API_KEY is a server secret, and the patient's address lives in
+ * auth.users, which the browser cannot read.
+ */
+export async function activateProgram(programId: string): Promise<ActivateProgramResult> {
+  if (getDemoMode()) return { ok: true, notified: true };
   if (!supabase) return { ok: false, error: "Not connected." };
   const doctorId = await currentUserId();
   if (!doctorId) return { ok: false, error: "Not signed in." };
@@ -227,7 +240,25 @@ export async function activateProgram(
     .eq("id", programId)
     .eq("doctor_id", doctorId);
   if (error) return { ok: false, error: "Could not activate program." };
-  return { ok: true };
+
+  let notified = false;
+  try {
+    const { data, error: notifyError } = await supabase.functions.invoke<{
+      ok?: boolean;
+      error?: string;
+    }>("notify-program-activated", { body: { programId } });
+    notified = !notifyError && data?.ok === true;
+    if (!notified) {
+      console.warn(
+        "[programService] Program activated but the patient was not emailed:",
+        notifyError?.message ?? data?.error ?? "unknown error",
+      );
+    }
+  } catch (err) {
+    console.warn("[programService] Program activated but the patient was not emailed:", err);
+  }
+
+  return { ok: true, notified };
 }
 
 export async function saveProgramItem(

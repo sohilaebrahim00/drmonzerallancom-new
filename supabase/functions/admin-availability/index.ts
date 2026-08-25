@@ -17,7 +17,23 @@ const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
-const PACKAGE_NAMES: Record<string, string> = { basic: "Basic", premium: "Premium", "vip-elite": "VIP Elite" };
+// Every slug subscriptions.package_id may legitimately hold — its check
+// constraint allows all nine. The three one-time program tiers were missing,
+// so a patient on diet_premium showed in the appointments list as the raw
+// slug "diet_premium". The three membership slugs stay: a legacy monthly
+// member can still have an appointment, and dropping them would swap one
+// display bug for another.
+const PACKAGE_NAMES: Record<string, string> = {
+  basic: "Basic",
+  premium: "Premium",
+  "vip-elite": "VIP Elite",
+  diet_basic: "Diet Basic",
+  diet_plus: "Diet Plus",
+  diet_premium: "Diet Premium",
+  treatment_basic: "Treatment Basic",
+  treatment_plus: "Treatment Plus",
+  treatment_premium: "Treatment Premium",
+};
 
 /**
  * Allows role in ('doctor', 'admin') — the same predicate as the SQL helper

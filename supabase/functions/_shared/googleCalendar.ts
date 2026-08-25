@@ -42,8 +42,13 @@ async function getAccessToken(): Promise<string> {
 
 import { MINIMUM_BOOKING_NOTICE_HOURS } from "./availability.ts";
 
-/** Where the patient manages the booking, and how they reach a human. */
-const ACCOUNT_CONSULTATIONS_URL = "https://monzerallan.com/account/consultations";
+/**
+ * The practice's contact address. Deliberately a constant and NOT an env var:
+ * it is a fixed fact about the practice, not something that varies per
+ * environment, so routing it through a secret would add configuration for no
+ * benefit. The site URL is the opposite case — it differs between production
+ * and any staging origin — so it arrives as input.siteUrl instead.
+ */
 const CONTACT_EMAIL = "info@monzerallan.com";
 
 export interface CreateConsultationEventInput {
@@ -52,6 +57,14 @@ export interface CreateConsultationEventInput {
   startUtcIso: string;
   endUtcIso: string;
   consultationType: string;
+  /**
+   * Origin of the patient-facing site, from the SITE_URL secret that
+   * create-consultation already reads for its emails. Passed in rather than
+   * hardcoded here so the invite and the confirmation email can never point
+   * at different places — a staging deploy or a domain change used to move
+   * one and leave the other behind.
+   */
+  siteUrl: string;
   /** Passed in, never hardcoded here — see DOCTOR_DISPLAY_NAME in create-consultation. */
   doctorName: string;
   /** Which session this is, 1-based. 0 means unknown; the counter is then omitted. */
@@ -100,7 +113,7 @@ export function buildEventDescription(input: CreateConsultationEventInput): stri
     "",
     "Join using the video link on this event.",
     "",
-    `To reschedule or cancel, go to ${ACCOUNT_CONSULTATIONS_URL}`,
+    `To reschedule or cancel, go to ${input.siteUrl.replace(/\/$/, "")}/account/consultations`,
     `Changes need at least ${MINIMUM_BOOKING_NOTICE_HOURS} hours' notice.`,
     "",
     `Questions: ${CONTACT_EMAIL}`,

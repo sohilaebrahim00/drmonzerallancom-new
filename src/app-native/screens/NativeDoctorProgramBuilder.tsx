@@ -38,6 +38,7 @@ export default function NativeDoctorProgramBuilder() {
   const [saving, setSaving] = useState(false);
   const [activating, setActivating] = useState(false);
   const [activated, setActivated] = useState(false);
+  const [patientNotified, setPatientNotified] = useState(false);
 
   function loadDay() {
     if (!programId) return;
@@ -81,7 +82,13 @@ export default function NativeDoctorProgramBuilder() {
     setActivating(true);
     const result = await activateProgram(programId);
     setActivating(false);
-    if (result.ok) setActivated(true);
+    if (result.ok) {
+      setActivated(true);
+      // The program is active either way; this only records whether the
+      // patient was actually emailed, so the button never implies a
+      // notification that did not go out.
+      setPatientNotified(result.notified);
+    }
   }
 
   return (
@@ -210,12 +217,18 @@ export default function NativeDoctorProgramBuilder() {
           <CircleNotch className="h-4 w-4 animate-spin" />
         ) : activated ? (
           <>
-            <CheckCircle className="h-4 w-4" weight="fill" /> Program Active
+            <CheckCircle className="h-4 w-4" weight="fill" />{" "}
+            {patientNotified ? "Program Active — Patient Notified" : "Program Active"}
           </>
         ) : (
           "Activate Program"
         )}
       </Button>
+      {activated && !patientNotified && (
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          The program is active, but we could not email the patient. Let them know it is ready.
+        </p>
+      )}
     </AppScreen>
   );
 }
