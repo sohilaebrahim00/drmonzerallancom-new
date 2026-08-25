@@ -407,6 +407,10 @@ export default function NativeBookConsultation() {
                 A calendar invitation has been emailed to you. Accept it to add this appointment to
                 your calendar.
               </p>
+              <p className="mx-auto mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                The assistant can ask you a few questions before the call so Dr. Monzer Allan has
+                your history ready. It takes a few minutes and is entirely optional.
+              </p>
               <a
                 href={result.appointment.meetUrl}
                 target="_blank"

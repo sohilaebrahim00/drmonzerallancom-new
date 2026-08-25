@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/context/AuthContext";
 import { getProgramPackageBySlug } from "@/data/programPackages";
 import type { UserRole } from "@/services/profileService";
+import { IntakeReview } from "@/components/account/IntakeReview";
 import { business } from "@/data/business";
 import {
   getMyConsultationRequests,
@@ -310,6 +311,7 @@ export default function AccountPage() {
                       </a>
                     )}
                   </div>
+                  <IntakeReview consultationRequestId={upcoming.id} />
                 </div>
               )}
 
@@ -418,10 +420,17 @@ export default function AccountPage() {
               </div>
             </div>
 
+            {/* Narrowed in Phase 3.1: the pre-consultation intake asks for
+                exactly this information, so a blanket "never share it" is now
+                wrong. It was right about THIS page, though — a general profile
+                area is not a clinical record — so the instruction is scoped to
+                the free-text fields it was written for rather than deleted. */}
             <p className="text-xs leading-relaxed text-muted-foreground">
               Your account is used for identity, your program, booking, and saved products only.
-              Please don&apos;t share diagnoses, lab reports, or medication details here — that
-              information stays with your consultation with {business.doctorName}.
+              Please don&apos;t put diagnoses, lab reports, or medication details into your profile
+              or product notes — those free-text fields are not a medical record. The right place
+              for them is your pre-consultation intake or the call itself, where they go only to{" "}
+              {business.doctorName}.
             </p>
           </Reveal>
         </div>

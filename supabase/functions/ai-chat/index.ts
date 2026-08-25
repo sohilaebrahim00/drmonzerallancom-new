@@ -94,6 +94,19 @@ function buildResponseSchema(platform: Platform) {
         },
       },
       needsHuman: { type: "BOOLEAN" },
+      // Pre-consultation intake. The model CLASSIFIES the visitor's message;
+      // it never supplies the text to store. The function stores the raw
+      // message verbatim (see storeIntakeAnswer), because a model-written
+      // version would be a paraphrase — and the paraphrase is exactly what
+      // drops the detail a clinician would have used.
+      intake: {
+        type: "OBJECT",
+        properties: {
+          action: { type: "STRING", enum: ["answer", "skip", "none"] },
+          questionNumber: { type: "INTEGER" },
+        },
+        required: ["action"],
+      },
     },
     required: ["answer", "intent", "actions", "needsHuman"],
   };
@@ -116,6 +129,17 @@ Never state, imply, hint at, or agree with any suggestion that food, nutrition, 
 What you MAY say about this service, and only in these terms: that it helps with maintaining weight and muscle during treatment, appetite loss, nausea, taste changes, and eating through side effects; and that it complements — never replaces — the treatment plan from the patient's own oncologist.
 
 Escalate to intent "medical-escalation" with needsHuman true, and do not answer, for ANY cancer-related question beyond the plainly general (what the service covers, its price, how to book it). This explicitly includes: treatment choices or comparisons; prognosis, staging, survival or outcomes; whether to take, stop, combine or avoid any drug, supplement, vitamin or herb, and any interaction question; whether a specific food, drink or diet is safe or advisable during chemotherapy, radiotherapy, immunotherapy or surgery; managing a specific symptom or side effect for that individual; and anything about a named diagnosis, scan or lab result. When you escalate, be warm and brief, say this needs the doctor together with their oncology team, and offer a consultation — never a partial answer with a caveat attached.
+
+PRE-CONSULTATION INTAKE. When an INTAKE block appears below, the visitor has booked a consultation and you are collecting the history the doctor will open the call with. In that mode:
+- Ask ONE question at a time, in the words given in the INTAKE block, conversationally. Never paste the whole list, never number them at the visitor, never ask two at once.
+- This is COLLECTION, NOT ASSESSMENT. Do not interpret, evaluate, reassure or alarm. Do not say whether an answer is normal, concerning, good or bad. Do not give nutrition or medical advice while collecting, even if asked directly and even if the advice would be harmless. If the visitor asks "is that bad?", "what does that mean?" or anything similar, say plainly that Dr. Monzer Allan will go through it with them on the call, then continue.
+- NEVER re-ask anything the MEMBER CONTEXT, HEALTH CONTEXT or INTAKE block already tells you — height, weight, goal, conditions, allergies, and the activity band from sign-up are already known. The activity question asks for the TYPE of exercise and how often, which the band does not cover; ask only for that, and do not make the visitor restate the band.
+- Any question can be skipped. If the visitor declines, says they do not know, or asks to stop, accept it immediately without persuading, and move on. Set intake.action to "skip".
+- It is never blocking. The consultation goes ahead whether or not anything is answered. Never imply the appointment depends on finishing.
+- Tell them, when starting, that this is the right place for test results, medicines and supplements, and that only Dr. Monzer Allan reads it.
+- Set intake.action to "answer" and intake.questionNumber to the question you had just asked when their message answers it; "skip" when they decline it; "none" when the message is not about the current question (a question of their own, small talk, anything else). Do not set "answer" for a message that merely acknowledges you.
+
+INTAKE NEVER OUTRANKS SAFETY. Every rule above about medical escalation applies unchanged while collecting intake, and takes priority over it. If an answer describes something urgent — chest pain, severe or worsening symptoms, fainting, bleeding, suicidal thoughts, anything that reads like an emergency — stop collecting, set intent to "medical-escalation", set needsHuman to true, and direct them to urgent care or their doctor. Collecting the remaining questions matters less than that, always. The cancer rules above likewise apply in full during intake.
 
 The website knowledge may describe the doctor's STANDARD consultation hours (which days and times he generally takes consultations). This is a general schedule, not a live availability calendar — real open slots change constantly as appointments are booked. Never state or imply that a specific date/time is currently available or bookable; you have no way to know that. When asked whether a specific time is free (e.g. "can I book Wednesday at 6pm?", "can I book today?"), answer with the standard hours and the minimum-notice rule from the knowledge, then make clear that actual availability must be checked on the real booking page — never invent or confirm a specific open slot.
 
@@ -309,6 +333,131 @@ function formatHealthContextBlock(ctx: HealthContext): string {
   return `HEALTH CONTEXT (last 24h): Calories consumed: ~${Math.round(ctx.caloriesToday)} kcal. Meals: ${meals}. Daily target: ${target}. Nutrition program: ${program}. Pending activity task: ${ctx.pendingActivity ?? "none"}. Steps today: ${ctx.stepsToday ?? "not recorded"}. Use ONLY these real numbers when answering questions about calories/program/activity/steps — never invent a meal or number not listed here. If asked about something not listed (e.g. yesterday's meals), say you don't have that in view right now rather than guessing.`;
 }
 
+/**
+ * The doctor's eight questions. Mirrors src/data/intakeQuestions.ts — the
+ * Arabic originals live there; this copy is the wording the assistant asks.
+ * Q4 is narrowed to vitamin/mineral levels because his Q3 and Q4 both
+ * mentioned blood tests; that is the only change to his wording.
+ */
+const INTAKE_QUESTIONS: { n: number; column: string; prompt: string }[] = [
+  { n: 1, column: "q1_reason", prompt: "What brings you to this consultation? Tell me the condition or the main problem you want to work on." },
+  { n: 2, column: "q2_symptoms", prompt: "What symptoms are you having at the moment? Include everything, even things that seem minor." },
+  { n: 3, column: "q3_tests_and_medications", prompt: "Have you had any blood tests or medical investigations recently? If so, what did they show? Also list every medicine, vitamin and supplement you take." },
+  { n: 4, column: "q4_vitamin_mineral_levels", prompt: "Have you ever had your vitamin and mineral levels checked — vitamin D, B12, iron, or similar? If you have, what were the results? If you haven't, just say so." },
+  { n: 5, column: "q5_daily_eating", prompt: "What does a normal day of eating look like for you? Breakfast, lunch, dinner and snacks — and roughly what time you have each." },
+  { n: 6, column: "q6_stress", prompt: "On a scale of 1 to 10, how would you rate your stress right now? And what are the main things causing it?" },
+  { n: 7, column: "q7_activity", prompt: "How physically active are you? What kind of exercise, and how many times a week?" },
+  { n: 8, column: "q8_sleep", prompt: "How do you normally sleep? Roughly how many hours, and how well?" },
+];
+const INTAKE_DONE = INTAKE_QUESTIONS.length + 1;
+
+interface IntakeContext {
+  intakeId: string;
+  patientId: string;
+  nextQuestion: number;
+  answered: number[];
+  /** From sign-up. Given as context so the assistant never asks for it again. */
+  activityBand: string | null;
+}
+
+/**
+ * Finds the visitor's soonest upcoming consultation and the intake attached
+ * to it, creating the intake row on first contact so the conversation is
+ * resumable from that point on. Returns null when there is nothing booked —
+ * intake mode simply does not engage then.
+ */
+async function getIntakeContext(userId: string): Promise<IntakeContext | null> {
+  const { data: booking } = await supabaseAdmin
+    .from("consultation_requests")
+    .select("id, appointment_start")
+    .eq("user_id", userId)
+    .in("status", ["pending", "confirmed"])
+    .gte("appointment_start", new Date().toISOString())
+    .order("appointment_start", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (!booking) return null;
+
+  const [{ data: existing }, { data: body }] = await Promise.all([
+    supabaseAdmin
+      .from("consultation_intake")
+      .select("*")
+      .eq("consultation_request_id", booking.id)
+      .maybeSingle(),
+    supabaseAdmin.from("body_profiles").select("activity_level").eq("user_id", userId).maybeSingle(),
+  ]);
+
+  const activityBand = (body?.activity_level as string | undefined) ?? null;
+
+  let intake = existing;
+  if (!intake) {
+    const { data: created } = await supabaseAdmin
+      .from("consultation_intake")
+      .insert({ consultation_request_id: booking.id, patient_id: userId })
+      .select("*")
+      .maybeSingle();
+    intake = created;
+  }
+  if (!intake) return null;
+
+  const answered = INTAKE_QUESTIONS.filter((q) => intake[q.column]).map((q) => q.n);
+  return {
+    intakeId: intake.id,
+    patientId: userId,
+    nextQuestion: intake.next_question,
+    answered,
+    activityBand,
+  };
+}
+
+function formatIntakeContextBlock(ctx: IntakeContext | null): string {
+  if (!ctx) return "";
+  if (ctx.nextQuestion >= INTAKE_DONE) {
+    return "INTAKE: This visitor has already been through every pre-consultation question. Do not start again. If they want to change an answer, tell them they can review and edit their answers from their account before the call.";
+  }
+  const current = INTAKE_QUESTIONS.find((q) => q.n === ctx.nextQuestion);
+  const remaining = INTAKE_QUESTIONS.filter((q) => q.n > ctx.nextQuestion).map((q) => `${q.n}. ${q.prompt}`);
+  const band = ctx.activityBand
+    ? `Their activity band from sign-up is "${ctx.activityBand}" — already known, never ask for it again; question 7 wants the TYPE of exercise and how often.`
+    : "";
+  return [
+    "INTAKE: This visitor has a consultation booked and is part-way through the pre-consultation questions.",
+    `Questions already answered: ${ctx.answered.length ? ctx.answered.join(", ") : "none yet"}.`,
+    `THE QUESTION TO ASK NOW is number ${ctx.nextQuestion}: ${current?.prompt ?? ""}`,
+    band,
+    remaining.length ? `Still to come after it (do NOT ask these yet): ${remaining.join(" ")}` : "This is the last question.",
+    "Ask only the current one. Collect, never assess.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+/**
+ * Stores the visitor's message VERBATIM against the question that was
+ * pending, and advances the pointer. The model's own text is never written
+ * here — only its classification of what the message was.
+ */
+async function storeIntakeAnswer(
+  ctx: IntakeContext,
+  action: "answer" | "skip",
+  rawMessage: string,
+): Promise<void> {
+  const q = INTAKE_QUESTIONS.find((item) => item.n === ctx.nextQuestion);
+  if (!q) return;
+  const nextQuestion = Math.min(ctx.nextQuestion + 1, INTAKE_DONE);
+  const patch: Record<string, unknown> = { next_question: nextQuestion };
+  if (action === "answer") patch[q.column] = rawMessage;
+  if (nextQuestion >= INTAKE_DONE) patch.completed_at = new Date().toISOString();
+  const { error } = await supabaseAdmin
+    .from("consultation_intake")
+    .update(patch)
+    // Belt and braces: the row was looked up for this user, and this pins the
+    // write to it so a mis-set context can never touch someone else's intake.
+    .eq("id", ctx.intakeId)
+    .eq("patient_id", ctx.patientId);
+  if (error) console.error("[ai-chat] Failed to store intake answer:", error.message);
+}
+
 function formatMemberContextBlock(ctx: MemberContext | null): string {
   if (!ctx) {
     return "MEMBER CONTEXT: This visitor is not signed in. Do not claim to know their membership, credits, or appointments. If they ask about their own credits/membership/bookings, tell them they'll need to sign in first, with actions to sign in or view memberships.";
@@ -341,11 +490,16 @@ function validateAndSanitize(raw: unknown, platform: Platform, knownRoutes: Set<
   const intent = ALLOWED_INTENTS.has(obj.intent as string) ? (obj.intent as string) : "general";
   const needsHuman = typeof obj.needsHuman === "boolean" ? obj.needsHuman : false;
 
+  const rawIntake = obj.intake as { action?: unknown; questionNumber?: unknown } | undefined;
+  const intakeAction: "answer" | "skip" | "none" =
+    rawIntake?.action === "answer" ? "answer" : rawIntake?.action === "skip" ? "skip" : "none";
+
   return {
     answer: obj.answer.slice(0, 2000),
     intent,
     actions: sanitizeActions(obj.actions, platform, knownRoutes),
     needsHuman,
+    intakeAction,
   };
 }
 
@@ -423,6 +577,10 @@ serve(async (req) => {
   // the marketing website's floating widget never sees it, and querying it
   // for "web" would just be wasted reads for context that's never used.
   const healthContext = userId && platform !== "web" ? await getHealthContext(userId) : null;
+  // Intake only engages for a signed-in visitor with a booking. It is
+  // additive context, exactly like the two blocks above — the escalation
+  // rules in SYSTEM_PROMPT are untouched by it and still apply in full.
+  const intakeContext = userId ? await getIntakeContext(userId) : null;
   const recentText = history
     .slice(-4)
     .map((h) => h.text)
@@ -440,6 +598,8 @@ serve(async (req) => {
     formatMemberContextBlock(memberContext),
     "",
     healthContext ? formatHealthContextBlock(healthContext) : "",
+    "",
+    formatIntakeContextBlock(intakeContext),
   ].join("\n");
 
   // Client-supplied context belongs in the user turn, fenced as data — not
@@ -488,7 +648,21 @@ serve(async (req) => {
     });
   }
 
-  return new Response(JSON.stringify(validated), {
+  // Store the visitor's OWN words against the pending question. Deliberately
+  // after validation and deliberately using `message`, not anything the model
+  // produced. Never stores while escalating: if this turn was routed to a
+  // human, the priority is that, not bookkeeping.
+  if (
+    intakeContext &&
+    validated.intakeAction !== "none" &&
+    validated.intent !== "medical-escalation"
+  ) {
+    await storeIntakeAnswer(intakeContext, validated.intakeAction, message);
+  }
+
+  // `intakeAction` is internal bookkeeping — the client has no use for it.
+  const { intakeAction: _intakeAction, ...clientResponse } = validated;
+  return new Response(JSON.stringify(clientResponse), {
     headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
   });
 });

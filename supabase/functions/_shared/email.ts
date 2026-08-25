@@ -233,6 +233,10 @@ export function consultationConfirmedClientEmail(input: ConsultationConfirmedCli
       <tr><td style="padding:4px 0;color:#8a94a6;">Consultation credits</td><td>${input.creditsRemaining} of ${input.creditsLimit} remaining</td></tr>
     </table>
     ${ctaButton("Join Google Meet", input.meetUrl)}
+    <p style="margin-top:20px;padding:12px;background:${LIGHT};border-radius:8px;">Before the call,
+    the assistant can ask you a few questions so Dr. Monzer Allan has your history ready — what
+    brings you in, your symptoms, any recent tests, medicines and supplements. It takes a few
+    minutes, it is entirely optional, and only Dr. Monzer Allan reads your answers.</p>
     <p style="margin-top:20px;">Need to make a change? Visit your
     <a href="${input.siteUrl}/account/consultations" style="color:${PRIMARY};">account</a> to review your
     consultation, or reach out via the <a href="${input.siteUrl}/contact" style="color:${PRIMARY};">Contact page</a>.</p>
@@ -260,6 +264,11 @@ export function consultationConfirmedAdminEmail(input: ConsultationConfirmedAdmi
       <tr><td style="padding:4px 0;color:#8a94a6;">Membership</td><td>${escapeHtml(input.packageName)}</td></tr>
       <tr><td style="padding:4px 0;color:#8a94a6;">Your time</td><td>${escapeHtml(input.doctorLocalTime)} (${escapeHtml(input.doctorTimeZone)})</td></tr>
     </table>
+    <p style="margin-top:16px;padding:12px;background:${LIGHT};border-radius:8px;font-size:13px;">
+    <strong>Pre-consultation intake:</strong> the patient has been invited to answer the eight
+    intake questions. Whatever they complete — including a partly finished set — appears on their
+    patient profile before the call. This email is sent at the moment of booking, so it cannot
+    carry answers that have not been given yet.</p>
     ${ctaButton("Join Google Meet", input.meetUrl)}
   `;
   return { subject: `New Consultation Scheduled — ${input.clientName}`, html: shell(body) };

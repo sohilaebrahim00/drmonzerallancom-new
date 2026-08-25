@@ -33,17 +33,25 @@ import {
   type ProgramDay,
 } from "@/services/programService";
 import { getPatientCheckinsInRange, type DailyCheckin } from "@/services/checkinService";
+import {
+  getPatientIntakes,
+  intakeAnswers,
+  intakeAnsweredCount,
+  type ConsultationIntake,
+} from "@/services/intakeService";
+import { INTAKE_QUESTION_COUNT } from "@/data/intakeQuestions";
 import { supabase } from "@/lib/supabase";
 import { getDemoMode } from "@/dev/demoMode";
 import { DEMO_PATIENT_DETAIL } from "@/dev/demoFixtures";
 
-type Tab = "today" | "program" | "progress" | "30days" | "notes";
+type Tab = "today" | "program" | "progress" | "30days" | "intake" | "notes";
 
 const TABS: { value: Tab; label: string }[] = [
   { value: "today", label: "Today" },
   { value: "program", label: "Program" },
   { value: "progress", label: "Progress" },
   { value: "30days", label: "30 Days" },
+  { value: "intake", label: "Intake" },
   { value: "notes", label: "Notes" },
 ];
 
@@ -60,6 +68,7 @@ export default function NativeDoctorPatientProfile() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<PublicProfileSummary | null>(null);
   const [bodyProfile, setBodyProfile] = useState<BodyProfile | null>(null);
+  const [intakes, setIntakes] = useState<ConsultationIntake[]>([]);
   const [target, setTarget] = useState<DailyTarget | null>(null);
   const [mealsToday, setMealsToday] = useState<MealLog[]>([]);
   const [meals7d, setMeals7d] = useState<MealLog[]>([]);
@@ -129,24 +138,41 @@ export default function NativeDoctorPatientProfile() {
       fetchWaterTodayMl(),
       fetchStepsToday(),
       fetchNotes(),
-    ]).then(([p, bp, t, todayMeals, m7, m30, prog, checkinRows, water, steps, notesResult]) => {
-      setProfile(p);
-      setBodyProfile(bp);
-      setTarget(t);
-      setMealsToday(todayMeals);
-      setMeals7d(m7);
-      setMeals30d(m30);
-      setProgram(prog);
-      setCheckins(checkinRows);
-      setWaterToday(water);
-      setStepsToday(steps);
-      setNotes(notesResult);
-      setLoading(false);
+      getPatientIntakes(patientId),
+    ]).then(
+      ([
+        p,
+        bp,
+        t,
+        todayMeals,
+        m7,
+        m30,
+        prog,
+        checkinRows,
+        water,
+        steps,
+        notesResult,
+        intakeRows,
+      ]) => {
+        setIntakes(intakeRows);
+        setProfile(p);
+        setBodyProfile(bp);
+        setTarget(t);
+        setMealsToday(todayMeals);
+        setMeals7d(m7);
+        setMeals30d(m30);
+        setProgram(prog);
+        setCheckins(checkinRows);
+        setWaterToday(water);
+        setStepsToday(steps);
+        setNotes(notesResult);
+        setLoading(false);
 
-      if (prog) {
-        getProgramDay(prog.id, currentProgramDayNumber(prog), patientId).then(setProgramDay);
-      }
-    });
+        if (prog) {
+          getProgramDay(prog.id, currentProgramDayNumber(prog), patientId).then(setProgramDay);
+        }
+      },
+    );
   }, [patientId]);
 
   async function handleSetTarget() {
@@ -495,6 +521,63 @@ export default function NativeDoctorPatientProfile() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {tab === "intake" && (
+        <div className="mt-4 space-y-4">
+          {intakes.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No pre-consultation intake yet. It is offered to the patient after they book, and is
+              optional — an empty intake is not a sign anything went wrong.
+            </p>
+          ) : (
+            intakes.map((intake) => {
+              const rows = intakeAnswers(intake);
+              const answered = intakeAnsweredCount(intake);
+              return (
+                <div
+                  key={intake.id}
+                  className="rounded-2xl border border-border/70 bg-card p-4 shadow-sm"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Intake · {new Date(intake.started_at).toLocaleDateString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {answered} of {INTAKE_QUESTION_COUNT} answered
+                      {intake.completed_at ? "" : " · still in progress"}
+                    </p>
+                  </div>
+
+                  {/* Every question is listed, including the ones with no
+                      answer. A tidy list of only the answered questions would
+                      hide that anything was skipped, and a skipped question is
+                      itself worth knowing before the call. */}
+                  <div className="mt-3 space-y-3">
+                    {rows.map((row) => (
+                      <div key={row.number}>
+                        <p className="text-xs font-semibold text-navy">
+                          {row.number}. {row.label}
+                        </p>
+                        {row.state === "answered" ? (
+                          // The patient's own words, verbatim. whitespace-pre-wrap
+                          // so their line breaks survive.
+                          <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-navy">
+                            {row.answer}
+                          </p>
+                        ) : (
+                          <p className="mt-1 text-sm italic text-muted-foreground">
+                            {row.state === "skipped" ? "Skipped by the patient" : "Not reached yet"}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       )}
 
