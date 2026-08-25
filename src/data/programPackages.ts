@@ -39,8 +39,16 @@ export interface ProgramPackage {
   tagline: string;
   price: number;
   priceLabel: string;
-  /** Also the number of consultation credits granted on purchase. */
-  consultationCount: 1 | 2 | 3;
+  /**
+   * Also the number of consultation credits granted on purchase.
+   * Raised by one across every tier on 22 Aug 2026 (Phase 2.5.5). The
+   * matching server-side values live in create-consultation-checkout-session
+   * (PACKAGES.consultationCount) and stripe-webhook
+   * (CONSULTATION_PACKAGE_INFO.creditLimit / .consultationCount), and the
+   * payments.consultation_count check constraint had to be widened to 4 —
+   * see PHASE_J_FIXES_MIGRATION.sql J.12.
+   */
+  consultationCount: 2 | 3 | 4;
   features: string[];
   cta: string;
   popular?: boolean;
@@ -57,8 +65,8 @@ export const programPackages: ProgramPackage[] = [
     tagline: "Start your nutrition program with expert guidance",
     price: 49,
     priceLabel: "$49",
-    consultationCount: 1,
-    features: ["Nutrition program", "1 doctor consultation", "Monthly follow-up"],
+    consultationCount: 2,
+    features: ["Nutrition program", "2 doctor consultations", "Monthly follow-up"],
     cta: "Start Your Program",
   },
   {
@@ -69,8 +77,8 @@ export const programPackages: ProgramPackage[] = [
     tagline: "More check-ins to keep your program on track",
     price: 89,
     priceLabel: "$89",
-    consultationCount: 2,
-    features: ["Nutrition program", "2 doctor consultations", "Monthly follow-up"],
+    consultationCount: 3,
+    features: ["Nutrition program", "3 doctor consultations", "Monthly follow-up"],
     cta: "Start Your Program",
     popular: true,
   },
@@ -82,8 +90,8 @@ export const programPackages: ProgramPackage[] = [
     tagline: "The most guided path to your goal",
     price: 119,
     priceLabel: "$119",
-    consultationCount: 3,
-    features: ["Nutrition program", "3 doctor consultations", "Monthly follow-up"],
+    consultationCount: 4,
+    features: ["Nutrition program", "4 doctor consultations", "Monthly follow-up"],
     cta: "Start Your Program",
   },
   {
@@ -94,8 +102,8 @@ export const programPackages: ProgramPackage[] = [
     tagline: "Begin your treatment plan with a first consultation",
     price: 119,
     priceLabel: "$119",
-    consultationCount: 1,
-    features: ["Treatment plan", "1 doctor consultation"],
+    consultationCount: 2,
+    features: ["Treatment plan", "2 doctor consultations"],
     cta: "Start Your Program",
   },
   {
@@ -106,8 +114,8 @@ export const programPackages: ProgramPackage[] = [
     tagline: "Closer follow-up through your treatment plan",
     price: 169,
     priceLabel: "$169",
-    consultationCount: 2,
-    features: ["Treatment plan", "2 doctor consultations"],
+    consultationCount: 3,
+    features: ["Treatment plan", "3 doctor consultations"],
     cta: "Start Your Program",
     popular: true,
   },
@@ -119,14 +127,14 @@ export const programPackages: ProgramPackage[] = [
     tagline: "The closest level of medical follow-up available",
     price: 199,
     priceLabel: "$199",
-    consultationCount: 3,
-    features: ["Treatment plan", "3 doctor consultations"],
+    consultationCount: 4,
+    features: ["Treatment plan", "4 doctor consultations"],
     cta: "Start Your Program",
   },
 ];
 
 export const programPackageDisclaimer =
-  "Program credits do not expire on a monthly cycle like membership credits, but are tied to your account and are non-transferable. Nutrition and treatment programs are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Treatment programs include a maximum of 3 consultations.";
+  "Program credits do not expire on a monthly cycle like membership credits, but are tied to your account and are non-transferable. Nutrition and treatment programs are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Treatment programs include a maximum of 4 consultations.";
 
 export function getProgramPackageBySlug(slug: string | null | undefined) {
   return programPackages.find((pkg) => pkg.slug === slug);

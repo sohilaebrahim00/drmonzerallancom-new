@@ -100,50 +100,54 @@ const CONSULTATION_PACKAGE_INFO: Record<
     name: string;
     priceLabel: string;
     packageType: "diet" | "treatment";
-    consultationCount: 1 | 2 | 3;
+  // creditLimit and consultationCount MUST stay equal — creditLimit is what
+  // lands on the subscriptions row and is therefore what the member can
+  // actually spend. Both raised by one across every tier on 22 Aug 2026
+  // (Phase 2.5.5); payments.consultation_count now allows up to 4 (PHASE_J J.12).
+  consultationCount: 2 | 3 | 4;
   }
 > = {
   diet_basic: {
-    creditLimit: 1,
+    creditLimit: 2,
     name: "Diet Basic",
     priceLabel: "$49",
     packageType: "diet",
-    consultationCount: 1,
+    consultationCount: 2,
   },
   diet_plus: {
-    creditLimit: 2,
+    creditLimit: 3,
     name: "Diet Plus",
     priceLabel: "$89",
     packageType: "diet",
-    consultationCount: 2,
+    consultationCount: 3,
   },
   diet_premium: {
-    creditLimit: 3,
+    creditLimit: 4,
     name: "Diet Premium",
     priceLabel: "$119",
     packageType: "diet",
-    consultationCount: 3,
+    consultationCount: 4,
   },
   treatment_basic: {
-    creditLimit: 1,
+    creditLimit: 2,
     name: "Treatment Basic",
     priceLabel: "$119",
     packageType: "treatment",
-    consultationCount: 1,
+    consultationCount: 2,
   },
   treatment_plus: {
-    creditLimit: 2,
+    creditLimit: 3,
     name: "Treatment Plus",
     priceLabel: "$169",
     packageType: "treatment",
-    consultationCount: 2,
+    consultationCount: 3,
   },
   treatment_premium: {
-    creditLimit: 3,
+    creditLimit: 4,
     name: "Treatment Premium",
     priceLabel: "$199",
     packageType: "treatment",
-    consultationCount: 3,
+    consultationCount: 4,
   },
 };
 

@@ -53,7 +53,7 @@ export const faqs: Faq[] = [
   {
     question: "How do consultation credits work?",
     answer:
-      "Each program includes a fixed number of consultation credits, granted once when you purchase (1, 2, or 3, depending on the tier you choose). You use one credit each time you request an online consultation from your account.",
+      "Each program includes a fixed number of consultation credits, granted once when you purchase (2, 3, or 4, depending on the tier you choose). You use one credit each time you request an online consultation from your account.",
     category: "Consultation Credits",
   },
   {

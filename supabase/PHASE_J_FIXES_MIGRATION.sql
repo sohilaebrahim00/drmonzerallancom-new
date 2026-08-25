@@ -469,6 +469,40 @@ grant execute on function public.cancel_my_consultation(uuid) to authenticated;
 -- ───────────────────────────────────────────────────────────────────────
 
 
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- J.12 — payments.consultation_count must allow 4 (FIX_PLAN.md 2.5.5)
+--
+-- Every tier gained one consultation on 22 Aug 2026, so the Premium tiers
+-- now grant 4. PHASE_I declared
+--   check (consultation_count between 1 and 3)
+-- which a 4-consultation purchase violates: the `payments` insert in
+-- create-consultation-checkout-session fails with 23514, the function
+-- returns "Could not start checkout. Please try again.", and the buyer never
+-- reaches Stripe at all. Nothing is charged — but nothing sells either.
+--
+-- The constraint name below is NOT a guess: read from the catalog on
+-- 2026-08-25 with
+--   select conname, pg_get_constraintdef(oid) from pg_constraint
+--   where conrelid='public.payments'::regclass and contype='c';
+-- which returned payments_consultation_count_check =
+--   CHECK (((consultation_count >= 1) AND (consultation_count <= 3)))
+--
+-- Lower bound stays at 1 so every existing row remains valid.
+--
+-- Checked at the same time, and deliberately NOT changed: subscriptions has
+-- no numeric constraint on consultation_credit_limit, and
+-- consultation_credits.credits only requires <> 0 (J.6), so 4 passes both.
+-- This constraint was the only thing standing in the way.
+-- ───────────────────────────────────────────────────────────────────────
+alter table public.payments
+  drop constraint if exists payments_consultation_count_check;
+alter table public.payments
+  add constraint payments_consultation_count_check
+  check (consultation_count between 1 and 4);
+
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- END OF PHASE J
 -- ═══════════════════════════════════════════════════════════════════════

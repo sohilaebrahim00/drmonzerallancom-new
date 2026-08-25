@@ -60,7 +60,10 @@ type PackageType = "diet" | "treatment";
 interface PackageDefinition {
   productEnvVar: string;
   amountCents: number;
-  consultationCount: 1 | 2 | 3;
+  // Raised by one across every tier on 22 Aug 2026 (Phase 2.5.5). Must stay
+  // equal to src/data/programPackages.ts and to stripe-webhook's
+  // CONSULTATION_PACKAGE_INFO (creditLimit AND consultationCount).
+  consultationCount: 2 | 3 | 4;
   packageType: PackageType;
 }
 
@@ -72,37 +75,37 @@ const PACKAGES: Record<string, PackageDefinition> = {
   diet_basic: {
     productEnvVar: "STRIPE_PRODUCT_DIET_BASIC",
     amountCents: 4900,
-    consultationCount: 1,
+    consultationCount: 2,
     packageType: "diet",
   },
   diet_plus: {
     productEnvVar: "STRIPE_PRODUCT_DIET_PLUS",
     amountCents: 8900,
-    consultationCount: 2,
+    consultationCount: 3,
     packageType: "diet",
   },
   diet_premium: {
     productEnvVar: "STRIPE_PRODUCT_DIET_PREMIUM",
     amountCents: 11900,
-    consultationCount: 3,
+    consultationCount: 4,
     packageType: "diet",
   },
   treatment_basic: {
     productEnvVar: "STRIPE_PRODUCT_TREATMENT_BASIC",
     amountCents: 11900,
-    consultationCount: 1,
+    consultationCount: 2,
     packageType: "treatment",
   },
   treatment_plus: {
     productEnvVar: "STRIPE_PRODUCT_TREATMENT_PLUS",
     amountCents: 16900,
-    consultationCount: 2,
+    consultationCount: 3,
     packageType: "treatment",
   },
   treatment_premium: {
     productEnvVar: "STRIPE_PRODUCT_TREATMENT_PREMIUM",
     amountCents: 19900,
-    consultationCount: 3,
+    consultationCount: 4,
     packageType: "treatment",
   },
 };

@@ -156,8 +156,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                           pkg.popular ? "bg-white/15 text-white" : "bg-secondary text-primary",
                         )}
                       >
-                        {pkg.consultationCount}{" "}
-                        {pkg.consultationCount === 1 ? "Consultation" : "Consultations"}
+                        {pkg.consultationCount} Consultations
                       </span>
 
                       <ul className="mt-6 flex-1 space-y-2.5">
@@ -264,8 +263,7 @@ function PurchaseDialog({
         <DialogHeader>
           <DialogTitle>{pkg?.name}</DialogTitle>
           <DialogDescription>
-            {pkg?.priceLabel} one-time · {pkg?.consultationCount}{" "}
-            {pkg?.consultationCount === 1 ? "consultation" : "consultations"}
+            {pkg?.priceLabel} one-time · {pkg?.consultationCount} consultations
           </DialogDescription>
         </DialogHeader>
 
