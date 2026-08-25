@@ -400,7 +400,8 @@ export default function NativeBookConsultation() {
                 Consultation Confirmed
               </p>
               <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                {result.appointment.clientLocalTime} ({tz}) · {result.appointment.dubaiTime} Dubai
+                {result.appointment.clientLocalTime} ({tz}) · {result.appointment.doctorLocalTime} (
+                {result.appointment.doctorTimeZone.split("/").pop()?.replace("_", " ")})
               </p>
               <a
                 href={result.appointment.meetUrl}

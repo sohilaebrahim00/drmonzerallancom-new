@@ -12,7 +12,14 @@ export interface ConfirmedAppointment {
   appointmentStart: string;
   appointmentEnd: string;
   clientLocalTime: string;
-  dubaiTime: string;
+  /** The appointment in the doctor's own timezone, already formatted. */
+  doctorLocalTime: string;
+  /**
+   * IANA name of that timezone, taken from the availability row the slot came
+   * from. Was previously a hardcoded "Dubai", which would contradict the
+   * picker as soon as a day was set to any other zone.
+   */
+  doctorTimeZone: string;
   meetUrl: string;
 }
 

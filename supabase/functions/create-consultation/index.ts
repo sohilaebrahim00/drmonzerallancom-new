@@ -243,7 +243,12 @@ serve(async (req) => {
 
   const startDate = new Date(matchedSlot.startUtc);
   const clientLocalTime = formatInZone(startDate, clientTimeZone);
-  const dubaiTime = formatInZone(startDate, DOCTOR_TIMEZONE);
+  // The doctor's timezone comes from the availability row this slot was
+  // generated from, never from a constant: it is editable per day at
+  // /doctor/availability, so assuming Dubai here would make the confirmation
+  // email contradict the time the patient just picked.
+  const doctorTimeZone = matchedSlot.timezone;
+  const doctorLocalTime = formatInZone(startDate, doctorTimeZone);
   const packageName = PACKAGE_NAMES[subscription?.package_id ?? ""] ?? subscription?.package_id ?? "Membership";
   const creditsLimit = subscription?.consultation_credit_limit ?? 0;
   const creditsRemaining = Math.max(creditsLimit - (subscription?.consultation_credits_used ?? 0), 0);
@@ -254,7 +259,8 @@ serve(async (req) => {
       clientName,
       clientLocalTime,
       clientTimeZone,
-      dubaiTime,
+      doctorLocalTime,
+      doctorTimeZone,
       meetUrl: eventResult.meetUrl,
       packageName,
       creditsRemaining,
@@ -268,7 +274,8 @@ serve(async (req) => {
       clientEmail,
       clientPhone: null,
       packageName,
-      dubaiTime,
+      doctorLocalTime,
+      doctorTimeZone,
       meetUrl: eventResult.meetUrl,
     });
     await sendEmail(ADMIN_NOTIFICATION_EMAIL, adminMail.subject, adminMail.html);
@@ -282,7 +289,8 @@ serve(async (req) => {
         appointmentStart: matchedSlot.startUtc,
         appointmentEnd: matchedSlot.endUtc,
         clientLocalTime,
-        dubaiTime,
+        doctorLocalTime,
+        doctorTimeZone,
         meetUrl: eventResult.meetUrl,
       },
       creditsRemaining,

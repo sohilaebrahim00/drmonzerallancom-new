@@ -186,7 +186,10 @@ interface ConsultationConfirmedClientEmailInput {
   clientName: string;
   clientLocalTime: string;
   clientTimeZone: string;
-  dubaiTime: string;
+  /** The appointment in the DOCTOR's timezone, formatted. */
+  doctorLocalTime: string;
+  /** That timezone's IANA name — the schedule row's own, never assumed. */
+  doctorTimeZone: string;
   meetUrl: string;
   packageName: string;
   creditsRemaining: number;
@@ -198,7 +201,7 @@ export function consultationConfirmedClientEmail(input: ConsultationConfirmedCli
     <h2 style="margin:0 0 12px;font-size:18px;">Your consultation is confirmed, ${escapeHtml(input.clientName)}</h2>
     <table role="presentation" style="width:100%;font-size:13px;">
       <tr><td style="padding:4px 0;color:#8a94a6;">Your time</td><td>${escapeHtml(input.clientLocalTime)} (${escapeHtml(input.clientTimeZone)})</td></tr>
-      <tr><td style="padding:4px 0;color:#8a94a6;">Doctor's time</td><td>${escapeHtml(input.dubaiTime)} (Dubai)</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Doctor's time</td><td>${escapeHtml(input.doctorLocalTime)} (${escapeHtml(input.doctorTimeZone)})</td></tr>
       <tr><td style="padding:4px 0;color:#8a94a6;">Membership</td><td>${escapeHtml(input.packageName)}</td></tr>
       <tr><td style="padding:4px 0;color:#8a94a6;">Consultation credits</td><td>${input.creditsRemaining} of ${input.creditsLimit} remaining</td></tr>
     </table>
@@ -215,7 +218,8 @@ interface ConsultationConfirmedAdminEmailInput {
   clientEmail: string;
   clientPhone: string | null;
   packageName: string;
-  dubaiTime: string;
+  doctorLocalTime: string;
+  doctorTimeZone: string;
   meetUrl: string;
 }
 
@@ -227,7 +231,7 @@ export function consultationConfirmedAdminEmail(input: ConsultationConfirmedAdmi
       <tr><td style="padding:4px 0;color:#8a94a6;">Email</td><td>${escapeHtml(input.clientEmail)}</td></tr>
       <tr><td style="padding:4px 0;color:#8a94a6;">Phone</td><td>${input.clientPhone ? escapeHtml(input.clientPhone) : "Not provided"}</td></tr>
       <tr><td style="padding:4px 0;color:#8a94a6;">Membership</td><td>${escapeHtml(input.packageName)}</td></tr>
-      <tr><td style="padding:4px 0;color:#8a94a6;">Dubai time</td><td>${escapeHtml(input.dubaiTime)}</td></tr>
+      <tr><td style="padding:4px 0;color:#8a94a6;">Your time</td><td>${escapeHtml(input.doctorLocalTime)} (${escapeHtml(input.doctorTimeZone)})</td></tr>
     </table>
     ${ctaButton("Join Google Meet", input.meetUrl)}
   `;
