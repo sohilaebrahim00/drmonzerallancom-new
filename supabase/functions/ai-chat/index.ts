@@ -206,7 +206,23 @@ async function getMemberContext(userId: string): Promise<MemberContext | null> {
     return { firstName, packageName: null, creditsUsed: null, creditsLimit: null };
   }
 
-  const packageNames: Record<string, string> = { basic: "Basic", premium: "Premium", "vip-elite": "VIP Elite" };
+  // All nine slugs subscriptions.package_id may hold — its check constraint
+  // permits exactly these (PHASE_I_CONSULTATION_PACKAGES_PAYMENTS_MIGRATION.sql:52-57).
+  // The six program tiers were missing, so a member on diet_premium had the
+  // assistant told their package was literally "diet_premium". The three
+  // membership slugs stay: mapping only six would fix that and newly break
+  // legacy vip-elite members.
+  const packageNames: Record<string, string> = {
+    basic: "Basic",
+    premium: "Premium",
+    "vip-elite": "VIP Elite",
+    diet_basic: "Diet Basic",
+    diet_plus: "Diet Plus",
+    diet_premium: "Diet Premium",
+    treatment_basic: "Treatment Basic",
+    treatment_plus: "Treatment Plus",
+    treatment_premium: "Treatment Premium",
+  };
   return {
     firstName,
     packageName: packageNames[subscription.package_id] ?? subscription.package_id,
