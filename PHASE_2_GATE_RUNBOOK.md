@@ -17,10 +17,22 @@ breaks the live site.
 
 ## 1. Create the 6 products in test mode
 
-Stripe → Products → Add product, six times. Name them so you can tell them apart, and copy each
-**Product id** (`prod_…`, not the price id):
+### 1.0 First — do you already have these products, and in which mode?
 
-Prices below are the Phase 2.5 list (four of the six changed on 22 Aug):
+Products are **per-mode**: a live product id does not exist in test mode and vice versa. Both look
+like `prod_…`, so the id alone tells you nothing.
+
+To check: turn the **Test mode** toggle ON, then open Products.
+- The six are listed → they are test products. Copy their ids and go straight to step 2.
+- The list is empty or shows different products → yours are live-only. Create six test ones below.
+
+Toggle Test mode OFF and look again to confirm what exists in live.
+
+### 1.1–1.2 Create the six (test mode)
+
+Stripe → Products → Add product, six times. Name them **exactly** as below — this is the text the
+customer reads on the Stripe checkout page — and copy each **Product id** (`prod_…`, not the price
+id):
 
 | Package | Price |
 |---|---|
@@ -31,13 +43,24 @@ Prices below are the Phase 2.5 list (four of the six changed on 22 Aug):
 | Treatment Plus | $169 |
 | Treatment Premium | $199 |
 
-> The price you attach to the Stripe product is **cosmetic**. The checkout function builds its line
-> item with `price_data` and a server-side `unit_amount`, so the card is charged whatever
-> `amountCents` says in `create-consultation-checkout-session` — currently 4900 / 8900 / 11900 /
-> 11900 / 16900 / 19900, matching the table. Setting a different figure in Stripe will not change
-> what is charged; it will only make the dashboard disagree with reality.
+> **Corrected 22 Aug.** An earlier version of this runbook warned that the Stripe product price and
+> the code must match. That is wrong for this codebase. `create-consultation-checkout-session`
+> builds an **ad-hoc price** at checkout time:
+> ```ts
+> price_data: { currency: "usd", product: productId, unit_amount: def.amountCents }
+> ```
+> The product supplies only the **name and description** shown on the Stripe checkout page. Any Price
+> object attached to the product is never read. So the amount the customer sees and pays comes
+> entirely from `amountCents` in the Edge Function — item 2.5.1 — and the price you type when creating
+> a product is cosmetic.
+>
+> Set it to the correct figure anyway, so the Stripe dashboard does not mislead you later, but
+> **existing products never need their price corrected to fix a charge.**
 
 Keep the six `prod_…` ids in a scratch note — step 2 needs them.
+
+Fastest way to collect all six at once, rather than opening each product: on the Product catalog
+page press **Edit columns** and enable the **ID** column, or use **Export products** for a CSV.
 
 ---
 
@@ -56,6 +79,11 @@ supabase secrets set SITE_URL=https://monzerallan.com
 
 `SITE_URL` is now required — Phase 1 item 1.5 made the checkout functions fail rather than fall back
 to a client-supplied value. If it is unset, checkout returns a 500.
+
+⚠️ The six `STRIPE_PRODUCT_*` secrets must hold the **test** product ids for the duration of the gate,
+and be swapped back to the **live** ids in step 7. If a live id is set while Stripe is in test mode,
+checkout returns "This program package isn't available yet." Note your live ids somewhere before
+overwriting them.
 
 Confirm with `supabase secrets list` (it shows names and digests, never values).
 
@@ -156,13 +184,20 @@ verification if you sent an unsigned one) — **not** a 401. A 401 means `--no-v
 Two purchases, not one — that is what proves item 2.8 (credits summing across rows) and the
 AccountPage total that Phase 2 marked PARTIAL.
 
-1. On the deployed site, buy **Diet Premium** (3 credits). Card `4242 4242 4242 4242`, any future
+> **Updated after Phase 2.5** — the counts changed from 1/2/3 to 2/3/4, so the numbers below are not
+> the ones an earlier version of this runbook gave.
+
+1. On the deployed site, buy **Diet Premium** (**4** credits). Card `4242 4242 4242 4242`, any future
    expiry, any CVC, any postcode. Use one real inbox you can open — the invite email goes there.
+   **Use a plus-address** (`you+stripetest@…`), not your normal address. The invite creates a real
+   auth user, and step 7 deletes that user to clean up. If you buy with the address your admin
+   account uses, the cleanup deletes your admin account.
 2. Complete the invite, set a password, sign in.
-3. Buy **Treatment Basic** (1 credit) **while signed in, with the same email**.
-4. Open `/account`. It must show **4 credits**, not 1. If it shows 1, item 2.8 did not take.
-5. Open `/account/consultations` and book one slot. Credits must drop to 3.
-6. Cancel that booking. Credits must go back to 4 — that is item 2.9.
+3. Buy **Treatment Basic** (**2** credits) **while signed in, with the same email**.
+4. Open `/account`. It must show **6 credits**. If it shows **2** — only the most recent purchase —
+   item 2.8's summing did not take.
+5. Open `/account/consultations` and book one slot. Credits must drop to **5**.
+6. Cancel that booking. Credits must go back to **6** — that is item 2.9.
 
 Also worth one minute: open the app build and confirm a `diet_premium` account shows a real plan name
 instead of "No active membership". That is a Phase 3 item (C1), so failing here is expected — just
@@ -180,9 +215,9 @@ Then tell Claude "done, pull the rows" — it can query `payments`, `subscriptio
 `consultation_credits` for the `cs_test_%` sessions and assemble the gate record.
 
 **What good looks like:**
-- `payments` — 2 rows, `status = 'succeeded'`, correct `package_id` and `consultation_count`
-- `subscriptions` — 2 rows, same `user_id`, `status = 'active'`, limits 3 and 1
-- `consultation_credits` — 2 positive rows totalling 4
+- `payments` — 2 rows, `status = 'succeeded'`, correct `package_id`, `consultation_count` **4 and 2**
+- `subscriptions` — 2 rows, same `user_id`, `status = 'active'`, `consultation_credit_limit` **4 and 2**
+- `consultation_credits` — 2 positive rows totalling **6**
 - webhook logs — no `42P10`, no "Failed to upsert", no 401
 - exactly **one** welcome email in your inbox per purchase, not three (item 2.7)
 
@@ -190,9 +225,34 @@ Then tell Claude "done, pull the rows" — it can query `payments`, `subscriptio
 
 ## 7. Afterwards
 
-- Delete the test rows:
-  `delete from public.payments where stripe_session_id like 'cs_test_%';` and the subscriptions /
-  credits rows that reference them. Do the credits and subscriptions first if FKs complain.
+- **Delete the test rows — order matters, and not for the reason you would expect.**
+
+  `consultation_credits.payment_id` references `payments(id)` **ON DELETE SET NULL**, and that table
+  has no `stripe_*` column of its own. So deleting `payments` first does not fail — it silently
+  **nulls the only link** those credit rows had, leaving them orphaned in the production ledger with
+  nothing to identify them by. No foreign key ever "complains", so waiting for one is not a plan.
+
+  The cascades do the work for you. `subscriptions.user_id` and `consultation_credits.user_id` are
+  both **ON DELETE CASCADE** on `auth.users`, so removing the test account clears both tables:
+
+  ```sql
+  -- 1. Confirm what you are about to remove.
+  select id, email from auth.users where email = '<the test address>';
+  ```
+  ```
+  -- 2. Delete that user: Supabase Dashboard -> Authentication -> Users.
+  --    Cascades away its subscriptions and consultation_credits rows.
+  ```
+  ```sql
+  -- 3. Then the payments rows, whose user_id step 2 merely nulled.
+  delete from public.payments where stripe_session_id like 'cs_test_%';
+
+  -- 4. Verify nothing is left.
+  select (select count(*) from public.payments
+            where stripe_session_id like 'cs_test_%')                      as payments_left,
+         (select count(*) from public.subscriptions
+            where stripe_checkout_session_id like 'cs_test_%')             as subs_left;
+  ```
 - Put Netlify's `VITE_STRIPE_PUBLISHABLE_KEY` back to the **live** key and redeploy.
 - Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` back to live values, register the live webhook
   endpoint with the same event list, and redeploy the webhook once more.
@@ -210,4 +270,4 @@ Then tell Claude "done, pull the rows" — it can query `payments`, `subscriptio
 | "This package isn't available yet" | A `STRIPE_PRODUCT_*` secret missing or holding a live id in test mode |
 | `42P10` in the logs | `PHASE_J` was not applied, or only partly |
 | Buyer charged, no rows at all | Look for `findOrInviteUser` returning null — check the email case (item 2.5) |
-| Account shows 1 credit after two purchases | The 2.8 summing change did not reach the deployed bundle |
+| Account shows 2 credits after two purchases | The 2.8 summing change did not reach the deployed bundle — 2 is the most recent purchase alone (Treatment Basic), not the sum |
