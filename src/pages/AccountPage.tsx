@@ -19,6 +19,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getProgramPackageBySlug } from "@/data/programPackages";
 import type { UserRole } from "@/services/profileService";
 import { IntakeReview } from "@/components/account/IntakeReview";
+import { IntakePrompt } from "@/components/account/IntakePrompt";
 import { business } from "@/data/business";
 import {
   getMyConsultationRequests,
@@ -311,6 +312,7 @@ export default function AccountPage() {
                       </a>
                     )}
                   </div>
+                  <IntakePrompt consultationRequestId={upcoming.id} />
                   <IntakeReview consultationRequestId={upcoming.id} />
                 </div>
               )}

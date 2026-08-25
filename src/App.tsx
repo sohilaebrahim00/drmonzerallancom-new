@@ -31,6 +31,7 @@ const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const AccountPage = lazy(() => import("@/pages/AccountPage"));
 const AccountConsultationsPage = lazy(() => import("@/pages/AccountConsultationsPage"));
+const AccountIntakePage = lazy(() => import("@/pages/AccountIntakePage"));
 // Still AdminAvailabilityPage.tsx on disk — the file was rebuilt in place for
 // Phase 6A rather than renamed, so git keeps its history.
 const DoctorAvailabilityPage = lazy(() => import("@/pages/AdminAvailabilityPage"));
@@ -192,6 +193,17 @@ function WebApp() {
                   element={
                     <ProtectedRoute>
                       <AccountConsultationsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* Optional pre-consultation intake. Accepts ?q=<n> so the
+                    account card and the email can resume at a specific
+                    question rather than sending the patient back to one. */}
+                <Route
+                  path="/account/consultations/intake"
+                  element={
+                    <ProtectedRoute>
+                      <AccountIntakePage />
                     </ProtectedRoute>
                   }
                 />

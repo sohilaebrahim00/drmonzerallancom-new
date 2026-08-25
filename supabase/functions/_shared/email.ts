@@ -233,10 +233,13 @@ export function consultationConfirmedClientEmail(input: ConsultationConfirmedCli
       <tr><td style="padding:4px 0;color:#8a94a6;">Consultation credits</td><td>${input.creditsRemaining} of ${input.creditsLimit} remaining</td></tr>
     </table>
     ${ctaButton("Join Google Meet", input.meetUrl)}
-    <p style="margin-top:20px;padding:12px;background:${LIGHT};border-radius:8px;">Before the call,
-    the assistant can ask you a few questions so Dr. Monzer Allan has your history ready — what
-    brings you in, your symptoms, any recent tests, medicines and supplements. It takes a few
-    minutes, it is entirely optional, and only Dr. Monzer Allan reads your answers.</p>
+    <div style="margin-top:20px;padding:14px;background:${LIGHT};border-radius:8px;">
+      <p style="margin:0 0 4px;font-weight:700;">Help Dr. Monzer Allan prepare</p>
+      <p style="margin:0;font-size:13px;">A few questions before your call — what brings you in,
+      your symptoms, any recent tests, medicines and supplements. Optional, about 3 minutes, and
+      only Dr. Monzer Allan reads your answers.</p>
+      ${ctaButton("Answer a few questions", `${input.siteUrl}/account/consultations/intake`)}
+    </div>
     <p style="margin-top:20px;">Need to make a change? Visit your
     <a href="${input.siteUrl}/account/consultations" style="color:${PRIMARY};">account</a> to review your
     consultation, or reach out via the <a href="${input.siteUrl}/contact" style="color:${PRIMARY};">Contact page</a>.</p>

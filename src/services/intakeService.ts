@@ -4,6 +4,7 @@ import {
   INTAKE_QUESTIONS,
   type IntakeAnswerColumn,
 } from "@/data/intakeQuestions";
+export { INTAKE_QUESTIONS };
 
 /**
  * A pre-consultation intake row. Every answer is the patient's own words,
@@ -134,4 +135,87 @@ export async function updateIntakeAnswer(
 
 export function isIntakeComplete(intake: ConsultationIntake | null): boolean {
   return Boolean(intake && intake.next_question >= INTAKE_COMPLETE_MARKER);
+}
+
+/**
+ * The intake for a consultation, creating the row on first visit.
+ *
+ * The chat flow from 3.1 creates this row lazily too, so both front doors
+ * converge on the same record — a patient can start in the assistant, carry
+ * on from the page, and pick up exactly where they stopped.
+ */
+export async function ensureMyIntake(
+  consultationRequestId: string,
+): Promise<ConsultationIntake | null> {
+  if (!supabase) return null;
+  const existing = await getMyIntake(consultationRequestId);
+  if (existing) return existing;
+
+  const { data: userData } = await supabase.auth.getUser();
+  const userId = userData.user?.id;
+  if (!userId) return null;
+
+  const { data, error } = await supabase
+    .from("consultation_intake")
+    .insert({ consultation_request_id: consultationRequestId, patient_id: userId })
+    .select(INTAKE_COLUMNS)
+    .maybeSingle();
+  if (error) {
+    // A concurrent create (the assistant, another tab) trips the unique
+    // constraint on consultation_request_id. That is a success, not a
+    // failure — read back the row the other path made.
+    const raced = await getMyIntake(consultationRequestId);
+    if (raced) return raced;
+    console.warn("[intakeService] could not start intake:", error.message);
+    return null;
+  }
+  return data as ConsultationIntake | null;
+}
+
+/**
+ * Records an answer, or a skip, and moves the pointer on.
+ *
+ * `next_question` only ever moves FORWARD. Going back to change an earlier
+ * answer must not rewind it — otherwise correcting question 2 would make the
+ * patient walk through 3 to 8 again, and would tell the doctor those later
+ * answers were "not reached" when they had in fact been given.
+ */
+export async function saveIntakeStep(
+  intake: ConsultationIntake,
+  questionNumber: number,
+  answer: string | null,
+): Promise<{ ok: true; intake: ConsultationIntake } | { ok: false; error: string }> {
+  if (!supabase) return { ok: false, error: "Not connected." };
+  const question = INTAKE_QUESTIONS.find((q) => q.number === questionNumber);
+  if (!question) return { ok: false, error: "Unknown question." };
+
+  const trimmed = (answer ?? "").trim();
+  const nextQuestion = Math.max(intake.next_question, questionNumber + 1);
+  const patch: Record<string, unknown> = {
+    [question.column]: trimmed.length > 0 ? trimmed : null,
+    next_question: Math.min(nextQuestion, INTAKE_COMPLETE_MARKER),
+  };
+  if (nextQuestion >= INTAKE_COMPLETE_MARKER && !intake.completed_at) {
+    patch.completed_at = new Date().toISOString();
+  }
+
+  const { data, error } = await supabase
+    .from("consultation_intake")
+    .update(patch)
+    .eq("id", intake.id)
+    .select(INTAKE_COLUMNS)
+    .maybeSingle();
+  if (error || !data) return { ok: false, error: "Could not save that answer. Please try again." };
+  return { ok: true, intake: data as ConsultationIntake };
+}
+
+/**
+ * The question to resume at: the first unanswered one, so a patient who
+ * skipped question 2 and answered the rest is offered 2 again rather than
+ * being sent to the end. Returns null when every question has an answer.
+ */
+export function firstUnansweredQuestion(intake: ConsultationIntake | null): number | null {
+  if (!intake) return 1;
+  const pending = INTAKE_QUESTIONS.find((q) => !intake[q.column]);
+  return pending ? pending.number : null;
 }

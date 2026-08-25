@@ -5,6 +5,7 @@ import {
   Check,
   CheckCircle2,
   ChevronLeft,
+  ClipboardList,
   Loader2,
   MessageCircle,
   Sparkles,
@@ -466,10 +467,17 @@ export default function AccountConsultationsPage() {
                         A calendar invitation has been emailed to you. Accept it to add this
                         appointment to your calendar.
                       </p>
+                      {/* Primary next step after the Meet link. An invitation,
+                          never an obligation — no warning styling, and a
+                          patient who ignores it sees nothing amiss. */}
+                      <Link
+                        to="/account/consultations/intake"
+                        className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-turquoise/50 bg-turquoise/10 px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-turquoise/20"
+                      >
+                        <ClipboardList className="h-4 w-4" /> Answer a few questions first
+                      </Link>
                       <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
-                        The assistant can ask you a few questions before the call so Dr. Monzer
-                        Allan has your history ready. It takes a few minutes and is entirely
-                        optional.
+                        Optional, about 3 minutes. It helps Dr. Monzer Allan prepare for your call.
                       </p>
                       <a
                         href={result.appointment.meetUrl}
