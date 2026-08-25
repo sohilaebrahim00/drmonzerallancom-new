@@ -74,19 +74,19 @@ interface PackageDefinition {
 const PACKAGES: Record<string, PackageDefinition> = {
   diet_basic: {
     productEnvVar: "STRIPE_PRODUCT_DIET_BASIC",
-    amountCents: 4900,
+    amountCents: 4000,
     consultationCount: 2,
     packageType: "diet",
   },
   diet_plus: {
     productEnvVar: "STRIPE_PRODUCT_DIET_PLUS",
-    amountCents: 8900,
+    amountCents: 6900,
     consultationCount: 3,
     packageType: "diet",
   },
   diet_premium: {
     productEnvVar: "STRIPE_PRODUCT_DIET_PREMIUM",
-    amountCents: 11900,
+    amountCents: 8900,
     consultationCount: 4,
     packageType: "diet",
   },
