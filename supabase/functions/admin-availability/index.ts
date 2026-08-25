@@ -82,6 +82,52 @@ interface RequestBody {
 
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
+interface ExistingBlock {
+  id: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+}
+
+/**
+ * Rejects a block that overlaps another on the same day.
+ *
+ * Split days stay legal on purpose — 09:00-12:00 plus 16:00-21:00 on one day
+ * is a normal clinic pattern, and generateAvailableSlots() iterates every
+ * matching row, so both windows produce slots. What this stops is two windows
+ * that cover the same minutes, which would emit the same slot time twice and
+ * show the patient duplicate buttons.
+ *
+ * This is a picker-quality guard, NOT data integrity. Booking is already safe:
+ * consultation_requests carries a unique index on appointment_start (see
+ * CONSULTATION_BOOKING_MIGRATION.sql), so two patients racing for the same
+ * instant can never both succeed — book_consultation_slot turns the second
+ * one into SLOT_TAKEN. Overlapping blocks made the UI untidy, not the data
+ * wrong.
+ *
+ * Touching ends are fine: 09:00-12:00 and 12:00-15:00 do not overlap, because
+ * a slot starting at 12:00 belongs to exactly one window.
+ */
+function findOverlap(
+  existing: ExistingBlock[],
+  dayOfWeek: number,
+  startTime: string,
+  endTime: string,
+  ignoreId?: string,
+): ExistingBlock | null {
+  return (
+    existing.find(
+      (row) =>
+        row.day_of_week === dayOfWeek &&
+        row.id !== ignoreId &&
+        startTime < row.end_time.slice(0, 5) &&
+        row.start_time.slice(0, 5) < endTime,
+    ) ?? null
+  );
+}
+
+const DAY_LABELS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 /**
  * An unrecognised timezone would be written straight into
  * doctor_availability.timezone (the column is plain text), and
@@ -157,6 +203,33 @@ serve(async (req) => {
         }
         patch.timezone = timezone;
       }
+
+      // An edit can move a block on top of a sibling just as easily as a
+      // create can, so the same guard applies. Times not being changed are
+      // read from the row as it currently stands.
+      if (typeof startTime === "string" || typeof endTime === "string") {
+        const { data: siblings, error: siblingError } = await supabaseAdmin
+          .from("doctor_availability")
+          .select("id, day_of_week, start_time, end_time");
+        if (siblingError) return json({ error: siblingError.message }, 500);
+        const self = (siblings ?? []).find((r: ExistingBlock) => r.id === id);
+        if (!self) return json({ error: "That schedule row no longer exists." }, 404);
+        const nextStart = (typeof startTime === "string" ? startTime : self.start_time).slice(0, 5);
+        const nextEnd = (typeof endTime === "string" ? endTime : self.end_time).slice(0, 5);
+        if (nextEnd <= nextStart) {
+          return json({ error: "End time must be after start time." }, 400);
+        }
+        const clash = findOverlap(siblings ?? [], self.day_of_week, nextStart, nextEnd, id);
+        if (clash) {
+          return json(
+            {
+              error: `That overlaps the existing ${DAY_LABELS[self.day_of_week]} block ${clash.start_time.slice(0, 5)}-${clash.end_time.slice(0, 5)}. Split days are fine, but two blocks cannot cover the same hours.`,
+            },
+            409,
+          );
+        }
+      }
+
       const { data, error } = await supabaseAdmin
         .from("doctor_availability")
         .update(patch)
@@ -201,6 +274,21 @@ serve(async (req) => {
         typeof slotDurationMinutes === "number" && slotDurationMinutes > 0
           ? Math.floor(slotDurationMinutes)
           : 30;
+
+      const { data: existingRows, error: existingError } = await supabaseAdmin
+        .from("doctor_availability")
+        .select("id, day_of_week, start_time, end_time")
+        .eq("day_of_week", dayOfWeek);
+      if (existingError) return json({ error: existingError.message }, 500);
+      const clash = findOverlap(existingRows ?? [], dayOfWeek, startTime, endTime);
+      if (clash) {
+        return json(
+          {
+            error: `That overlaps the existing ${DAY_LABELS[dayOfWeek]} block ${clash.start_time.slice(0, 5)}-${clash.end_time.slice(0, 5)}. Split days are fine, but two blocks cannot cover the same hours.`,
+          },
+          409,
+        );
+      }
 
       const { data, error } = await supabaseAdmin
         .from("doctor_availability")
