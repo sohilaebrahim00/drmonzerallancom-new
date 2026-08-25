@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Baby, Bike, Droplets, HeartPulse, Salad, Scale, Soup } from "lucide-react";
+import { Baby, Bike, Droplets, HeartPulse, Salad, Soup, TrendingDown } from "lucide-react";
 
 export type ArticleCategory =
   | "Weight Management"
@@ -43,7 +43,7 @@ export const articles: Article[] = [
     excerpt:
       "Why extreme restriction backfires, and what a realistic weight-loss plan looks like in practice.",
     category: "Weight Management",
-    icon: Scale,
+    icon: TrendingDown,
     date: "2026-06-02",
     sections: [
       {

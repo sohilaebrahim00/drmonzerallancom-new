@@ -8,8 +8,8 @@ import {
   Gauge,
   HeartPulse,
   Salad,
-  Scale,
   Stethoscope,
+  TrendingDown,
   Users,
 } from "lucide-react";
 
@@ -35,7 +35,7 @@ export const services: Service[] = [
     title: "Weight Loss",
     description:
       "Sustainable, medically sound weight management built around real food, not extremes or fad diets that don't last.",
-    icon: Scale,
+    icon: TrendingDown,
     highlights: ["Metabolic evaluation", "Realistic meal structure", "Progress tracking"],
   },
   {
