@@ -250,6 +250,7 @@ async function activateMembership(subscription: Stripe.Subscription) {
     const { subject, html } = customerWelcomeEmail({
       siteUrl,
       fullName,
+      email,
       packageName: info.name,
       consultationCredits: info.creditLimit,
       isVip: info.vip,
@@ -375,6 +376,7 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
   const { subject, html } = customerWelcomeEmail({
     siteUrl,
     fullName: fullName || email,
+    email,
     packageName: info.name,
     consultationCredits: info.creditLimit,
     isVip: false,

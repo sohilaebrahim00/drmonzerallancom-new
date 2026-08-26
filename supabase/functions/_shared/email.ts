@@ -109,6 +109,12 @@ export function adminNewMemberEmail(input: NewMemberEmailInput) {
 interface WelcomeEmailInput {
   siteUrl: string;
   fullName: string;
+  /**
+   * The buyer's address, used to pre-fill the password-reset form so setting
+   * a password is one click. Required: this email's only call to action is
+   * that link, and without the address the buyer has to retype it.
+   */
+  email: string;
   packageName: string;
   consultationCredits: number;
   isVip: boolean;
@@ -134,9 +140,17 @@ export function customerWelcomeEmail(input: WelcomeEmailInput) {
     <h2 style="margin:0 0 12px;font-size:18px;">Welcome, ${escapeHtml(input.fullName)}</h2>
     <p>${entitlement}</p>
     <p>Set your password to sign in and access your member dashboard, where you can request
-    consultations and track your credits.</p>
+    consultations and track your credits. We'll email you a secure link to choose it.</p>
     ${input.isVip ? `<p>As a VIP Elite member, your Priority Hotline details will appear inside your authenticated dashboard.</p>` : ""}
-    ${ctaButton("Activate My Account", `${input.siteUrl}/reset-password`)}
+    ${/*
+       Points at forgot-password, NOT reset-password. A buyer arriving from
+       this email has no session and no recovery token, and /reset-password
+       calls supabase.auth.updateUser, which requires one — so that link could
+       never work for the person it was sent to. This locked a paying customer
+       out. forgot-password sends them a real recovery link, which does carry
+       a session; the email is pre-filled so it stays one click.
+    */ ""}
+    ${ctaButton("Set My Password", `${input.siteUrl}/forgot-password?email=${encodeURIComponent(input.email)}`)}
     <p style="margin-top:20px;">Questions? Reach out any time via the
     <a href="${input.siteUrl}/contact" style="color:${PRIMARY};">Contact page</a>.</p>
   `;

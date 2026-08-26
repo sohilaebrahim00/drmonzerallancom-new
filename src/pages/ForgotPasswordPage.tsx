@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -28,10 +28,24 @@ type Values = z.infer<typeof schema>;
 
 export default function ForgotPasswordPage() {
   const { resetPasswordForEmail, configured } = useAuth();
+  const [searchParams] = useSearchParams();
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: "" } });
+  // Pre-fill from ?email=. The welcome email a buyer receives after paying
+  // links here with their address already attached, so setting a password is
+  // one click rather than retyping it. This page read no parameter at all
+  // before — nothing else links here with one, so nothing else is affected.
+  //
+  // Not a trust decision: the value only populates a form field the visitor
+  // can edit, and resetPasswordForEmail always answers with the same neutral
+  // confirmation, so a tampered address reveals nothing.
+  const prefilledEmail = (searchParams.get("email") ?? "").trim().slice(0, 320);
+
+  const form = useForm<Values>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: prefilledEmail },
+  });
 
   async function onSubmit(values: Values) {
     setSubmitting(true);

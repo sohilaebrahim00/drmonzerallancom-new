@@ -33,10 +33,21 @@ const schema = z
 type Values = z.infer<typeof schema>;
 
 export default function ResetPasswordPage() {
-  const { updatePassword, configured } = useAuth();
+  // `session` comes from AuthContext, which is populated either by an
+  // existing sign-in or by Supabase consuming the recovery token in the URL
+  // fragment when this page loads from a real reset email.
+  //
+  // Without one, supabase.auth.updateUser cannot work — it updates the
+  // CURRENT user, and there isn't one. A paying customer was sent here by the
+  // welcome email, which carried no token, and got a generic failure with no
+  // idea what to do. `loading` matters because the recovery token is consumed
+  // asynchronously: judging the session before it settles would reject
+  // someone who arrived from a perfectly good link.
+  const { updatePassword, configured, session, loading } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [noSession, setNoSession] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const form = useForm<Values>({
@@ -47,6 +58,16 @@ export default function ResetPasswordPage() {
   async function onSubmit(values: Values) {
     setSubmitting(true);
     setError(null);
+    setNoSession(false);
+
+    // Say what is actually wrong, and where to go, rather than letting this
+    // fall through to a generic error the person cannot act on.
+    if (!loading && !session) {
+      setSubmitting(false);
+      setNoSession(true);
+      return;
+    }
+
     const { error: updateError } = await updatePassword(values.password);
     setSubmitting(false);
     if (updateError) {
@@ -118,6 +139,22 @@ export default function ResetPasswordPage() {
                 </FormItem>
               )}
             />
+
+            {noSession && (
+              <Alert role="alert" className="border-amber-300 bg-amber-50 text-amber-900">
+                <AlertDescription>
+                  This page only works when it&apos;s opened from a password reset email, because
+                  that link is what proves the account is yours. Nothing is wrong with your account.{" "}
+                  <Link
+                    to="/forgot-password"
+                    className="font-semibold underline underline-offset-2"
+                  >
+                    Send yourself a reset link
+                  </Link>{" "}
+                  and open this page from that email.
+                </AlertDescription>
+              </Alert>
+            )}
 
             {error && (
               <Alert variant="destructive" role="alert">
