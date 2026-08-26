@@ -10,6 +10,7 @@ import { StickyCta } from "@/components/common/StickyCta";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DoctorRoute } from "@/components/auth/DoctorRoute";
+import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AppExperience } from "@/app-native/AppExperience";
 import { getAppMode } from "@/hooks/use-native-platform";
 import { isClientDemoBuild } from "@/dev/demoMode";
@@ -35,6 +36,7 @@ const AccountIntakePage = lazy(() => import("@/pages/AccountIntakePage"));
 // Still AdminAvailabilityPage.tsx on disk — the file was rebuilt in place for
 // Phase 6A rather than renamed, so git keeps its history.
 const DoctorAvailabilityPage = lazy(() => import("@/pages/AdminAvailabilityPage"));
+const AdminSubscribersPage = lazy(() => import("@/pages/AdminSubscribersPage"));
 const MembershipSuccessPage = lazy(() => import("@/pages/MembershipSuccessPage"));
 const MembershipCancelledPage = lazy(() => import("@/pages/MembershipCancelledPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
@@ -112,6 +114,22 @@ function DoctorShell() {
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route path="/doctor/availability" element={<DoctorAvailabilityPage />} />
+            {/* Subscriber list. Wrapped in AdminRoute as 6C specifies — which
+                is STRICTER than the DoctorShell's own DoctorRoute, so this one
+                screen additionally requires is_admin()/role='admin'. Lives
+                here rather than under /admin/* because 6A moved the staff
+                screens into this shell to get them away from the marketing
+                Header/Footer/StickyCta/ChatWidget; /admin/availability is now
+                only a redirect, so there is no "/admin area" left to sit
+                alongside. AdminRoute itself is untouched. */}
+            <Route
+              path="/doctor/subscribers"
+              element={
+                <AdminRoute>
+                  <AdminSubscribersPage />
+                </AdminRoute>
+              }
+            />
             {/* /doctor itself is the 6B dashboard, not built yet — send it to
                 the one screen that does exist rather than a blank route. */}
             <Route path="*" element={<Navigate to="/doctor/availability" replace />} />

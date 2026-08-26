@@ -395,6 +395,14 @@ export default function AccountPage() {
                     Manage Consultation Availability
                   </Link>
                 )}
+                {isPractitioner && (
+                  <Link
+                    to="/doctor/subscribers"
+                    className="text-sm font-semibold text-primary hover:text-turquoise"
+                  >
+                    View Subscribers
+                  </Link>
+                )}
                 <Link
                   to="/packages"
                   className="text-sm font-semibold text-primary hover:text-turquoise"
