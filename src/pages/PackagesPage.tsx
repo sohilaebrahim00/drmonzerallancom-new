@@ -34,7 +34,7 @@ export default function PackagesPage() {
     <div>
       <Seo
         title="Programs & Pricing"
-        description="Choose a one-time Weight Loss or Treatment program — pricing, doctor consultations, and everything included, with no recurring billing."
+        description="Choose a one-time Treatment program — pricing, doctor consultations, and everything included, with no recurring billing."
         path="/packages"
         jsonLd={jsonLd}
       />

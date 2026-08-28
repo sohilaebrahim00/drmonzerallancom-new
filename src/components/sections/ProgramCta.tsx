@@ -21,8 +21,8 @@ export function ProgramCta() {
             Ready to Start Your Personalized Nutrition Journey?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
-            Choose a one-time Weight Loss or Treatment program and get access to consultation
-            credits and ongoing guidance from {"Dr. Monzer Allan"} — no recurring billing.
+            Choose a one-time Treatment program and get access to consultation credits and ongoing
+            guidance from {"Dr. Monzer Allan"} — no recurring billing.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

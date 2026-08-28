@@ -7,8 +7,7 @@ const STEPS = [
   {
     icon: Sparkles,
     title: "Choose Your Program",
-    description:
-      "Pick a Weight Loss or Treatment program, and a tier based on how many consultations you need.",
+    description: "Pick a Treatment program, and a tier based on how many consultations you need.",
   },
   {
     icon: Lock,

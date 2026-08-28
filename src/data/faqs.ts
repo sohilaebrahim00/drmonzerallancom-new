@@ -29,7 +29,7 @@ export const faqs: Faq[] = [
   {
     question: "What's included in a program?",
     answer:
-      "Every program is a one-time purchase that includes a set number of doctor consultation credits, access to your account and consultation history, and ongoing nutrition or treatment support. Weight Loss and Treatment programs each come in Basic, Plus, and Premium tiers that differ only in how many consultations are included — compare them on the Packages page.",
+      "Every program is a one-time purchase that includes a set number of doctor consultation credits, access to your account and consultation history, and ongoing treatment support. Treatment programs come in Basic, Plus, and Premium tiers that differ only in how many consultations are included — compare them on the Packages page.",
     category: "Programs",
   },
   {
@@ -71,7 +71,7 @@ export const faqs: Faq[] = [
   {
     question: "How do I create an account?",
     answer:
-      "Creating an account happens automatically when you purchase a program. Visit the Packages page, choose a Weight Loss or Treatment program, and complete secure payment — your account activates and you'll set your password from there.",
+      "Creating an account happens automatically when you purchase a program. Visit the Packages page, choose a Treatment program, and complete secure payment — your account activates and you'll set your password from there.",
     category: "Account & Billing",
   },
   {

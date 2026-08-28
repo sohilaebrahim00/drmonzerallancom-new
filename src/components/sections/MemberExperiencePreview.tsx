@@ -68,10 +68,10 @@ export function MemberExperiencePreview() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
                   Illustrative Preview — Not Real Account Data
                 </p>
-                <p className="mt-2 font-display text-lg font-bold">Diet Plus Program</p>
+                <p className="mt-2 font-display text-lg font-bold">Treatment Plus Program</p>
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <span className="text-white/80">Consultation Credits</span>
-                  <span className="font-semibold">1 of 2 Remaining</span>
+                  <span className="font-semibold">2 of 3 Remaining</span>
                 </div>
                 <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/20">
                   <div className="h-full w-1/2 rounded-full bg-turquoise" />

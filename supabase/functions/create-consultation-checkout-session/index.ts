@@ -185,6 +185,18 @@ serve(async (req) => {
     );
   }
 
+  // Withdrawn from sale in Phase 7. An explicit refusal, NOT a deletion from
+  // PACKAGES: the amounts in that map are the record of what these packages
+  // cost, this file's header calls the map the price authority, and the
+  // webhook still has to resolve these slugs for in-flight and replayed
+  // Stripe events. Hiding the cards in the UI is not a control — this is.
+  if (packageId?.startsWith("diet_")) {
+    return new Response(JSON.stringify({ error: "This program is no longer available." }), {
+      status: 400,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    });
+  }
+
   const def = PACKAGES[packageId];
   const productId = def ? Deno.env.get(def.productEnvVar) : undefined;
   if (!def || !productId) {

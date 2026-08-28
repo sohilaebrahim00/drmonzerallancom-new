@@ -37,7 +37,7 @@ export default function HomePage() {
     <>
       <Seo
         title="Monzer Allan | Nutrition, Health & Wellness"
-        description="Trusted nutrition, health, and wellness guidance from Monzer Allan, Nutrition Specialist and Pharmacist. Choose a one-time Weight Loss or Treatment program today."
+        description="Trusted nutrition, health, and wellness guidance from Monzer Allan, Nutrition Specialist and Pharmacist. Choose a one-time Treatment program today."
         path="/"
         jsonLd={[medicalBusinessSchema(), personSchema(), faqSchema(faqs)]}
       />

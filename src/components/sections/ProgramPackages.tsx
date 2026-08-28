@@ -2,23 +2,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Check,
-  Loader2,
-  Lock,
-  MessageCircle,
-  ShieldCheck,
-  Salad,
-  Sparkles,
-  Stethoscope,
-} from "lucide-react";
+import { Check, Loader2, Lock, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import {
   Dialog,
   DialogContent,
@@ -35,21 +26,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  getProgramPackagesByType,
   programPackageDisclaimer,
+  purchasableProgramPackages,
   type ProgramPackage,
-  type ProgramPackageType,
 } from "@/data/programPackages";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { startProgramPackageCheckout } from "@/services/checkoutService";
 import { openExternal } from "@/lib/externalLink";
 import { whatsappLink } from "@/config/contact";
 import { cn } from "@/lib/utils";
-
-const CATEGORIES: { type: ProgramPackageType; label: string }[] = [
-  { type: "diet", label: "Weight Loss Program" },
-  { type: "treatment", label: "Treatment Program" },
-];
 
 const purchaseSchema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name."),
@@ -86,121 +71,107 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
           <SectionHeading
             eyebrow="Programs"
             title="Choose Your Path Forward"
-            description="A guided nutrition program for weight-loss goals, or a closer-follow-up treatment program — pick the level of consultation support you need, with no recurring billing."
+            description="A treatment program with close medical follow-up — pick the level of consultation support you need, with no recurring billing."
           />
         )}
 
-        <Tabs defaultValue="diet" className={hideHeading ? "" : "mt-14"}>
-          <TabsList className="mx-auto grid h-auto w-full max-w-md grid-cols-2 rounded-full border border-border/70 bg-card p-1.5 shadow-sm">
-            {CATEGORIES.map((cat) => (
-              <TabsTrigger
-                key={cat.type}
-                value={cat.type}
-                className="cursor-pointer gap-2 rounded-full py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow"
-              >
-                {cat.type === "diet" ? (
-                  <Salad className="h-4 w-4" />
-                ) : (
-                  <Stethoscope className="h-4 w-4" />
-                )}
-                {cat.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        {/* Phase 7 withdrew the Diet programs from sale, leaving one category.
+            A tab strip with a single tab is visibly broken, so the tabs are
+            gone and the purchasable packages render directly. If a second
+            category is ever sold again, restore a strip here — the data layer
+            still models types, and purchasableProgramTypes() reports them. */}
+        <div className={hideHeading ? "" : "mt-14"}>
+          <div>
+            <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              {purchasableProgramPackages.map((pkg, index) => (
+                <Reveal key={pkg.slug} direction="up" delay={index * 0.08} className="h-full">
+                  <div
+                    className={cn(
+                      "relative flex h-full flex-col rounded-2xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5",
+                      pkg.popular
+                        ? "border-primary bg-navy text-white shadow-[0_30px_60px_-24px_rgba(37,63,164,0.55)]"
+                        : "border-border/70 bg-card hover:border-turquoise/50 hover:shadow-[0_24px_50px_-24px_rgba(23,35,59,0.3)]",
+                    )}
+                  >
+                    {pkg.popular && (
+                      <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-turquoise px-3 py-1 text-xs font-bold uppercase tracking-wide text-navy shadow-md">
+                        <Sparkles className="h-3 w-3" />
+                        Most Popular
+                      </span>
+                    )}
 
-          {CATEGORIES.map((cat) => (
-            <TabsContent key={cat.type} value={cat.type} className="mt-10 outline-none">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                {getProgramPackagesByType(cat.type).map((pkg, index) => (
-                  <Reveal key={pkg.slug} direction="up" delay={index * 0.08} className="h-full">
-                    <div
+                    <h3
                       className={cn(
-                        "relative flex h-full flex-col rounded-2xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5",
-                        pkg.popular
-                          ? "border-primary bg-navy text-white shadow-[0_30px_60px_-24px_rgba(37,63,164,0.55)]"
-                          : "border-border/70 bg-card hover:border-turquoise/50 hover:shadow-[0_24px_50px_-24px_rgba(23,35,59,0.3)]",
+                        "font-display text-xl font-bold",
+                        pkg.popular ? "text-white" : "text-navy",
                       )}
                     >
-                      {pkg.popular && (
-                        <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-turquoise px-3 py-1 text-xs font-bold uppercase tracking-wide text-navy shadow-md">
-                          <Sparkles className="h-3 w-3" />
-                          Most Popular
-                        </span>
+                      {pkg.name}
+                    </h3>
+                    <p
+                      className={cn(
+                        "mt-1 text-sm",
+                        pkg.popular ? "text-white/70" : "text-muted-foreground",
                       )}
+                    >
+                      {pkg.tagline}
+                    </p>
 
-                      <h3
+                    <div className="mt-5 flex items-baseline gap-2">
+                      <span
                         className={cn(
-                          "font-display text-xl font-bold",
+                          "font-display text-3xl font-extrabold",
                           pkg.popular ? "text-white" : "text-navy",
                         )}
                       >
-                        {pkg.name}
-                      </h3>
-                      <p
-                        className={cn(
-                          "mt-1 text-sm",
-                          pkg.popular ? "text-white/70" : "text-muted-foreground",
-                        )}
-                      >
-                        {pkg.tagline}
-                      </p>
-
-                      <div className="mt-5 flex items-baseline gap-2">
-                        <span
-                          className={cn(
-                            "font-display text-3xl font-extrabold",
-                            pkg.popular ? "text-white" : "text-navy",
-                          )}
-                        >
-                          {pkg.priceLabel}
-                        </span>
-                        <span
-                          className={cn(
-                            "text-sm",
-                            pkg.popular ? "text-white/60" : "text-muted-foreground",
-                          )}
-                        >
-                          one-time
-                        </span>
-                      </div>
-
+                        {pkg.priceLabel}
+                      </span>
                       <span
                         className={cn(
-                          "mt-3 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold",
-                          pkg.popular ? "bg-white/15 text-white" : "bg-secondary text-primary",
+                          "text-sm",
+                          pkg.popular ? "text-white/60" : "text-muted-foreground",
                         )}
                       >
-                        {pkg.consultationCount} Consultations
+                        one-time
                       </span>
-
-                      <ul className="mt-6 flex-1 space-y-2.5">
-                        {pkg.features.map((feature) => (
-                          <li key={feature} className="flex items-start gap-2 text-sm">
-                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-turquoise" />
-                            <span className={pkg.popular ? "text-white/85" : "text-navy/80"}>
-                              {feature}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <Button
-                        type="button"
-                        onClick={() => setActivePackage(pkg)}
-                        className={cn(
-                          "mt-7 w-full cursor-pointer justify-center",
-                          pkg.popular && "bg-turquoise text-navy hover:bg-turquoise/90",
-                        )}
-                      >
-                        {pkg.cta}
-                      </Button>
                     </div>
-                  </Reveal>
-                ))}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+
+                    <span
+                      className={cn(
+                        "mt-3 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold",
+                        pkg.popular ? "bg-white/15 text-white" : "bg-secondary text-primary",
+                      )}
+                    >
+                      {pkg.consultationCount} Consultations
+                    </span>
+
+                    <ul className="mt-6 flex-1 space-y-2.5">
+                      {pkg.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2 text-sm">
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-turquoise" />
+                          <span className={pkg.popular ? "text-white/85" : "text-navy/80"}>
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Button
+                      type="button"
+                      onClick={() => setActivePackage(pkg)}
+                      className={cn(
+                        "mt-7 w-full cursor-pointer justify-center",
+                        pkg.popular && "bg-turquoise text-navy hover:bg-turquoise/90",
+                      )}
+                    >
+                      {pkg.cta}
+                    </Button>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <Reveal direction="up" delay={0.2} className="mt-10">
           <p className="mx-auto max-w-3xl rounded-xl border border-border/70 bg-secondary/40 p-4 text-center text-xs leading-relaxed text-muted-foreground">
