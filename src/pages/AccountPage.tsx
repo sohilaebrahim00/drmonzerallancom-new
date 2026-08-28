@@ -46,7 +46,23 @@ const statusStyle: Record<ConsultationRequest["status"], string> = {
   rescheduled: "bg-primary/15 text-primary",
 };
 
-function formatAppointment(iso: string) {
+/**
+ * Total by construction — it cannot throw for any input.
+ *
+ * Intl.DateTimeFormat.format raises `RangeError: Invalid time value` on an
+ * invalid Date, and this runs during render for the upcoming appointment AND
+ * for every row of the history list. One malformed or null appointment_start
+ * took the entire page white, because React 19 unmounts the tree on a render
+ * throw and there was no boundary to catch it.
+ *
+ * Returns an em dash rather than the raw string: a raw ISO timestamp in the
+ * middle of a formatted list reads as a different kind of bug, and the value
+ * is unusable to the reader either way.
+ */
+function formatAppointment(iso: string | null | undefined) {
+  if (!iso) return "—";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "—";
   return new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     month: "short",
@@ -54,7 +70,7 @@ function formatAppointment(iso: string) {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  }).format(new Date(iso));
+  }).format(date);
 }
 
 /** Titles skipped when picking a greeting name, so "Dr. Monzer Allan" greets "Monzer", not "Dr.". */
@@ -94,27 +110,37 @@ export default function AccountPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [requests, setRequests] = useState<ConsultationRequest[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadNonce, setReloadNonce] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
     setDataLoading(true);
-    Promise.all([
-      getProfile(user.id),
-      getMySubscription(),
-      getMyConsultationRequests(user.id),
-    ]).then(([profile, sub, reqs]) => {
-      if (cancelled) return;
-      setFullName(profile?.full_name ?? null);
-      setViewerRole(profile?.role ?? null);
-      setSubscription(sub);
-      setRequests(reqs);
-      setDataLoading(false);
-    });
+    setLoadError(null);
+    Promise.all([getProfile(user.id), getMySubscription(), getMyConsultationRequests(user.id)])
+      .then(([profile, sub, reqs]) => {
+        if (cancelled) return;
+        setFullName(profile?.full_name ?? null);
+        setViewerRole(profile?.role ?? null);
+        setSubscription(sub);
+        setRequests(reqs);
+        setDataLoading(false);
+      })
+      // The outer net. Each service already fails soft on its own, but a
+      // rejection here previously left dataLoading true forever — the page
+      // span an infinite spinner with an unhandled rejection in the console
+      // and no way for the customer to tell anything had gone wrong.
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("[AccountPage] Failed to load account data:", err);
+        setLoadError("We couldn't load your program right now.");
+        setDataLoading(false);
+      });
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, reloadNonce]);
 
   const packageInfo = subscription ? getProgramPackageBySlug(subscription.package_id) : undefined;
   const creditsRemaining = subscription
@@ -177,6 +203,21 @@ export default function AccountPage() {
         <div className="mt-10 flex flex-col items-center justify-center gap-3 py-16" role="status">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">Loading your program…</p>
+        </div>
+      ) : loadError ? (
+        /* Honest and actionable, rather than an endless spinner. */
+        <div className="mt-10 rounded-2xl border border-border/70 bg-card p-8 text-center shadow-sm">
+          <p className="font-display text-lg font-bold text-navy">{loadError}</p>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            This is a problem on our side, not with your account or your payment.
+          </p>
+          <button
+            type="button"
+            onClick={() => setReloadNonce((n) => n + 1)}
+            className="mt-5 inline-flex cursor-pointer items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
+          >
+            Try again
+          </button>
         </div>
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">

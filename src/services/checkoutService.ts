@@ -53,6 +53,8 @@ export async function startMembershipCheckout(
 export interface StartProgramCheckoutInput {
   fullName: string;
   email: string;
+  /** Required — the doctor needs a way to reach the patient about their program. */
+  phone: string;
   packageId: ProgramPackageSlug;
 }
 
@@ -76,6 +78,7 @@ export async function startProgramPackageCheckout(
         body: {
           fullName: input.fullName,
           email: input.email,
+          phone: input.phone,
           packageId: input.packageId,
         },
       },

@@ -40,6 +40,82 @@ export interface NutritionProgram {
   general_instructions: string | null;
   status: ProgramStatus;
   is_template: boolean;
+  /** Storage path of an optional PDF, never a URL. See PHASE_L L.3. */
+  pdf_path?: string | null;
+}
+
+/**
+ * One program by id. Used by the builder, which knows the program id from the
+ * route but needs the row (patient_id in particular) to derive a storage path.
+ */
+export async function getProgramById(programId: string): Promise<NutritionProgram | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("nutrition_programs")
+    .select(
+      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template, pdf_path",
+    )
+    .eq("id", programId)
+    .maybeSingle();
+  if (error) return null;
+  return data as NutritionProgram | null;
+}
+
+/** PDF only, and capped. Both are enforced again in the upload helper below. */
+export const PROGRAM_PDF_MAX_BYTES = 10 * 1024 * 1024;
+export const PROGRAM_PDF_SIGNED_URL_SECONDS = 300;
+
+/**
+ * A short-lived link to a program's PDF.
+ *
+ * Signed, not public: the bucket is private, so this is the only way to read
+ * the file, and the link stops working five minutes after it is minted. Long
+ * enough to click and download, short enough that a forwarded URL is useless.
+ */
+export async function getProgramPdfUrl(pdfPath: string): Promise<string | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase.storage
+    .from("program-files")
+    .createSignedUrl(pdfPath, PROGRAM_PDF_SIGNED_URL_SECONDS);
+  if (error) {
+    console.warn("[programService] could not sign program PDF url:", error.message);
+    return null;
+  }
+  return data?.signedUrl ?? null;
+}
+
+/**
+ * Uploads (or replaces) a program's PDF. Doctor-only in practice — the
+ * storage policy is what enforces that, this just refuses obvious mistakes
+ * early with a message the doctor can act on.
+ *
+ * The filename is not taken from the upload: it is derived from the program
+ * id, so nothing user-supplied reaches a storage path.
+ */
+export async function uploadProgramPdf(
+  program: NutritionProgram,
+  file: File,
+): Promise<{ ok: true; path: string } | { ok: false; error: string }> {
+  if (!supabase) return { ok: false, error: "Not connected." };
+  if (!program.patient_id) return { ok: false, error: "This program has no patient yet." };
+  if (file.type !== "application/pdf") return { ok: false, error: "Please choose a PDF file." };
+  if (file.size > PROGRAM_PDF_MAX_BYTES) {
+    return { ok: false, error: "That file is over 10 MB. Please upload a smaller PDF." };
+  }
+
+  const path = `${program.patient_id}/${program.id}.pdf`;
+  const { error: uploadError } = await supabase.storage
+    .from("program-files")
+    .upload(path, file, { contentType: "application/pdf", upsert: true });
+  if (uploadError) return { ok: false, error: "Could not upload that file. Please try again." };
+
+  const { error: updateError } = await supabase
+    .from("nutrition_programs")
+    .update({ pdf_path: path })
+    .eq("id", program.id);
+  if (updateError) return { ok: false, error: "Uploaded, but could not attach it to the program." };
+
+  return { ok: true, path };
 }
 
 async function currentUserId(): Promise<string | null> {
@@ -58,7 +134,7 @@ export async function getMyActiveProgram(): Promise<NutritionProgram | null> {
   const { data, error } = await supabase
     .from("nutrition_programs")
     .select(
-      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template",
+      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template, pdf_path",
     )
     .eq("patient_id", userId)
     .eq("status", "active")
@@ -151,7 +227,7 @@ export async function getMyTemplates(): Promise<NutritionProgram[]> {
   const { data, error } = await supabase
     .from("nutrition_programs")
     .select(
-      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template",
+      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template, pdf_path",
     )
     .eq("doctor_id", userId)
     .eq("is_template", true);
@@ -165,7 +241,7 @@ export async function getPatientProgram(patientId: string): Promise<NutritionPro
   const { data, error } = await supabase
     .from("nutrition_programs")
     .select(
-      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template",
+      "id, patient_id, doctor_id, title, start_date, end_date, goal, daily_calorie_target, general_instructions, status, is_template, pdf_path",
     )
     .eq("patient_id", patientId)
     .order("created_at", { ascending: false })

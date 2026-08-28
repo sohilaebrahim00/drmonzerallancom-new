@@ -54,6 +54,20 @@ const CATEGORIES: { type: ProgramPackageType; label: string }[] = [
 const purchaseSchema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name."),
   email: z.string().trim().email("Please enter a valid email address."),
+  // Required, and validated for shape rather than just presence. Deliberately
+  // permissive about FORMAT — international numbers vary far too much to
+  // pattern-match safely, and rejecting a real number is worse than accepting
+  // an odd one. What it does enforce: only characters a phone number can
+  // contain, and enough digits to be dialable.
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Please enter a phone number we can reach you on.")
+    .max(32, "That phone number looks too long.")
+    .regex(/^[0-9+\-\s()]+$/, "Use digits, spaces, and + ( ) - only.")
+    .refine((v) => (v.match(/\d/g) ?? []).length >= 7, {
+      message: "Please include the full number, with country code if you're outside the UAE.",
+    }),
 });
 
 type PurchaseValues = z.infer<typeof purchaseSchema>;
@@ -216,7 +230,7 @@ function PurchaseDialog({
 
   const form = useForm<PurchaseValues>({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: { fullName: "", email: "" },
+    defaultValues: { fullName: "", email: "", phone: "" },
   });
 
   async function onSubmit(values: PurchaseValues) {
@@ -228,6 +242,7 @@ function PurchaseDialog({
     const result = await startProgramPackageCheckout({
       fullName: values.fullName,
       email: values.email,
+      phone: values.phone,
       packageId: pkg.slug,
     });
 
@@ -304,6 +319,30 @@ function PurchaseDialog({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone number</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="+971 50 123 4567"
+                      {...field}
+                    />
+                  </FormControl>
+                  {/* Say why we want it. A required field with no reason given
+                      reads as data harvesting; this one has a use the buyer
+                      actually benefits from. */}
+                  <p className="text-xs text-muted-foreground">
+                    So Dr. Monzer Allan can reach you about your program.
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}

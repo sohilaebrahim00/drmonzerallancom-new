@@ -6,9 +6,12 @@
 // Required secrets:
 //   SUPABASE_SERVICE_ROLE_KEY  (SUPABASE_URL is injected automatically)
 //   RESEND_API_KEY, EMAIL_FROM (see _shared/email.ts)
-//   APP_URL                    (the app origin, e.g. https://app.monzerallan.com —
-//                               NOT the marketing site; falls back to that
-//                               default when unset)
+//   APP_URL                    (origin serving /my-program. Defaults to
+//                               https://monzerallan.com, which is where that
+//                               route lives as of 6D.3. Set this only if the
+//                               app gets a host that truly serves the app
+//                               build — app.monzerallan.com currently does
+//                               not, it serves the marketing site.)
 //
 // This cannot live in the browser: RESEND_API_KEY is a server secret, and the
 // patient's address is in auth.users, which the client cannot read at all.
@@ -28,7 +31,20 @@ const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
-const APP_URL = (Deno.env.get("APP_URL") ?? "https://app.monzerallan.com").replace(/\/$/, "");
+/**
+ * Origin of the page the "Open My Program" button opens.
+ *
+ * Defaults to the MARKETING origin, not app.monzerallan.com. Two verified
+ * reasons: /my-program now exists in the website router (it was added in 6D.3
+ * precisely because it did not), and app.monzerallan.com was found to be
+ * serving the marketing site rather than the app build — so the old default
+ * was wrong twice over and every patient who clicked the button landed
+ * somewhere wrong.
+ *
+ * Override with the APP_URL secret if the app ever gets its own host that
+ * really does serve the app build.
+ */
+const APP_URL = (Deno.env.get("APP_URL") ?? "https://monzerallan.com").replace(/\/$/, "");
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 /** Per doctor. A doctor jabbing the button repeatedly must not send a burst of mail. */

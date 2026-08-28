@@ -113,6 +113,8 @@ const PACKAGES: Record<string, PackageDefinition> = {
 interface RequestBody {
   fullName: string;
   email: string;
+  /** Required. The browser's `required` attribute is a courtesy; the check below is the control. */
+  phone: string;
   packageId: string;
   /** Honeypot — real visitors never fill this in. */
   companyWebsite?: string;
@@ -149,6 +151,9 @@ serve(async (req) => {
   // Lower-cased here so the address stored on the lead/payment row matches
   // what GoTrue will hold, and what the webhook will look up later.
   const email = (body.email ?? "").trim().toLowerCase().slice(0, 320);
+  // Capped the same way fullName and email are. Stored as given: normalising
+  // an international number server-side risks mangling a valid one.
+  const phone = (body.phone ?? "").trim().slice(0, 32);
   const packageId = body.packageId;
 
   if (!SITE_URL) {
@@ -164,6 +169,20 @@ serve(async (req) => {
       status: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
+  }
+
+  // The doctor needs to be able to reach the buyer, and the form can be
+  // bypassed — this is the control, the required attribute is not. Digit count
+  // rather than a format pattern: international numbering is too varied to
+  // match safely, and refusing a real number is worse than taking an odd one.
+  if ((phone.match(/\d/g) ?? []).length < 7) {
+    return new Response(
+      JSON.stringify({ error: "A phone number is required so we can reach you about your program." }),
+      {
+        status: 400,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      },
+    );
   }
 
   const def = PACKAGES[packageId];
@@ -184,6 +203,7 @@ serve(async (req) => {
     .insert({
       full_name: fullName,
       email,
+      phone,
       package_id: packageId,
       package_type: def.packageType,
       consultation_count: def.consultationCount,

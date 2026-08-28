@@ -221,7 +221,10 @@ serve(async (req) => {
   }
 
   const [{ data: profile }, { data: subscription }] = await Promise.all([
-    supabaseAdmin.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+    // phone joins full_name here so the doctor's notification can carry a
+    // number he can actually dial — it used to be hardcoded null, which is
+    // why every one of those emails read "Phone: Not provided".
+    supabaseAdmin.from("profiles").select("full_name, phone").eq("id", user.id).maybeSingle(),
     supabaseAdmin
       .from("subscriptions")
       .select("package_id, consultation_credit_limit, consultation_credits_used")
@@ -315,7 +318,10 @@ serve(async (req) => {
     const adminMail = consultationConfirmedAdminEmail({
       clientName,
       clientEmail,
-      clientPhone: null,
+      // Null only when we genuinely never captured one — a patient who bought
+      // before Phase L. The template renders "Not provided" for that, which is
+      // the truth; a placeholder would be worse than a blank.
+      clientPhone: (profile?.phone as string | null) ?? null,
       packageName,
       doctorLocalTime,
       doctorTimeZone,

@@ -311,10 +311,15 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
   // the same one-time credits twice for the same payment.
   const { data: existingPayment } = await supabaseAdmin
     .from("payments")
-    .select("status")
+    .select("status, phone")
     .eq("id", paymentId)
     .maybeSingle();
   if (existingPayment?.status === "succeeded") return;
+
+  // The number the buyer gave at checkout. Null only for a payment made
+  // before Phase L added the field — in which case the email says "Not
+  // provided", which is true, rather than a placeholder the doctor might dial.
+  const buyerPhone = (existingPayment?.phone as string | null) ?? null;
 
   const email = normalizeEmail(session.customer_details?.email ?? session.customer_email);
   if (!email) {
@@ -362,6 +367,22 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
     })
     .eq("id", paymentId);
 
+  // Carry the number onto the profile so it outlives the purchase — the
+  // consultation email (create-consultation) reads it from there, long after
+  // this payments row has stopped being the thing anyone looks at. Only fills
+  // a blank: a patient who has since corrected their number in their profile
+  // must not have it overwritten by an older checkout.
+  if (buyerPhone) {
+    const { data: profileRow } = await supabaseAdmin
+      .from("profiles")
+      .select("phone")
+      .eq("id", userId)
+      .maybeSingle();
+    if (!profileRow?.phone) {
+      await supabaseAdmin.from("profiles").update({ phone: buyerPhone }).eq("id", userId);
+    }
+  }
+
   // Audit-trail ledger row for this grant (see
   // supabase/PHASE_I_CONSULTATION_PACKAGES_PAYMENTS_MIGRATION.sql) —
   // subscriptions.consultation_credit_limit above is the real spendable
@@ -390,7 +411,7 @@ async function activateConsultationPackage(session: Stripe.Checkout.Session) {
       siteUrl,
       fullName: fullName || email,
       email,
-      phone: null,
+      phone: buyerPhone,
       preferredContactMethod: "either",
       packageName: info.name,
       priceLabel: info.priceLabel,

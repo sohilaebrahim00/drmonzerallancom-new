@@ -11,6 +11,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DoctorRoute } from "@/components/auth/DoctorRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
+import { AppErrorBoundary } from "@/components/common/AppErrorBoundary";
 import { AppExperience } from "@/app-native/AppExperience";
 import { getAppMode } from "@/hooks/use-native-platform";
 import { isClientDemoBuild } from "@/dev/demoMode";
@@ -37,6 +38,7 @@ const AccountIntakePage = lazy(() => import("@/pages/AccountIntakePage"));
 // Phase 6A rather than renamed, so git keeps its history.
 const DoctorAvailabilityPage = lazy(() => import("@/pages/AdminAvailabilityPage"));
 const AdminSubscribersPage = lazy(() => import("@/pages/AdminSubscribersPage"));
+const MyProgramPage = lazy(() => import("@/pages/MyProgramPage"));
 const MembershipSuccessPage = lazy(() => import("@/pages/MembershipSuccessPage"));
 const MembershipCancelledPage = lazy(() => import("@/pages/MembershipCancelledPage"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
@@ -47,6 +49,16 @@ const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 function BlogArticleRedirect() {
   const { slug } = useParams<{ slug: string }>();
   return <Navigate to={`/blog/${slug ?? ""}`} replace />;
+}
+
+/**
+ * Feeds the current path to the boundary as its reset key, so navigating away
+ * from a broken screen clears the error panel instead of stranding the
+ * customer on it. Must sit inside BrowserRouter to read the location.
+ */
+function RoutedErrorBoundary({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  return <AppErrorBoundary resetKey={pathname}>{children}</AppErrorBoundary>;
 }
 
 function ScrollRestoration() {
@@ -214,6 +226,19 @@ function WebApp() {
                     </ProtectedRoute>
                   }
                 />
+                {/* The destination of the "Open My Program" button in the
+                    program-activated email. It previously pointed at a route
+                    that existed only in the app shell, on a host that serves
+                    the marketing site — so every patient who clicked it landed
+                    somewhere wrong. */}
+                <Route
+                  path="/my-program"
+                  element={
+                    <ProtectedRoute>
+                      <MyProgramPage />
+                    </ProtectedRoute>
+                  }
+                />
                 {/* Optional pre-consultation intake. Accepts ?q=<n> so the
                     account card and the email can resume at a specific
                     question rather than sending the patient back to one. */}
@@ -273,7 +298,15 @@ export default function App() {
   return (
     <BrowserRouter>
       <MotionConfig reducedMotion="user">
-        <AuthProvider>{appMode === "MARKETING_WEB" ? <WebApp /> : <AppExperience />}</AuthProvider>
+        <AuthProvider>
+          {/* Inside AuthProvider and around BOTH shells, so a render crash in
+              the app build is caught too. Without this, React 19 unmounts the
+              whole tree on any render exception and the customer sees a blank
+              white page — which is exactly what happened on 28 Aug. */}
+          <RoutedErrorBoundary>
+            {appMode === "MARKETING_WEB" ? <WebApp /> : <AppExperience />}
+          </RoutedErrorBoundary>
+        </AuthProvider>
       </MotionConfig>
     </BrowserRouter>
   );

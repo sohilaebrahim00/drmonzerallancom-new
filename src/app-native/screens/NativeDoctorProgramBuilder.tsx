@@ -16,8 +16,10 @@ import { cn } from "@/lib/utils";
 import {
   activateProgram,
   copyProgramDay,
+  getProgramById,
   getProgramDay,
   saveProgramItem,
+  uploadProgramPdf,
   type MealType,
   type ProgramDay,
 } from "@/services/programService";
@@ -39,6 +41,9 @@ export default function NativeDoctorProgramBuilder() {
   const [activating, setActivating] = useState(false);
   const [activated, setActivated] = useState(false);
   const [patientNotified, setPatientNotified] = useState(false);
+  const [pdfUploading, setPdfUploading] = useState(false);
+  const [pdfMessage, setPdfMessage] = useState<string | null>(null);
+  const [pdfAttached, setPdfAttached] = useState(false);
 
   function loadDay() {
     if (!programId) return;
@@ -75,6 +80,34 @@ export default function NativeDoctorProgramBuilder() {
     await copyProgramDay(programId, dayNumber - 1, dayNumber);
     setSaving(false);
     loadDay();
+  }
+
+  /**
+   * Attach a PDF written outside the builder (Word, Canva) to this program.
+   *
+   * An ADDITION to the structured builder, not a replacement — the builder
+   * renders on a phone without downloading, can be edited, and completion can
+   * be tracked against it. This exists so existing customers get something
+   * this week rather than after every meal is re-typed.
+   */
+  async function handlePdf(file: File | null) {
+    if (!file || !programId) return;
+    setPdfUploading(true);
+    setPdfMessage(null);
+    const active = await getProgramById(programId);
+    if (!active) {
+      setPdfUploading(false);
+      setPdfMessage("Could not load this program.");
+      return;
+    }
+    const res = await uploadProgramPdf(active, file);
+    setPdfUploading(false);
+    if (res.ok) {
+      setPdfAttached(true);
+      setPdfMessage("PDF attached. The patient can download it from their program page.");
+    } else {
+      setPdfMessage(res.error);
+    }
   }
 
   async function handleActivate() {
@@ -206,6 +239,38 @@ export default function NativeDoctorProgramBuilder() {
             Add Item
           </Button>
         </div>
+      </div>
+
+      {/* Optional PDF. The structured builder above remains the primary
+          surface — this is for a program already written in Word or Canva. */}
+      <div className="mt-6 rounded-2xl border border-border/70 bg-card p-4 shadow-sm">
+        <p className="text-sm font-semibold text-navy">Attach a PDF (optional)</p>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          If you wrote this program in Word or Canva, attach it here and the patient can download
+          it. PDF only, up to 10 MB. The day-by-day plan above still works on its own.
+        </p>
+        <input
+          type="file"
+          accept="application/pdf"
+          disabled={pdfUploading}
+          onChange={(e) => handlePdf(e.target.files?.[0] ?? null)}
+          className="mt-3 block w-full text-xs text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-xs file:font-semibold file:text-navy"
+        />
+        {pdfUploading && (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <CircleNotch className="h-3.5 w-3.5 animate-spin" /> Uploading…
+          </p>
+        )}
+        {pdfMessage && (
+          <p
+            className={cn(
+              "mt-2 text-xs",
+              pdfAttached ? "font-semibold text-turquoise" : "text-destructive",
+            )}
+          >
+            {pdfMessage}
+          </p>
+        )}
       </div>
 
       <Button

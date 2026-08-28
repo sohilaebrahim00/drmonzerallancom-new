@@ -11,7 +11,21 @@ import {
 
 export interface Subscription {
   id: string;
-  package_id: "basic" | "premium" | "vip-elite";
+  /**
+   * Any slug subscriptions.package_id may hold. Its check constraint permits
+   * nine: the three legacy monthly tiers (basic, premium, vip-elite) AND the
+   * six one-time program tiers (diet_*, treatment_*), which is what every
+   * real row now carries.
+   *
+   * Declared `string`, not a union of the nine. A union would have to be kept
+   * in step with the database constraint by hand, and the last hand-kept copy
+   * of this list — the type that said only the three legacy tiers — was a lie
+   * that outlived the tiers themselves. `string` is honest about what the
+   * column can hold, and the two consumers (getProgramPackageBySlug and the
+   * membership packages lookup) already take a string and return undefined
+   * for anything they do not recognise.
+   */
+  package_id: string;
   status: "active" | "past_due" | "cancelled" | "expired";
   current_period_start: string;
   current_period_end: string | null;
