@@ -25,7 +25,27 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://monzerallan.com/" />
     <meta property="og:site_name" content="Monzer Allan" />
-    <meta property="og:image" content="https://monzerallan.com/monzer-portrait.jpg" />
+    <meta property="og:locale" content="en_US" />
+    <!-- Purpose-built 1200x630 share card. These tags are STATIC on purpose:
+         WhatsApp, Facebook and Slack do not execute JavaScript, so the copies
+         written by src/components/seo/Seo.tsx in a useEffect are invisible to
+         them. Whatever is here is what a shared link shows.
+
+         The previous image was monzer-portrait.jpg — 960x1280, i.e. PORTRAIT,
+         under a summary_large_image card that expects roughly 1.91:1. That is
+         why a pasted link showed no card. og-image.jpg is 1200x630.
+
+         .jpg deliberately, not .webp: several crawlers, WhatsApp included,
+         still do not render WebP share cards. This is the one place the JPEG
+         is the primary rather than the fallback. -->
+    <meta property="og:image" content="https://monzerallan.com/images/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Dr. Monzer Allan — nutrition, health and wellness guidance"
+    />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -34,7 +54,11 @@
       name="twitter:description"
       content="Monzer Allan's website offers premium health, nutrition, and wellness education."
     />
-    <meta name="twitter:image" content="https://monzerallan.com/monzer-portrait.jpg" />
+    <meta name="twitter:image" content="https://monzerallan.com/images/og-image.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="Dr. Monzer Allan — nutrition, health and wellness guidance"
+    />
 
     <!-- Favicon — generated from the official transparent logo
          (public/ma-logo.png) via scripts/build-website-favicons.cjs.

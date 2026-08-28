@@ -1,7 +1,7 @@
 import { CalendarCheck, ClipboardCheck, Lock, Sparkles, UserPlus, Video } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
-import { SectionHeading } from "@/components/common/SectionHeading";
+import { Photo } from "@/components/common/Photo";
 
 const STEPS = [
   {
@@ -42,15 +42,54 @@ export function HowProgramsWork() {
   return (
     <section
       id="how-it-works"
-      className="relative py-20 sm:py-28"
+      className="relative isolate overflow-hidden bg-navy py-20 text-white sm:py-28"
       aria-labelledby="how-it-works-heading"
     >
-      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
-        <SectionHeading
-          eyebrow="Programs"
-          title="How It Works"
-          description="From choosing a program to your first consultation — a simple, transparent, one-time process."
+      {/* Decorative background: capsules on one side dissolving into seeds,
+          herbs and olive oil on the other. alt="" and aria-hidden because the
+          heading beside it already carries the meaning.
+
+          MIRRORED IN RTL. The photograph runs medication-to-food left to
+          right; in Arabic the eye travels right to left, so unmirrored it
+          states the reverse of what it means. The overlay gradient is
+          mirrored with it so the dark end stays over the medication end.
+
+          NOTE: nothing sets dir="rtl" yet — Phase 8 has not landed — so the
+          rtl: rules below are inert today and correct the moment it does. */}
+      <div className="absolute inset-0 -z-10" aria-hidden="true">
+        <Photo
+          base="/images/not-medication-1920"
+          width={1920}
+          height={1280}
+          alt=""
+          decorative
+          mobileWebp={{ src: "/images/not-medication-mobile.webp", media: "(max-width: 700px)" }}
+          className="block h-full w-full"
+          imgClassName="h-full w-full object-cover rtl:-scale-x-100"
+          sizes="100vw"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-navy/70 rtl:bg-gradient-to-l" />
+      </div>
+
+      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
+        {/* SectionHeading is built for light sections (navy title, muted
+            description). Rather than add a variant to a component used in a
+            dozen places, this band states its own heading in light type. */}
+        <div className="text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-turquoise">
+            Programs
+          </p>
+          <h2
+            id="how-it-works-heading"
+            className="mx-auto mt-3 max-w-2xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-4xl"
+          >
+            How It Works
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/75">
+            From choosing a program to your first consultation — a simple, transparent, one-time
+            process.
+          </p>
+        </div>
 
         {/* Vertical journey on mobile, connected horizontal journey on desktop */}
         <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-0">
@@ -63,21 +102,21 @@ export function HowProgramsWork() {
             >
               {index < STEPS.length - 1 && (
                 <span
-                  className="absolute left-6 top-14 h-[calc(100%+1.5rem)] w-px bg-border lg:left-1/2 lg:top-6 lg:h-px lg:w-full lg:-translate-x-0 lg:translate-x-1/2"
+                  className="absolute left-6 top-14 h-[calc(100%+1.5rem)] w-px bg-white/25 lg:left-1/2 lg:top-6 lg:h-px lg:w-full lg:-translate-x-0 lg:translate-x-1/2"
                   aria-hidden="true"
                 />
               )}
-              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-white shadow-md">
+              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-turquoise text-sm font-bold text-navy shadow-md">
                 {index + 1}
               </span>
               <div className="lg:px-2">
                 <div className="flex items-center gap-2 lg:flex-col lg:gap-2">
                   <step.icon className="h-5 w-5 text-primary lg:h-6 lg:w-6" />
-                  <h3 className="font-display text-sm font-bold text-navy sm:text-base">
+                  <h3 className="font-display text-sm font-bold text-white sm:text-base">
                     {step.title}
                   </h3>
                 </div>
-                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                <p className="mt-1.5 text-xs leading-relaxed text-white/70 sm:text-sm">
                   {step.description}
                 </p>
               </div>

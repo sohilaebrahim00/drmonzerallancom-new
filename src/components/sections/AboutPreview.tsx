@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
+import { Photo } from "@/components/common/Photo";
 import { bio, credentials } from "@/data/about";
 
 export function AboutPreview() {
@@ -63,6 +64,26 @@ export function AboutPreview() {
             </Reveal>
           </div>
         </div>
+
+        {/* Given its own full-width row rather than being tucked beside text:
+            this one frame carries the whole positioning — a pharmacist, with
+            fresh food on his counter. The portrait above is untouched; this
+            is an addition, not a replacement for it. */}
+        <Reveal direction="up" delay={0.1} className="mt-16">
+          <figure className="overflow-hidden rounded-[1.75rem] ring-1 ring-secondary shadow-[0_30px_70px_-30px_rgba(23,35,59,0.35)]">
+            <Photo
+              base="/images/pharmacy-counter"
+              width={1600}
+              height={1066}
+              alt="A plate of fresh vegetables on a pharmacy counter, with medicine shelves behind it."
+              imgClassName="w-full"
+              sizes="(min-width: 1280px) 1200px, 100vw"
+            />
+          </figure>
+          <figcaption className="mt-3 text-center text-xs text-muted-foreground">
+            Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
+          </figcaption>
+        </Reveal>
       </div>
     </section>
   );
