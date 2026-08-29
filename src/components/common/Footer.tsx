@@ -5,24 +5,26 @@ import { SocialLinks } from "@/components/common/SocialLinks";
 import { business, tel } from "@/data/business";
 import { whatsappLink } from "@/config/contact";
 import { services } from "@/data/services";
+import { useTranslate, type SimpleTranslationKey } from "@/i18n";
 
-const NAV_LINKS = [
-  { label: "About", href: "/about" },
-  { label: "Packages", href: "/packages" },
-  { label: "Shop", href: "/products" },
-  { label: "Blog", href: "/blog" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
+const NAV_LINKS: { labelKey: SimpleTranslationKey; href: string }[] = [
+  { labelKey: "nav.about", href: "/about" },
+  { labelKey: "nav.packages", href: "/packages" },
+  { labelKey: "nav.shop", href: "/products" },
+  { labelKey: "nav.blog", href: "/blog" },
+  { labelKey: "nav.gallery", href: "/gallery" },
+  { labelKey: "nav.faq", href: "/faq" },
+  { labelKey: "nav.contact", href: "/contact" },
 ];
 
-const LEGAL_LINKS = [
-  { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Medical Disclaimer", href: "/medical-disclaimer" },
+const LEGAL_LINKS: { labelKey: SimpleTranslationKey; href: string }[] = [
+  { labelKey: "footer.privacy", href: "/privacy-policy" },
+  { labelKey: "footer.terms", href: "/terms" },
+  { labelKey: "footer.medicalDisclaimer", href: "/medical-disclaimer" },
 ];
 
 export function Footer() {
+  const t = useTranslate();
   const year = new Date().getFullYear();
   const waHref = whatsappLink(
     "Hello, I'm visiting Dr. Monzer Allan's website and would like assistance.",
@@ -34,10 +36,10 @@ export function Footer() {
       <div className="mx-auto w-full max-w-7xl px-6 py-14 sm:px-10">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link to="/" className="flex items-center gap-2" aria-label="Monzer Allan home">
+            <Link to="/" className="flex items-center gap-2" aria-label={t("header.homeAriaLabel")}>
               <img
                 src="/ma-logo.png"
-                alt="Monzer Allan logo"
+                alt={t("header.logoAlt")}
                 width={65}
                 height={56}
                 loading="lazy"
@@ -57,16 +59,16 @@ export function Footer() {
 
           <div>
             <h3 className="font-display text-sm font-bold uppercase tracking-wide text-navy">
-              Navigation
+              {t("footer.navigation")}
             </h3>
             <ul className="mt-4 space-y-2.5">
               {NAV_LINKS.map((link) => (
-                <li key={link.label}>
+                <li key={t(link.labelKey)}>
                   <Link
                     to={link.href}
                     className="text-sm text-muted-foreground transition-colors hover:text-turquoise"
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -75,7 +77,7 @@ export function Footer() {
 
           <div>
             <h3 className="font-display text-sm font-bold uppercase tracking-wide text-navy">
-              Popular Services
+              {t("footer.popularServices")}
             </h3>
             <ul className="mt-4 space-y-2.5">
               {services.slice(0, 6).map((service) => (
@@ -93,7 +95,7 @@ export function Footer() {
 
           <div>
             <h3 className="font-display text-sm font-bold uppercase tracking-wide text-navy">
-              Get in Touch
+              {t("footer.getInTouch")}
             </h3>
             {hasContactRow ? (
               <ul className="mt-4 space-y-3">
@@ -141,9 +143,9 @@ export function Footer() {
               </ul>
             ) : (
               <p className="mt-4 text-sm text-muted-foreground">
-                Reach out via the{" "}
+                {t("footer.reachOut")}{" "}
                 <Link to="/contact" className="font-semibold text-primary hover:text-turquoise">
-                  Contact page
+                  {t("footer.contactPage")}
                 </Link>
                 .
               </p>
@@ -162,7 +164,7 @@ export function Footer() {
                 to={link.href}
                 className="text-xs font-medium text-muted-foreground transition-colors hover:text-turquoise"
               >
-                {link.label}
+                {t(link.labelKey)}
               </Link>
             ))}
           </div>

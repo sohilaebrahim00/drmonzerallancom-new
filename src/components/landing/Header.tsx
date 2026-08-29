@@ -4,27 +4,30 @@ import { Menu, UserPlus } from "lucide-react";
 
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { LanguageSwitch } from "@/components/common/LanguageSwitch";
+import { useTranslate, type SimpleTranslationKey } from "@/i18n";
 import { BookingButton } from "@/components/booking/BookingButton";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
-  label: string;
+  /** Dictionary key, not display text — resolved per render by the active locale. */
+  labelKey: SimpleTranslationKey;
   href: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "About", href: "/about" },
-  { label: "Packages", href: "/packages" },
-  { label: "Shop", href: "/products" },
-  { label: "Blog", href: "/blog" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
+  { labelKey: "nav.about", href: "/about" },
+  { labelKey: "nav.packages", href: "/packages" },
+  { labelKey: "nav.shop", href: "/products" },
+  { labelKey: "nav.blog", href: "/blog" },
+  { labelKey: "nav.gallery", href: "/gallery" },
+  { labelKey: "nav.faq", href: "/faq" },
+  { labelKey: "nav.contact", href: "/contact" },
 ];
 
 export function Header() {
+  const t = useTranslate();
   const location = useLocation();
   const { user, loading } = useAuth();
   const [scrolled, setScrolled] = useState(false);
@@ -47,10 +50,10 @@ export function Header() {
       )}
     >
       <div className="animate-fade-in mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-5 sm:px-10 sm:py-6">
-        <Link to="/" className="flex items-center gap-2" aria-label="Monzer Allan home">
+        <Link to="/" className="flex items-center gap-2" aria-label={t("header.homeAriaLabel")}>
           <img
             src="/ma-logo.png"
-            alt="Monzer Allan logo"
+            alt={t("header.logoAlt")}
             width={163}
             height={140}
             className="h-12 w-auto sm:h-14"
@@ -60,7 +63,10 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+        <nav
+          className="hidden items-center gap-0.5 lg:flex"
+          aria-label={t("header.primaryNavLabel")}
+        >
           {NAV_ITEMS.map((item) => {
             const isActive = location.pathname.startsWith(item.href);
 
@@ -72,7 +78,7 @@ export function Header() {
                     isActive ? "text-primary" : "text-navy/70 hover:text-navy",
                   )}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                   {isActive && (
                     <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-turquoise" />
                   )}
@@ -92,13 +98,13 @@ export function Header() {
                   to="/login"
                   className="text-sm font-semibold text-navy/70 transition-colors hover:text-navy"
                 >
-                  Sign In
+                  {t("header.signIn")}
                 </Link>
                 <Link
                   to="/packages"
                   className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
                 >
-                  <UserPlus className="h-4 w-4" /> Create Account
+                  <UserPlus className="h-4 w-4" /> {t("header.createAccount")}
                 </Link>
               </>
             ))}
@@ -115,15 +121,17 @@ export function Header() {
             <SheetTrigger asChild>
               <button
                 type="button"
-                aria-label="Open menu"
+                aria-label={t("header.openMenu")}
                 className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-border bg-card/60 text-navy backdrop-blur-sm transition-colors hover:border-turquoise hover:text-turquoise"
               >
                 <Menu className="h-5 w-5" />
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="flex w-[85vw] max-w-sm flex-col gap-6">
-              <SheetTitle className="font-display text-lg text-navy">Menu</SheetTitle>
-              <nav className="flex flex-col gap-1" aria-label="Mobile">
+              <SheetTitle className="font-display text-lg text-navy">
+                {t("header.menuTitle")}
+              </SheetTitle>
+              <nav className="flex flex-col gap-1" aria-label={t("header.mobileNavLabel")}>
                 {NAV_ITEMS.map((item) => (
                   <Link
                     key={item.href}
@@ -131,7 +139,7 @@ export function Header() {
                     onClick={() => setDrawerOpen(false)}
                     className="rounded-lg px-3 py-3 text-base font-semibold text-navy transition-colors hover:bg-secondary"
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 ))}
               </nav>
@@ -153,14 +161,14 @@ export function Header() {
                         onClick={() => setDrawerOpen(false)}
                         className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-primary px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
                       >
-                        <UserPlus className="h-4 w-4" /> Create Account
+                        <UserPlus className="h-4 w-4" /> {t("header.createAccount")}
                       </Link>
                       <Link
                         to="/login"
                         onClick={() => setDrawerOpen(false)}
                         className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-navy/80 transition-colors hover:border-turquoise hover:text-turquoise"
                       >
-                        Sign In
+                        {t("header.signIn")}
                       </Link>
                     </>
                   ))}

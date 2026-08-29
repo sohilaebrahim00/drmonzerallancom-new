@@ -56,4 +56,39 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "common.language": "اللغة",
   "consultations.title": "الاستشارات",
   "faq.searchPlaceholder": "ابحث في الأسئلة",
+
+  // --- global navigation ----------------------------------------------
+  "nav.about": "من نحن",
+  "nav.packages": "البرامج",
+  "nav.shop": "المتجر",
+  "nav.blog": "المقالات",
+  "nav.gallery": "معرض الصور",
+  "nav.faq": "الأسئلة الشائعة",
+  "nav.contact": "تواصل معنا",
+
+  // --- header -----------------------------------------------------------
+  "header.homeAriaLabel": "منذر علان — الصفحة الرئيسية",
+  "header.logoAlt": "شعار منذر علان",
+  "header.openMenu": "فتح القائمة",
+  "header.menuTitle": "القائمة",
+  "header.primaryNavLabel": "التنقل الرئيسي",
+  "header.mobileNavLabel": "تنقل الهاتف",
+  "header.signIn": "تسجيل الدخول",
+  "header.createAccount": "إنشاء حساب",
+  "header.myAccount": "حسابي",
+
+  // --- footer -----------------------------------------------------------
+  "footer.navigation": "التنقل",
+  "footer.popularServices": "الخدمات الأكثر طلباً",
+  "footer.getInTouch": "تواصل معنا",
+  "footer.reachOut": "تواصل معنا عبر",
+  "footer.contactPage": "صفحة التواصل",
+  "footer.privacy": "سياسة الخصوصية",
+  "footer.terms": "شروط الخدمة",
+  "footer.medicalDisclaimer": "إخلاء المسؤولية الطبية",
+
+  // --- shared controls --------------------------------------------------
+  "cta.bookSession": "احجز جلسة",
+  "cta.viewPrograms": "تصفّح البرامج",
+  "cta.backToTop": "العودة إلى الأعلى",
 };

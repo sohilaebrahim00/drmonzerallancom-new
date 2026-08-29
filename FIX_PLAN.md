@@ -783,3 +783,52 @@ where the Arabic lives, not what it says.
 **GATE:** the four commands, plus `/ar/packages` and `/packages` both rendering in the right
 language on a cold load with no stored preference, reciprocal `hreflang` present on both, and the
 switch preserving the current route in both directions.
+
+---
+
+# DEPLOY ORDER — the phone requirement (READ BEFORE DEPLOYING EITHER SIDE)
+
+**This constraint is invisible from either side on its own, and getting it wrong stops every
+purchase on the live site. It corrects an earlier instruction in this project that had the order
+the other way round.**
+
+## The two halves
+
+- **Frontend.** The purchase form in `src/components/sections/ProgramPackages.tsx` collects a
+  phone number and sends it as `phone` in the checkout request. Validated client-side by zod
+  (min 7 digits).
+- **Edge Function.** `supabase/functions/create-consultation-checkout-session/index.ts` **rejects
+  any request whose phone has fewer than 7 digits with a 400** — "A phone number is required so we
+  can reach you about your program."
+
+## Why the order matters
+
+The function's rejection is unconditional. It does not care whether the caller is old or new. So:
+
+**Deploying the function BEFORE the frontend takes checkout down completely.** The live frontend at
+that moment does not send `phone` at all, every request fails the digit check, every visitor sees
+"Could not start checkout", and nothing in the UI says why. Verified: the live site's form has no
+phone field, and the function rejects at `index.ts` on the digit count.
+
+The reverse is safe. A frontend that sends `phone` to a function that does not yet read it is
+harmless — the extra field is ignored.
+
+## The order
+
+1. **Push and deploy the frontend first.**
+2. **Confirm on the live site** that the purchase form actually shows a phone field. Do not infer
+   it from the build; open `https://monzerallan.com/packages`, open the purchase dialog, and look.
+3. **Only then deploy the Edge Functions**, by name:
+   `create-consultation-checkout-session`, `create-consultation`, `notify-program-activated`.
+   `stripe-webhook` is independent of the phone work and can go at any time.
+
+**Never run `supabase functions deploy` with no arguments** — it would also push the untracked,
+unreviewed `stripe-preflight` function live.
+
+## Related
+
+`startProgramPackageCheckout` carries a TRANSITIONAL exemption that lets a response with no
+`amountCents` through, because a function deployed before that change does not report one. Once
+step 3 above is done and confirmed, **delete that exemption** — see the comment in
+`src/services/checkoutService.ts`. Left in place it is a permanent silent bypass of the live price
+check.

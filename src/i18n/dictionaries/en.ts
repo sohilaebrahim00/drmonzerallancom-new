@@ -45,7 +45,57 @@ export const en = {
   "common.language": "Language",
   "consultations.title": "Consultations",
   "faq.searchPlaceholder": "Search questions",
+
+  // --- global navigation ----------------------------------------------
+  "nav.about": "About",
+  "nav.packages": "Packages",
+  "nav.shop": "Shop",
+  "nav.blog": "Blog",
+  "nav.gallery": "Gallery",
+  "nav.faq": "FAQ",
+  "nav.contact": "Contact",
+
+  // --- header -----------------------------------------------------------
+  "header.homeAriaLabel": "Monzer Allan home",
+  "header.logoAlt": "Monzer Allan logo",
+  "header.openMenu": "Open menu",
+  "header.menuTitle": "Menu",
+  "header.primaryNavLabel": "Primary",
+  "header.mobileNavLabel": "Mobile",
+  "header.signIn": "Sign In",
+  "header.createAccount": "Create Account",
+  "header.myAccount": "My Account",
+
+  // --- footer -----------------------------------------------------------
+  "footer.navigation": "Navigation",
+  "footer.popularServices": "Popular Services",
+  "footer.getInTouch": "Get in Touch",
+  "footer.reachOut": "Reach out via the",
+  "footer.contactPage": "Contact page",
+  "footer.privacy": "Privacy Policy",
+  "footer.terms": "Terms of Service",
+  "footer.medicalDisclaimer": "Medical Disclaimer",
+
+  // --- shared controls --------------------------------------------------
+  "cta.bookSession": "Book a Session",
+  "cta.viewPrograms": "View Programs",
+  "cta.backToTop": "Back to top",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */
 export type TranslationKey = keyof typeof en;
+
+/**
+ * Only the keys whose entry is a plain string.
+ *
+ * Needed because `t()` requires a `count` for plural keys, and that requirement
+ * is decided per key. Hand it a VARIABLE of the full union — a nav item's
+ * `labelKey`, say — and the conditional type has to assume the value might be
+ * a plural key, so it demands `count` for something that will never need one.
+ *
+ * Data structures that carry a key should use this type, which says at the
+ * type level "this slot never holds a plural key".
+ */
+export type SimpleTranslationKey = {
+  [K in TranslationKey]: (typeof en)[K] extends string ? K : never;
+}[TranslationKey];
