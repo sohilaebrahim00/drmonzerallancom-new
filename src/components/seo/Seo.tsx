@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { business } from "@/data/business";
+import { useLocale } from "@/i18n";
 
 /**
  * The sitewide share card. 1200x630 — the shape unfurlers expect.
@@ -70,6 +71,31 @@ function setCanonical(url: string) {
   el.setAttribute("href", url);
 }
 
+/**
+ * hreflang alternates.
+ *
+ * READ THIS BEFORE ASSUMING ARABIC IS INDEXED. Both alternates point at the
+ * SAME URL, because there is only one URL — the language is a client-side
+ * preference, not part of the address. Google therefore sees one page and
+ * indexes whichever language it was served, which in practice is English.
+ *
+ * ARABIC SEARCH VISIBILITY DOES NOT EXIST UNTIL PHASE 13 SHIPS /ar/* URLS.
+ * These tags are correct, self-referential, and worth nothing on their own;
+ * they are here so the markup is right the day distinct URLs land, and so
+ * nobody adds them twice. See PHASE 13 in FIX_PLAN.md.
+ */
+function setAlternates(url: string) {
+  for (const el of document.querySelectorAll('link[rel="alternate"][data-i18n]')) el.remove();
+  for (const hreflang of ["en", "ar", "x-default"]) {
+    const el = document.createElement("link");
+    el.setAttribute("rel", "alternate");
+    el.setAttribute("hreflang", hreflang);
+    el.setAttribute("href", url);
+    el.setAttribute("data-i18n", "");
+    document.head.appendChild(el);
+  }
+}
+
 export function Seo({
   title,
   description,
@@ -79,6 +105,7 @@ export function Seo({
   jsonLd,
   noindex,
 }: SeoProps) {
+  const { locale } = useLocale();
   const jsonLdKey = jsonLd ? JSON.stringify(jsonLd) : "";
 
   useEffect(() => {
@@ -113,13 +140,16 @@ export function Seo({
     setMetaByProperty("og:image:height", String(card.height));
     setMetaByProperty("og:image:alt", card.alt);
     setMetaByProperty("og:site_name", business.doctorName);
-    setMetaByProperty("og:locale", "en_US");
+    // Follows the active language rather than being hardcoded: a share card
+    // scraped while the site is in Arabic should say so.
+    setMetaByProperty("og:locale", locale === "ar" ? "ar_AE" : "en_US");
     setMetaByName("twitter:card", "summary_large_image");
     setMetaByName("twitter:title", fullTitle);
     setMetaByName("twitter:description", description);
     setMetaByName("twitter:image", resolvedImage);
     setMetaByName("twitter:image:alt", card.alt);
     setCanonical(url);
+    setAlternates(url);
 
     const scripts: HTMLScriptElement[] = [];
     if (jsonLdKey) {
@@ -137,7 +167,7 @@ export function Seo({
     return () => {
       scripts.forEach((s) => s.remove());
     };
-  }, [title, description, path, image, type, jsonLdKey, noindex]);
+  }, [title, description, path, image, type, jsonLdKey, noindex, locale]);
 
   return null;
 }
