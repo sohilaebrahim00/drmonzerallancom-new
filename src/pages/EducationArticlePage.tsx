@@ -18,8 +18,10 @@ import { getArticleBySlug, estimateReadingTime, getRelatedArticles } from "@/dat
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { business } from "@/data/business";
+import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
 
 export default function EducationArticlePage() {
+  const t = useTranslate();
   const { slug } = useParams<{ slug: string }>();
   const article = slug ? getArticleBySlug(slug) : undefined;
 
@@ -120,7 +122,7 @@ export default function EducationArticlePage() {
 
       <div className="mt-6">
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-          {article.category}
+          {t(ARTICLE_CATEGORY_LABELS[article.category])}
         </span>
         <h1 className="mt-4 font-display text-3xl font-extrabold leading-tight tracking-tight text-navy sm:text-4xl">
           {article.title}

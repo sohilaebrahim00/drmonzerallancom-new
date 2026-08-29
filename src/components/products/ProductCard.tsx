@@ -7,8 +7,10 @@ import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { SoldOutBadge } from "@/components/products/SoldOutBadge";
 import { Photo } from "@/components/common/Photo";
+import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
 
 export function ProductCard({ product }: { product: Product }) {
+  const t = useTranslate();
   const isSoldOut = product.availability === "sold-out";
   const pageUrl = `${business.domain}/products/${product.slug}`;
   const availabilityHref = whatsappLink(buildAvailabilityInquiryMessage(product.name));
@@ -32,7 +34,7 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         <span className="absolute start-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
-          {product.category}
+          {t(PRODUCT_CATEGORY_LABELS[product.category])}
         </span>
         {isSoldOut && <SoldOutBadge className="absolute end-4 top-4" />}
       </div>

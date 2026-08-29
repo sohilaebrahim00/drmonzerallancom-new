@@ -8,8 +8,10 @@ import { BookingButton } from "@/components/booking/BookingButton";
 import { Input } from "@/components/ui/input";
 import { getPublishedProducts, productCategories, type ProductCategory } from "@/data/products";
 import { cn } from "@/lib/utils";
+import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
 
 export default function ProductsIndexPage() {
+  const t = useTranslate();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "All">("All");
   const allProducts = getPublishedProducts();
@@ -74,7 +76,7 @@ export default function ProductsIndexPage() {
                 : "border-border text-navy/70 hover:border-turquoise hover:text-turquoise",
             )}
           >
-            {category}
+            {category === "All" ? t("faqPage.categoryAll") : t(PRODUCT_CATEGORY_LABELS[category])}
           </button>
         ))}
       </div>

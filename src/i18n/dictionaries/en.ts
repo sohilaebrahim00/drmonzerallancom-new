@@ -164,6 +164,32 @@ export const en = {
 
   "common.minRead": "min read",
   "common.read": "Read",
+
+  // --- taxonomy labels --------------------------------------------------
+  // DISPLAY ONLY. The identity stays the English string in the data files —
+  // see the second rule at the top of ar.ts. Filtering, gradient lookup,
+  // related-content scoring and search all compare the identity, never these.
+  "faqCategory.programs": "Programs",
+  "faqCategory.consultations": "Consultations",
+  "faqCategory.consultationCredits": "Consultation Credits",
+  "faqCategory.onlineMeetings": "Online Meetings",
+  "faqCategory.accountBilling": "Account & Billing",
+  "faqCategory.products": "Products",
+  "faqCategory.nutritionServices": "Nutrition Services",
+  "faqCategory.generalQuestions": "General Questions",
+
+  "articleCategory.weightManagement": "Weight Management",
+  "articleCategory.clinicalNutrition": "Clinical Nutrition",
+  "articleCategory.sportsNutrition": "Sports Nutrition",
+  "articleCategory.womensHealth": "Women's Health",
+  "articleCategory.familyNutrition": "Family Nutrition",
+  "articleCategory.digestiveHealth": "Digestive Health",
+  "articleCategory.heartHealth": "Heart Health",
+
+  "productCategory.supplements": "Supplements",
+  "productCategory.vitaminsMinerals": "Vitamins & Minerals",
+  "productCategory.herbalWellness": "Herbal Wellness",
+  "productCategory.healthMonitoringDevices": "Health Monitoring Devices",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

@@ -4,6 +4,7 @@ import { ArrowUpRight, Clock } from "lucide-react";
 import type { Article } from "@/data/articles";
 import { estimateReadingTime } from "@/data/articles";
 import { Photo } from "@/components/common/Photo";
+import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
 
 const categoryGradients: Record<string, string> = {
   "Weight Management": "from-primary/85 to-turquoise/70",
@@ -18,6 +19,7 @@ const categoryGradients: Record<string, string> = {
 /* `featured` is gone: its only job was choosing between h-48 and h-36, and
    both states are now a 16:9 box so every card in a grid is the same shape. */
 export function ArticleCard({ article }: { article: Article }) {
+  const t = useTranslate();
   const Icon = article.icon;
   const readingTime = estimateReadingTime(article);
   const gradient = categoryGradients[article.category] ?? "from-primary/80 to-turquoise/70";
@@ -54,7 +56,9 @@ export function ArticleCard({ article }: { article: Article }) {
           </div>
         )}
         <span className="absolute start-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
-          {article.category}
+          {/* Display only — categoryGradients above is keyed on the untranslated
+              identity, and so is every filter and related-article comparison. */}
+          {t(ARTICLE_CATEGORY_LABELS[article.category])}
         </span>
       </div>
       <div className="flex flex-1 flex-col gap-2.5 p-6">
@@ -64,10 +68,10 @@ export function ArticleCard({ article }: { article: Article }) {
         <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{article.excerpt}</p>
         <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" /> {readingTime} min read
+            <Clock className="h-3.5 w-3.5" /> {readingTime} {t("common.minRead")}
           </span>
           <span className="inline-flex items-center gap-1 font-semibold text-primary group-hover:text-turquoise">
-            Read
+            {t("common.read")}
             <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
           </span>
         </div>

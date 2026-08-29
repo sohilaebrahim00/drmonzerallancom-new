@@ -32,6 +32,33 @@ import type { TranslationKey } from "./en";
  * So the test is not "which word sounds more professional". It is "does this
  * word claim anything the English does not". If it does, use the plainer one
  * and flag it.
+ *
+ * ── THE SECOND RULE ────────────────────────────────────────────────────
+ * A TRANSLATED STRING IS NEVER AN IDENTITY.
+ *
+ * Never compare it, never use it as an object key, never put it in a URL or a
+ * query parameter, never store it in the database. It changes with the locale,
+ * so every one of those breaks the moment someone switches language.
+ *
+ * And it is worse than it looks here, because of this module's own bidi
+ * isolation: interpolate() wraps every substituted value in invisible
+ * U+2068/U+2069 characters. A string that LOOKS identical to its English self,
+ * character for character on screen, will still fail `===`. Anyone debugging
+ * that from the rendered output alone will not see why.
+ *
+ * The pattern instead — the same one the nav uses — is that the data carries a
+ * stable, untranslated IDENTIFIER, and the component renders `t(key)` from it:
+ *
+ *     const CATEGORY_LABELS: Record<ArticleCategory, SimpleTranslationKey> = {
+ *       "Weight Management": "articleCategory.weightManagement", ...
+ *     };
+ *     filter:  article.category === activeCategory   // identity, English
+ *     render:  t(CATEGORY_LABELS[article.category])  // display, translated
+ *
+ * Categories are the live example: the same string was doing gradient lookup,
+ * filtering, related-content scoring and search matching. Translating it in
+ * place would have returned zero results, dropped every card to the default
+ * gradient, and silently broken search.
  */
 export const ar: Partial<Record<TranslationKey, Entry>> = {
   // Six forms, because Arabic has six. `two` is a real dual noun
@@ -187,4 +214,28 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
 
   "common.minRead": "دقائق قراءة",
   "common.read": "اقرأ",
+
+  // --- taxonomy labels --------------------------------------------------
+  // DISPLAY ONLY — see the second rule at the top of this file.
+  "faqCategory.programs": "البرامج",
+  "faqCategory.consultations": "الاستشارات",
+  "faqCategory.consultationCredits": "أرصدة الاستشارات",
+  "faqCategory.onlineMeetings": "الجلسات عبر الإنترنت",
+  "faqCategory.accountBilling": "الحساب والفواتير",
+  "faqCategory.products": "المنتجات",
+  "faqCategory.nutritionServices": "خدمات التغذية",
+  "faqCategory.generalQuestions": "أسئلة عامة",
+
+  "articleCategory.weightManagement": "إدارة الوزن",
+  "articleCategory.clinicalNutrition": "التغذية السريرية",
+  "articleCategory.sportsNutrition": "تغذية الرياضيين",
+  "articleCategory.womensHealth": "صحة المرأة",
+  "articleCategory.familyNutrition": "تغذية الأسرة",
+  "articleCategory.digestiveHealth": "صحة الجهاز الهضمي",
+  "articleCategory.heartHealth": "صحة القلب",
+
+  "productCategory.supplements": "المكمّلات الغذائية",
+  "productCategory.vitaminsMinerals": "الفيتامينات والمعادن",
+  "productCategory.herbalWellness": "الأعشاب الطبيعية",
+  "productCategory.healthMonitoringDevices": "أجهزة المتابعة الصحية",
 };

@@ -20,7 +20,7 @@ import {
 import { faqCategories, faqs, type FaqCategory } from "@/data/faqs";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useTranslate } from "@/i18n";
+import { useTranslate, FAQ_CATEGORY_LABELS } from "@/i18n";
 
 export default function FaqPage() {
   const t = useTranslate();
@@ -117,10 +117,13 @@ export default function FaqPage() {
                         : "border-border text-navy/70 hover:border-turquoise hover:text-turquoise",
                     )}
                   >
-                    {/* Only "All" is furniture. The other chips are the FAQ
-                        taxonomy from src/data/faqs.ts — the doctor's own
-                        content, which PHASE_8B_PROMPT leaves to him. */}
-                    {category === "All" ? t("faqPage.categoryAll") : category}
+                    {/* DISPLAY ONLY. `category` above stays the English
+                        identity — it is what activeCategory compares against
+                        and what faq.category is matched on. Translating the
+                        value itself would return zero results. */}
+                    {category === "All"
+                      ? t("faqPage.categoryAll")
+                      : t(FAQ_CATEGORY_LABELS[category])}
                   </button>
                 ))}
               </div>

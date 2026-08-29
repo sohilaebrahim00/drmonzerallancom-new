@@ -20,8 +20,10 @@ import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { breadcrumbSchema, productSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
+import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
 
 export default function ProductDetailPage() {
+  const t = useTranslate();
   const { slug } = useParams<{ slug: string }>();
   const product = slug ? getProductBySlug(slug) : undefined;
   const images = product ? [product.mainImage, ...product.gallery].filter(Boolean) : [];
@@ -142,7 +144,7 @@ export default function ProductDetailPage() {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-                {product.category}
+                {t(PRODUCT_CATEGORY_LABELS[product.category])}
               </span>
               {isSoldOut && <SoldOutBadge />}
             </div>

@@ -8,8 +8,10 @@ import { Photo } from "@/components/common/Photo";
 import { Input } from "@/components/ui/input";
 import { articles, categories, estimateReadingTime, type ArticleCategory } from "@/data/articles";
 import { cn } from "@/lib/utils";
+import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
 
 export default function EducationIndexPage() {
+  const t = useTranslate();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ArticleCategory | "All">("All");
@@ -85,12 +87,12 @@ export default function EducationIndexPage() {
                 <featured.icon className="h-20 w-20 text-white/90 transition-transform duration-500 group-hover:scale-110" />
               )}
               <span className="absolute start-6 top-6 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
-                Featured Article
+                {t("blogPage.featured")}
               </span>
             </div>
             <div className="flex flex-col justify-center gap-3 p-8 sm:p-10">
               <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-                {featured.category}
+                {t(ARTICLE_CATEGORY_LABELS[featured.category])}
               </span>
               <h2 className="font-display text-2xl font-extrabold leading-tight text-navy sm:text-3xl">
                 {featured.title}
@@ -98,10 +100,11 @@ export default function EducationIndexPage() {
               <p className="text-sm leading-relaxed text-muted-foreground">{featured.excerpt}</p>
               <div className="mt-2 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5" /> {estimateReadingTime(featured)} min read
+                  <Clock className="h-3.5 w-3.5" /> {estimateReadingTime(featured)}{" "}
+                  {t("common.minRead")}
                 </span>
                 <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:text-turquoise">
-                  Read the Article
+                  {t("blogPage.readArticle")}
                   <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
                 </span>
               </div>
@@ -140,7 +143,7 @@ export default function EducationIndexPage() {
                 : "border-border text-navy/70 hover:border-turquoise hover:text-turquoise",
             )}
           >
-            {category}
+            {category === "All" ? t("faqPage.categoryAll") : t(ARTICLE_CATEGORY_LABELS[category])}
           </button>
         ))}
       </div>
