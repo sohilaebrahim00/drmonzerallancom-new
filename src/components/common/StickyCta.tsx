@@ -35,7 +35,7 @@ export function StickyCta() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 16 }}
           transition={{ duration: 0.3 }}
-          className="fixed bottom-6 left-5 z-30 flex items-center gap-2 rounded-full border border-border/70 bg-card/95 py-2 pl-4 pr-2 shadow-[0_20px_40px_-20px_rgba(23,35,59,0.4)] backdrop-blur-xl sm:bottom-8 sm:left-8"
+          className="fixed bottom-6 start-5 z-30 flex items-center gap-2 rounded-full border border-border/70 bg-card/95 py-2 ps-4 pe-2 shadow-[0_20px_40px_-20px_rgba(23,35,59,0.4)] backdrop-blur-xl sm:bottom-8 sm:start-8"
         >
           <Link
             to="/packages"

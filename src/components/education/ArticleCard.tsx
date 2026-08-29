@@ -53,7 +53,7 @@ export function ArticleCard({ article }: { article: Article }) {
             <Icon className="h-12 w-12 text-white/90 transition-transform duration-500 group-hover:scale-110" />
           </div>
         )}
-        <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
+        <span className="absolute start-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
           {article.category}
         </span>
       </div>
@@ -68,7 +68,7 @@ export function ArticleCard({ article }: { article: Article }) {
           </span>
           <span className="inline-flex items-center gap-1 font-semibold text-primary group-hover:text-turquoise">
             Read
-            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
           </span>
         </div>
       </div>

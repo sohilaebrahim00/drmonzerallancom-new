@@ -94,7 +94,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                     )}
                   >
                     {pkg.popular && (
-                      <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-turquoise px-3 py-1 text-xs font-bold uppercase tracking-wide text-navy shadow-md">
+                      <span className="absolute -top-3 start-6 inline-flex items-center gap-1 rounded-full bg-turquoise px-3 py-1 text-xs font-bold uppercase tracking-wide text-navy shadow-md">
                         <Sparkles className="h-3 w-3" />
                         Most Popular
                       </span>
@@ -118,6 +118,29 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                     </p>
 
                     <div className="mt-5 flex items-baseline gap-2">
+                      {/* <s> means "no longer accurate", which is exactly what
+                          a superseded price is. NOT <del> (that means removed
+                          from a document) and not a CSS line-through on a
+                          plain span, which most screen readers announce as an
+                          ordinary number — i.e. as the amount being charged.
+
+                          <s> alone is announced inconsistently across screen
+                          readers, so the visually-hidden labels carry the
+                          meaning rather than relying on the element. */}
+                      {pkg.previousPrice !== undefined && (
+                        <span className="flex items-baseline gap-2">
+                          <span className="sr-only">Previous price:</span>
+                          <s
+                            className={cn(
+                              "font-display text-xl font-semibold",
+                              pkg.popular ? "text-white/50" : "text-muted-foreground",
+                            )}
+                          >
+                            ${pkg.previousPrice}
+                          </s>
+                          <span className="sr-only">Current price:</span>
+                        </span>
+                      )}
                       <span
                         className={cn(
                           "font-display text-3xl font-extrabold",

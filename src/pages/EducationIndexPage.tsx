@@ -84,7 +84,7 @@ export default function EducationIndexPage() {
               ) : (
                 <featured.icon className="h-20 w-20 text-white/90 transition-transform duration-500 group-hover:scale-110" />
               )}
-              <span className="absolute left-6 top-6 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
+              <span className="absolute start-6 top-6 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
                 Featured Article
               </span>
             </div>
@@ -102,7 +102,7 @@ export default function EducationIndexPage() {
                 </span>
                 <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:text-turquoise">
                   Read the Article
-                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
                 </span>
               </div>
             </div>
@@ -112,13 +112,13 @@ export default function EducationIndexPage() {
 
       <div className="mx-auto mt-10 max-w-xl">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search articles…"
             aria-label="Search articles"
-            className="pl-10"
+            className="ps-10"
           />
         </div>
       </div>

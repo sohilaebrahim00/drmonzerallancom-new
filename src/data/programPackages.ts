@@ -40,6 +40,15 @@ export interface ProgramPackage {
   price: number;
   priceLabel: string;
   /**
+   * A previous price, shown struck through beside the current one.
+   *
+   * PRESENTATIONAL ONLY. It is never sent to the server, never reaches
+   * Stripe, and has no counterpart in the Edge Function's PACKAGES map — the
+   * amount charged is `amountCents` there and nothing else. Setting or
+   * changing this cannot alter what a customer pays.
+   */
+  previousPrice?: number;
+  /**
    * Also the number of consultation credits granted on purchase.
    * Raised by one across every tier on 22 Aug 2026 (Phase 2.5.5). The
    * matching server-side values live in create-consultation-checkout-session
@@ -125,6 +134,7 @@ export const programPackages: ProgramPackage[] = [
     tagline: "Begin your treatment plan with a first consultation",
     price: 119,
     priceLabel: "$119",
+    previousPrice: 200,
     consultationCount: 2,
     features: ["Treatment plan", "2 doctor consultations"],
     cta: "Start Your Program",

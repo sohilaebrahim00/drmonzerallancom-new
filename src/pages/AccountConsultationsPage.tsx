@@ -324,7 +324,7 @@ export default function AccountConsultationsPage() {
                     onClick={() => setStep("date")}
                     className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy"
                   >
-                    <ChevronLeft className="h-3.5 w-3.5" /> Back
+                    <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Back
                   </button>
                   <h2 className="mt-3 font-display text-base font-bold text-navy">
                     Step 2 — Select a Time · {selectedDateKey && formatDateLabel(selectedDateKey)}
@@ -358,7 +358,7 @@ export default function AccountConsultationsPage() {
                     onClick={() => setStep("time")}
                     className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy"
                   >
-                    <ChevronLeft className="h-3.5 w-3.5" /> Back
+                    <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Back
                   </button>
                   <h2 className="mt-3 font-display text-base font-bold text-navy">
                     Step 3 — Review Appointment
@@ -366,7 +366,7 @@ export default function AccountConsultationsPage() {
                   <dl className="mt-5 space-y-3 rounded-xl border border-border/60 bg-secondary/30 p-4 text-sm">
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">Your Time</dt>
-                      <dd className="text-right font-semibold text-navy">
+                      <dd className="text-end font-semibold text-navy">
                         {selectedDateKey && formatDateLabel(selectedDateKey)},{" "}
                         {formatTime(selectedSlot.startUtc, tz)} ({tz})
                       </dd>
@@ -376,23 +376,23 @@ export default function AccountConsultationsPage() {
                         Doctor&apos;s Time —{" "}
                         {selectedSlot.timezone.split("/").pop()?.replace("_", " ")}
                       </dt>
-                      <dd className="text-right font-semibold text-navy">
+                      <dd className="text-end font-semibold text-navy">
                         {formatTime(selectedSlot.startUtc, selectedSlot.timezone)}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">Program</dt>
-                      <dd className="text-right font-semibold text-navy">{membershipLabel}</dd>
+                      <dd className="text-end font-semibold text-navy">{membershipLabel}</dd>
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">Credits After Booking</dt>
-                      <dd className="text-right font-semibold text-navy">
+                      <dd className="text-end font-semibold text-navy">
                         {creditsRemaining - 1} of {creditsLimit}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">Format</dt>
-                      <dd className="flex items-center gap-1.5 text-right font-semibold text-navy">
+                      <dd className="flex items-center gap-1.5 text-end font-semibold text-navy">
                         <Video className="h-3.5 w-3.5" /> Online via Google Meet
                       </dd>
                     </div>

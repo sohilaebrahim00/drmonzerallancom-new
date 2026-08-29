@@ -74,7 +74,7 @@ function MessageBubble({ message }: { message: DisplayMessage }) {
                 className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-primary/30 bg-secondary px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:border-turquoise hover:text-turquoise"
               >
                 {action.label}
-                <ArrowUpRight className="h-3 w-3" />
+                <ArrowUpRight className="h-3 w-3 rtl:-scale-x-100" />
               </Link>
             ))}
           </div>
@@ -205,7 +205,7 @@ export default function ChatBody({
                   key={action.label}
                   type="button"
                   onClick={() => handleSend(action.label)}
-                  className="flex cursor-pointer items-center gap-3 rounded-xl border border-border/60 p-2.5 text-left text-sm font-medium text-navy transition-colors hover:border-turquoise hover:bg-secondary"
+                  className="flex cursor-pointer items-center gap-3 rounded-xl border border-border/60 p-2.5 text-start text-sm font-medium text-navy transition-colors hover:border-turquoise hover:bg-secondary"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
                     <action.icon className="h-4 w-4" />

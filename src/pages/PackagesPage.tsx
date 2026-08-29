@@ -155,7 +155,7 @@ export default function PackagesPage() {
                     value={faq.question}
                     className="border-border/60"
                   >
-                    <AccordionTrigger className="py-5 text-left font-display text-base font-bold text-navy hover:no-underline">
+                    <AccordionTrigger className="py-5 text-start font-display text-base font-bold text-navy hover:no-underline">
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-sm leading-relaxed text-muted-foreground">

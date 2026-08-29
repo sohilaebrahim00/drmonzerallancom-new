@@ -56,7 +56,7 @@ export function YouTubeSection() {
                         type="button"
                         onClick={() => setActiveId(video.id)}
                         className={cn(
-                          "group flex flex-col gap-2 rounded-xl border p-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          "group flex flex-col gap-2 rounded-xl border p-2 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                           activeId === video.id
                             ? "border-primary bg-secondary/50"
                             : "border-border hover:border-turquoise/60",

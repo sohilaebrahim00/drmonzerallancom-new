@@ -103,7 +103,7 @@ export default function ProductDetailPage() {
                 <PackageSearch className="h-14 w-14 text-primary/40" />
               </div>
             )}
-            {isSoldOut && <SoldOutBadge className="absolute left-4 top-4" />}
+            {isSoldOut && <SoldOutBadge className="absolute start-4 top-4" />}
           </div>
           {images.length > 1 && (
             <div className="mt-3 flex gap-2">
@@ -225,7 +225,7 @@ export default function ProductDetailPage() {
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <div key={key} className="flex justify-between gap-4 text-sm">
                     <dt className="shrink-0 text-muted-foreground">{key}</dt>
-                    <dd className="text-right font-medium text-navy">{value}</dd>
+                    <dd className="text-end font-medium text-navy">{value}</dd>
                   </div>
                 ))}
               </dl>

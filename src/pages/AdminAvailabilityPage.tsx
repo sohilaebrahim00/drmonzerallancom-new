@@ -277,7 +277,7 @@ export default function AdminAvailabilityPage() {
                       >
                         {dayName}
                         {rows.length === 0 && (
-                          <span className="ml-2 font-normal">— no consultation hours</span>
+                          <span className="ms-2 font-normal">— no consultation hours</span>
                         )}
                       </h3>
                       {!isAdding && (
@@ -372,7 +372,7 @@ export default function AdminAvailabilityPage() {
                           type="button"
                           size="sm"
                           variant="ghost"
-                          className="ml-auto cursor-pointer text-destructive hover:text-destructive"
+                          className="ms-auto cursor-pointer text-destructive hover:text-destructive"
                           onClick={() => handleDeleteBlock(row)}
                           aria-label={`Remove ${dayName} ${row.start_time.slice(0, 5)} block`}
                         >

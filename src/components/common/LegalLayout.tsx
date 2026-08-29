@@ -15,7 +15,7 @@ export function LegalLayout({ title, updated, children }: LegalLayoutProps) {
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">Last updated: {updated}</p>
       </div>
-      <div className="prose-legal mt-10 space-y-6 text-sm leading-relaxed text-muted-foreground sm:text-base [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-navy [&_h2]:mt-8 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5">
+      <div className="prose-legal mt-10 space-y-6 text-sm leading-relaxed text-muted-foreground sm:text-base [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-navy [&_h2]:mt-8 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:ps-5 [&_ul]:space-y-1.5">
         {children}
       </div>
     </div>

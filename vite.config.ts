@@ -72,6 +72,13 @@ export default defineConfig(({ mode, command }) => {
             // static. Deliberately narrow: product photos etc. are handled
             // by the runtime cache below instead of bloating the install step.
             globPatterns: ["**/*.{js,css,html,ico,svg,png,woff2}"],
+            // The Arabic face is NOT app shell. Precaching it would put ~130 KB
+            // into every install, including the English-only ones that will
+            // never render an Arabic glyph — its @font-face is unicode-range
+            // limited, so those browsers do not even request it. It is served
+            // by the runtime cache below on first Arabic use instead, which
+            // makes it available offline from then on.
+            globIgnores: ["**/fonts/ibm-plex-sans-arabic-*.woff2"],
             navigateFallback: "/index.html",
             // Never precache or runtime-cache anything under /functions/ or
             // Supabase's own domain — auth, membership, consultation
@@ -88,6 +95,20 @@ export default defineConfig(({ mode, command }) => {
                 options: {
                   cacheName: "app-images",
                   expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                },
+              },
+              {
+                // Same-origin fonts. Needed because the Arabic face is
+                // deliberately excluded from the precache above — without this
+                // rule it would never be cached at all, and an Arabic reader
+                // offline would lose the typeface. CacheFirst: a hashed font
+                // file never changes under the same URL.
+                urlPattern: ({ request, sameOrigin }) =>
+                  sameOrigin && request.destination === "font",
+                handler: "CacheFirst",
+                options: {
+                  cacheName: "app-fonts",
+                  expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
                 },
               },
               {

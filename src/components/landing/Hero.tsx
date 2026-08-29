@@ -76,7 +76,7 @@ export function Hero() {
                   className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/70 px-6 py-3.5 text-sm font-semibold text-navy backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-turquoise/60"
                 >
                   View Packages
-                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
                 </Link>
               </div>
               <a

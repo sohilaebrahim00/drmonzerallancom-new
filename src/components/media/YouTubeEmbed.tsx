@@ -124,7 +124,7 @@ export function YouTubeEmbed({
           type="button"
           onClick={toggleMute}
           aria-label={muted ? "Unmute video" : "Mute video"}
-          className="absolute bottom-3 right-3 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-navy/70 text-white backdrop-blur-sm transition-colors hover:bg-navy"
+          className="absolute bottom-3 end-3 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-navy/70 text-white backdrop-blur-sm transition-colors hover:bg-navy"
         >
           {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </button>

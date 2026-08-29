@@ -74,7 +74,7 @@ export function BeforeAfter() {
             not a person.
 
             Not mirrored in RTL — these are overhead shots with no
-            left-to-right narrative, and the handle position belongs to the
+            start-to-right narrative, and the handle position belongs to the
             reader. (Contrast the not-medication band, which does mirror.) */}
         <SectionHeading
           eyebrow="What Changes"

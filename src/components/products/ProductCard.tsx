@@ -31,10 +31,10 @@ export function ProductCard({ product }: { product: Product }) {
             <PackageSearch className="h-10 w-10 text-primary/40" />
           </div>
         )}
-        <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
+        <span className="absolute start-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
           {product.category}
         </span>
-        {isSoldOut && <SoldOutBadge className="absolute right-4 top-4" />}
+        {isSoldOut && <SoldOutBadge className="absolute end-4 top-4" />}
       </div>
 
       <div className="flex flex-1 flex-col gap-2.5 p-6">
@@ -55,7 +55,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             View Details
-            <ArrowUpRight className="h-3.5 w-3.5" />
+            <ArrowUpRight className="h-3.5 w-3.5 rtl:-scale-x-100" />
           </Link>
           {isSoldOut ? (
             availabilityHref ? (

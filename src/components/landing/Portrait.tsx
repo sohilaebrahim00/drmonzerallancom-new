@@ -51,8 +51,8 @@ export function Portrait() {
       </div>
 
       {/* Floating soft accent dots */}
-      <div className="animate-float-slow pointer-events-none absolute -right-2 top-8 h-16 w-16 rounded-full bg-turquoise/15 blur-md" />
-      <div className="animate-float-slower pointer-events-none absolute -left-3 bottom-12 h-3 w-3 rounded-full bg-green/50" />
+      <div className="animate-float-slow pointer-events-none absolute -end-2 top-8 h-16 w-16 rounded-full bg-turquoise/15 blur-md" />
+      <div className="animate-float-slower pointer-events-none absolute -start-3 bottom-12 h-3 w-3 rounded-full bg-green/50" />
     </div>
   );
 }

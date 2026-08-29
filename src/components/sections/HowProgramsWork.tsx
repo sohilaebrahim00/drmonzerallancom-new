@@ -114,7 +114,7 @@ export function HowProgramsWork() {
               key={step.title}
               direction="up"
               delay={index * 0.06}
-              className="flex gap-4 text-left"
+              className="flex gap-4 text-start"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-turquoise text-sm font-bold text-navy shadow-md">
                 {index + 1}

@@ -49,13 +49,13 @@ export default function ProductsIndexPage() {
 
       <div className="mx-auto mt-10 max-w-xl">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search products…"
             aria-label="Search products"
-            className="pl-10"
+            className="ps-10"
           />
         </div>
       </div>

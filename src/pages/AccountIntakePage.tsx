@@ -143,7 +143,7 @@ export default function AccountIntakePage() {
           to="/account"
           className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy"
         >
-          <ChevronLeft className="h-3.5 w-3.5" /> Back to my account
+          <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Back to my account
         </Link>
         <h1 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
           Before Your Consultation
@@ -239,9 +239,9 @@ export default function AccountIntakePage() {
                   <button
                     type="button"
                     onClick={() => goTo(current - 1)}
-                    className="ml-auto inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy"
+                    className="ms-auto inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy"
                   >
-                    <ChevronLeft className="h-3.5 w-3.5" /> Previous question
+                    <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Previous question
                   </button>
                 )}
               </div>

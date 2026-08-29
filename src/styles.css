@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "./fonts-arabic.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,8 +38,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  /* IBM Plex Sans Arabic sits in BOTH stacks, after the Latin face.
+     Because its @font-face is unicode-range limited to the Arabic block, the
+     browser picks it only for Arabic codepoints and never downloads it for a
+     page with no Arabic on it. That means one stack works for both languages
+     and no locale-conditional font switching is needed. */
+  --font-sans: "Manrope", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
 
   /* App-experience-only tokens (PWA/native) — deliberately separate from
      --color-background/--color-card above, which the marketing website

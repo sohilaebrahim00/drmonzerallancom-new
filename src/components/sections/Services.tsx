@@ -43,7 +43,7 @@ export function Services() {
                 className="mt-8 inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-turquoise px-5 py-2.5 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
               >
                 Book this service
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
               </Link>
             </article>
           </div>
@@ -63,7 +63,7 @@ export function Services() {
                   <span>
                     <span className="flex items-center gap-1 text-sm font-semibold text-navy">
                       {service.title}
-                      <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
+                      <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100 rtl:-scale-x-100" />
                     </span>
                     <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
                       {service.highlights[0]}
