@@ -5,8 +5,10 @@ import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { ArticleCard } from "@/components/education/ArticleCard";
 import { articles } from "@/data/articles";
+import { useTranslate } from "@/i18n";
 
 export function EducationPreview() {
+  const t = useTranslate();
   const featured = articles.slice(0, 3);
 
   return (
@@ -17,9 +19,9 @@ export function EducationPreview() {
     >
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading
-          eyebrow="Blog"
-          title="Learn The Science Behind The Advice"
-          description="Free, evidence-based articles covering the topics that matter most to your health."
+          eyebrow={t("blog.eyebrow")}
+          title={t("blog.title")}
+          description={t("blog.description")}
         />
 
         <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

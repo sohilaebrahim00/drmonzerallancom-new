@@ -11,12 +11,16 @@ export function ProgramCta() {
       <div className="mx-auto w-full max-w-4xl px-6 text-center sm:px-10">
         <div className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14">
           <h2
+            dir="auto"
             id="program-cta-heading"
             className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
           >
             Ready to Start Your Personalized Nutrition Journey?
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
+          <p
+            dir="auto"
+            className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base"
+          >
             Choose a one-time Treatment program and get access to consultation credits and ongoing
             guidance from {"Dr. Monzer Allan"} — no recurring billing.
           </p>

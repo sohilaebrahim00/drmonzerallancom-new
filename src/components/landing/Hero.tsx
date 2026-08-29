@@ -17,6 +17,7 @@ export function Hero() {
           {/* Left: editorial content */}
           <div className="order-1 max-w-xl">
             <p
+              dir="auto"
               className="animate-fade-up text-xs font-semibold uppercase tracking-[0.28em] text-primary"
               style={{ animationDelay: "0.05s" }}
             >
@@ -25,6 +26,7 @@ export function Hero() {
             </p>
 
             <h1
+              dir="auto"
               className="animate-fade-up mt-5 max-w-[16ch] font-display text-[2.25rem] font-extrabold leading-[1.1] tracking-tight text-navy sm:text-5xl lg:text-[3.25rem]"
               style={{ animationDelay: "0.15s" }}
             >
@@ -32,6 +34,7 @@ export function Hero() {
             </h1>
 
             <p
+              dir="auto"
               className="animate-fade-up mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg"
               style={{ animationDelay: "0.25s" }}
             >

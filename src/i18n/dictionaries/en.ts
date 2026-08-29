@@ -80,6 +80,65 @@ export const en = {
   "cta.bookSession": "Book a Session",
   "cta.viewPrograms": "View Programs",
   "cta.backToTop": "Back to top",
+
+  // --- home sections: heading blocks ------------------------------------
+  "services.eyebrow": "Services",
+  "services.title": "Specialized Nutrition Care For Every Stage Of Life",
+  "services.description":
+    "Twelve focused programs, each tailored to your body, your goals, and your medical needs.",
+
+  "programs.eyebrow": "Programs",
+  "programs.title": "Choose Your Path Forward",
+  "programs.description":
+    "A treatment program with close medical follow-up — pick the level of consultation support you need, with no recurring billing.",
+
+  "howItWorks.eyebrow": "Programs",
+  "howItWorks.title": "How It Works",
+  "howItWorks.description":
+    "From choosing a program to your first consultation — a simple, transparent, one-time process.",
+
+  "products.eyebrow": "Products",
+  "products.title": "Featured Wellness Products",
+  "products.description":
+    "Carefully selected products designed to support a healthier daily routine.",
+
+  "blog.eyebrow": "Blog",
+  "blog.title": "Learn The Science Behind The Advice",
+  "blog.description":
+    "Free, evidence-based articles covering the topics that matter most to your health.",
+
+  "discovery.eyebrow": "Explore by Topic",
+  "discovery.title": "Find Guidance For What Matters Most to You",
+
+  "gallery.eyebrow": "Gallery",
+  "gallery.title": "A Look Inside the Practice",
+
+  "testimonials.eyebrow": "Client Reviews",
+  "testimonials.title": "What Clients Are Saying",
+
+  "videos.eyebrow": "Watch & Learn",
+  "videos.title": "Nutrition Insights on Video",
+  "videos.description": "Practical nutrition insights, explained clearly.",
+
+  "community.eyebrow": "Community",
+  "community.title": "Join the Community",
+
+  "contactSection.eyebrow": "Contact",
+  "contactSection.title": "Let's Start Your Nutrition Journey",
+  "contactSection.description":
+    "Reach out with questions, or book your first session directly — whichever is easiest for you.",
+
+  "beforeAfter.eyebrow": "What Changes",
+  "beforeAfter.title": "The same table, two different evenings",
+  "beforeAfter.description":
+    "Drag the slider to compare. This is about what is on the plate — not about anyone's body.",
+  "beforeAfter.storiesEyebrow": "Real Progress",
+  "beforeAfter.storiesTitle": "Transformation Stories",
+  "beforeAfter.storiesDescription":
+    "Illustrative snapshots of client progress. Drag the slider to compare before and after results.",
+
+  "faqSection.eyebrow": "FAQ",
+  "faqSection.title": "Frequently Asked Questions",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

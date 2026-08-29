@@ -35,16 +35,20 @@ export function AboutPreview() {
           </div>
 
           <div className="flex flex-col gap-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+            <p
+              dir="auto"
+              className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
+            >
               About Monzer
             </p>
             <h2
+              dir="auto"
               id="about-preview-heading"
               className="max-w-xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-navy sm:text-4xl"
             >
               Nutrition Guidance Rooted In Real Clinical Expertise
             </h2>
-            <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+            <p dir="auto" className="max-w-xl text-base leading-relaxed text-muted-foreground">
               {bio.paragraphs[0]}
             </p>
             <div className="flex flex-wrap gap-3">
@@ -114,7 +118,10 @@ export function AboutPreview() {
                     sizes="(min-width: 1024px) 560px, 100vw"
                   />
                 </div>
-                <figcaption className="mx-auto mt-3 max-w-[560px] text-center text-xs text-muted-foreground">
+                <figcaption
+                  dir="auto"
+                  className="mx-auto mt-3 max-w-[560px] text-center text-xs text-muted-foreground"
+                >
                   Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
                 </figcaption>
               </figure>
@@ -126,13 +133,19 @@ export function AboutPreview() {
               duration={0.5}
               className="flex flex-col gap-4 lg:order-1"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+              <p
+                dir="auto"
+                className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
+              >
                 The Approach
               </p>
-              <h3 className="max-w-xl font-display text-2xl font-bold leading-tight tracking-tight text-navy sm:text-3xl">
+              <h3
+                dir="auto"
+                className="max-w-xl font-display text-2xl font-bold leading-tight tracking-tight text-navy sm:text-3xl"
+              >
                 Built around your life, not a template
               </h3>
-              <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+              <p dir="auto" className="max-w-xl text-base leading-relaxed text-muted-foreground">
                 {bio.paragraphs[1]}
               </p>
             </Reveal>

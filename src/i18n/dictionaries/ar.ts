@@ -91,4 +91,60 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "cta.bookSession": "احجز جلسة",
   "cta.viewPrograms": "تصفّح البرامج",
   "cta.backToTop": "العودة إلى الأعلى",
+
+  // --- home sections: heading blocks ------------------------------------
+  "services.eyebrow": "الخدمات",
+  "services.title": "رعاية تغذوية متخصصة في كل مرحلة من مراحل العمر",
+  "services.description":
+    "اثنا عشر برنامجاً متخصصاً، كل منها مصمّم ليناسب جسمك وأهدافك وحالتك الطبية.",
+
+  "programs.eyebrow": "البرامج",
+  "programs.title": "اختر مسارك",
+  "programs.description":
+    "برنامج علاجي مع متابعة طبية عن قرب — اختر مستوى الدعم الاستشاري الذي تحتاجه، دون أي اشتراك متكرر.",
+
+  "howItWorks.eyebrow": "البرامج",
+  "howItWorks.title": "كيف تسير الأمور",
+  "howItWorks.description":
+    "من اختيار البرنامج إلى استشارتك الأولى — خطوات بسيطة وواضحة، وبدفعة واحدة.",
+
+  "products.eyebrow": "المنتجات",
+  "products.title": "منتجات صحية مختارة",
+  "products.description": "منتجات مختارة بعناية لدعم روتينك اليومي الصحي.",
+
+  "blog.eyebrow": "المقالات",
+  "blog.title": "تعرّف على العلم وراء النصيحة",
+  "blog.description": "مقالات مجانية قائمة على الأدلة، تتناول المواضيع الأكثر أهمية لصحتك.",
+
+  "discovery.eyebrow": "تصفّح حسب الموضوع",
+  "discovery.title": "اعثر على الإرشاد فيما يهمّك أكثر",
+
+  "gallery.eyebrow": "معرض الصور",
+  "gallery.title": "لمحة من داخل العيادة",
+
+  "testimonials.eyebrow": "آراء العملاء",
+  "testimonials.title": "ماذا يقول العملاء",
+
+  "videos.eyebrow": "شاهد وتعلّم",
+  "videos.title": "معلومات تغذوية بالفيديو",
+  "videos.description": "معلومات تغذوية عملية، مشروحة ببساطة.",
+
+  "community.eyebrow": "المجتمع",
+  "community.title": "انضم إلى المجتمع",
+
+  "contactSection.eyebrow": "تواصل معنا",
+  "contactSection.title": "لنبدأ رحلتك الغذائية",
+  "contactSection.description":
+    "تواصل معنا لأي استفسار، أو احجز جلستك الأولى مباشرة — أيهما أسهل بالنسبة لك.",
+
+  "beforeAfter.eyebrow": "ما الذي يتغيّر",
+  "beforeAfter.title": "الطاولة نفسها، في مساءين مختلفين",
+  "beforeAfter.description": "اسحب الشريط للمقارنة. الحديث هنا عمّا في الطبق — لا عن جسد أحد.",
+  "beforeAfter.storiesEyebrow": "تقدّم حقيقي",
+  "beforeAfter.storiesTitle": "قصص التحوّل",
+  "beforeAfter.storiesDescription":
+    "لمحات توضيحية عن تقدّم العملاء. اسحب الشريط للمقارنة بين ما قبل وما بعد.",
+
+  "faqSection.eyebrow": "الأسئلة الشائعة",
+  "faqSection.title": "الأسئلة الشائعة",
 };

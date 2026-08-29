@@ -8,6 +8,7 @@ import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { SECTION_PADDING, SECTION_WIDTHS } from "@/components/common/sectionWidths";
 import { faqs } from "@/data/faqs";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 const PREVIEW_QUESTIONS = [
   "What's included in a program?",
@@ -19,6 +20,7 @@ const PREVIEW_QUESTIONS = [
 ];
 
 export function FaqPreview() {
+  const t = useTranslate();
   const featured = PREVIEW_QUESTIONS.map((q) => faqs.find((faq) => faq.question === q)).filter(
     (faq): faq is (typeof faqs)[number] => Boolean(faq),
   );
@@ -40,8 +42,8 @@ export function FaqPreview() {
           <div>
             <div className={cn(PHOTO_FRAME, "bg-card p-6 sm:p-10")}>
               <SectionHeading
-                eyebrow="FAQ"
-                title="Frequently Asked Questions"
+                eyebrow={t("faqSection.eyebrow")}
+                title={t("faqSection.title")}
                 id="faq-preview-heading"
               />
               <FaqAccordion items={featured} className="mt-8" />

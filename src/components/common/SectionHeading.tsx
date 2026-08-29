@@ -35,11 +35,25 @@ export function SectionHeading({
         className,
       )}
     >
+      {/* dir="auto" goes on these LEAVES, not on the wrapper above. `dir` sets
+          direction for an element's children, so on the flex container it would
+          reorder the block from whatever its first strong character happens to
+          be — a layout bug in place of a punctuation one. The page-level dir
+          remains the authority for layout.
+
+          What it fixes: a Latin run inside an RTL page puts its trailing
+          neutral characters on the paragraph's side, so "Knowledge." rendered
+          as ".Knowledge". This is not only a transitional problem — the site
+          will always contain Latin inside Arabic (prices, "Google Meet",
+          email addresses, the doctor's name in Latin script). */}
       {eyebrow && (
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">{eyebrow}</p>
+        <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+          {eyebrow}
+        </p>
       )}
       <Title
         id={id}
+        dir="auto"
         className={cn(
           "max-w-2xl font-display font-extrabold leading-[1.15] tracking-tight text-navy",
           level === "h1" ? "text-3xl sm:text-4xl md:text-5xl" : "text-3xl sm:text-4xl",
@@ -50,6 +64,7 @@ export function SectionHeading({
       </Title>
       {description && (
         <p
+          dir="auto"
           className={cn(
             "max-w-2xl text-base leading-relaxed text-muted-foreground",
             align === "center" && "mx-auto",

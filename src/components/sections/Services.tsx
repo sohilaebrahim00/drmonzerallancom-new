@@ -3,17 +3,19 @@ import { ArrowUpRight } from "lucide-react";
 
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { services } from "@/data/services";
+import { useTranslate } from "@/i18n";
 
 export function Services() {
+  const t = useTranslate();
   const [featured, ...rest] = services;
 
   return (
     <section id="services" className="relative py-20 sm:py-28" aria-labelledby="services-heading">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading
-          eyebrow="Services"
-          title="Specialized Nutrition Care For Every Stage Of Life"
-          description="Twelve focused programs, each tailored to your body, your goals, and your medical needs."
+          eyebrow={t("services.eyebrow")}
+          title={t("services.title")}
+          description={t("services.description")}
         />
 
         <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1fr]">

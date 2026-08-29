@@ -40,16 +40,20 @@ export function MemberExperiencePreview() {
       <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+            <p
+              dir="auto"
+              className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
+            >
               Member Experience
             </p>
             <h2
+              dir="auto"
               id="member-preview-heading"
               className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl"
             >
               Your Program, All in One Place
             </h2>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+            <p dir="auto" className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
               Once you start a program, your dashboard keeps your consultation credits and upcoming
               sessions organized in a single, simple view.
             </p>
@@ -64,10 +68,15 @@ export function MemberExperiencePreview() {
           <div>
             <div className="rounded-3xl border border-border/70 bg-card p-3 shadow-[0_30px_70px_-30px_rgba(23,35,59,0.3)] sm:p-5">
               <div className="rounded-2xl bg-gradient-to-br from-navy to-primary p-5 text-white">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
+                <p
+                  dir="auto"
+                  className="text-xs font-semibold uppercase tracking-wide text-white/70"
+                >
                   Illustrative Preview — Not Real Account Data
                 </p>
-                <p className="mt-2 font-display text-lg font-bold">Treatment Plus Program</p>
+                <p dir="auto" className="mt-2 font-display text-lg font-bold">
+                  Treatment Plus Program
+                </p>
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <span className="text-white/80">Consultation Credits</span>
                   <span className="font-semibold">2 of 3 Remaining</span>
@@ -90,8 +99,13 @@ export function MemberExperiencePreview() {
                       <card.icon className="h-4.5 w-4.5" />
                     </span>
                     <div>
-                      <p className="text-sm font-semibold text-navy">{card.title}</p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                      <p dir="auto" className="text-sm font-semibold text-navy">
+                        {card.title}
+                      </p>
+                      <p
+                        dir="auto"
+                        className="mt-0.5 text-xs leading-relaxed text-muted-foreground"
+                      >
                         {card.detail}
                       </p>
                     </div>

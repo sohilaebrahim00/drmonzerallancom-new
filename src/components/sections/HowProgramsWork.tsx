@@ -2,6 +2,7 @@ import { CalendarCheck, ClipboardCheck, Lock, Sparkles, UserPlus, Video } from "
 
 import { Reveal } from "@/components/common/Reveal";
 import { Photo } from "@/components/common/Photo";
+import { useTranslate } from "@/i18n";
 
 const STEPS = [
   {
@@ -39,6 +40,7 @@ const STEPS = [
 ];
 
 export function HowProgramsWork() {
+  const t = useTranslate();
   return (
     <section
       id="how-it-works"
@@ -82,18 +84,27 @@ export function HowProgramsWork() {
             description). Rather than add a variant to a component used in a
             dozen places, this band states its own heading in light type. */}
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-turquoise-light">
-            Programs
+          {/* dir="auto" on the text-bearing leaves only, never on the wrapper:
+              `dir` sets direction for an element's CHILDREN, so putting it on a
+              layout container reorders that layout from whatever its first
+              strong character happens to be. The page-level dir stays the
+              authority for layout; these just stop a Latin run's trailing
+              punctuation landing on the wrong side. */}
+          <p
+            dir="auto"
+            className="text-xs font-semibold uppercase tracking-[0.28em] text-turquoise-light"
+          >
+            {t("howItWorks.eyebrow")}
           </p>
           <h2
             id="how-it-works-heading"
+            dir="auto"
             className="mx-auto mt-3 max-w-2xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-4xl"
           >
-            How It Works
+            {t("howItWorks.title")}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/75">
-            From choosing a program to your first consultation — a simple, transparent, one-time
-            process.
+          <p dir="auto" className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/75">
+            {t("howItWorks.description")}
           </p>
         </div>
 

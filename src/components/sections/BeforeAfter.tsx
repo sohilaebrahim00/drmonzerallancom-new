@@ -7,6 +7,7 @@ import { Photo } from "@/components/common/Photo";
 import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { transformations } from "@/data/transformations";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 const beforeGradients: Record<string, string> = {
   processed: "from-navy/70 via-navy/50 to-navy/30",
@@ -52,6 +53,7 @@ function Panel({
 }
 
 export function BeforeAfter() {
+  const t = useTranslate();
   // The CLIENT STORIES below stay hidden until real, explicitly consented
   // before/after content exists (src/data/transformations.ts is deliberately
   // empty). That gate used to return null for the whole section; it now
@@ -77,9 +79,9 @@ export function BeforeAfter() {
             start-to-right narrative, and the handle position belongs to the
             reader. (Contrast the not-medication band, which does mirror.) */}
         <SectionHeading
-          eyebrow="What Changes"
-          title="The same table, two different evenings"
-          description="Drag the slider to compare. This is about what is on the plate — not about anyone's body."
+          eyebrow={t("beforeAfter.eyebrow")}
+          title={t("beforeAfter.title")}
+          description={t("beforeAfter.description")}
         />
 
         <div className="mt-12">
@@ -119,9 +121,9 @@ export function BeforeAfter() {
         {hasConsentedStories && (
           <div className="mt-20">
             <SectionHeading
-              eyebrow="Real Progress"
-              title="Transformation Stories"
-              description="Illustrative snapshots of client progress. Drag the slider to compare before and after results."
+              eyebrow={t("beforeAfter.storiesEyebrow")}
+              title={t("beforeAfter.storiesTitle")}
+              description={t("beforeAfter.storiesDescription")}
             />
           </div>
         )}

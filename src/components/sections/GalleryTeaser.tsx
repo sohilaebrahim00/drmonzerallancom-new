@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Images } from "lucide-react";
 
 import { SectionHeading } from "@/components/common/SectionHeading";
+import { useTranslate } from "@/i18n";
 
 export function GalleryTeaser() {
+  const t = useTranslate();
   return (
     <section
       id="gallery-preview"
@@ -11,7 +13,7 @@ export function GalleryTeaser() {
       aria-labelledby="gallery-preview-heading"
     >
       <div className="mx-auto w-full max-w-3xl px-6 text-center sm:px-10">
-        <SectionHeading eyebrow="Gallery" title="A Look Inside the Practice" />
+        <SectionHeading eyebrow={t("gallery.eyebrow")} title={t("gallery.title")} />
         <div className="mt-8">
           <Link
             to="/gallery"

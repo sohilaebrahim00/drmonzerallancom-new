@@ -6,8 +6,10 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { YouTubeEmbed } from "@/components/media/YouTubeEmbed";
 import { videos, youtubeChannelUrl } from "@/data/videos";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 export function YouTubeSection() {
+  const t = useTranslate();
   const [activeId, setActiveId] = useState(videos[0]?.id);
   const activeVideo = videos.find((v) => v.id === activeId) ?? videos[0];
 
@@ -15,9 +17,9 @@ export function YouTubeSection() {
     <section id="watch" className="relative py-20 sm:py-28" aria-labelledby="watch-heading">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading
-          eyebrow="Watch & Learn"
-          title="Nutrition Insights on Video"
-          description="Practical nutrition insights, explained clearly."
+          eyebrow={t("videos.eyebrow")}
+          title={t("videos.title")}
+          description={t("videos.description")}
         />
 
         <div className="mt-14">

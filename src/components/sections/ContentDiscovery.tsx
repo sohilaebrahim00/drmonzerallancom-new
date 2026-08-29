@@ -3,6 +3,7 @@ import { Apple, Baby, Bike, Droplets, HeartPulse, Soup, type LucideIcon } from "
 
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { categories, type ArticleCategory } from "@/data/articles";
+import { useTranslate } from "@/i18n";
 
 const TOPIC_ICONS: Partial<Record<ArticleCategory, LucideIcon>> = {
   "Weight Management": Bike,
@@ -15,13 +16,11 @@ const TOPIC_ICONS: Partial<Record<ArticleCategory, LucideIcon>> = {
 };
 
 export function ContentDiscovery() {
+  const t = useTranslate();
   return (
     <section className="relative py-20 sm:py-28" aria-labelledby="content-discovery-heading">
       <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
-        <SectionHeading
-          eyebrow="Explore by Topic"
-          title="Find Guidance For What Matters Most to You"
-        />
+        <SectionHeading eyebrow={t("discovery.eyebrow")} title={t("discovery.title")} />
 
         <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {categories.map((category, index) => {

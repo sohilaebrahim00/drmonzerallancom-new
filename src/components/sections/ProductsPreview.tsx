@@ -6,8 +6,10 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductsEmptyState } from "@/components/products/ProductsEmptyState";
 import { getFeaturedProducts } from "@/data/products";
+import { useTranslate } from "@/i18n";
 
 export function ProductsPreview() {
+  const t = useTranslate();
   const products = getFeaturedProducts();
 
   return (
@@ -18,9 +20,9 @@ export function ProductsPreview() {
     >
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading
-          eyebrow="Products"
-          title="Featured Wellness Products"
-          description="Carefully selected products designed to support a healthier daily routine."
+          eyebrow={t("products.eyebrow")}
+          title={t("products.title")}
+          description={t("products.description")}
         />
 
         <div className="mt-14">

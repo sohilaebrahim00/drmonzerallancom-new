@@ -35,6 +35,7 @@ import { startProgramPackageCheckout } from "@/services/checkoutService";
 import { openExternal } from "@/lib/externalLink";
 import { whatsappLink } from "@/config/contact";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 const purchaseSchema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name."),
@@ -58,6 +59,7 @@ const purchaseSchema = z.object({
 type PurchaseValues = z.infer<typeof purchaseSchema>;
 
 export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean }) {
+  const t = useTranslate();
   const [activePackage, setActivePackage] = useState<ProgramPackage | null>(null);
 
   return (
@@ -69,9 +71,9 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         {!hideHeading && (
           <SectionHeading
-            eyebrow="Programs"
-            title="Choose Your Path Forward"
-            description="A treatment program with close medical follow-up — pick the level of consultation support you need, with no recurring billing."
+            eyebrow={t("programs.eyebrow")}
+            title={t("programs.title")}
+            description={t("programs.description")}
           />
         )}
 

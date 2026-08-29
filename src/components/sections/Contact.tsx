@@ -34,6 +34,7 @@ import { business, tel } from "@/data/business";
 import { whatsappLink } from "@/config/contact";
 import { submitContact, type ContactSubmitResult } from "@/services/contactService";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your full name."),
@@ -62,6 +63,7 @@ const CONTACT_METHODS = [
 ] as const;
 
 export function Contact() {
+  const t = useTranslate();
   const [result, setResult] = useState<ContactSubmitResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -99,9 +101,9 @@ export function Contact() {
     <section id="contact" className="relative py-20 sm:py-28" aria-labelledby="contact-heading">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading
-          eyebrow="Contact"
-          title="Let's Start Your Nutrition Journey"
-          description="Reach out with questions, or book your first session directly — whichever is easiest for you."
+          eyebrow={t("contactSection.eyebrow")}
+          title={t("contactSection.title")}
+          description={t("contactSection.description")}
         />
 
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr]">

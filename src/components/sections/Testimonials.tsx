@@ -12,6 +12,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { testimonials } from "@/data/testimonials";
+import { useTranslate } from "@/i18n";
 
 function GoogleG({ className }: { className?: string }) {
   return (
@@ -37,6 +38,7 @@ function GoogleG({ className }: { className?: string }) {
 }
 
 export function Testimonials() {
+  const t = useTranslate();
   const [api, setApi] = useState<CarouselApi>();
   const [paused, setPaused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
@@ -69,7 +71,7 @@ export function Testimonials() {
       aria-labelledby="testimonials-heading"
     >
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
-        <SectionHeading eyebrow="Client Reviews" title="What Clients Are Saying" />
+        <SectionHeading eyebrow={t("testimonials.eyebrow")} title={t("testimonials.title")} />
 
         <div className="mt-14">
           <Carousel
