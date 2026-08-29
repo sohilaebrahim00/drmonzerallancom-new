@@ -4,6 +4,7 @@ import { ArrowUpRight, Clock, Search } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
 import { ArticleCard } from "@/components/education/ArticleCard";
+import { Photo } from "@/components/common/Photo";
 import { Input } from "@/components/ui/input";
 import { articles, categories, estimateReadingTime, type ArticleCategory } from "@/data/articles";
 import { cn } from "@/lib/utils";
@@ -63,8 +64,26 @@ export default function EducationIndexPage() {
             to={`/blog/${featured.slug}`}
             className="group grid grid-cols-1 overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-turquoise/50 hover:shadow-[0_30px_60px_-30px_rgba(23,35,59,0.35)] lg:grid-cols-[1.1fr_1fr]"
           >
-            <div className="relative flex min-h-[14rem] items-center justify-center overflow-hidden bg-gradient-to-br from-navy via-primary to-turquoise/80 p-10">
-              <featured.icon className="h-20 w-20 text-white/90 transition-transform duration-500 group-hover:scale-110" />
+            {/* The featured slot is a second card implementation, so it needed
+                the photograph too — otherwise the most prominent article on
+                the page is a gradient while five smaller cards below it are
+                photographs, which reads as something failing to load. It is
+                also this page's LCP element, hence eager. */}
+            <div className="relative flex min-h-[14rem] items-center justify-center overflow-hidden bg-gradient-to-br from-navy via-primary to-turquoise/80">
+              {featured.image ? (
+                <Photo
+                  base={`${featured.image.base}-card`}
+                  width={featured.image.card.width}
+                  height={featured.image.card.height}
+                  alt={featured.image.alt}
+                  priority
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(min-width: 1024px) 628px, 100vw"
+                />
+              ) : (
+                <featured.icon className="h-20 w-20 text-white/90 transition-transform duration-500 group-hover:scale-110" />
+              )}
               <span className="absolute left-6 top-6 rounded-full bg-white/90 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-navy">
                 Featured Article
               </span>

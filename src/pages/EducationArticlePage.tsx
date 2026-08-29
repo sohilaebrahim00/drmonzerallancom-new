@@ -2,6 +2,8 @@ import { Navigate, useParams } from "react-router-dom";
 import { Clock, Calendar } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
+import { Photo } from "@/components/common/Photo";
+import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { ArticleCard } from "@/components/education/ArticleCard";
 import { ShareButtons } from "@/components/education/ShareButtons";
 import {
@@ -14,6 +16,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { getArticleBySlug, estimateReadingTime, getRelatedArticles } from "@/data/articles";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
+import { cn } from "@/lib/utils";
 import { business } from "@/data/business";
 
 export default function EducationArticlePage() {
@@ -51,7 +54,34 @@ export default function EducationArticlePage() {
         path={`/blog/${article.slug}`}
         type="article"
         jsonLd={jsonLd}
+        /* The article's own hero becomes its share card; articles without one
+           fall through to the sitewide default inside Seo. The .jpg, not the
+           .webp — WhatsApp will not render a WebP card. */
+        image={
+          article.image
+            ? {
+                path: `${article.image.base}-hero.jpg`,
+                width: article.image.hero.width,
+                height: article.image.hero.height,
+                alt: article.image.alt,
+              }
+            : undefined
+        }
       />
+
+      {/* The hero is this page's LCP element, so it is preloaded as well as
+          eager. The preload names the .webp because that is what a modern
+          browser actually fetches from the <picture>; `imageSrcSet`+`type`
+          keep the two in agreement so nothing is downloaded twice. */}
+      {article.image && (
+        <link
+          rel="preload"
+          as="image"
+          href={`${article.image.base}-hero.webp`}
+          type="image/webp"
+          fetchPriority="high"
+        />
+      )}
 
       <Breadcrumb>
         <BreadcrumbList>
@@ -68,6 +98,25 @@ export default function EducationArticlePage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+
+      {/* Hero above the title, at content width (688px inside max-w-3xl) and
+          16:9. The LCP element for this page: eager + high priority, matching
+          the preload above. Native widths are 1400 or 960 depending on the
+          article, so 688px never upscales either. */}
+      {article.image && (
+        <div className={cn(PHOTO_FRAME, "mt-6 aspect-[16/9] w-full")}>
+          <Photo
+            base={`${article.image.base}-hero`}
+            width={article.image.hero.width}
+            height={article.image.hero.height}
+            alt={article.image.alt}
+            priority
+            className="block h-full w-full"
+            imgClassName="h-full w-full object-cover"
+            sizes="(min-width: 768px) 688px, 100vw"
+          />
+        </div>
+      )}
 
       <div className="mt-6">
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
@@ -88,9 +137,14 @@ export default function EducationArticlePage() {
       </div>
 
       <div>
-        <div className="mt-8 flex h-56 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/85 to-turquoise/70 sm:h-72">
-          <Icon className="h-16 w-16 text-white/90" />
-        </div>
+        {/* Only for an article with no photograph. Where there IS a hero above
+            the title this would be a second, redundant media block on the same
+            page, so it is the fallback rather than a fixture. */}
+        {!article.image && (
+          <div className="mt-8 flex h-56 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/85 to-turquoise/70 sm:h-72">
+            <Icon className="h-16 w-16 text-white/90" />
+          </div>
+        )}
       </div>
 
       <div className="mt-10 space-y-8">

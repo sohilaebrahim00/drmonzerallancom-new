@@ -25,7 +25,7 @@ export function EducationPreview() {
         <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((article, index) => (
             <Reveal key={article.slug} direction="up" delay={index * 0.08}>
-              <ArticleCard article={article} featured />
+              <ArticleCard article={article} />
             </Reveal>
           ))}
         </div>

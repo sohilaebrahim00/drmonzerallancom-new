@@ -15,6 +15,36 @@ export interface ArticleSection {
   body: string[];
 }
 
+/** Real pixel dimensions of one file. Not derived from a constant: two of the
+ *  heroes are 960x540 rather than 1400x787, because their sources were only
+ *  960px wide and were deliberately not upscaled. */
+export interface ArticleImageSize {
+  width: number;
+  height: number;
+}
+
+export interface ArticleImage {
+  /**
+   * Path without the `-card` / `-hero` suffix or extension, e.g.
+   * "/images/blog/how-much-protein-do-you-actually-need". Both a .webp and a
+   * .jpg exist for each, so these go through <Photo base=...> unchanged.
+   */
+  base: string;
+  /**
+   * REQUIRED, and that is the point: `alt` is not optional on this type, so an
+   * article image without alt text cannot be constructed at all. There is no
+   * "" default and no fallback to the title — it is unrepresentable rather
+   * than merely discouraged.
+   *
+   * These are illustrations. Three of them show people who are NOT the
+   * doctor's clients and not the doctor. Alt text describes what is in the
+   * frame and implies nothing about anyone.
+   */
+  alt: string;
+  card: ArticleImageSize;
+  hero: ArticleImageSize;
+}
+
 export interface Article {
   slug: string;
   title: string;
@@ -24,6 +54,9 @@ export interface Article {
   date: string;
   updated?: string;
   sections: ArticleSection[];
+  /** Absent for articles with no photograph — the card falls back to the
+   *  category gradient, which is a designed state, not a hole. */
+  image?: ArticleImage;
 }
 
 export const categories: ArticleCategory[] = [
@@ -39,6 +72,12 @@ export const categories: ArticleCategory[] = [
 export const articles: Article[] = [
   {
     slug: "sustainable-weight-loss-without-crash-diets",
+    image: {
+      base: "/images/blog/sustainable-weight-loss-without-crash-diets",
+      alt: "A woman sitting at a sunlit kitchen table, smiling as she eats a bowl of mixed salad, with a jug of water, an avocado and blueberries in front of her and a rolled exercise mat and trainers behind.",
+      card: { width: 960, height: 540 },
+      hero: { width: 1400, height: 787 },
+    },
     title: "Sustainable Weight Loss Without Crash Diets",
     excerpt:
       "Why extreme restriction backfires, and what a realistic weight-loss plan looks like in practice.",
@@ -101,6 +140,12 @@ export const articles: Article[] = [
   },
   {
     slug: "fueling-athletic-performance-and-recovery",
+    image: {
+      base: "/images/blog/fueling-athletic-performance-and-recovery",
+      alt: "A person in a black training vest holding a shaker bottle at a table set with a bowl of grilled chicken, quinoa, sweet potato, broccoli and avocado, beside a dumbbell, a gym bag, a rolled towel and a glass of water.",
+      card: { width: 960, height: 540 },
+      hero: { width: 960, height: 540 },
+    },
     title: "Fueling Athletic Performance and Recovery",
     excerpt:
       "How pre- and post-workout nutrition choices affect energy, endurance, and how quickly you bounce back.",
@@ -130,6 +175,12 @@ export const articles: Article[] = [
   },
   {
     slug: "nutrition-through-every-trimester-of-pregnancy",
+    image: {
+      base: "/images/blog/nutrition-through-every-trimester-of-pregnancy",
+      alt: "A pregnant woman standing at a kitchen counter with one hand resting on her bump and a fork over a bowl of salad, with salmon, spinach, tomatoes, sweet potato and avocado on a board beside her.",
+      card: { width: 960, height: 540 },
+      hero: { width: 960, height: 540 },
+    },
     title: "Nutrition Through Every Trimester of Pregnancy",
     excerpt:
       "What changes nutritionally from the first trimester to the third, and the nutrients worth paying closer attention to.",
@@ -160,6 +211,12 @@ export const articles: Article[] = [
   },
   {
     slug: "understanding-food-and-digestive-comfort",
+    image: {
+      base: "/images/blog/understanding-food-and-digestive-comfort",
+      alt: "An anatomical model of the large intestine standing on a table beside bananas, a bowl of oats, broccoli, an apple, blueberries, papaya, prunes, yoghurt, garlic and chia seeds.",
+      card: { width: 960, height: 540 },
+      hero: { width: 1400, height: 787 },
+    },
     title: "Understanding Food and Digestive Comfort",
     excerpt:
       "How to approach bloating, discomfort, and food sensitivities without cutting out entire food groups unnecessarily.",
@@ -189,6 +246,12 @@ export const articles: Article[] = [
   },
   {
     slug: "heart-healthy-eating-for-cholesterol-and-blood-pressure",
+    image: {
+      base: "/images/blog/heart-healthy-eating-for-cholesterol-and-blood-pressure",
+      alt: "A stethoscope coiled around a red rubber heart beside a bowl of spinach, broccoli, kidney beans, quinoa, pumpkin seeds and tomatoes, with salmon, olive oil, almonds, oats and blueberries around it.",
+      card: { width: 960, height: 540 },
+      hero: { width: 1400, height: 787 },
+    },
     title: "Heart-Healthy Eating for Cholesterol and Blood Pressure",
     excerpt:
       "The dietary patterns most consistently linked to better cardiovascular numbers, explained simply.",
@@ -218,6 +281,12 @@ export const articles: Article[] = [
   },
   {
     slug: "how-much-protein-do-you-actually-need",
+    image: {
+      base: "/images/blog/how-much-protein-do-you-actually-need",
+      alt: "A salmon fillet, a chicken breast and a beef steak on a wooden board, surrounded by cottage cheese, a glass of milk, mixed beans, lentils, halved boiled eggs, almonds, a scoop of protein powder and dumbbells.",
+      card: { width: 960, height: 540 },
+      hero: { width: 1400, height: 787 },
+    },
     title: "How Much Protein Do You Actually Need?",
     excerpt:
       "Cutting through the noise around protein intake, timing, and sources for different goals.",

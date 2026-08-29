@@ -70,8 +70,17 @@ export function AboutPreview() {
             never upscaled, and it is cropped to 3:2 inside a fixed aspect box
             rather than by re-cutting the file. */}
         <div className="mt-16">
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,48fr)_minmax(0,52fr)] lg:gap-14">
-            <figure className="w-full">
+          {/* ALTERNATION: the portrait block above puts its image on the left,
+              so this one puts its image on the RIGHT. Two consecutive sections
+              with the image on the same side stack into one long left rail and
+              the page loses its rhythm.
+
+              Done with lg:order, not by reordering the markup. On mobile both
+              columns stack and the DOM order is what a screen reader follows —
+              the figure must stay before the copy it belongs to, so only the
+              desktop grid flips. */}
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,52fr)_minmax(0,48fr)] lg:gap-14">
+            <figure className="w-full lg:order-2">
               {/* max-h caps the stacked mobile case, where a 3:2 box at the
                   full column width would otherwise be 373px tall above the
                   copy it belongs to. */}
@@ -96,7 +105,7 @@ export function AboutPreview() {
               </figcaption>
             </figure>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:order-1">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
                 The Approach
               </p>

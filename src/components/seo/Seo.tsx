@@ -15,11 +15,26 @@ const DEFAULT_OG_IMAGE = {
   alt: "Dr. Monzer Allan — nutrition, health and wellness guidance",
 } as const;
 
+/**
+ * A per-page share card. Carries its own dimensions and alt because emitting
+ * the sitewide 1200x630 and the sitewide alt alongside a different image would
+ * be stating something untrue to every crawler that reads it — and the article
+ * heroes are not all one size (two are 960x540, four are 1400x787).
+ *
+ * `path` must be the .jpg. WhatsApp does not render a WebP share card.
+ */
+export interface SeoImage {
+  path: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+
 interface SeoProps {
   title: string;
   description: string;
   path: string;
-  image?: string;
+  image?: SeoImage;
   type?: "website" | "article";
   jsonLd?: object | object[];
   noindex?: boolean;
@@ -77,11 +92,10 @@ export function Seo({
     // JavaScript (WhatsApp, Facebook, Slack) never see them — for those, what
     // counts is the static block in index.html. This keeps the two in step for
     // anything that DOES run JS, and for in-app SPA navigation.
-    const resolvedImage = image
-      ? image.startsWith("http")
-        ? image
-        : `${business.domain}${image}`
-      : `${business.domain}${DEFAULT_OG_IMAGE.path}`;
+    const card = image ?? DEFAULT_OG_IMAGE;
+    const resolvedImage = card.path.startsWith("http")
+      ? card.path
+      : `${business.domain}${card.path}`;
     const fullTitle = title.includes(business.doctorName)
       ? title
       : `${title} | ${business.doctorName}`;
@@ -95,16 +109,16 @@ export function Seo({
     setMetaByProperty("og:url", url);
     setMetaByProperty("og:image", resolvedImage);
     setMetaByProperty("og:image:type", "image/jpeg");
-    setMetaByProperty("og:image:width", String(DEFAULT_OG_IMAGE.width));
-    setMetaByProperty("og:image:height", String(DEFAULT_OG_IMAGE.height));
-    setMetaByProperty("og:image:alt", DEFAULT_OG_IMAGE.alt);
+    setMetaByProperty("og:image:width", String(card.width));
+    setMetaByProperty("og:image:height", String(card.height));
+    setMetaByProperty("og:image:alt", card.alt);
     setMetaByProperty("og:site_name", business.doctorName);
     setMetaByProperty("og:locale", "en_US");
     setMetaByName("twitter:card", "summary_large_image");
     setMetaByName("twitter:title", fullTitle);
     setMetaByName("twitter:description", description);
     setMetaByName("twitter:image", resolvedImage);
-    setMetaByName("twitter:image:alt", DEFAULT_OG_IMAGE.alt);
+    setMetaByName("twitter:image:alt", card.alt);
     setCanonical(url);
 
     const scripts: HTMLScriptElement[] = [];
