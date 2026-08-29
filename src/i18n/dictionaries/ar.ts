@@ -329,4 +329,37 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "productsPage.lede":
     "تصفّح مجموعة {name} من منتجات العناية الصحية والمكمّلات وأجهزة المتابعة المنزلية.",
   "blogPage.lede": "مقالات عملية قائمة على الأدلة تساعدك على فهم التغذية واتخاذ قرارات واثقة.",
+  // --- patient screens: auth --------------------------------------------
+  "auth.emailLabel": "البريد الإلكتروني",
+  "auth.passwordLabel": "كلمة المرور",
+  "auth.newPasswordLabel": "كلمة المرور الجديدة",
+  "auth.confirmPasswordLabel": "تأكيد كلمة المرور الجديدة",
+  "auth.emailInvalid": "الرجاء إدخال بريد إلكتروني صحيح.",
+  "auth.passwordRequired": "الرجاء إدخال كلمة المرور.",
+  "auth.passwordTooShort": "يجب ألا تقل كلمة المرور عن 8 أحرف.",
+  "auth.passwordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
+  "auth.signInTitle": "تسجيل الدخول",
+  "auth.signInBody": "ادخل إلى حسابك لدى منذر علان.",
+  "auth.forgotTitle": "نسيت كلمة المرور",
+  "auth.forgotBody": "أدخل بريدك الإلكتروني وسنرسل لك تعليمات إعادة التعيين.",
+  "auth.forgotUnavailable": "خدمة إعادة تعيين كلمة المرور غير مفعّلة بعد.",
+  "auth.resetTitle": "تعيين كلمة مرور جديدة",
+  "auth.resetBody": "اختر كلمة مرور جديدة لحسابك.",
+
+  // --- patient screens: after checkout ----------------------------------
+  "membership.confirming": "نؤكّد عملية الدفع…",
+  "membership.checkingStatus": "نتحقق من حالة حسابك الحالية.",
+  "membership.allSet": "كل شيء جاهز",
+  "membership.allSetBody": "شكراً لك. انتقل إلى حسابك لعرض أرصدة الاستشارات وطلب جلستك الأولى.",
+  "membership.settingUp": "تم استلام الدفعة — جارٍ تجهيز حسابك",
+  "membership.settingUpBody":
+    "تم إرسال دفعتك إلى Stripe. نؤكّدها الآن ونجهّز حسابك — وعادةً لا يستغرق ذلك سوى بضع دقائق. تحقّق من بريدك الإلكتروني، ستجد رسالة تدعوك لتعيين كلمة المرور وتسجيل الدخول.",
+  "membership.cancelledTitle": "تم إلغاء عملية الدفع",
+  "membership.cancelledBody":
+    "لم تتم أي عملية دفع ولم يُخصم أي مبلغ — سواء ألغيت العملية أو رُفضت البطاقة. يمكنك المتابعة من حيث توقفت في أي وقت.",
+
+  // --- 404 ---------------------------------------------------------------
+  "notFound.title": "تعذّر العثور على هذه الصفحة",
+  "notFound.body":
+    "قد تكون الصفحة التي تبحث عنها نُقلت أو لم تعد موجودة. لنعُد بك إلى المسار الصحيح.",
 };

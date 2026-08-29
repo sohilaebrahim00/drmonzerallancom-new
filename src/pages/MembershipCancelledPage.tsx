@@ -4,8 +4,10 @@ import { MessageCircle, Sparkles, XCircle } from "lucide-react";
 import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
 import { whatsappLink } from "@/config/contact";
+import { useTranslate } from "@/i18n";
 
 export default function MembershipCancelledPage() {
+  const t = useTranslate();
   const waHref = whatsappLink(
     "Hello, I started a payment on Monzer Allan's website but had a question before completing it.",
   );
@@ -20,10 +22,11 @@ export default function MembershipCancelledPage() {
       />
       <Reveal direction="up">
         <XCircle className="mx-auto h-12 w-12 text-muted-foreground" />
-        <h1 className="mt-5 font-display text-2xl font-bold text-navy">Checkout Cancelled</h1>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-          No payment was made and nothing was charged — whether you cancelled or the card was
-          declined. You can pick up where you left off anytime.
+        <h1 dir="auto" className="mt-5 font-display text-2xl font-bold text-navy">
+          {t("membership.cancelledTitle")}
+        </h1>
+        <p dir="auto" className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+          {t("membership.cancelledBody")}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link

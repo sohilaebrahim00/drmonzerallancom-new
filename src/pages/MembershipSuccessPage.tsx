@@ -6,8 +6,10 @@ import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
 import { useAuth } from "@/context/AuthContext";
 import { getMySubscription, type Subscription } from "@/services/membershipService";
+import { useTranslate } from "@/i18n";
 
 export default function MembershipSuccessPage() {
+  const t = useTranslate();
   const { user } = useAuth();
   const [checking, setChecking] = useState(Boolean(user));
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -38,20 +40,21 @@ export default function MembershipSuccessPage() {
         {checking ? (
           <>
             <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
-            <h1 className="mt-5 font-display text-2xl font-bold text-navy">
-              We&apos;re confirming your payment…
+            <h1 dir="auto" className="mt-5 font-display text-2xl font-bold text-navy">
+              {t("membership.confirming")}
             </h1>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Checking your current account status.
+            <p dir="auto" className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+              {t("membership.checkingStatus")}
             </p>
           </>
         ) : subscription?.status === "active" ? (
           <>
             <CheckCircle2 className="mx-auto h-12 w-12 text-turquoise" />
-            <h1 className="mt-5 font-display text-2xl font-bold text-navy">You&apos;re All Set</h1>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Thank you. Head to your account to see your consultation credits and request your
-              first session.
+            <h1 dir="auto" className="mt-5 font-display text-2xl font-bold text-navy">
+              {t("membership.allSet")}
+            </h1>
+            <p dir="auto" className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+              {t("membership.allSetBody")}
             </p>
             <Link
               to="/account"
@@ -63,13 +66,11 @@ export default function MembershipSuccessPage() {
         ) : (
           <>
             <Mail className="mx-auto h-12 w-12 text-primary" />
-            <h1 className="mt-5 font-display text-2xl font-bold text-navy">
-              Payment Received — Setting Up Your Account
+            <h1 dir="auto" className="mt-5 font-display text-2xl font-bold text-navy">
+              {t("membership.settingUp")}
             </h1>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Your payment was submitted to Stripe. We&apos;re now confirming it and setting up your
-              account — this usually takes just a few minutes. Check your email for a message
-              inviting you to set your password and sign in.
+            <p dir="auto" className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+              {t("membership.settingUpBody")}
             </p>
             <Link
               to="/login"
@@ -77,7 +78,7 @@ export default function MembershipSuccessPage() {
             >
               <UserRound className="h-4 w-4" /> Go to Sign In
             </Link>
-            <p className="mt-4 text-xs text-muted-foreground">
+            <p dir="auto" className="mt-4 text-xs text-muted-foreground">
               Didn&apos;t receive anything after a few minutes?{" "}
               <Link to="/contact" className="font-semibold text-primary hover:text-turquoise">
                 Contact us

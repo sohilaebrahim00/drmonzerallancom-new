@@ -145,10 +145,13 @@ export default function AccountIntakePage() {
         >
           <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Back to my account
         </Link>
-        <h1 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
+        <h1
+          dir="auto"
+          className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
+        >
           Before Your Consultation
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
           A few questions so {business.doctorName} can prepare for your call. Every question is
           optional, you can stop at any point, and whatever you answer is saved as you go. Only{" "}
           {business.doctorName} can read your answers.
@@ -160,7 +163,10 @@ export default function AccountIntakePage() {
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
         </div>
       ) : !booking ? (
-        <p className="mt-8 rounded-2xl border border-dashed border-border/70 bg-secondary/30 p-6 text-center text-sm text-muted-foreground">
+        <p
+          dir="auto"
+          className="mt-8 rounded-2xl border border-dashed border-border/70 bg-secondary/30 p-6 text-center text-sm text-muted-foreground"
+        >
           These questions are for an upcoming consultation, and you don&apos;t have one booked right
           now.{" "}
           <Link
@@ -190,10 +196,15 @@ export default function AccountIntakePage() {
         current !== null && (
           <div className="mt-8">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <p
+                dir="auto"
+                className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+              >
                 Question {current} of {INTAKE_QUESTION_COUNT}
               </p>
-              <p className="text-xs text-muted-foreground">{answered} answered so far</p>
+              <p dir="auto" className="text-xs text-muted-foreground">
+                {answered} answered so far
+              </p>
             </div>
             <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
               <div
@@ -203,7 +214,7 @@ export default function AccountIntakePage() {
             </div>
 
             <div className="mt-6 rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-              <p className="font-display text-base font-bold leading-relaxed text-navy">
+              <p dir="auto" className="font-display text-base font-bold leading-relaxed text-navy">
                 {question.prompt}
               </p>
               <textarea
@@ -215,7 +226,11 @@ export default function AccountIntakePage() {
                 aria-label={question.label}
               />
 
-              {error && <p className="mt-2 text-xs font-semibold text-destructive">{error}</p>}
+              {error && (
+                <p dir="auto" className="mt-2 text-xs font-semibold text-destructive">
+                  {error}
+                </p>
+              )}
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Button
@@ -247,7 +262,7 @@ export default function AccountIntakePage() {
               </div>
             </div>
 
-            <p className="mt-4 text-center text-xs text-muted-foreground">
+            <p dir="auto" className="mt-4 text-center text-xs text-muted-foreground">
               You can close this page at any time — your answers are saved as you go, and you can
               pick up where you left off.
             </p>
@@ -275,9 +290,11 @@ function ReviewStep({
     <div className="mt-8">
       <div className="flex items-center gap-2">
         <CheckCircle2 className="h-5 w-5 text-turquoise" />
-        <p className="font-display text-lg font-bold text-navy">Your answers</p>
+        <p dir="auto" className="font-display text-lg font-bold text-navy">
+          Your answers
+        </p>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p dir="auto" className="mt-1 text-sm text-muted-foreground">
         {answered} of {INTAKE_QUESTION_COUNT} answered. Change anything you like before your call —
         this stays open right up until you speak.
       </p>
@@ -292,7 +309,7 @@ function ReviewStep({
             )}
           >
             <div className="flex items-start justify-between gap-3">
-              <p className="text-xs font-semibold text-navy">
+              <p dir="auto" className="text-xs font-semibold text-navy">
                 {row.number}. {row.label}
               </p>
               <button
@@ -304,11 +321,13 @@ function ReviewStep({
               </button>
             </div>
             {row.answer ? (
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-navy">
+              <p dir="auto" className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-navy">
                 {row.answer}
               </p>
             ) : (
-              <p className="mt-2 text-sm italic text-muted-foreground">Not answered</p>
+              <p dir="auto" className="mt-2 text-sm italic text-muted-foreground">
+                Not answered
+              </p>
             )}
           </div>
         ))}

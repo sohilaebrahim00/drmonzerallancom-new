@@ -207,10 +207,13 @@ export default function AccountConsultationsPage() {
       </Breadcrumb>
 
       <Reveal direction="up" className="mt-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+        <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
           Consultations
         </p>
-        <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
+        <h1
+          dir="auto"
+          className="mt-2 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
+        >
           Request a Consultation
         </h1>
       </Reveal>
@@ -218,17 +221,22 @@ export default function AccountConsultationsPage() {
       {loading ? (
         <div className="mt-10 flex flex-col items-center justify-center gap-3 py-16" role="status">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading your program…</p>
+          <p dir="auto" className="text-sm text-muted-foreground">
+            Loading your program…
+          </p>
         </div>
       ) : !hasActiveMembership ? (
         <Reveal
           direction="up"
           className="mt-10 rounded-2xl border border-border/70 bg-card p-8 text-center shadow-sm"
         >
-          <p className="font-display text-lg font-bold text-navy">
+          <p dir="auto" className="font-display text-lg font-bold text-navy">
             Online consultations are available once you&apos;ve purchased a program.
           </p>
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+          <p
+            dir="auto"
+            className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground"
+          >
             Choose a program to unlock consultation credits and book your first session.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -249,10 +257,13 @@ export default function AccountConsultationsPage() {
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <p
+                  dir="auto"
+                  className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                >
                   {membershipLabel}
                 </p>
-                <p className="font-display text-lg font-bold text-primary">
+                <p dir="auto" className="font-display text-lg font-bold text-primary">
                   {creditsRemaining} of {creditsLimit} Credits Remaining
                 </p>
               </div>
@@ -286,9 +297,11 @@ export default function AccountConsultationsPage() {
               className="mt-8 rounded-2xl border border-border/70 bg-card p-6 shadow-sm sm:p-8"
             >
               {slotsError ? (
-                <p className="py-10 text-center text-sm text-muted-foreground">{slotsError}</p>
+                <p dir="auto" className="py-10 text-center text-sm text-muted-foreground">
+                  {slotsError}
+                </p>
               ) : dateGroups.length === 0 ? (
-                <p className="py-10 text-center text-sm text-muted-foreground">
+                <p dir="auto" className="py-10 text-center text-sm text-muted-foreground">
                   No consultation times are currently open — please check back soon or{" "}
                   <Link to="/contact" className="font-semibold text-primary hover:text-turquoise">
                     contact us
@@ -297,10 +310,10 @@ export default function AccountConsultationsPage() {
                 </p>
               ) : step === "date" ? (
                 <div>
-                  <h2 className="font-display text-base font-bold text-navy">
+                  <h2 dir="auto" className="font-display text-base font-bold text-navy">
                     Step 1 — Select a Date
                   </h2>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p dir="auto" className="mt-1 text-xs text-muted-foreground">
                     Standard hours: {scheduleTimezoneLabel}. Appointments must be booked at least{" "}
                     {MINIMUM_BOOKING_NOTICE_HOURS} hours in advance.
                   </p>
@@ -329,7 +342,7 @@ export default function AccountConsultationsPage() {
                   >
                     <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Back
                   </button>
-                  <h2 className="mt-3 font-display text-base font-bold text-navy">
+                  <h2 dir="auto" className="mt-3 font-display text-base font-bold text-navy">
                     Step 2 — Select a Time · {selectedDateKey && formatDateLabel(selectedDateKey)}
                   </h2>
                   <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
@@ -363,7 +376,7 @@ export default function AccountConsultationsPage() {
                   >
                     <ChevronLeft className="h-3.5 w-3.5 rtl:-scale-x-100" /> Back
                   </button>
-                  <h2 className="mt-3 font-display text-base font-bold text-navy">
+                  <h2 dir="auto" className="mt-3 font-display text-base font-bold text-navy">
                     Step 3 — Review Appointment
                   </h2>
                   <dl className="mt-5 space-y-3 rounded-xl border border-border/60 bg-secondary/30 p-4 text-sm">
@@ -401,7 +414,10 @@ export default function AccountConsultationsPage() {
                     </div>
                   </dl>
 
-                  <label className="mt-5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <label
+                    dir="auto"
+                    className="mt-5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     Consultation type
                   </label>
                   <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -422,7 +438,10 @@ export default function AccountConsultationsPage() {
                     ))}
                   </div>
 
-                  <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <label
+                    dir="auto"
+                    className="mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     General reason (optional)
                   </label>
                   <Textarea
@@ -432,7 +451,7 @@ export default function AccountConsultationsPage() {
                     placeholder="e.g., monthly check-in, plan adjustment…"
                     className="mt-2"
                   />
-                  <p className="mt-1.5 text-xs text-muted-foreground">
+                  <p dir="auto" className="mt-1.5 text-xs text-muted-foreground">
                     Please keep this general — no detailed medical history here.
                   </p>
 
@@ -458,15 +477,21 @@ export default function AccountConsultationsPage() {
                   {result.ok ? (
                     <>
                       <CheckCircle2 className="mx-auto h-10 w-10 text-turquoise" />
-                      <p className="mt-4 font-display text-lg font-bold text-navy">
+                      <p dir="auto" className="mt-4 font-display text-lg font-bold text-navy">
                         Consultation Confirmed
                       </p>
-                      <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                      <p
+                        dir="auto"
+                        className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground"
+                      >
                         {result.appointment.clientLocalTime} ({tz}) ·{" "}
                         {result.appointment.doctorLocalTime} (
                         {result.appointment.doctorTimeZone.split("/").pop()?.replace("_", " ")})
                       </p>
-                      <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
+                      <p
+                        dir="auto"
+                        className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground"
+                      >
                         A calendar invitation has been emailed to you. Accept it to add this
                         appointment to your calendar.
                       </p>
@@ -479,7 +504,10 @@ export default function AccountConsultationsPage() {
                       >
                         <ClipboardList className="h-4 w-4" /> Answer a few questions first
                       </Link>
-                      <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
+                      <p
+                        dir="auto"
+                        className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground"
+                      >
                         Optional, about 3 minutes. It helps Dr. Monzer Allan prepare for your call.
                       </p>
                       <a
@@ -490,23 +518,29 @@ export default function AccountConsultationsPage() {
                       >
                         <Video className="h-4 w-4" /> Join Google Meet
                       </a>
-                      <p className="mt-4 text-xs text-muted-foreground">
+                      <p dir="auto" className="mt-4 text-xs text-muted-foreground">
                         {result.creditsRemaining} of {result.creditsLimit} credits remaining
                       </p>
                     </>
                   ) : (
                     <>
                       <CalendarClock className="mx-auto h-10 w-10 text-primary/60" />
-                      <p className="mt-4 font-display text-lg font-bold text-navy">
+                      <p dir="auto" className="mt-4 font-display text-lg font-bold text-navy">
                         {result.reason === "scheduling-not-connected"
                           ? "Almost There"
                           : "Couldn't Complete Booking"}
                       </p>
-                      <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                      <p
+                        dir="auto"
+                        className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground"
+                      >
                         {result.error}
                       </p>
                       {result.reason === "scheduling-not-connected" && (
-                        <p className="mx-auto mt-2 max-w-sm text-xs text-muted-foreground">
+                        <p
+                          dir="auto"
+                          className="mx-auto mt-2 max-w-sm text-xs text-muted-foreground"
+                        >
                           No consultation credit has been used.
                         </p>
                       )}

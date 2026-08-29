@@ -69,7 +69,10 @@ export default function MyProgramPage() {
       />
 
       <Reveal direction="up">
-        <h1 className="font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
+        <h1
+          dir="auto"
+          className="font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
+        >
           My Program
         </h1>
       </Reveal>
@@ -82,10 +85,13 @@ export default function MyProgramPage() {
         /* Already paid. Selling them a package again is the bug, not the fix —
            so this says what is actually happening and offers no purchase CTA. */
         <div className="mt-10 rounded-2xl border border-border/70 bg-card p-8 text-center shadow-sm">
-          <p className="font-display text-lg font-bold text-navy">
+          <p dir="auto" className="font-display text-lg font-bold text-navy">
             {business.doctorName} is preparing your program
           </p>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+          <p
+            dir="auto"
+            className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground"
+          >
             Your purchase is confirmed. Your personal program is being written for you, and it will
             appear here as soon as it is ready — you&apos;ll get an email the moment it is.
           </p>
@@ -101,11 +107,15 @@ export default function MyProgramPage() {
       ) : (
         <div className="mt-8 space-y-6">
           <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-            <p className="font-display text-lg font-bold text-navy">{program.title}</p>
+            <p dir="auto" className="font-display text-lg font-bold text-navy">
+              {program.title}
+            </p>
             {program.goal && (
-              <p className="mt-1 text-sm text-muted-foreground">Goal: {program.goal}</p>
+              <p dir="auto" className="mt-1 text-sm text-muted-foreground">
+                Goal: {program.goal}
+              </p>
             )}
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p dir="auto" className="mt-2 text-xs text-muted-foreground">
               Day {dayNumber}
               {program.daily_calorie_target
                 ? ` · about ${program.daily_calorie_target} kcal a day`
@@ -129,7 +139,7 @@ export default function MyProgramPage() {
             )}
 
             {program.general_instructions && (
-              <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-navy">
+              <p dir="auto" className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-navy">
                 {program.general_instructions}
               </p>
             )}
@@ -137,11 +147,17 @@ export default function MyProgramPage() {
 
           {day && (
             <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <p
+                dir="auto"
+                className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+              >
                 Today — day {day.day_number}
               </p>
               {day.doctor_instructions && (
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-navy">
+                <p
+                  dir="auto"
+                  className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-navy"
+                >
                   {day.doctor_instructions}
                 </p>
               )}
@@ -151,12 +167,19 @@ export default function MyProgramPage() {
                   if (items.length === 0) return null;
                   return (
                     <div key={meal}>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-turquoise">
+                      <p
+                        dir="auto"
+                        className="text-xs font-semibold uppercase tracking-wide text-turquoise"
+                      >
                         {meal}
                       </p>
                       <ul className="mt-1 space-y-2">
                         {items.map((item) => (
-                          <li key={item.id} className="text-sm leading-relaxed text-navy">
+                          <li
+                            dir="auto"
+                            key={item.id}
+                            className="text-sm leading-relaxed text-navy"
+                          >
                             <span className="font-semibold">{item.title}</span>
                             {item.portion_guidance ? ` — ${item.portion_guidance}` : ""}
                             {item.description && (

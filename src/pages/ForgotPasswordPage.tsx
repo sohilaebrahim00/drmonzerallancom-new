@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,14 +19,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslate, type TranslateFn } from "@/i18n";
 
-const schema = z.object({
-  email: z.string().trim().email("Please enter a valid email address."),
-});
+/** Built inside the component — see the note in LoginPage. */
+const buildSchema = (t: TranslateFn) =>
+  z.object({
+    email: z.string().trim().email(t("auth.emailInvalid")),
+  });
 
-type Values = z.infer<typeof schema>;
+type Values = z.infer<ReturnType<typeof buildSchema>>;
 
 export default function ForgotPasswordPage() {
+  const t = useTranslate();
+  const schema = useMemo(() => buildSchema(t), [t]);
   const { resetPasswordForEmail, configured } = useAuth();
   const [searchParams] = useSearchParams();
   const [submitting, setSubmitting] = useState(false);
@@ -58,8 +63,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout
-      title="Forgot Password"
-      subtitle="Enter your email and we'll send you reset instructions."
+      title={t("auth.forgotTitle")}
+      subtitle={t("auth.forgotBody")}
       footer={
         <Link to="/login" className="font-semibold text-primary hover:text-turquoise">
           Back to Sign In
@@ -76,7 +81,7 @@ export default function ForgotPasswordPage() {
       {sent ? (
         <div className="flex flex-col items-center gap-3 py-4 text-center">
           <CheckCircle2 className="h-10 w-10 text-turquoise" />
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
             If an account exists for this email, password reset instructions have been sent.
           </p>
         </div>
@@ -85,7 +90,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" noValidate>
             {!configured && (
               <Alert className="border-amber-300 bg-amber-50 text-amber-900">
-                <AlertDescription>Password reset isn&apos;t connected yet.</AlertDescription>
+                <AlertDescription>{t("auth.forgotUnavailable")}</AlertDescription>
               </Alert>
             )}
             <FormField
@@ -93,7 +98,7 @@ export default function ForgotPasswordPage() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("auth.emailLabel")}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"

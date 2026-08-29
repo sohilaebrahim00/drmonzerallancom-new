@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,15 +20,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslate, type TranslateFn } from "@/i18n";
 
-const loginSchema = z.object({
-  email: z.string().trim().email("Please enter a valid email address."),
-  password: z.string().min(1, "Please enter your password."),
-});
+/**
+ * The schema is a function of `t` and built inside the component, because
+ * validation messages are the ones a patient reads when something has gone
+ * wrong and they must be in their language. At module scope `t` does not
+ * exist — and a schema built once at import time would freeze whichever
+ * language happened to be active on first load.
+ */
+const buildLoginSchema = (t: TranslateFn) =>
+  z.object({
+    email: z.string().trim().email(t("auth.emailInvalid")),
+    password: z.string().min(1, t("auth.passwordRequired")),
+  });
 
-type LoginValues = z.infer<typeof loginSchema>;
+type LoginValues = z.infer<ReturnType<typeof buildLoginSchema>>;
 
 export default function LoginPage() {
+  const t = useTranslate();
+  const loginSchema = useMemo(() => buildLoginSchema(t), [t]);
   const { user, loading, configured, signIn } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
@@ -57,8 +68,8 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Sign In"
-      subtitle="Access your Monzer Allan member account."
+      title={t("auth.signInTitle")}
+      subtitle={t("auth.signInBody")}
       footer={
         <>
           New here?{" "}
@@ -91,7 +102,7 @@ export default function LoginPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("auth.emailLabel")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -110,7 +121,7 @@ export default function LoginPage() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center justify-between">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("auth.passwordLabel")}</FormLabel>
                   <Link
                     to="/forgot-password"
                     className="text-xs font-semibold text-primary hover:text-turquoise"

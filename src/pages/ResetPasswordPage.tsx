@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,20 +19,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslate, type TranslateFn } from "@/i18n";
 
-const schema = z
-  .object({
-    password: z.string().min(8, "Password must be at least 8 characters."),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
-  });
+/** Built inside the component — see the note in LoginPage. */
+const buildSchema = (t: TranslateFn) =>
+  z
+    .object({
+      password: z.string().min(8, t("auth.passwordTooShort")),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("auth.passwordsDoNotMatch"),
+      path: ["confirmPassword"],
+    });
 
-type Values = z.infer<typeof schema>;
+type Values = z.infer<ReturnType<typeof buildSchema>>;
 
 export default function ResetPasswordPage() {
+  const t = useTranslate();
+  const schema = useMemo(() => buildSchema(t), [t]);
   // `session` comes from AuthContext, which is populated either by an
   // existing sign-in or by Supabase consuming the recovery token in the URL
   // fragment when this page loads from a real reset email.
@@ -80,8 +85,8 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout
-      title="Set a New Password"
-      subtitle="Choose a new password for your member account."
+      title={t("auth.resetTitle")}
+      subtitle={t("auth.resetBody")}
       footer={
         <Link to="/login" className="font-semibold text-primary hover:text-turquoise">
           Back to Sign In
@@ -98,7 +103,7 @@ export default function ResetPasswordPage() {
       {success ? (
         <div className="flex flex-col items-center gap-3 py-4 text-center">
           <CheckCircle2 className="h-10 w-10 text-turquoise" />
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
             Your password has been updated. Redirecting to your account…
           </p>
         </div>
@@ -118,7 +123,7 @@ export default function ResetPasswordPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New password</FormLabel>
+                  <FormLabel>{t("auth.newPasswordLabel")}</FormLabel>
                   <FormControl>
                     <PasswordField autoComplete="new-password" {...field} />
                   </FormControl>
@@ -131,7 +136,7 @@ export default function ResetPasswordPage() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm new password</FormLabel>
+                  <FormLabel>{t("auth.confirmPasswordLabel")}</FormLabel>
                   <FormControl>
                     <PasswordField autoComplete="new-password" {...field} />
                   </FormControl>

@@ -277,6 +277,40 @@ export const en = {
     "Explore {name}2019s selection of branded wellness products, supplements, and home health-monitoring devices.",
   "blogPage.lede":
     "Practical, evidence-based articles to help you understand nutrition and make confident choices.",
+  // --- patient screens: auth --------------------------------------------
+  "auth.emailLabel": "Email",
+  "auth.passwordLabel": "Password",
+  "auth.newPasswordLabel": "New password",
+  "auth.confirmPasswordLabel": "Confirm new password",
+  "auth.emailInvalid": "Please enter a valid email address.",
+  "auth.passwordRequired": "Please enter your password.",
+  "auth.passwordTooShort": "Password must be at least 8 characters.",
+  "auth.passwordsDoNotMatch": "Passwords do not match.",
+  "auth.signInTitle": "Sign In",
+  "auth.signInBody": "Access your Monzer Allan member account.",
+  "auth.forgotTitle": "Forgot Password",
+  "auth.forgotBody": "Enter your email and we'll send you reset instructions.",
+  "auth.forgotUnavailable": "Password reset isn't connected yet.",
+  "auth.resetTitle": "Set a New Password",
+  "auth.resetBody": "Choose a new password for your member account.",
+
+  // --- patient screens: after checkout ----------------------------------
+  "membership.confirming": "We're confirming your payment…",
+  "membership.checkingStatus": "Checking your current account status.",
+  "membership.allSet": "You're All Set",
+  "membership.allSetBody":
+    "Thank you. Head to your account to see your consultation credits and request your first session.",
+  "membership.settingUp": "Payment Received — Setting Up Your Account",
+  "membership.settingUpBody":
+    "Your payment was submitted to Stripe. We are now confirming it and setting up your account — this usually takes just a few minutes. Check your email for a message inviting you to set your password and sign in.",
+  "membership.cancelledTitle": "Checkout Cancelled",
+  "membership.cancelledBody":
+    "No payment was made and nothing was charged — whether you cancelled or the card was declined. You can pick up where you left off anytime.",
+
+  // --- 404 ---------------------------------------------------------------
+  "notFound.title": "We couldn't find that page",
+  "notFound.body":
+    "The page you're looking for may have been moved or no longer exists. Let's get you back on track.",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

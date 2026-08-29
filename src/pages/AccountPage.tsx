@@ -180,10 +180,13 @@ export default function AccountPage() {
 
       <Reveal direction="up" className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+          <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             Member Account
           </p>
-          <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
+          <h1
+            dir="auto"
+            className="mt-2 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
+          >
             Welcome, {firstName}
           </h1>
         </div>
@@ -209,13 +212,20 @@ export default function AccountPage() {
       {dataLoading ? (
         <div className="mt-10 flex flex-col items-center justify-center gap-3 py-16" role="status">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading your program…</p>
+          <p dir="auto" className="text-sm text-muted-foreground">
+            Loading your program…
+          </p>
         </div>
       ) : loadError ? (
         /* Honest and actionable, rather than an endless spinner. */
         <div className="mt-10 rounded-2xl border border-border/70 bg-card p-8 text-center shadow-sm">
-          <p className="font-display text-lg font-bold text-navy">{loadError}</p>
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+          <p dir="auto" className="font-display text-lg font-bold text-navy">
+            {loadError}
+          </p>
+          <p
+            dir="auto"
+            className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground"
+          >
             This is a problem on our side, not with your account or your payment.
           </p>
           <button
@@ -238,10 +248,12 @@ export default function AccountPage() {
                         <PackageIcon className="h-5 w-5" />
                       </span>
                       <div>
-                        <p className="font-display text-lg font-bold text-navy">
+                        <p dir="auto" className="font-display text-lg font-bold text-navy">
                           {packageInfo.name}
                         </p>
-                        <p className="text-sm text-muted-foreground">{packageInfo.priceLabel}</p>
+                        <p dir="auto" className="text-sm text-muted-foreground">
+                          {packageInfo.priceLabel}
+                        </p>
                       </div>
                     </div>
                     <span className="rounded-full bg-turquoise/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-turquoise">
@@ -272,8 +284,13 @@ export default function AccountPage() {
                    not a dashboard: the patient list, patient profiles and the
                    program builder are Phase 6B. */
                 <div className="text-center">
-                  <p className="font-display text-lg font-bold text-navy">Practitioner account</p>
-                  <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  <p dir="auto" className="font-display text-lg font-bold text-navy">
+                    Practitioner account
+                  </p>
+                  <p
+                    dir="auto"
+                    className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground"
+                  >
                     This is your personal account page. Consultation programs are for patients, so
                     there is nothing to buy here.
                   </p>
@@ -288,10 +305,13 @@ export default function AccountPage() {
                 </div>
               ) : (
                 <div className="text-center">
-                  <p className="font-display text-lg font-bold text-navy">
+                  <p dir="auto" className="font-display text-lg font-bold text-navy">
                     You don&apos;t have an active program yet
                   </p>
-                  <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    dir="auto"
+                    className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground"
+                  >
                     Choose a program to unlock consultation credits and get started.
                   </p>
                   <div className="mt-5 flex flex-wrap justify-center gap-3">
@@ -308,7 +328,9 @@ export default function AccountPage() {
 
             <div className="mt-6 rounded-2xl border border-border/70 bg-card p-6 shadow-sm sm:p-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-bold text-navy">Consultations</h2>
+                <h2 dir="auto" className="font-display text-lg font-bold text-navy">
+                  Consultations
+                </h2>
                 <Button asChild className="cursor-pointer">
                   <Link to="/account/consultations">
                     <CalendarPlus className="h-4 w-4" /> Request Consultation
@@ -317,12 +339,12 @@ export default function AccountPage() {
               </div>
 
               {!hasActiveMembership && (
-                <p className="mt-3 text-xs text-muted-foreground">
+                <p dir="auto" className="mt-3 text-xs text-muted-foreground">
                   Requesting a consultation requires an active program.
                 </p>
               )}
               {hasActiveMembership && creditsRemaining === 0 && (
-                <p className="mt-3 text-xs text-muted-foreground">
+                <p dir="auto" className="mt-3 text-xs text-muted-foreground">
                   You have no consultation credits remaining.{" "}
                   <Link to="/packages" className="font-semibold text-primary hover:text-turquoise">
                     Purchase another program
@@ -333,7 +355,10 @@ export default function AccountPage() {
 
               {upcoming && (
                 <div className="mt-5 rounded-xl border border-turquoise/40 bg-turquoise/10 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-turquoise">
+                  <p
+                    dir="auto"
+                    className="text-xs font-semibold uppercase tracking-wide text-turquoise"
+                  >
                     Upcoming Consultation
                   </p>
                   <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-navy">
@@ -366,11 +391,17 @@ export default function AccountPage() {
               )}
 
               <div className="mt-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <p
+                  dir="auto"
+                  className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                >
                   Consultation History
                 </p>
                 {history.length === 0 ? (
-                  <p className="mt-2 rounded-xl border border-dashed border-border/70 bg-secondary/30 p-5 text-center text-sm text-muted-foreground">
+                  <p
+                    dir="auto"
+                    className="mt-2 rounded-xl border border-dashed border-border/70 bg-secondary/30 p-5 text-center text-sm text-muted-foreground"
+                  >
                     No consultations scheduled yet.
                   </p>
                 ) : (
@@ -381,7 +412,7 @@ export default function AccountPage() {
                         className="flex items-start justify-between gap-3 rounded-xl border border-border/60 p-4"
                       >
                         <div>
-                          <p className="text-sm font-semibold text-navy">
+                          <p dir="auto" className="text-sm font-semibold text-navy">
                             {req.consultation_type ?? "Consultation"}
                           </p>
                           <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -407,7 +438,10 @@ export default function AccountPage() {
 
           <Reveal direction="up" delay={0.1} className="flex flex-col gap-6">
             <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-              <h2 className="font-display text-sm font-bold uppercase tracking-wide text-navy">
+              <h2
+                dir="auto"
+                className="font-display text-sm font-bold uppercase tracking-wide text-navy"
+              >
                 Member Details
               </h2>
               <dl className="mt-4 space-y-3 text-sm">
@@ -429,7 +463,10 @@ export default function AccountPage() {
             </div>
 
             <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-              <h2 className="font-display text-sm font-bold uppercase tracking-wide text-navy">
+              <h2
+                dir="auto"
+                className="font-display text-sm font-bold uppercase tracking-wide text-navy"
+              >
                 Quick Actions
               </h2>
               <div className="mt-4 flex flex-col gap-2">
@@ -483,7 +520,7 @@ export default function AccountPage() {
                 wrong. It was right about THIS page, though — a general profile
                 area is not a clinical record — so the instruction is scoped to
                 the free-text fields it was written for rather than deleted. */}
-            <p className="text-xs leading-relaxed text-muted-foreground">
+            <p dir="auto" className="text-xs leading-relaxed text-muted-foreground">
               Your account is used for identity, your program, booking, and saved products only.
               Please don&apos;t put diagnoses, lab reports, or medication details into your profile
               or product notes — those free-text fields are not a medical record. The right place

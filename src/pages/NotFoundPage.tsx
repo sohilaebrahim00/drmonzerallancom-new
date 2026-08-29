@@ -3,8 +3,10 @@ import { Home, Search } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
 import { Reveal } from "@/components/common/Reveal";
+import { useTranslate } from "@/i18n";
 
 export default function NotFoundPage() {
+  const t = useTranslate();
   return (
     <div className="mx-auto flex min-h-[60vh] w-full max-w-2xl flex-col items-center justify-center px-6 py-24 text-center sm:px-10">
       <Seo
@@ -14,13 +16,14 @@ export default function NotFoundPage() {
         noindex
       />
       <Reveal direction="up">
-        <p className="font-display text-7xl font-extrabold text-primary">404</p>
-        <h1 className="mt-4 font-display text-2xl font-bold text-navy">
-          We couldn't find that page
+        <p dir="auto" className="font-display text-7xl font-extrabold text-primary">
+          404
+        </p>
+        <h1 dir="auto" className="mt-4 font-display text-2xl font-bold text-navy">
+          {t("notFound.title")}
         </h1>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-          The page you're looking for may have been moved or no longer exists. Let's get you back on
-          track.
+        <p dir="auto" className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+          {t("notFound.body")}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
