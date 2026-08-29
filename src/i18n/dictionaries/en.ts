@@ -210,6 +210,45 @@ export const en = {
   "galleryPage.storyEventsBody": "Community initiatives and wellness events.",
   "galleryPage.storyJourney": "Professional Journey",
   "galleryPage.storyJourneyBody": "Milestones in clinical and nutrition specialization.",
+
+  // --- About page -------------------------------------------------------
+  // EVERY string in this block is in the flagged list regardless of
+  // confidence. This is the doctor describing himself — his philosophy, his
+  // mission, his credentials framing. A man's own account of his practice
+  // should not reach patients in a language he has not read it in.
+  "aboutPage.eyebrow": "About {name}",
+  "aboutPage.title": "A Clinical Approach To Nutrition, Built Around Real Life",
+  "aboutPage.lede":
+    "{name} is a {title} helping clients build lasting, evidence-based habits — not restrictive, short-lived diets.",
+  "aboutPage.philosophyEyebrow": "Philosophy of Care",
+  "aboutPage.philosophyTitle": "Guidance That Starts With Your Actual Life",
+  "aboutPage.philosophyBody":
+    "Every plan begins with what a client is already eating, not a template imposed from the outside. By combining a pharmacist's clinical training with specialized nutrition science, the goal is always the same: guidance that respects a person's schedule, culture, and preferences while still being grounded in evidence. Change that lasts comes from small, realistic adjustments — not dramatic overhauls that are hard to sustain.",
+  "aboutPage.backgroundEyebrow": "Professional Background",
+  "aboutPage.backgroundTitle": "Verified Credentials",
+  "aboutPage.focusEyebrow": "Areas of Focus",
+  "aboutPage.focusTitle": "Specialized Support Across Every Stage of Life",
+  "aboutPage.ctaTitle": "Start Your Nutrition Journey",
+  "aboutPage.ctaBody":
+    "Choose a program for guided support, or reach out to ask a question before you begin.",
+  "aboutPage.mission": "Mission",
+  "aboutPage.vision": "Vision",
+  "aboutPage.bio1":
+    "Monzer Allan brings a combination of clinical and nutritional expertise to every consultation — trained as a pharmacist and specialized in nutrition, he approaches health from both the science of the body and the reality of everyday eating.",
+  "aboutPage.bio2":
+    "Rather than one-size-fits-all diet plans, Monzer builds guidance around each client's actual life: their schedule, culture, preferences, and goals. The aim is always the same — lasting change that doesn't feel like a sacrifice.",
+  "aboutPage.bio3":
+    "His approach blends evidence-based nutrition science with genuine, ongoing support, across the specialized programs described below.",
+  "aboutPage.missionBody":
+    "To make expert, evidence-based nutrition guidance accessible and genuinely sustainable — helping every client build a healthier relationship with food, one realistic step at a time.",
+  "aboutPage.visionBody":
+    "A community where healthier choices come from understanding, not restriction — where nutrition care is personal, informed, and built to last a lifetime.",
+  "credential.licensedPharmacist": "Licensed Pharmacist",
+  "credential.licensedPharmacistBody":
+    "A clinical foundation in pharmacology and how nutrition interacts with treatment.",
+  "credential.nutritionSpecialist": "Nutrition Specialist",
+  "credential.nutritionSpecialistBody":
+    "Focused training in evidence-based dietary science and behavior change.",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

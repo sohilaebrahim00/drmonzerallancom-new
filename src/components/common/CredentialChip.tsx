@@ -1,8 +1,12 @@
 import type { Credential } from "@/data/about";
 import { cn } from "@/lib/utils";
+import { useTranslate, type SimpleTranslationKey } from "@/i18n";
 
 interface CredentialChipProps {
   credential: Credential;
+  /** Optional translated display. Falls back to the English in `credential`. */
+  titleKey?: SimpleTranslationKey;
+  descriptionKey?: SimpleTranslationKey;
   /**
    * `pill` is the compact form used where credentials are a supporting detail
    * (the home About preview); `card` adds the description and is used where
@@ -17,7 +21,16 @@ interface CredentialChipProps {
  * About page. Both drew their own pill/card from the same `credentials` array,
  * so the two drifted in radius, border and icon treatment.
  */
-export function CredentialChip({ credential, variant = "pill", className }: CredentialChipProps) {
+export function CredentialChip({
+  credential,
+  variant = "pill",
+  className,
+  titleKey,
+  descriptionKey,
+}: CredentialChipProps) {
+  const t = useTranslate();
+  const title = titleKey ? t(titleKey) : credential.title;
+  const description = descriptionKey ? t(descriptionKey) : credential.description;
   if (variant === "pill") {
     return (
       <span
@@ -27,7 +40,7 @@ export function CredentialChip({ credential, variant = "pill", className }: Cred
         )}
       >
         <credential.icon className="h-3.5 w-3.5 text-primary" />
-        {credential.title}
+        {title}
       </span>
     );
   }
@@ -43,10 +56,10 @@ export function CredentialChip({ credential, variant = "pill", className }: Cred
         <credential.icon className="h-4.5 w-4.5" />
       </div>
       <div>
-        <p className="text-sm font-semibold text-navy">{credential.title}</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-          {credential.description}
+        <p dir="auto" className="text-sm font-semibold text-navy">
+          {title}
         </p>
+        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</p>
       </div>
     </div>
   );

@@ -242,7 +242,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
 
   "videoCategory.nutrition": "التغذية",
   "videoCategory.wellness": "الصحة العامة",
-  "videoCategory.education": "تثقيف",
+  "videoCategory.education": "توعية",
   "videoCategory.lifestyle": "نمط الحياة",
   "videoCategory.metabolicHealth": "صحة الأيض",
 
@@ -257,4 +257,38 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "galleryPage.storyEventsBody": "مبادرات مجتمعية وفعاليات صحية.",
   "galleryPage.storyJourney": "المسيرة المهنية",
   "galleryPage.storyJourneyBody": "محطات في التخصص السريري والتغذوي.",
+
+  // --- About page -------------------------------------------------------
+  // ALL FLAGGED. See the English side for why.
+  "aboutPage.eyebrow": "عن {name}",
+  "aboutPage.title": "مقاربة سريرية للتغذية، مبنية على واقع الحياة",
+  "aboutPage.lede":
+    "{name} هو {title} يساعد العملاء على بناء عادات غذائية دائمة قائمة على الأدلة — لا حميات قاسية قصيرة الأمد.",
+  "aboutPage.philosophyEyebrow": "فلسفة الرعاية",
+  "aboutPage.philosophyTitle": "إرشاد يبدأ من واقع حياتك",
+  "aboutPage.philosophyBody":
+    "تبدأ كل خطة مما يأكله العميل فعلاً، لا من قالب مفروض من الخارج. وبالجمع بين التدريب السريري للصيدلي وعلم التغذية المتخصص، يبقى الهدف واحداً: إرشاد يحترم جدول الشخص وثقافته وتفضيلاته، ويظل في الوقت نفسه قائماً على الأدلة. التغيير الذي يدوم يأتي من تعديلات صغيرة وواقعية — لا من انقلابات جذرية يصعب الاستمرار عليها.",
+  "aboutPage.backgroundEyebrow": "الخلفية المهنية",
+  "aboutPage.backgroundTitle": "مؤهلات موثّقة",
+  "aboutPage.focusEyebrow": "مجالات التركيز",
+  "aboutPage.focusTitle": "دعم متخصص في كل مرحلة من مراحل الحياة",
+  "aboutPage.ctaTitle": "ابدأ رحلتك الغذائية",
+  "aboutPage.ctaBody": "اختر برنامجاً للحصول على متابعة، أو تواصل معنا لطرح سؤال قبل أن تبدأ.",
+  "aboutPage.mission": "الرسالة",
+  "aboutPage.vision": "الرؤية",
+  "aboutPage.bio1":
+    "يجمع منذر علان بين الخبرة السريرية والتغذوية في كل استشارة — فبتدريبه كصيدلي وتخصصه في التغذية، يتعامل مع الصحة من زاويتين: علم الجسم، وواقع ما نأكله كل يوم.",
+  "aboutPage.bio2":
+    "بدلاً من خطط غذائية جاهزة تصلح للجميع، يبني منذر إرشاده حول حياة كل عميل كما هي: جدوله وثقافته وتفضيلاته وأهدافه. والهدف واحد دائماً — تغيير يدوم دون أن يبدو تضحية.",
+  "aboutPage.bio3":
+    "تجمع مقاربته بين علم التغذية القائم على الأدلة والدعم المستمر الحقيقي، عبر البرامج المتخصصة الموضحة أدناه.",
+  "aboutPage.missionBody":
+    "أن نجعل الإرشاد التغذوي المتخصص القائم على الأدلة متاحاً وقابلاً للاستمرار فعلاً — بمساعدة كل عميل على بناء علاقة أفضل مع الطعام، خطوة واقعية في كل مرة.",
+  "aboutPage.visionBody":
+    "مجتمع تنبع فيه الخيارات الأفضل من الفهم لا من الحرمان — وتكون فيه الرعاية التغذوية شخصية ومبنية على المعرفة ومصمّمة لتدوم مدى الحياة.",
+  "credential.licensedPharmacist": "صيدلي مرخّص",
+  "credential.licensedPharmacistBody": "أساس سريري في علم الأدوية وكيفية تفاعل التغذية مع العلاج.",
+  "credential.nutritionSpecialist": "أخصائي تغذية",
+  "credential.nutritionSpecialistBody":
+    "تدريب متخصص في علم التغذية القائم على الأدلة وتغيير السلوك.",
 };

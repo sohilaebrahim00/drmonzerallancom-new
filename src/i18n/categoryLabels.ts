@@ -57,3 +57,22 @@ export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, SimpleTranslationK
   "Herbal Wellness": "productCategory.herbalWellness",
   "Health Monitoring Devices": "productCategory.healthMonitoringDevices",
 };
+
+/**
+ * Credential titles are identity too — `about.ts` is the source used by
+ * schema.org (personSchema) and the app, and the title doubles as the React
+ * key in the credentials grid. Display comes from here.
+ */
+export const CREDENTIAL_LABELS: Record<
+  string,
+  { title: SimpleTranslationKey; description: SimpleTranslationKey }
+> = {
+  "Licensed Pharmacist": {
+    title: "credential.licensedPharmacist",
+    description: "credential.licensedPharmacistBody",
+  },
+  "Nutrition Specialist": {
+    title: "credential.nutritionSpecialist",
+    description: "credential.nutritionSpecialistBody",
+  },
+};

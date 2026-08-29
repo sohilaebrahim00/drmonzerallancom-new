@@ -19,7 +19,7 @@ import { services } from "@/data/services";
 import { business } from "@/data/business";
 import { breadcrumbSchema, personSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useTranslate } from "@/i18n";
+import { useTranslate, CREDENTIAL_LABELS } from "@/i18n";
 
 export default function AboutPage() {
   const t = useTranslate();
@@ -93,7 +93,7 @@ export default function AboutPage() {
                 dir="auto"
                 className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
               >
-                About {business.doctorName}
+                {t("aboutPage.eyebrow", { name: business.doctorName })}
               </p>
             </div>
             <div>
@@ -101,13 +101,15 @@ export default function AboutPage() {
                 dir="auto"
                 className="mt-4 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-navy sm:text-5xl"
               >
-                A Clinical Approach To Nutrition, Built Around Real Life
+                {t("aboutPage.title")}
               </h1>
             </div>
             <div>
               <p dir="auto" className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                {business.doctorName} is a {business.professionalTitle.toLowerCase()} helping
-                clients build lasting, evidence-based habits — not restrictive, short-lived diets.
+                {t("aboutPage.lede", {
+                  name: business.doctorName,
+                  title: business.professionalTitle.toLowerCase(),
+                })}
               </p>
             </div>
           </div>
@@ -118,13 +120,17 @@ export default function AboutPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto w-full max-w-3xl px-6 sm:px-10">
           <div className="space-y-5">
-            {bio.paragraphs.map((paragraph) => (
+            {/* Keys, not bio.paragraphs: this is the doctor's own account of
+                his practice and it has to exist in both languages. The English
+                in the dictionary is identical to about.ts — that file stays the
+                source for anything not rendered here (schema.org, the app). */}
+            {(["aboutPage.bio1", "aboutPage.bio2", "aboutPage.bio3"] as const).map((paragraph) => (
               <p
                 dir="auto"
                 key={paragraph}
                 className="text-base leading-relaxed text-muted-foreground"
               >
-                {paragraph}
+                {t(paragraph)}
               </p>
             ))}
           </div>
@@ -139,23 +145,18 @@ export default function AboutPage() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              Philosophy of Care
+              {t("aboutPage.philosophyEyebrow")}
             </p>
             <h2
               dir="auto"
               className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl"
             >
-              Guidance That Starts With Your Actual Life
+              {t("aboutPage.philosophyTitle")}
             </h2>
           </div>
           <div>
             <p dir="auto" className="text-base leading-relaxed text-muted-foreground">
-              Every plan begins with what a client is already eating, not a template imposed from
-              the outside. By combining a pharmacist&apos;s clinical training with specialized
-              nutrition science, the goal is always the same: guidance that respects a person&apos;s
-              schedule, culture, and preferences while still being grounded in evidence. Change that
-              lasts comes from small, realistic adjustments — not dramatic overhauls that are hard
-              to sustain.
+              {t("aboutPage.philosophyBody")}
             </p>
           </div>
         </div>
@@ -171,10 +172,10 @@ export default function AboutPage() {
                   <Target className="h-5 w-5" />
                 </div>
                 <h3 dir="auto" className="mt-4 font-display text-lg font-bold text-navy">
-                  Mission
+                  {t("aboutPage.mission")}
                 </h3>
                 <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {bio.mission}
+                  {t("aboutPage.missionBody")}
                 </p>
               </div>
             </div>
@@ -184,10 +185,10 @@ export default function AboutPage() {
                   <Compass className="h-5 w-5" />
                 </div>
                 <h3 dir="auto" className="mt-4 font-display text-lg font-bold text-navy">
-                  Vision
+                  {t("aboutPage.vision")}
                 </h3>
                 <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {bio.vision}
+                  {t("aboutPage.visionBody")}
                 </p>
               </div>
             </div>
@@ -199,10 +200,10 @@ export default function AboutPage() {
                 dir="auto"
                 className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
               >
-                Professional Background
+                {t("aboutPage.backgroundEyebrow")}
               </p>
               <h3 dir="auto" className="mt-3 font-display text-xl font-bold text-navy">
-                Verified Credentials
+                {t("aboutPage.backgroundTitle")}
               </h3>
             </div>
             {/* Stagger kept: this is a list revealing in order, which is the
@@ -210,7 +211,13 @@ export default function AboutPage() {
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {credentials.map((credential, index) => (
                 <Reveal key={credential.title} direction="up" delay={index * 0.06}>
-                  <CredentialChip credential={credential} variant="card" className="h-full" />
+                  <CredentialChip
+                    credential={credential}
+                    variant="card"
+                    className="h-full"
+                    titleKey={CREDENTIAL_LABELS[credential.title]?.title}
+                    descriptionKey={CREDENTIAL_LABELS[credential.title]?.description}
+                  />
                 </Reveal>
               ))}
             </div>
@@ -226,13 +233,13 @@ export default function AboutPage() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              Areas of Focus
+              {t("aboutPage.focusEyebrow")}
             </p>
             <h2
               dir="auto"
               className="mx-auto mt-3 max-w-xl font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
             >
-              Specialized Support Across Every Stage of Life
+              {t("aboutPage.focusTitle")}
             </h2>
           </div>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -259,13 +266,13 @@ export default function AboutPage() {
               dir="auto"
               className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
             >
-              Start Your Nutrition Journey
+              {t("aboutPage.ctaTitle")}
             </h2>
             <p
               dir="auto"
               className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base"
             >
-              Choose a program for guided support, or reach out to ask a question before you begin.
+              {t("aboutPage.ctaBody")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
