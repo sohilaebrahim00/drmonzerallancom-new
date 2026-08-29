@@ -57,11 +57,10 @@ export default function EducationIndexPage() {
           dir="auto"
           className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl"
         >
-          Nutrition Knowledge You Can Trust
+          {t("blogPage.title")}
         </h1>
         <p dir="auto" className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Practical, evidence-based articles to help you understand nutrition and make confident
-          choices.
+          {t("blogPage.lede")}
         </p>
       </div>
 

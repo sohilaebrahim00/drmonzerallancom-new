@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { getPublishedProducts, productCategories, type ProductCategory } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
+import { business } from "@/data/business";
 
 export default function ProductsIndexPage() {
   const t = useTranslate();
@@ -46,11 +47,10 @@ export default function ProductsIndexPage() {
           dir="auto"
           className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl"
         >
-          Wellness Products &amp; Health Devices
+          {t("productsPage.title")}
         </h1>
         <p dir="auto" className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Explore Dr. Monzer Allan&rsquo;s selection of branded wellness products, supplements, and
-          home health-monitoring devices.
+          {t("productsPage.lede", { name: business.doctorName })}
         </p>
       </div>
 

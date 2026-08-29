@@ -60,6 +60,23 @@ import type { TranslationKey } from "./en";
  * place would have returned zero results, dropped every card to the default
  * gradient, and silently broken search.
  */
+/**
+ * ── THE THIRD RULE ─────────────────────────────────────────────────────
+ * ONE VOICE PER PAGE: ADDRESS THE READER.
+ *
+ * Where a string refers to the person reading it, use the second person —
+ * حياتك, جدولك, يساعدك — not "the client" in the third person. Arabic feels a
+ * shift between the two far more sharply than English does, and the two land
+ * on the same screen: a heading saying "واقع حياتك" above a paragraph saying
+ * "ما يأكله العميل" reads as two different documents.
+ *
+ * THE EXCEPTION, and it is not a violation: strings about OTHER clients stay
+ * third person, because the reader is not the subject. "آراء العملاء" and
+ * "تقدّم العملاء" are correct as they are — the reader is being shown what
+ * other people said and did.
+ *
+ * Test: is this sentence ABOUT the reader, or about someone else?
+ */
 export const ar: Partial<Record<TranslationKey, Entry>> = {
   // Six forms, because Arabic has six. `two` is a real dual noun
   // ("سؤالين"), not the plural with a 2 in front of it.
@@ -261,13 +278,13 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   // --- About page -------------------------------------------------------
   // ALL FLAGGED. See the English side for why.
   "aboutPage.eyebrow": "عن {name}",
-  "aboutPage.title": "مقاربة سريرية للتغذية، مبنية على واقع الحياة",
+  "aboutPage.title": "نهج سريري في التغذية، قائم على واقع حياتك",
   "aboutPage.lede":
-    "{name} هو {title} يساعد العملاء على بناء عادات غذائية دائمة قائمة على الأدلة — لا حميات قاسية قصيرة الأمد.",
+    "{name} هو {title} يساعدك على بناء عادات غذائية دائمة قائمة على الأدلة — لا حميات قاسية قصيرة الأمد.",
   "aboutPage.philosophyEyebrow": "فلسفة الرعاية",
   "aboutPage.philosophyTitle": "إرشاد يبدأ من واقع حياتك",
   "aboutPage.philosophyBody":
-    "تبدأ كل خطة مما يأكله العميل فعلاً، لا من قالب مفروض من الخارج. وبالجمع بين التدريب السريري للصيدلي وعلم التغذية المتخصص، يبقى الهدف واحداً: إرشاد يحترم جدول الشخص وثقافته وتفضيلاته، ويظل في الوقت نفسه قائماً على الأدلة. التغيير الذي يدوم يأتي من تعديلات صغيرة وواقعية — لا من انقلابات جذرية يصعب الاستمرار عليها.",
+    "تبدأ كل خطة مما تأكله فعلاً، لا من قالب مفروض من الخارج. وبالجمع بين التدريب السريري للصيدلي وعلم التغذية المتخصص، يبقى الهدف واحداً: إرشاد يحترم جدولك وثقافتك وتفضيلاتك، ويظل في الوقت نفسه قائماً على الأدلة. التغيير الذي يدوم يأتي من تعديلات صغيرة وواقعية — لا من انقلابات جذرية يصعب الاستمرار عليها.",
   "aboutPage.backgroundEyebrow": "الخلفية المهنية",
   "aboutPage.backgroundTitle": "مؤهلات موثّقة",
   "aboutPage.focusEyebrow": "مجالات التركيز",
@@ -279,11 +296,11 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "aboutPage.bio1":
     "يجمع منذر علان بين الخبرة السريرية والتغذوية في كل استشارة — فبتدريبه كصيدلي وتخصصه في التغذية، يتعامل مع الصحة من زاويتين: علم الجسم، وواقع ما نأكله كل يوم.",
   "aboutPage.bio2":
-    "بدلاً من خطط غذائية جاهزة تصلح للجميع، يبني منذر إرشاده حول حياة كل عميل كما هي: جدوله وثقافته وتفضيلاته وأهدافه. والهدف واحد دائماً — تغيير يدوم دون أن يبدو تضحية.",
+    "بدلاً من خطط غذائية جاهزة تصلح للجميع، يبني منذر إرشاده حول حياتك كما هي: جدولك وثقافتك وتفضيلاتك وأهدافك. والهدف واحد دائماً — تغيير يدوم دون أن يبدو تضحية.",
   "aboutPage.bio3":
     "تجمع مقاربته بين علم التغذية القائم على الأدلة والدعم المستمر الحقيقي، عبر البرامج المتخصصة الموضحة أدناه.",
   "aboutPage.missionBody":
-    "أن نجعل الإرشاد التغذوي المتخصص القائم على الأدلة متاحاً وقابلاً للاستمرار فعلاً — بمساعدة كل عميل على بناء علاقة أفضل مع الطعام، خطوة واقعية في كل مرة.",
+    "أن نجعل الإرشاد التغذوي المتخصص القائم على الأدلة متاحاً وقابلاً للاستمرار فعلاً — بمساعدتك على بناء علاقة أفضل مع الطعام، خطوة واقعية في كل مرة.",
   "aboutPage.visionBody":
     "مجتمع تنبع فيه الخيارات الأفضل من الفهم لا من الحرمان — وتكون فيه الرعاية التغذوية شخصية ومبنية على المعرفة ومصمّمة لتدوم مدى الحياة.",
   "credential.licensedPharmacist": "صيدلي مرخّص",
@@ -291,4 +308,25 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "credential.nutritionSpecialist": "أخصائي تغذية",
   "credential.nutritionSpecialistBody":
     "تدريب متخصص في علم التغذية القائم على الأدلة وتغيير السلوك.",
+
+  // --- footer prose -----------------------------------------------------
+  "footer.tagline": "إرشاد موثوق في التغذية والصحة من {title} — افهم أكثر، اختر أفضل، عش بصحة.",
+  "footer.disclaimer": "محتوى تثقيفي فقط، ولا يغني عن استشارة طبية متخصصة.",
+
+  // --- index page headings ----------------------------------------------
+  "productsPage.title": "منتجات صحية وأجهزة طبية",
+  "blogPage.title": "معرفة تغذوية يمكنك الوثوق بها",
+
+  // --- packages: how credits work ---------------------------------------
+  "packagesPage.eyebrow": "البرامج",
+  "packagesPage.title": "اختر برنامجك",
+  "packagesPage.detailsEyebrow": "التفاصيل",
+  "packagesPage.detailsTitle": "كيف تعمل أرصدة الاستشارات والجلسات",
+  "packagesPage.creditsTitle": "أرصدة البرنامج",
+  "packagesPage.meetTitle": "Google Meet",
+  "packagesPage.lede":
+    "دفعة واحدة لبرنامج تغذوي أو علاجي مع متابعة — والفرق بين المستويات هو عدد استشارات الطبيب المتضمنة فقط. بلا اشتراك متكرر وبلا فواتير دورية.",
+  "productsPage.lede":
+    "تصفّح مجموعة {name} من منتجات العناية الصحية والمكمّلات وأجهزة المتابعة المنزلية.",
+  "blogPage.lede": "مقالات عملية قائمة على الأدلة تساعدك على فهم التغذية واتخاذ قرارات واثقة.",
 };

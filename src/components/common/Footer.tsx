@@ -51,8 +51,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Trusted nutrition, health, and wellness guidance from a {business.professionalTitle} —
-              understand more, choose better, live healthier.
+              {t("footer.tagline", { title: business.professionalTitle })}
             </p>
             <SocialLinks className="mt-5" />
           </div>
@@ -170,7 +169,7 @@ export function Footer() {
           </div>
         </div>
         <p className="mt-4 max-w-2xl text-xs leading-relaxed text-muted-foreground/80">
-          Educational content only and not a substitute for professional medical consultation.
+          {t("footer.disclaimer")}
           Always consult a qualified healthcare provider before making changes to your diet,
           especially if you have an existing medical condition.
         </p>

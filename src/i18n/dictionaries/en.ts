@@ -249,6 +249,30 @@ export const en = {
   "credential.nutritionSpecialist": "Nutrition Specialist",
   "credential.nutritionSpecialistBody":
     "Focused training in evidence-based dietary science and behavior change.",
+
+  // --- footer prose -----------------------------------------------------
+  "footer.tagline":
+    "Trusted nutrition, health, and wellness guidance from a {title} — understand more, choose better, live healthier.",
+  "footer.disclaimer":
+    "Educational content only and not a substitute for professional medical consultation.",
+
+  // --- index page headings ----------------------------------------------
+  "productsPage.title": "Wellness Products & Health Devices",
+  "blogPage.title": "Nutrition Knowledge You Can Trust",
+
+  // --- packages: how credits work ---------------------------------------
+  "packagesPage.eyebrow": "Programs",
+  "packagesPage.title": "Choose Your Program",
+  "packagesPage.detailsEyebrow": "The Details",
+  "packagesPage.detailsTitle": "How Consultation Credits & Meetings Work",
+  "packagesPage.creditsTitle": "Program Credits",
+  "packagesPage.meetTitle": "Google Meet",
+  "packagesPage.lede":
+    "A one-time payment for a guided nutrition or treatment program — the difference between tiers is simply how many doctor consultations are included. No recurring billing, no subscription.",
+  "productsPage.lede":
+    "Explore {name}2019s selection of branded wellness products, supplements, and home health-monitoring devices.",
+  "blogPage.lede":
+    "Practical, evidence-based articles to help you understand nutrition and make confident choices.",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

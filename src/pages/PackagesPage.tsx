@@ -66,21 +66,19 @@ export default function PackagesPage() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              Programs
+              {t("packagesPage.eyebrow")}
             </p>
             <h1
               dir="auto"
               className="mt-4 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl"
             >
-              Choose Your Program
+              {t("packagesPage.title")}
             </h1>
             <p
               dir="auto"
               className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground"
             >
-              A one-time payment for a guided nutrition or treatment program — the difference
-              between tiers is simply how many doctor consultations are included. No recurring
-              billing, no subscription.
+              {t("packagesPage.lede")}
             </p>
           </div>
         </div>
@@ -96,13 +94,13 @@ export default function PackagesPage() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              The Details
+              {t("packagesPage.detailsEyebrow")}
             </p>
             <h2
               dir="auto"
               className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
             >
-              How Consultation Credits &amp; Meetings Work
+              {t("packagesPage.detailsTitle")}
             </h2>
           </div>
 
@@ -113,7 +111,7 @@ export default function PackagesPage() {
                   <CalendarCheck className="h-5 w-5" />
                 </div>
                 <h3 dir="auto" className="mt-4 font-display text-base font-bold text-navy">
-                  Program Credits
+                  {t("packagesPage.creditsTitle")}
                 </h3>
                 <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   Each program includes a fixed number of consultation credits, granted once at
