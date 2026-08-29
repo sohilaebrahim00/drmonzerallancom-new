@@ -1,6 +1,7 @@
 import { LOCALES, LOCALE_META, type Locale } from "@/i18n";
 import { useLocale } from "@/i18n";
 import { cn } from "@/lib/utils";
+import { SHOW_LANGUAGE_SWITCH } from "@/config/features";
 
 /**
  * The language switch.
@@ -20,6 +21,14 @@ import { cn } from "@/lib/utils";
  */
 export function LanguageSwitch({ className }: { className?: string }) {
   const { locale, setLocale } = useLocale();
+
+  /**
+   * Hidden until the dictionaries cover the IN list — see SHOW_LANGUAGE_SWITCH
+   * in src/config/features.ts for the removal condition and who decides it.
+   * Returning null here hides the CONTROL only; the provider, dir/lang, the
+   * Arabic font and every rtl: variant underneath stay live.
+   */
+  if (!SHOW_LANGUAGE_SWITCH) return null;
 
   return (
     <div
