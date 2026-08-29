@@ -26,8 +26,13 @@ export interface PhotoProps {
   priority?: boolean;
   /** Meaning carried by neighbouring text — renders alt="" aria-hidden. */
   decorative?: boolean;
-  /** Optional narrow-screen WebP crop, with the media query it applies below. */
-  mobileWebp?: { src: string; media: string };
+  /**
+   * Optional narrow-screen crop, given as a path without extension like
+   * `base`. Both a WebP and a JPEG source are emitted for it, so a browser
+   * without WebP support still gets the phone-sized file rather than falling
+   * all the way back to the wide one.
+   */
+  mobileSource?: { base: string; media: string };
   sizes?: string;
 }
 
@@ -40,12 +45,20 @@ export function Photo({
   imgClassName,
   priority = false,
   decorative = false,
-  mobileWebp,
+  mobileSource,
   sizes,
 }: PhotoProps) {
   return (
     <picture className={className}>
-      {mobileWebp && <source media={mobileWebp.media} srcSet={mobileWebp.src} type="image/webp" />}
+      {/* Order is the selection algorithm: the browser takes the FIRST source
+          whose media and type it can use, so narrow-screen candidates must
+          precede the wide ones, and WebP must precede JPEG within each pair. */}
+      {mobileSource && (
+        <source media={mobileSource.media} srcSet={`${mobileSource.base}.webp`} type="image/webp" />
+      )}
+      {mobileSource && (
+        <source media={mobileSource.media} srcSet={`${mobileSource.base}.jpg`} type="image/jpeg" />
+      )}
       <source srcSet={`${base}.webp`} type="image/webp" />
       <img
         src={`${base}.jpg`}

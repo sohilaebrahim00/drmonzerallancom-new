@@ -89,7 +89,7 @@ export function BeforeAfter() {
                   base="/images/plate-before"
                   width={1400}
                   height={1050}
-                  alt="A cluttered table at night: a takeaway meal, a bottle of cola and a blister pack of pills."
+                  alt="A dimly lit table at night: an open takeaway box of fried chicken and chips, a bottle of cola, a half-used blister pack of pills, a crumpled napkin and a phone."
                   imgClassName="h-full w-full object-cover"
                 />
               }
@@ -98,7 +98,7 @@ export function BeforeAfter() {
                   base="/images/plate-after"
                   width={1400}
                   height={1050}
-                  alt="The same table in daylight: grilled fish, a fresh salad and a glass of water."
+                  alt="The same table in daylight: a whole grilled fish with a green salad, black olives and lemon slices, beside a glass of water."
                   imgClassName="h-full w-full object-cover"
                 />
               }

@@ -75,7 +75,7 @@ export function AboutPreview() {
               base="/images/pharmacy-counter"
               width={1600}
               height={1066}
-              alt="A plate of fresh vegetables on a pharmacy counter, with medicine shelves behind it."
+              alt="A plate of cherry tomatoes, sliced cucumber and olives on a wooden counter, with a handwritten notepad beside it and shelves of medicine boxes behind."
               imgClassName="w-full"
               sizes="(min-width: 1280px) 1200px, 100vw"
             />

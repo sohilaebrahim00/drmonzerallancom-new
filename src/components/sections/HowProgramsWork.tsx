@@ -63,7 +63,7 @@ export function HowProgramsWork() {
           height={1280}
           alt=""
           decorative
-          mobileWebp={{ src: "/images/not-medication-mobile.webp", media: "(max-width: 700px)" }}
+          mobileSource={{ base: "/images/not-medication-mobile", media: "(max-width: 700px)" }}
           className="block h-full w-full"
           imgClassName="h-full w-full object-cover rtl:-scale-x-100"
           sizes="100vw"
