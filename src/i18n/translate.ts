@@ -47,11 +47,38 @@ function selectForm(forms: Exclude<Entry, string>, count: number, locale: Locale
   return forms[category] ?? forms.other;
 }
 
+/**
+ * Bidi isolation for interpolated values.
+ *
+ * U+2068 FIRST STRONG ISOLATE ... U+2069 POP DIRECTIONAL ISOLATE. The browser
+ * treats what is between them as a self-contained run, takes its direction
+ * from its own first strong character, and — crucially — does not let the
+ * neutral characters on either side of it reorder.
+ *
+ * WHY NOT <bdi>: `t()` returns a string, not JSX, so an element cannot be
+ * injected into the middle of one. These two characters are exactly what <bdi>
+ * compiles down to in the bidi algorithm, they need no wrapper component, and
+ * they work identically in an attribute (`aria-label`, `placeholder`) where an
+ * element could not go at all.
+ *
+ * WHAT IT FIXES: "تم العثور على {count} سؤال" with count=17 is an Arabic
+ * sentence containing a Latin-digit run. Without isolation the digits and the
+ * neutral characters beside them can reorder — the classic "17" landing on the
+ * wrong side of its own sentence. The same applies to any Latin value we
+ * interpolate later: a price, "Google Meet", an email address.
+ *
+ * They are invisible, so they change rendering and nothing else. Do not use
+ * `t()` output as a key for comparison or in a URL without stripping them.
+ */
+const FSI = "\u2068";
+const PDI = "\u2069";
+
 function interpolate(template: string, params: TranslationParams, locale: Locale): string {
   return template.replace(/\{(\w+)\}/g, (whole, name: string) => {
     const value = params[name];
     if (value === undefined) return whole;
-    return typeof value === "number" ? formatCount(value, locale) : value;
+    const rendered = typeof value === "number" ? formatCount(value, locale) : value;
+    return FSI + rendered + PDI;
   });
 }
 

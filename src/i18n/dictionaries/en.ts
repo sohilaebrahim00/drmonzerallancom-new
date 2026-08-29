@@ -139,6 +139,31 @@ export const en = {
 
   "faqSection.eyebrow": "FAQ",
   "faqSection.title": "Frequently Asked Questions",
+
+  // --- page furniture ---------------------------------------------------
+  "faqPage.eyebrow": "Knowledge Center",
+  "faqPage.description":
+    "Search or filter by topic to find answers about programs, consultations, billing, and more.",
+  "faqPage.searchPlaceholder": "Search questions…",
+  "faqPage.searchAriaLabel": "Search FAQs",
+  "faqPage.categoryAll": "All",
+  "faqPage.noResults": "No questions match your search. Try another keyword or category.",
+  "faqPage.stillHaveQuestion": "Still Have a Question?",
+  "faqPage.stillHaveQuestionBody":
+    "Ask directly, or explore programs to see what's included in each package.",
+  "faqPage.explorePrograms": "Explore Programs",
+  "faqPage.contactUs": "Contact Us",
+
+  "productsPage.searchPlaceholder": "Search products…",
+  "productsPage.searchAriaLabel": "Search products",
+
+  "blogPage.searchPlaceholder": "Search articles…",
+  "blogPage.searchAriaLabel": "Search articles",
+  "blogPage.featured": "Featured Article",
+  "blogPage.readArticle": "Read the Article",
+
+  "common.minRead": "min read",
+  "common.read": "Read",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

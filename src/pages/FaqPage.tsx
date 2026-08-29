@@ -20,8 +20,10 @@ import {
 import { faqCategories, faqs, type FaqCategory } from "@/data/faqs";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 export default function FaqPage() {
+  const t = useTranslate();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FaqCategory | "All">("All");
 
@@ -79,9 +81,9 @@ export default function FaqPage() {
           <div>
             <div className={cn(PHOTO_FRAME, "bg-card p-6 sm:p-10")}>
               <SectionHeading
-                eyebrow="Knowledge Center"
-                title="Frequently Asked Questions"
-                description="Search or filter by topic to find answers about programs, consultations, billing, and more."
+                eyebrow={t("faqPage.eyebrow")}
+                title={t("faqSection.title")}
+                description={t("faqPage.description")}
                 id="faq-page-heading"
                 level="h1"
               />
@@ -94,8 +96,8 @@ export default function FaqPage() {
                   <Input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search questions…"
-                    aria-label="Search FAQs"
+                    placeholder={t("faqPage.searchPlaceholder")}
+                    aria-label={t("faqPage.searchAriaLabel")}
                     className="ps-10"
                   />
                 </div>
@@ -115,45 +117,51 @@ export default function FaqPage() {
                         : "border-border text-navy/70 hover:border-turquoise hover:text-turquoise",
                     )}
                   >
-                    {category}
+                    {/* Only "All" is furniture. The other chips are the FAQ
+                        taxonomy from src/data/faqs.ts — the doctor's own
+                        content, which PHASE_8B_PROMPT leaves to him. */}
+                    {category === "All" ? t("faqPage.categoryAll") : category}
                   </button>
                 ))}
               </div>
 
               <p
+                dir="auto"
                 className="mt-6 text-center text-xs font-medium text-muted-foreground"
                 role="status"
               >
-                {filtered.length} {filtered.length === 1 ? "question" : "questions"} found
+                {t("faq.resultCount", { count: filtered.length })}
               </p>
 
               {filtered.length > 0 ? (
                 <FaqAccordion items={filtered} showCategory className="mt-6" />
               ) : (
-                <p className="py-16 text-center text-sm text-muted-foreground">
-                  No questions match your search. Try another keyword or category.
+                <p dir="auto" className="py-16 text-center text-sm text-muted-foreground">
+                  {t("faqPage.noResults")}
                 </p>
               )}
             </div>
           </div>
 
           <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm sm:p-8">
-            <h2 className="font-display text-lg font-bold text-navy">Still Have a Question?</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Ask directly, or explore programs to see what&apos;s included in each package.
+            <h2 dir="auto" className="font-display text-lg font-bold text-navy">
+              {t("faqPage.stillHaveQuestion")}
+            </h2>
+            <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {t("faqPage.stillHaveQuestionBody")}
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <Link
                 to="/packages"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
               >
-                <CalendarCheck className="h-4 w-4" /> Explore Programs
+                <CalendarCheck className="h-4 w-4" /> {t("faqPage.explorePrograms")}
               </Link>
               <Link
                 to="/contact"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise"
               >
-                <MessageCircle className="h-4 w-4" /> Contact Us
+                <MessageCircle className="h-4 w-4" /> {t("faqPage.contactUs")}
               </Link>
             </div>
           </div>

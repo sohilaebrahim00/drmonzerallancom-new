@@ -17,6 +17,22 @@ import type { TranslationKey } from "./en";
  * translated here and must not be machine-translated: it is medical copy under
  * his name.
  */
+/**
+ * ── THE RULE, when a word could go either way ──────────────────────────
+ * THE ARABIC MUST NOT ASSERT MORE THAN THE ENGLISH DOES.
+ *
+ * Worked example, because it is counter-intuitive. `testimonials.eyebrow` is
+ * "Client Reviews". Arabic offers "العملاء" (clients) or "المراجعين" (those
+ * who attend a clinic). "المراجعين" reads as the safer, more clinical,
+ * more medical-sounding choice — and it is the wrong one. The English says
+ * "clients" and not "patients" deliberately, because a patient relationship
+ * carries different regulatory weight. Arabic that says "المراجعين" claims a
+ * clinical relationship the English is careful not to claim.
+ *
+ * So the test is not "which word sounds more professional". It is "does this
+ * word claim anything the English does not". If it does, use the plainer one
+ * and flag it.
+ */
 export const ar: Partial<Record<TranslationKey, Entry>> = {
   // Six forms, because Arabic has six. `two` is a real dual noun
   // ("سؤالين"), not the plural with a 2 in front of it.
@@ -94,7 +110,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
 
   // --- home sections: heading blocks ------------------------------------
   "services.eyebrow": "الخدمات",
-  "services.title": "رعاية تغذوية متخصصة في كل مرحلة من مراحل العمر",
+  "services.title": "رعاية تغذوية متخصصة في كل مرحلة من مراحل الحياة",
   "services.description":
     "اثنا عشر برنامجاً متخصصاً، كل منها مصمّم ليناسب جسمك وأهدافك وحالتك الطبية.",
 
@@ -104,7 +120,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
     "برنامج علاجي مع متابعة طبية عن قرب — اختر مستوى الدعم الاستشاري الذي تحتاجه، دون أي اشتراك متكرر.",
 
   "howItWorks.eyebrow": "البرامج",
-  "howItWorks.title": "كيف تسير الأمور",
+  "howItWorks.title": "كيف يسير البرنامج",
   "howItWorks.description":
     "من اختيار البرنامج إلى استشارتك الأولى — خطوات بسيطة وواضحة، وبدفعة واحدة.",
 
@@ -117,7 +133,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "blog.description": "مقالات مجانية قائمة على الأدلة، تتناول المواضيع الأكثر أهمية لصحتك.",
 
   "discovery.eyebrow": "تصفّح حسب الموضوع",
-  "discovery.title": "اعثر على الإرشاد فيما يهمّك أكثر",
+  "discovery.title": "إرشادات حول ما يهمّك أكثر",
 
   "gallery.eyebrow": "معرض الصور",
   "gallery.title": "لمحة من داخل العيادة",
@@ -147,4 +163,28 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
 
   "faqSection.eyebrow": "الأسئلة الشائعة",
   "faqSection.title": "الأسئلة الشائعة",
+
+  // --- page furniture ---------------------------------------------------
+  "faqPage.eyebrow": "مركز المعرفة",
+  "faqPage.description":
+    "ابحث أو صفِّ حسب الموضوع للعثور على إجابات حول البرامج والاستشارات والفواتير وغيرها.",
+  "faqPage.searchPlaceholder": "ابحث في الأسئلة…",
+  "faqPage.searchAriaLabel": "البحث في الأسئلة الشائعة",
+  "faqPage.categoryAll": "الكل",
+  "faqPage.noResults": "لا توجد أسئلة تطابق بحثك. جرّب كلمة أخرى أو تصنيفاً آخر.",
+  "faqPage.stillHaveQuestion": "هل لديك سؤال آخر؟",
+  "faqPage.stillHaveQuestionBody": "اسأل مباشرة، أو تصفّح البرامج لمعرفة ما يتضمنه كل برنامج.",
+  "faqPage.explorePrograms": "تصفّح البرامج",
+  "faqPage.contactUs": "تواصل معنا",
+
+  "productsPage.searchPlaceholder": "ابحث في المنتجات…",
+  "productsPage.searchAriaLabel": "البحث في المنتجات",
+
+  "blogPage.searchPlaceholder": "ابحث في المقالات…",
+  "blogPage.searchAriaLabel": "البحث في المقالات",
+  "blogPage.featured": "مقال مختار",
+  "blogPage.readArticle": "اقرأ المقال",
+
+  "common.minRead": "دقائق قراءة",
+  "common.read": "اقرأ",
 };
