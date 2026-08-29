@@ -35,7 +35,7 @@ import { startProgramPackageCheckout } from "@/services/checkoutService";
 import { openExternal } from "@/lib/externalLink";
 import { whatsappLink } from "@/config/contact";
 import { cn } from "@/lib/utils";
-import { useTranslate } from "@/i18n";
+import { useTranslate, PACKAGE_LABELS, packageFeatures } from "@/i18n";
 
 const purchaseSchema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name."),
@@ -108,7 +108,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                         pkg.popular ? "text-white" : "text-navy",
                       )}
                     >
-                      {pkg.name}
+                      {t(PACKAGE_LABELS[pkg.slug].name)}
                     </h3>
                     <p
                       className={cn(
@@ -116,7 +116,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                         pkg.popular ? "text-white/70" : "text-muted-foreground",
                       )}
                     >
-                      {pkg.tagline}
+                      {t(PACKAGE_LABELS[pkg.slug].tagline)}
                     </p>
 
                     <div className="mt-5 flex items-baseline gap-2">
@@ -171,7 +171,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                     </span>
 
                     <ul className="mt-6 flex-1 space-y-2.5">
-                      {pkg.features.map((feature) => (
+                      {packageFeatures(pkg, t).map((feature) => (
                         <li key={feature} className="flex items-start gap-2 text-sm">
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-turquoise" />
                           <span className={pkg.popular ? "text-white/85" : "text-navy/80"}>
@@ -189,7 +189,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                         pkg.popular && "bg-turquoise text-navy hover:bg-turquoise/90",
                       )}
                     >
-                      {pkg.cta}
+                      {t("pkg.cta.startProgram")}
                     </Button>
                   </div>
                 </Reveal>

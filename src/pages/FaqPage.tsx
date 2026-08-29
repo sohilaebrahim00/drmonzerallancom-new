@@ -6,6 +6,7 @@ import { Seo } from "@/components/seo/Seo";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { PhotoBackdrop } from "@/components/common/PhotoBackdrop";
 import { FaqAccordion } from "@/components/common/FaqAccordion";
+import { toDisplay, faqHaystack } from "@/i18n/faqDisplay";
 import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { SECTION_PADDING, SECTION_WIDTHS } from "@/components/common/sectionWidths";
 import { Input } from "@/components/ui/input";
@@ -31,11 +32,10 @@ export default function FaqPage() {
     return faqs.filter((faq) => {
       const matchesCategory = activeCategory === "All" || faq.category === activeCategory;
       const q = query.trim().toLowerCase();
-      const matchesQuery =
-        !q || faq.question.toLowerCase().includes(q) || faq.answer.toLowerCase().includes(q);
+      const matchesQuery = !q || faqHaystack(faq, t).includes(q);
       return matchesCategory && matchesQuery;
     });
-  }, [query, activeCategory]);
+  }, [query, activeCategory, t]);
 
   const jsonLd = [
     faqSchema(faqs),
@@ -137,7 +137,7 @@ export default function FaqPage() {
               </p>
 
               {filtered.length > 0 ? (
-                <FaqAccordion items={filtered} showCategory className="mt-6" />
+                <FaqAccordion items={toDisplay(filtered, t)} showCategory className="mt-6" />
               ) : (
                 <p dir="auto" className="py-16 text-center text-sm text-muted-foreground">
                   {t("faqPage.noResults")}

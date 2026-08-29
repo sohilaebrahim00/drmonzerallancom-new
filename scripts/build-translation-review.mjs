@@ -83,7 +83,16 @@ const ar = parseDict(readFileSync(resolve(root, "src/i18n/dictionaries/ar.ts"), 
  * confidence — the prefixes below do that automatically so nobody has to
  * remember to add them one at a time.
  */
-const FLAG_PREFIXES = ["aboutPage.", "credential.", "intake.", "legal."];
+const FLAG_PREFIXES = [
+  "aboutPage.",
+  "credential.",
+  "intake.",
+  "legal.",
+  "pkg.",
+  "faqItem.",
+  "product.",
+  "blog.englishOnly",
+];
 const FLAGGED = {
   "F-5": {
     question:
@@ -147,6 +156,9 @@ const SECTIONS = [
     "Pages — FAQ, products, blog, packages, gallery",
     ["faqPage.", "productsPage.", "blogPage.", "packagesPage.", "galleryPage.", "faq."],
   ],
+  ["Program packages — what a buyer is choosing between", ["pkg."], true],
+  ["FAQ — questions and answers", ["faqItem."], true],
+  ["Products — names and descriptions", ["product."], true],
   ["Category labels", ["faqCategory.", "articleCategory.", "productCategory.", "videoCategory."]],
   ["Everything else", ["common."]],
 ];

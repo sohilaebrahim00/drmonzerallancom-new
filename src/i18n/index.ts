@@ -14,3 +14,6 @@ export {
   CREDENTIAL_LABELS,
 } from "./categoryLabels";
 export type { Entry, PluralForms, TranslationParams } from "./types";
+export { PACKAGE_LABELS, packageFeatures } from "./packageLabels";
+export { FAQ_LABELS } from "./faqLabels";
+export { productName, productShort, productHaystack } from "./productDisplay";

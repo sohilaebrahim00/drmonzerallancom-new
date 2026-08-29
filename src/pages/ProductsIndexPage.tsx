@@ -8,7 +8,7 @@ import { BookingButton } from "@/components/booking/BookingButton";
 import { Input } from "@/components/ui/input";
 import { getPublishedProducts, productCategories, type ProductCategory } from "@/data/products";
 import { cn } from "@/lib/utils";
-import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
+import { useTranslate, PRODUCT_CATEGORY_LABELS, productHaystack } from "@/i18n";
 import { business } from "@/data/business";
 
 export default function ProductsIndexPage() {
@@ -21,15 +21,10 @@ export default function ProductsIndexPage() {
     return allProducts.filter((product) => {
       const matchesCategory = activeCategory === "All" || product.category === activeCategory;
       const q = query.trim().toLowerCase();
-      const matchesQuery =
-        !q ||
-        product.name.toLowerCase().includes(q) ||
-        product.category.toLowerCase().includes(q) ||
-        (product.strength ?? "").toLowerCase().includes(q) ||
-        product.shortDescription.toLowerCase().includes(q);
+      const matchesQuery = !q || productHaystack(product, t).includes(q);
       return matchesCategory && matchesQuery;
     });
-  }, [allProducts, query, activeCategory]);
+  }, [allProducts, query, activeCategory, t]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:px-10 sm:py-20">

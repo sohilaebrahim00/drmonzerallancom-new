@@ -7,6 +7,7 @@ import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { SoldOutBadge } from "@/components/products/SoldOutBadge";
 import { Photo } from "@/components/common/Photo";
+import { productName, productShort } from "@/i18n";
 import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -22,7 +23,7 @@ export function ProductCard({ product }: { product: Product }) {
         {product.mainImage ? (
           <Photo
             src={product.mainImage}
-            alt={product.name}
+            alt={productName(product, t)}
             width={480}
             height={480}
             className="block h-full w-full"
@@ -41,7 +42,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col gap-2.5 p-6">
         <h3 dir="auto" className="font-display text-lg font-bold leading-snug text-navy">
-          {product.name}
+          {productName(product, t)}
         </h3>
         {(product.strength || product.quantity) && (
           <p dir="auto" className="text-xs font-medium text-muted-foreground">
@@ -49,7 +50,7 @@ export function ProductCard({ product }: { product: Product }) {
           </p>
         )}
         <p dir="auto" className="flex-1 text-sm leading-relaxed text-muted-foreground">
-          {product.shortDescription}
+          {productShort(product, t)}
         </p>
         <p dir="auto" className="font-display text-lg font-extrabold text-primary">
           {product.priceLabel}
@@ -70,7 +71,7 @@ export function ProductCard({ product }: { product: Product }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border bg-secondary/60 px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                aria-label={`Ask about availability for ${product.name}`}
+                aria-label={`Ask about availability for ${productName(product, t)}`}
               >
                 <MessageCircle className="h-3.5 w-3.5" />
                 Ask About Availability

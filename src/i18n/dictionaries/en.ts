@@ -329,6 +329,164 @@ export const en = {
   // Only this notice is, and it says exactly that.
   "legal.englishAuthoritative":
     "This page is available in English only. The English text is the authoritative version and is the one that applies.",
+  // --- package copy (ALL FLAGGED — product copy, sold to patients) --------
+  "pkg.dietBasic.name": "Diet Basic",
+  "pkg.dietBasic.tagline": "Start your nutrition program with expert guidance",
+  "pkg.dietPlus.name": "Diet Plus",
+  "pkg.dietPlus.tagline": "More check-ins to keep your program on track",
+  "pkg.dietPremium.name": "Diet Premium",
+  "pkg.dietPremium.tagline": "The most guided path to your goal",
+  "pkg.treatmentBasic.name": "Treatment Basic",
+  "pkg.treatmentBasic.tagline": "Begin your treatment plan with a first consultation",
+  "pkg.treatmentPlus.name": "Treatment Plus",
+  "pkg.treatmentPlus.tagline": "Closer follow-up through your treatment plan",
+  "pkg.treatmentPremium.name": "Treatment Premium",
+  "pkg.treatmentPremium.tagline": "The closest level of medical follow-up available",
+  "pkg.feature.nutritionProgram": "Nutrition program",
+  "pkg.feature.treatmentPlan": "Treatment plan",
+  "pkg.feature.monthlyFollowUp": "Monthly follow-up",
+  "pkg.feature.doctorConsultations": {
+    one: "{count} doctor consultation",
+    other: "{count} doctor consultations",
+  },
+  "pkg.cta.startProgram": "Start Your Program",
+  // --- FAQ content (ALL FLAGGED — product copy a buyer relies on) --------
+  "faqItem.q1": "What's included in a program?",
+  "faqItem.a1":
+    "Every program is a one-time purchase that includes a set number of doctor consultation credits, access to your account and consultation history, and ongoing treatment support. Treatment programs come in Basic, Plus, and Premium tiers that differ only in how many consultations are included — compare them on the Packages page.",
+  "faqItem.q2": "Is this a subscription? Will I be billed again?",
+  "faqItem.a2":
+    "No. Every program is a single, one-time payment — there is no recurring billing, and nothing renews automatically. If you'd like more consultations later, you can purchase another program at any time.",
+  "faqItem.q3": "What happens in the first consultation?",
+  "faqItem.a3":
+    "Your first session is a full assessment of your health history, current eating habits, lifestyle, and goals. By the end, you'll leave with a clear picture of your plan and next steps — no guesswork.",
+  "faqItem.q4": "Do you offer online consultations?",
+  "faqItem.a4":
+    "Yes. Program consultations are conducted online over Google Meet, and every service can also be booked in person — choose whichever fits your schedule and comfort best.",
+  "faqItem.q5": "How do consultation credits work?",
+  "faqItem.a5":
+    "Each program includes a fixed number of consultation credits, granted once when you purchase (2, 3, or 4, depending on the tier you choose). You use one credit each time you request an online consultation from your account.",
+  "faqItem.q6": "What happens if I don't use all my credits?",
+  "faqItem.a6":
+    "Your credits stay on your account — they're granted once at purchase and don't expire on a monthly cycle, since there's no recurring billing to tie them to. They are tied to your account and are non-transferable.",
+  "faqItem.q7": "How do I join my online consultation?",
+  "faqItem.a7":
+    "Once a consultation request is approved, a Google Meet link is attached to that appointment in your account. You'll be able to join directly from there at your scheduled time.",
+  "faqItem.q8": "How do I create an account?",
+  "faqItem.a8":
+    "Creating an account happens automatically when you purchase a program. Visit the Packages page, choose a Treatment program, and complete secure payment — your account activates and you'll set your password from there.",
+  "faqItem.q9": "Is my payment information secure?",
+  "faqItem.a9":
+    "Payments are processed through Stripe, a secure, PCI-compliant payment provider — this website will never ask you to send card details directly, and we never see or store them.",
+  "faqItem.q10": "Can I purchase products directly on the site?",
+  "faqItem.a10":
+    "All products currently listed are marked Out of Stock. You're welcome to ask about availability from any product page, and we'll follow up directly with updates.",
+  "faqItem.q11": "How soon will I see results?",
+  "faqItem.a11":
+    "It depends on your goal and starting point, but most clients notice meaningful changes in energy and habits within 2–3 weeks, with visible physical results typically building over 4–8 weeks.",
+  "faqItem.q12": "Is the plan built around foods I already eat?",
+  "faqItem.a12":
+    "Always. Every plan starts from your current lifestyle, preferences, and culture — it's adapted to you, not a generic template you're forced to follow.",
+  "faqItem.q13": "Can you work with an existing medical condition?",
+  "faqItem.a13":
+    "Yes, clinical nutrition for conditions like diabetes, hypertension, and high cholesterol is a core part of the practice. Plans are coordinated with your physician's guidance when needed.",
+  "faqItem.q14": "Do you provide guidance for seniors?",
+  "faqItem.a14":
+    "Yes — senior nutrition is a dedicated service, covering bone and muscle support, appetite-friendly menus, and medication-aware planning for later life.",
+  "faqItem.q15": "Do you support patients going through cancer treatment?",
+  "faqItem.a15":
+    "Yes — nutrition support for cancer patients is a dedicated service, for during and after treatment. It focuses on maintaining weight and muscle, and on managing appetite loss, nausea, and taste changes so you can keep eating well through side effects. It is supportive nutritional care that works alongside your oncology team and complements — never replaces — the treatment plan from your oncologist. Questions about your treatment, prognosis, or whether a specific food or supplement is safe during chemotherapy need to go to the doctor together with your oncology team, not to a general answer.",
+  "faqItem.q16": "How do I book a session?",
+  "faqItem.a16":
+    "Use the “Book a Session” button anywhere on the site to choose your service, preferred date and time, and session type. You'll receive a confirmation immediately after booking.",
+  "faqItem.q17": "What is your cancellation policy?",
+  "faqItem.a17":
+    "We ask for at least 24 hours' notice to reschedule or cancel a session so the time slot can be offered to another client. Reach out via WhatsApp or the Contact page and we'll take care of it.",
+  // --- product copy (ALL FLAGGED — a buyer relies on this) ----------------
+  "product.omega3KrillOil.name": "Omega-3 Krill Oil",
+  "product.omega3KrillOil.short":
+    "A Monzer Allan-branded krill oil dietary supplement providing about 240 mg of omega-3s per serving.",
+  "product.irishMossBladderwrack.name": "Irish Moss + Bladderwrack",
+  "product.irishMossBladderwrack.short":
+    "A Monzer Allan-branded sea mineral blend supplement combining Irish moss and bladderwrack.",
+  "product.resveratrol.name": "Resveratrol",
+  "product.resveratrol.short":
+    "A Monzer Allan-branded resveratrol supplement positioned for antioxidant and cellular support.",
+  "product.betaCarotene.name": "Beta Carotene",
+  "product.betaCarotene.short":
+    "A Monzer Allan-branded beta carotene supplement, a vitamin A precursor.",
+  "product.norwegianCodLiverOil60.name": "Norwegian Cod Liver Oil — 60 Capsules",
+  "product.norwegianCodLiverOil60.short":
+    "A Monzer Allan-branded Norwegian cod liver oil supplement with omega-3s and vitamins A & D.",
+  "product.tudca.name": "TUDCA",
+  "product.tudca.short":
+    "A Monzer Allan-branded TUDCA supplement positioned for liver and digestive support.",
+  "product.milkThistleExtract.name": "Milk Thistle Extract",
+  "product.milkThistleExtract.short":
+    "A Monzer Allan-branded milk thistle extract supplement standardized to 80% silymarin.",
+  "product.glucosamineChondroitin.name": "Glucosamine Chondroitin",
+  "product.glucosamineChondroitin.short":
+    "A Monzer Allan-branded glucosamine and chondroitin supplement for joint and mobility support.",
+  "product.berberinePlus.name": "Berberine Plus",
+  "product.berberinePlus.short":
+    "A Monzer Allan-branded berberine supplement positioned for metabolic and glucose support.",
+  "product.alphaLipoicAcid.name": "Alpha Lipoic Acid",
+  "product.alphaLipoicAcid.short":
+    "A Monzer Allan-branded alpha lipoic acid supplement for cellular and metabolic support.",
+  "product.potassiumGluconate.name": "Potassium Gluconate",
+  "product.potassiumGluconate.short":
+    "A Monzer Allan-branded potassium gluconate supplement for electrolyte and wellness support.",
+  "product.spirulina.name": "Spirulina",
+  "product.spirulina.short":
+    "A Monzer Allan-branded spirulina supplement for greens and daily wellness support.",
+  "product.shilajitExtraStrength.name": "Shilajit Extra Strength",
+  "product.shilajitExtraStrength.short":
+    "A Monzer Allan-branded Shilajit supplement labeled as a mineral vitality formula.",
+  "product.stingingNettle.name": "Stinging Nettle",
+  "product.stingingNettle.short":
+    "A Monzer Allan-branded stinging nettle supplement labeled as a men's support formula.",
+  "product.tongkatAli.name": "Tongkat Ali",
+  "product.tongkatAli.short":
+    "A Monzer Allan-branded Tongkat Ali (LJ100) supplement labeled as a strength and vitality formula.",
+  "product.superMaleBComplex.name": "Super Male B-Complex",
+  "product.superMaleBComplex.short":
+    "A Monzer Allan-branded B-Complex supplement labeled as a performance formula.",
+  "product.glutathione.name": "Glutathione",
+  "product.glutathione.short":
+    "A Monzer Allan-branded glutathione supplement for antioxidant and cellular defense support.",
+  "product.grassFedBeefLiver.name": "Grass-Fed Beef Liver",
+  "product.grassFedBeefLiver.short":
+    "A Monzer Allan-branded grass-fed beef liver whole food supplement.",
+  "product.vitaminD3K2.name": "Vitamin D3K2",
+  "product.vitaminD3K2.short":
+    "A Monzer Allan-branded Vitamin D3 + K2 (MK-7) supplement for bone, heart, and immune support.",
+  "product.norwegianCodLiverOil120.name": "Norwegian Cod Liver Oil — 120 Capsules",
+  "product.norwegianCodLiverOil120.short":
+    "A Monzer Allan-branded Norwegian cod liver oil supplement with vitamins A & D and omega-3.",
+  "product.coq10.name": "CoQ10",
+  "product.coq10.short":
+    "A Monzer Allan-branded CoQ10 supplement for heart and cellular energy support.",
+  "product.advancedBComplex.name": "Advanced B-Complex",
+  "product.advancedBComplex.short":
+    "A Monzer Allan-branded B-Complex supplement labeled as a complete daily energy formula.",
+  "product.nonContactInfraredThermometer.name": "Non-Contact Infrared Thermometer",
+  "product.nonContactInfraredThermometer.short":
+    "A Monzer Allan-branded non-contact infrared thermometer with a 3-color fever alert display.",
+  "product.digitalThermometer.name": "Digital Thermometer",
+  "product.digitalThermometer.short":
+    "A Monzer Allan-branded digital thermometer for at-home temperature readings.",
+  "product.digitalBloodPressureMonitor.name": "Digital Upper-Arm Blood Pressure Monitor",
+  "product.digitalBloodPressureMonitor.short":
+    "A Monzer Allan-branded digital upper-arm blood pressure monitor with a universal cuff.",
+  "product.smartBodyCompositionScale.name": "Smart Body Composition Scale",
+  "product.smartBodyCompositionScale.short":
+    "A Monzer Allan-branded smart scale that tracks body composition metrics with Wi-Fi sync.",
+  "product.bloodGlucoseMeterKit.name": "Blood Glucose Meter Kit",
+  "product.bloodGlucoseMeterKit.short":
+    "A Monzer Allan-branded blood glucose meter kit for at-home glucose testing.",
+  // --- articles are English only (ALL FLAGGED) ---------------------------
+  "blog.englishOnly":
+    "The articles are written by Dr. Monzer Allan and are available in English only.",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

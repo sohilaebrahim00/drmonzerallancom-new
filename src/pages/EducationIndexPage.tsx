@@ -8,10 +8,11 @@ import { Photo } from "@/components/common/Photo";
 import { Input } from "@/components/ui/input";
 import { articles, categories, estimateReadingTime, type ArticleCategory } from "@/data/articles";
 import { cn } from "@/lib/utils";
-import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
+import { useTranslate, useLocale, ARTICLE_CATEGORY_LABELS } from "@/i18n";
 
 export default function EducationIndexPage() {
   const t = useTranslate();
+  const { locale } = useLocale();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ArticleCategory | "All">("All");
@@ -62,6 +63,18 @@ export default function EducationIndexPage() {
         <p dir="auto" className="mt-4 text-base leading-relaxed text-muted-foreground">
           {t("blogPage.lede")}
         </p>
+        {/* Article titles and bodies stay English — those genuinely are the
+            doctor's own writing, not product copy. Saying so plainly beats
+            letting an Arabic reader discover it by clicking through. */}
+        {locale !== "en" && (
+          <p
+            dir="rtl"
+            lang="ar"
+            className="mx-auto mt-4 max-w-xl rounded-xl border border-border/70 bg-secondary/40 px-4 py-3 text-sm leading-loose text-navy"
+          >
+            {t("blog.englishOnly")}
+          </p>
+        )}
       </div>
 
       {featured && (

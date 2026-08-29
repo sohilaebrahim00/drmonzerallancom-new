@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { PhotoBackdrop } from "@/components/common/PhotoBackdrop";
 import { FaqAccordion } from "@/components/common/FaqAccordion";
+import { toDisplay } from "@/i18n/faqDisplay";
 import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { SECTION_PADDING, SECTION_WIDTHS } from "@/components/common/sectionWidths";
 import { faqs } from "@/data/faqs";
@@ -46,7 +47,7 @@ export function FaqPreview() {
                 title={t("faqSection.title")}
                 id="faq-preview-heading"
               />
-              <FaqAccordion items={featured} className="mt-8" />
+              <FaqAccordion items={toDisplay(featured, t)} className="mt-8" />
             </div>
           </div>
 

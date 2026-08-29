@@ -20,7 +20,7 @@ import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { breadcrumbSchema, productSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
+import { useTranslate, PRODUCT_CATEGORY_LABELS, productName, productShort } from "@/i18n";
 
 export default function ProductDetailPage() {
   const t = useTranslate();
@@ -55,8 +55,8 @@ export default function ProductDetailPage() {
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
       <Seo
-        title={product.name}
-        description={product.shortDescription}
+        title={productName(product, t)}
+        description={productShort(product, t)}
         path={`/products/${product.slug}`}
         jsonLd={jsonLd}
       />
@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{product.name}</BreadcrumbPage>
+            <BreadcrumbPage>{productName(product, t)}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -81,7 +81,7 @@ export default function ProductDetailPage() {
         <div>
           <div
             role="group"
-            aria-label={`${product.name} image gallery`}
+            aria-label={`${productName(product, t)} image gallery`}
             tabIndex={images.length > 1 ? 0 : undefined}
             onKeyDown={(e) => {
               if (images.length < 2) return;
@@ -93,7 +93,7 @@ export default function ProductDetailPage() {
             {images[activeImage] ? (
               <Photo
                 src={images[activeImage]}
-                alt={product.name}
+                alt={productName(product, t)}
                 width={800}
                 height={800}
                 priority
@@ -114,7 +114,7 @@ export default function ProductDetailPage() {
                   key={src}
                   type="button"
                   onClick={() => showImage(index)}
-                  aria-label={`Show image ${index + 1} of ${product.name}`}
+                  aria-label={`Show image ${index + 1} of ${productName(product, t)}`}
                   aria-pressed={activeImage === index}
                   className={cn(
                     "h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 bg-secondary/40 p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -152,7 +152,7 @@ export default function ProductDetailPage() {
               dir="auto"
               className="mt-3 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl"
             >
-              {product.name}
+              {productName(product, t)}
             </h1>
             {(product.strength || product.quantity) && (
               <p dir="auto" className="mt-1.5 text-sm font-medium text-muted-foreground">
