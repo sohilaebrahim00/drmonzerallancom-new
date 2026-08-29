@@ -103,10 +103,24 @@ export async function startProgramPackageCheckout(
      * each other, so its cold-start assertion stays quiet — but the figure it
      * returns no longer matches the figure on the card, and this catches it.
      *
-     * A missing `amountCents` means an older function is deployed, from before
-     * it reported one. That is not treated as a mismatch: it is a deploy we
-     * cannot verify, so it is allowed through rather than blocking every sale
-     * on a check that the server does not yet support.
+     * ── TRANSITIONAL EXEMPTION — REMOVE THIS ──────────────────────────────
+     * A missing `amountCents` currently means an older function is deployed,
+     * from before it reported one, so it is allowed through rather than
+     * blocking every sale on a check the server does not yet support.
+     *
+     * Be clear about what that costs: for as long as this exemption exists it
+     * defeats the check in exactly the case the check was built for. A stale
+     * function that predates this commit returns no amountCents and passes
+     * silently — which IS the stale-deploy scenario.
+     *
+     * It is correct only for the rollout window. THE MOMENT
+     * create-consultation-checkout-session is confirmed live returning
+     * amountCents, delete the `typeof data.amountCents === "number"` guard so
+     * a missing field becomes a hard failure.
+     *
+     * Left in place permanently it is a silent bypass, and any future
+     * regression that drops the field re-opens the hole for good with nothing
+     * to notice it.
      */
     const published = getProgramPackageBySlug(input.packageId)?.price;
     if (

@@ -36,9 +36,7 @@ import Stripe from "https://esm.sh/stripe@16?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/cors.ts";
-// Generated from src/data/programPackages.ts by `npm run prices:emit`.
-// See the cold-start assertion below for what it is for.
-import priceManifest from "../_shared/price-manifest.json" with { type: "json" };
+
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: "2024-06-20",
@@ -118,43 +116,77 @@ const PACKAGES: Record<string, PackageDefinition> = {
  *
  * price-manifest.json is generated from src/data/programPackages.ts — the
  * figures the site actually displays — and ships inside this function at
- * deploy time. At module scope we assert the two agree, so a mismatch makes
+ * deploy time. At module scope we compare the two, so a DISAGREEMENT makes
  * the function fail to boot rather than quietly charging the wrong amount.
  *
- * WHAT THIS CATCHES: someone edits one repo file and not the other, and it is
- * caught before a single request is served.
+ * WHY THE IMPORT IS DYNAMIC AND WRAPPED. A static
+ * `import ... with { type: "json" }` makes the whole module fail to load if
+ * that file is not in the deployed bundle — the function would be dead on its
+ * first deploy, and the only symptom anyone sees is "Could not start
+ * checkout". That converts a PACKAGING problem into a total checkout outage.
  *
- * WHAT IT CANNOT CATCH — and this is the failure mode this project keeps
- * having: the price changes, the frontend deploys, and this function is never
- * redeployed. Both copies inside the OLD bundle are stale, they agree with
- * each other perfectly, nothing throws, and the site shows one price while
- * Stripe charges another. No deploy-time check can see that, because the
- * check ships with the thing that went stale. The live guard for that case is
- * client-side, in startProgramPackageCheckout: the browser compares the amount
- * this function reports back against the price the visitor was shown, and
- * refuses to forward them to a checkout that disagrees.
+ * So the two failures are treated differently, because they are different:
+ *   - manifest ABSENT  -> log loudly, carry on with PACKAGES as the sole
+ *                         source. Behaviour is exactly what it was before the
+ *                         manifest existed, which was safe enough to run for
+ *                         months. Never worth taking checkout down for.
+ *   - manifest PRESENT but disagreeing -> refuse to boot. That is a real
+ *                         money-correctness problem and running on is worse
+ *                         than being down.
+ *
+ * WHAT NONE OF THIS CATCHES — the failure this project keeps having: the price
+ * changes, the frontend deploys, and this function is never redeployed. Both
+ * copies inside the OLD bundle are stale, they agree with each other
+ * perfectly, nothing throws, and the site shows one price while Stripe charges
+ * another. No deploy-time check can see that, because the check ships with the
+ * thing that went stale. The live guard for that case is client-side, in
+ * startProgramPackageCheckout.
  */
-for (const [slug, def] of Object.entries(PACKAGES)) {
-  const published = (priceManifest.amountCents as Record<string, number>)[slug];
-  if (published === undefined) {
-    throw new Error(
-      `Price manifest is missing "${slug}". Run \`npm run prices:emit\` and redeploy.`,
-    );
-  }
-  if (published !== def.amountCents) {
-    throw new Error(
-      `Price drift on "${slug}": the site publishes ${published} cents ` +
-        `($${(published / 100).toFixed(2)}) but this function charges ${def.amountCents} cents ` +
-        `($${(def.amountCents / 100).toFixed(2)}). Refusing to start.`,
-    );
-  }
+interface PriceManifest {
+  amountCents: Record<string, number>;
 }
-for (const slug of Object.keys(priceManifest.amountCents)) {
-  if (!(slug in PACKAGES)) {
-    throw new Error(
-      `Package "${slug}" is published on the site but unknown to this function. Refusing to start.`,
-    );
+
+let priceManifest: PriceManifest | null = null;
+try {
+  const mod = await import("../_shared/price-manifest.json", { with: { type: "json" } });
+  priceManifest = (mod as { default: PriceManifest }).default;
+} catch (err) {
+  console.error(
+    "[create-consultation-checkout-session] PRICE MANIFEST NOT IN BUNDLE. " +
+      "The published-price cross-check is DISABLED for this deploy; PACKAGES below is the only " +
+      "source of truth. Run `npm run prices:emit`, confirm price-manifest.json is committed, and " +
+      "redeploy. Cause: " +
+      (err as Error).message,
+  );
+}
+
+if (priceManifest) {
+  for (const [slug, def] of Object.entries(PACKAGES)) {
+    const published = priceManifest.amountCents[slug];
+    if (published === undefined) {
+      throw new Error(
+        `Price manifest is missing "${slug}". Run \`npm run prices:emit\` and redeploy.`,
+      );
+    }
+    if (published !== def.amountCents) {
+      throw new Error(
+        `Price drift on "${slug}": the site publishes ${published} cents ` +
+          `($${(published / 100).toFixed(2)}) but this function charges ${def.amountCents} cents ` +
+          `($${(def.amountCents / 100).toFixed(2)}). Refusing to start.`,
+      );
+    }
   }
+  for (const slug of Object.keys(priceManifest.amountCents)) {
+    if (!(slug in PACKAGES)) {
+      throw new Error(
+        `Package "${slug}" is published on the site but unknown to this function. Refusing to start.`,
+      );
+    }
+  }
+  console.log(
+    `[create-consultation-checkout-session] price manifest verified against ` +
+      `${Object.keys(PACKAGES).length} packages.`,
+  );
 }
 
 interface RequestBody {
