@@ -66,3 +66,25 @@
     U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E,
     U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
+
+/* ── Arabic leading ─────────────────────────────────────────────────────
+ * Arabic needs more line-height than Latin at the same size: the script has
+ * deep descenders and stacked diacritics, and Latin-tuned leading makes lines
+ * touch. Measured on the built site with real Arabic on screen — headings were
+ * running at 1.11-1.2 and one <label> at exactly 1.0, i.e. no leading at all.
+ *
+ * Scoped to :lang(ar) so English is untouched. Deliberately NOT applied to
+ * buttons, chips or anything with a fixed height: those are sized for their
+ * line box, and adding leading there is how you turn a spacing problem into a
+ * clipping one. Nothing on the site clips today and this must not change that.
+ *
+ * `min` rather than a flat value so anything already looser keeps its own
+ * spacing rather than being tightened to meet this floor.
+ */
+:lang(ar) :is(p, li, label, figcaption, dd, dt) {
+  line-height: max(1.7em, 1lh);
+}
+
+:lang(ar) :is(h1, h2, h3, h4) {
+  line-height: max(1.45em, 1lh);
+}
