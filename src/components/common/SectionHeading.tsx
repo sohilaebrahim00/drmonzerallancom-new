@@ -1,4 +1,3 @@
-import { Reveal } from "@/components/common/Reveal";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
@@ -26,11 +25,10 @@ export function SectionHeading({
   const Title = level;
 
   return (
-    /* ONE Reveal for the whole block, not one per line. A kicker, a heading
-       and its lede are read as a single unit; three staggered fades across
-       them is decoration pretending to be sequence. */
-    <Reveal
-      direction="up"
+    /* No entrance animation. A heading appearing is not a sequence and not an
+       affordance — and this component renders on nearly every section of the
+       site, so a fade here WAS the blanket. */
+    <div
       className={cn(
         "flex flex-col gap-4",
         align === "center" ? "items-center text-center" : "items-start text-left",
@@ -60,6 +58,6 @@ export function SectionHeading({
           {description}
         </p>
       )}
-    </Reveal>
+    </div>
   );
 }

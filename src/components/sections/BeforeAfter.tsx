@@ -82,7 +82,7 @@ export function BeforeAfter() {
           description="Drag the slider to compare. This is about what is on the plate — not about anyone's body."
         />
 
-        <Reveal direction="up" className="mt-12">
+        <div className="mt-12">
           {/* Width is capped by BOTH the column (48rem) and the viewport
               height: the slider is 4:3, so 82vh of width is ~61.5vh of
               height, which keeps the block inside the 62vh ceiling on short
@@ -114,7 +114,7 @@ export function BeforeAfter() {
             An illustration of a change in eating, photographed for this website. It is not a client
             photograph and does not show anyone&apos;s results.
           </p>
-        </Reveal>
+        </div>
 
         {hasConsentedStories && (
           <div className="mt-20">

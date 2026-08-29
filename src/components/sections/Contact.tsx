@@ -16,7 +16,6 @@ import {
   TriangleAlert,
 } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,7 +105,7 @@ export function Contact() {
         />
 
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <Reveal direction="right" className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm sm:p-8">
               {hasContactInfo ? (
                 <ul className="space-y-5">
@@ -232,9 +231,9 @@ export function Contact() {
                 </div>
               )}
             </div>
-          </Reveal>
+          </div>
 
-          <Reveal direction="left">
+          <div>
             <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm sm:p-8">
               <AnimatePresence mode="wait">
                 {result ? (
@@ -479,7 +478,7 @@ export function Contact() {
                 )}
               </AnimatePresence>
             </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

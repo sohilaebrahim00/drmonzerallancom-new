@@ -1,4 +1,3 @@
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { SocialLinks } from "@/components/common/SocialLinks";
 import { business } from "@/data/business";
@@ -12,9 +11,9 @@ export function SocialCommunity() {
           title="Join the Community"
           description={`Follow ${business.doctorName} for daily nutrition tips, behind-the-scenes updates, and educational content.`}
         />
-        <Reveal direction="up" delay={0.1} className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <SocialLinks iconClassName="h-12 w-12" />
-        </Reveal>
+        </div>
       </div>
     </section>
   );

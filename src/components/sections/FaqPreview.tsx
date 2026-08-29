@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { PhotoBackdrop } from "@/components/common/PhotoBackdrop";
 import { FaqAccordion } from "@/components/common/FaqAccordion";
@@ -38,7 +37,7 @@ export function FaqPreview() {
               photograph it would be a second contrast problem to solve for no
               gain; on the solid surface it keeps the same navy type as every
               other section heading. */}
-          <Reveal direction="up">
+          <div>
             <div className={cn(PHOTO_FRAME, "bg-card p-6 sm:p-10")}>
               <SectionHeading
                 eyebrow="FAQ"
@@ -47,7 +46,7 @@ export function FaqPreview() {
               />
               <FaqAccordion items={featured} className="mt-8" />
             </div>
-          </Reveal>
+          </div>
 
           <div className="mt-8 flex justify-center">
             <Link

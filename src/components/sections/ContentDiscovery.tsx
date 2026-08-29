@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Apple, Baby, Bike, Droplets, HeartPulse, Soup, type LucideIcon } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { categories, type ArticleCategory } from "@/data/articles";
 
@@ -28,7 +27,7 @@ export function ContentDiscovery() {
           {categories.map((category, index) => {
             const Icon = TOPIC_ICONS[category] ?? Apple;
             return (
-              <Reveal key={category} direction="up" delay={(index % 4) * 0.06}>
+              <div key={category}>
                 <Link
                   to={`/blog?category=${encodeURIComponent(category)}`}
                   className="group flex h-full flex-col items-center gap-3 rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-turquoise/50"
@@ -38,7 +37,7 @@ export function ContentDiscovery() {
                   </span>
                   <span className="text-sm font-semibold text-navy">{category}</span>
                 </Link>
-              </Reveal>
+              </div>
             );
           })}
         </div>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, Play, Youtube } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { YouTubeEmbed } from "@/components/media/YouTubeEmbed";
 import { videos, youtubeChannelUrl } from "@/data/videos";
@@ -24,15 +23,15 @@ export function YouTubeSection() {
         <div className="mt-14">
           {activeVideo ? (
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.3fr_1fr]">
-              <Reveal direction="right">
+              <div>
                 <YouTubeEmbed
                   key={activeVideo.videoId}
                   videoId={activeVideo.videoId}
                   title={activeVideo.title}
                   className="shadow-[0_30px_60px_-30px_rgba(23,35,59,0.35)]"
                 />
-              </Reveal>
-              <Reveal direction="left" delay={0.08} className="flex flex-col gap-4">
+              </div>
+              <div className="flex flex-col gap-4">
                 <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
                   {activeVideo.category}
                 </span>
@@ -87,13 +86,10 @@ export function YouTubeSection() {
                     ))}
                   </div>
                 )}
-              </Reveal>
+              </div>
             </div>
           ) : (
-            <Reveal
-              direction="up"
-              className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-secondary/30 px-6 py-16 text-center"
-            >
+            <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-secondary/30 px-6 py-16 text-center">
               <Youtube className="h-8 w-8 text-primary/60" />
               <p className="font-display text-lg font-bold text-navy">Video Library Coming Soon</p>
               <p className="text-sm leading-relaxed text-muted-foreground">
@@ -107,16 +103,16 @@ export function YouTubeSection() {
               >
                 <Youtube className="h-4 w-4" /> Visit the YouTube Channel
               </a>
-            </Reveal>
+            </div>
           )}
         </div>
 
         {videos.length > 0 && (
-          <Reveal direction="up" delay={0.15} className="mt-10 flex justify-center">
+          <div className="mt-10 flex justify-center">
             <Link to="/gallery" className="text-sm font-semibold text-primary hover:text-turquoise">
               Watch More in the Gallery
             </Link>
-          </Reveal>
+          </div>
         )}
       </div>
     </section>

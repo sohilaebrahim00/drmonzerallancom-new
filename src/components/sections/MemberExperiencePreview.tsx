@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, CalendarClock, CreditCard, Sparkles, UserRound } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { useAuth } from "@/context/AuthContext";
 
 const PREVIEW_CARDS = [
@@ -40,7 +39,7 @@ export function MemberExperiencePreview() {
     <section className="relative py-20 sm:py-28" aria-labelledby="member-preview-heading">
       <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <Reveal direction="right">
+          <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
               Member Experience
             </p>
@@ -60,9 +59,9 @@ export function MemberExperiencePreview() {
             >
               <Sparkles className="h-4 w-4" /> Explore Programs
             </Link>
-          </Reveal>
+          </div>
 
-          <Reveal direction="left" delay={0.1}>
+          <div>
             <div className="rounded-3xl border border-border/70 bg-card p-3 shadow-[0_30px_70px_-30px_rgba(23,35,59,0.3)] sm:p-5">
               <div className="rounded-2xl bg-gradient-to-br from-navy to-primary p-5 text-white">
                 <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
@@ -100,7 +99,7 @@ export function MemberExperiencePreview() {
                 ))}
               </div>
             </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

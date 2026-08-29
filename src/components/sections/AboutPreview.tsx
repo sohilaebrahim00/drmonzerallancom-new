@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { Photo } from "@/components/common/Photo";
 import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { CredentialChip } from "@/components/common/CredentialChip";
@@ -13,7 +12,7 @@ export function AboutPreview() {
     <section id="about" className="relative py-20 sm:py-28" aria-labelledby="about-preview-heading">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-          <Reveal direction="right">
+          <div>
             <div className="relative mx-auto max-w-sm">
               <div
                 className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] bg-secondary/70 blur-2xl"
@@ -32,7 +31,7 @@ export function AboutPreview() {
                 />
               </div>
             </div>
-          </Reveal>
+          </div>
 
           <div className="flex flex-col gap-6">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
@@ -52,7 +51,7 @@ export function AboutPreview() {
                 <CredentialChip key={credential.title} credential={credential} />
               ))}
             </div>
-            <Reveal direction="up" delay={0.1}>
+            <div>
               <Link
                 to="/about"
                 className="group inline-flex w-fit cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-1 hover:border-turquoise/50"
@@ -60,7 +59,7 @@ export function AboutPreview() {
                 Discover My Story
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
-            </Reveal>
+            </div>
           </div>
         </div>
 
@@ -70,7 +69,7 @@ export function AboutPreview() {
             capped at 560px — well inside the file's native 1600px — so it is
             never upscaled, and it is cropped to 3:2 inside a fixed aspect box
             rather than by re-cutting the file. */}
-        <Reveal direction="up" delay={0.1} className="mt-16">
+        <div className="mt-16">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,48fr)_minmax(0,52fr)] lg:gap-14">
             <figure className="w-full">
               {/* max-h caps the stacked mobile case, where a 3:2 box at the
@@ -109,7 +108,7 @@ export function AboutPreview() {
               </p>
             </div>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

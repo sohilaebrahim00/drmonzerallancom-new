@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -72,7 +71,7 @@ export function Testimonials() {
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <SectionHeading eyebrow="Client Reviews" title="What Clients Are Saying" />
 
-        <Reveal direction="up" delay={0.1} className="mt-14">
+        <div className="mt-14">
           <Carousel
             setApi={setApi}
             opts={{ align: "start", loop: true }}
@@ -128,7 +127,7 @@ export function Testimonials() {
               <CarouselNext className="static translate-y-0" />
             </div>
           </Carousel>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

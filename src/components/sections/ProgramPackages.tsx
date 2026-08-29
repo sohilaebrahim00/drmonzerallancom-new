@@ -173,11 +173,11 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
           </div>
         </div>
 
-        <Reveal direction="up" delay={0.2} className="mt-10">
+        <div className="mt-10">
           <p className="mx-auto max-w-3xl rounded-xl border border-border/70 bg-secondary/40 p-4 text-center text-xs leading-relaxed text-muted-foreground">
             {programPackageDisclaimer}
           </p>
-        </Reveal>
+        </div>
       </div>
 
       <PurchaseDialog

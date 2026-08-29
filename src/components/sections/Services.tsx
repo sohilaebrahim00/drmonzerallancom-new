@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { services } from "@/data/services";
 
@@ -19,7 +18,7 @@ export function Services() {
 
         <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1fr]">
           {/* Spotlight: the foundational service gets an editorial feature treatment */}
-          <Reveal direction="right">
+          <div>
             <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-br from-navy to-primary p-8 text-white shadow-[0_30px_60px_-30px_rgba(23,35,59,0.5)] sm:p-10">
               <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-turquoise">
                 Where Every Plan Starts
@@ -47,10 +46,10 @@ export function Services() {
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </article>
-          </Reveal>
+          </div>
 
           {/* Remaining programs: compact editorial list, not a repeated card grid */}
-          <Reveal direction="left" delay={0.08}>
+          <div>
             <div className="grid h-full grid-cols-1 gap-3 rounded-2xl border border-border/70 bg-card p-3 shadow-sm sm:grid-cols-2">
               {rest.map((service) => (
                 <Link
@@ -73,7 +72,7 @@ export function Services() {
                 </Link>
               ))}
             </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

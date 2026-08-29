@@ -81,11 +81,21 @@
 
   /* Turquoise — buttons & highlights */
   --turquoise: #38b7c7;
-  /* Lighter tint for small accent text on DARK photographic backgrounds.
-     #38b7c7 has a relative luminance of 0.39, which cannot reach the 4.5:1
-     WCAG AA ratio for small text over a lightened photo overlay; this tint is
-     at 0.59, which does. Use it only on dark backgrounds — on white it is too
-     pale, and --turquoise remains correct there. */
+  /* RESTRICTED TOKEN — small text and icons on DARK PHOTOGRAPHIC backgrounds
+     only. Nothing else. On a flat background the answer is --turquoise.
+
+     Why --turquoise cannot serve there: #38b7c7 has a relative luminance of
+     0.3883. Small text needs 4.5:1, which over a photo overlay light enough
+     for the photograph to still be visible puts the background around 0.085 —
+     and 0.3883 only reaches ~3.2:1 against that. The requirement and the
+     brand colour are simply incompatible at that size on that ground. This
+     tint sits at 0.5923, which clears 4.5:1 with margin.
+
+     It is NOT a general-purpose lighter turquoise. On a flat light surface it
+     is too pale to read, and on a flat dark surface --turquoise already has
+     all the contrast it needs — the lightened overlay is the only reason this
+     exists. Current uses: the eyebrow and step icons in HowProgramsWork. If
+     you are reaching for it anywhere else, use --turquoise. */
   --turquoise-light: #7fd8e4;
   --turquoise-foreground: #fcfdfd;
   /* Fresh green — small accent only */

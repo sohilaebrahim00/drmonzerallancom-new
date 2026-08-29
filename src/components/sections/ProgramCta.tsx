@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Sparkles, UserRound } from "lucide-react";
 
-import { Reveal } from "@/components/common/Reveal";
 import { useAuth } from "@/context/AuthContext";
 
 export function ProgramCta() {
@@ -10,10 +9,7 @@ export function ProgramCta() {
   return (
     <section className="relative py-20 sm:py-28" aria-labelledby="program-cta-heading">
       <div className="mx-auto w-full max-w-4xl px-6 text-center sm:px-10">
-        <Reveal
-          direction="up"
-          className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14"
-        >
+        <div className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14">
           <h2
             id="program-cta-heading"
             className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
@@ -40,7 +36,7 @@ export function ProgramCta() {
               </Link>
             )}
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

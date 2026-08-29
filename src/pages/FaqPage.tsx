@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { CalendarCheck, MessageCircle, Search } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { PhotoBackdrop } from "@/components/common/PhotoBackdrop";
 import { FaqAccordion } from "@/components/common/FaqAccordion";
@@ -77,7 +76,7 @@ export default function FaqPage() {
             </Breadcrumb>
           </div>
 
-          <Reveal direction="up">
+          <div>
             <div className={cn(PHOTO_FRAME, "bg-card p-6 sm:p-10")}>
               <SectionHeading
                 eyebrow="Knowledge Center"
@@ -136,7 +135,7 @@ export default function FaqPage() {
                 </p>
               )}
             </div>
-          </Reveal>
+          </div>
 
           <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm sm:p-8">
             <h2 className="font-display text-lg font-bold text-navy">Still Have a Question?</h2>

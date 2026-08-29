@@ -26,6 +26,13 @@ interface PhotoBackdropProps {
  *    SHORTER than its native ratio, never taller, so `object-cover` still
  *    samples the file below 1:1 — stretched over a whole section instead, a
  *    1600x730 file gets scaled UP to cover a much taller box.
+ *  - a min-height floor, because the native ratio alone is 178px on a 390px
+ *    screen, which reads as an accident rather than a decision. The floor
+ *    costs nothing but a horizontal crop: a 1600px-wide file shown 390x260
+ *    still samples at 0.36, nowhere near upscaling. It is written as
+ *    `min(260px, 62vh)` so it can never push the band back through the height
+ *    ceiling on a short viewport — min-height beats max-height in CSS, so a
+ *    bare 260px would win on a 400px-tall window.
  */
 export function PhotoBackdrop({
   base,
@@ -39,7 +46,7 @@ export function PhotoBackdrop({
     <div className={cn("relative isolate overflow-hidden", className)}>
       <div className="absolute inset-x-0 top-0 -z-10 bg-navy" aria-hidden="true">
         <div
-          className="relative mx-auto max-h-[62vh] w-full"
+          className="relative mx-auto max-h-[62vh] min-h-[min(260px,62vh)] w-full"
           style={{ maxWidth: `${width}px`, aspectRatio: `${width} / ${height}` }}
         >
           <Photo
