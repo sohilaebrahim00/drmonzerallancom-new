@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
+import { Reveal } from "@/components/common/Reveal";
 import { Photo } from "@/components/common/Photo";
 import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { CredentialChip } from "@/components/common/CredentialChip";
@@ -80,32 +81,51 @@ export function AboutPreview() {
               the figure must stay before the copy it belongs to, so only the
               desktop grid flips. */}
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,52fr)_minmax(0,48fr)] lg:gap-14">
-            <figure className="w-full lg:order-2">
-              {/* max-h caps the stacked mobile case, where a 3:2 box at the
+            {/* Entrance: the copy leads, the image follows 120ms later. The
+                movement is 12px rather than the site default 28px — this is a
+                clinical brand, so it should register as the page settling,
+                not as an effect. Vertical only: "up" is direction-neutral and
+                will still be correct once the layout mirrors for Arabic,
+                whereas an x-axis travel would run the wrong way. */}
+            <Reveal
+              direction="up"
+              distance={12}
+              delay={0.12}
+              duration={0.5}
+              className="w-full lg:order-2"
+            >
+              <figure className="w-full">
+                {/* max-h caps the stacked mobile case, where a 3:2 box at the
                   full column width would otherwise be 373px tall above the
                   copy it belongs to. */}
-              <div
-                className={cn(
-                  PHOTO_FRAME,
-                  "mx-auto aspect-[3/2] w-full max-w-[560px] max-h-[260px] lg:max-h-none",
-                )}
-              >
-                <Photo
-                  base="/images/pharmacy-counter"
-                  width={1600}
-                  height={1066}
-                  alt="A plate of cherry tomatoes, sliced cucumber and olives on a wooden counter, with a handwritten notepad beside it and shelves of medicine boxes behind."
-                  className="block h-full w-full"
-                  imgClassName="h-full w-full object-cover"
-                  sizes="(min-width: 1024px) 560px, 100vw"
-                />
-              </div>
-              <figcaption className="mx-auto mt-3 max-w-[560px] text-center text-xs text-muted-foreground">
-                Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
-              </figcaption>
-            </figure>
+                <div
+                  className={cn(
+                    PHOTO_FRAME,
+                    "mx-auto aspect-[3/2] w-full max-w-[560px] max-h-[260px] lg:max-h-none",
+                  )}
+                >
+                  <Photo
+                    base="/images/pharmacy-counter"
+                    width={1600}
+                    height={1066}
+                    alt="A plate of cherry tomatoes, sliced cucumber and olives on a wooden counter, with a handwritten notepad beside it and shelves of medicine boxes behind."
+                    className="block h-full w-full"
+                    imgClassName="h-full w-full object-cover"
+                    sizes="(min-width: 1024px) 560px, 100vw"
+                  />
+                </div>
+                <figcaption className="mx-auto mt-3 max-w-[560px] text-center text-xs text-muted-foreground">
+                  Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
+                </figcaption>
+              </figure>
+            </Reveal>
 
-            <div className="flex flex-col gap-4 lg:order-1">
+            <Reveal
+              direction="up"
+              distance={12}
+              duration={0.5}
+              className="flex flex-col gap-4 lg:order-1"
+            >
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
                 The Approach
               </p>
@@ -115,7 +135,7 @@ export function AboutPreview() {
               <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
                 {bio.paragraphs[1]}
               </p>
-            </div>
+            </Reveal>
           </div>
         </div>
       </div>
