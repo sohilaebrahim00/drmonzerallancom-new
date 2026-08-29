@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "prices:emit": "node scripts/emit-price-manifest.mjs",
+    "i18n:review": "node scripts/build-translation-review.mjs",
     "prices:check": "node scripts/emit-price-manifest.mjs --check",
     "build:knowledge": "tsx scripts/build-ai-knowledge.ts",
     "build:pwa-icons": "node scripts/build-pwa-icons.cjs",

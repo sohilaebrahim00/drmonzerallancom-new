@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Arabic translation review — Dr. Monzer Allan</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+  :root { --ink:#17233b; --muted:#5b667d; --line:#e3e8ef; --flag:#fff8e1; --flagline:#e6b800; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:0 0 4rem; font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:#fbfcfd; }
+  header { padding:1.5rem 1rem 1rem; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:5; }
+  h1 { margin:0 0 .3rem; font-size:1.2rem; }
+  .meta { color:var(--muted); font-size:.85rem; }
+  main { padding:0 1rem; max-width:60rem; margin:0 auto; }
+  h2 { font-size:1rem; margin:2.2rem 0 .8rem; padding-bottom:.4rem; border-bottom:2px solid var(--ink); }
+  .intro { background:#fff; border:1px solid var(--line); border-radius:10px; padding:1rem; margin:1.2rem 0; }
+  .intro p { margin:.4rem 0; }
+  .q { background:var(--flag); border:1px solid var(--flagline); border-radius:10px; padding:.9rem 1rem; margin:.8rem 0; }
+  .q h3 { margin:0 0 .4rem; font-size:.98rem; }
+  .q p { margin:.35rem 0; font-size:.92rem; }
+  .keys code { background:#fff; border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem; font-size:.78rem; }
+  .row { background:#fff; border:1px solid var(--line); border-radius:10px; margin:.6rem 0; overflow:hidden; }
+  .row.flagged { border-color:var(--flagline); box-shadow:0 0 0 2px #fdf3d0 inset; }
+  .key { font:600 .72rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--muted); padding:.5rem .8rem; border-bottom:1px solid var(--line); background:#f7f9fc; }
+  .badge { float:right; background:var(--flagline); color:#3a2c00; border-radius:99px; padding:0 .5rem; font-size:.66rem; }
+  .pair { display:grid; grid-template-columns:1fr; }
+  @media (min-width:46rem) { .pair { grid-template-columns:1fr 1fr; } .en { border-right:1px solid var(--line); } }
+  .en, .ar { padding:.7rem .9rem; }
+  @media (max-width:46rem) { .en { border-bottom:1px solid var(--line); } }
+  .ar { font-family:"IBM Plex Sans Arabic",-apple-system,sans-serif; font-size:1.05rem; line-height:1.95; }
+  .en p, .ar p { margin:.25rem 0; }
+  .form { display:inline-block; min-width:3.2rem; font:600 .68rem/1 ui-monospace,monospace; color:var(--muted); text-transform:uppercase; }
+  .missing { color:#b00; font-style:italic; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Arabic translation review</h1>
+  <div class="meta">160 strings &middot; 23 marked for review &middot; 0 without Arabic</div>
+</header>
+<main>
+  <div class="intro">
+    <p><strong>What this is.</strong> Every piece of text on the website, in English and in Arabic side by side. Nothing here is live yet — the Arabic is switched off for visitors until you say it is ready.</p>
+    <p><strong>What we need from you.</strong> The highlighted rows are the ones we are unsure about, and the questions below are the ones only you can answer. Everything else is there so you can read it in context, not because we need a decision on each line.</p>
+    <p><strong>Anything that reads oddly, say so.</strong> A translation can be correct and still not sound like you. Your wording wins over ours.</p>
+  </div>
+
+  <h2>Questions for you</h2>
+  <div class="q">
+      <h3>F-5 — Do you already use your own Arabic names for the video, article, product and FAQ categories?</h3>
+      <p>If you label this content yourself — on YouTube, or in your own materials — your names should replace ours. These were translated from the English without knowing whether Arabic names already exist.</p>
+      <p class="keys"><code>videoCategory.education</code> <code>articleCategory.weightManagement</code> <code>productCategory.supplements</code> <code>faqCategory.programs</code></p>
+    </div>
+<div class="q">
+      <h3>F-6 — The credentials heading previously said "Verified Credentials". The word "Verified" was removed.</h3>
+      <p>Nothing in the codebase records that the credentials were verified — the data file says the opposite. It now reads simply Credentials / المؤهلات. If you hold documentation, the word can go back; that is your call to make with the evidence in hand.</p>
+      <p class="keys"><code>aboutPage.backgroundTitle</code></p>
+    </div>
+
+  <h2>About page — the doctor's own words — all rows need your review</h2>
+  <div class="row flagged">
+      <div class="key">aboutPage.backgroundEyebrow<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Professional Background</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الخلفية المهنية</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.backgroundTitle<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Credentials</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المؤهلات</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.bio1<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Monzer Allan brings a combination of clinical and nutritional expertise to every consultation — trained as a pharmacist and specialized in nutrition, he approaches health from both the science of the body and the reality of everyday eating.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>يجمع منذر علان بين الخبرة السريرية والتغذوية في كل استشارة — فبتدريبه كصيدلي وتخصصه في التغذية، يتعامل مع الصحة من زاويتين: علم الجسم، وواقع ما نأكله كل يوم.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.bio2<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Rather than one-size-fits-all diet plans, Monzer builds guidance around each client's actual life: their schedule, culture, preferences, and goals. The aim is always the same — lasting change that doesn't feel like a sacrifice.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>بدلاً من خطط غذائية جاهزة تصلح للجميع، يبني منذر إرشاده حول حياتك كما هي: جدولك وثقافتك وتفضيلاتك وأهدافك. والهدف واحد دائماً — تغيير يدوم دون أن يبدو تضحية.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.bio3<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>His approach blends evidence-based nutrition science with genuine, ongoing support, across the specialized programs described below.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تجمع مقاربته بين علم التغذية القائم على الأدلة والدعم المستمر الحقيقي، عبر البرامج المتخصصة الموضحة أدناه.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.ctaBody<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Choose a program for guided support, or reach out to ask a question before you begin.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اختر برنامجاً للحصول على متابعة، أو تواصل معنا لطرح سؤال قبل أن تبدأ.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.ctaTitle<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Start Your Nutrition Journey</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ابدأ رحلتك الغذائية</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.eyebrow<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>About {name}</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>عن {name}</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.focusEyebrow<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Areas of Focus</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مجالات التركيز</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.focusTitle<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Specialized Support Across Every Stage of Life</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>دعم متخصص في كل مرحلة من مراحل الحياة</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.lede<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>{name} is a {title} helping clients build lasting, evidence-based habits — not restrictive, short-lived diets.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>{name} هو {title} يساعدك على بناء عادات غذائية دائمة قائمة على الأدلة — لا حميات قاسية قصيرة الأمد.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.mission<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Mission</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الرسالة</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.missionBody<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>To make expert, evidence-based nutrition guidance accessible and genuinely sustainable — helping every client build a healthier relationship with food, one realistic step at a time.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أن نجعل الإرشاد التغذوي المتخصص القائم على الأدلة متاحاً وقابلاً للاستمرار فعلاً — بمساعدتك على بناء علاقة أفضل مع الطعام، خطوة واقعية في كل مرة.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.philosophyBody<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Every plan begins with what a client is already eating, not a template imposed from the outside. By combining a pharmacist's clinical training with specialized nutrition science, the goal is always the same: guidance that respects a person's schedule, culture, and preferences while still being grounded in evidence. Change that lasts comes from small, realistic adjustments — not dramatic overhauls that are hard to sustain.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تبدأ كل خطة مما تأكله فعلاً، لا من قالب مفروض من الخارج. وبالجمع بين التدريب السريري للصيدلي وعلم التغذية المتخصص، يبقى الهدف واحداً: إرشاد يحترم جدولك وثقافتك وتفضيلاتك، ويظل في الوقت نفسه قائماً على الأدلة. التغيير الذي يدوم يأتي من تعديلات صغيرة وواقعية — لا من انقلابات جذرية يصعب الاستمرار عليها.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.philosophyEyebrow<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Philosophy of Care</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>فلسفة الرعاية</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.philosophyTitle<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Guidance That Starts With Your Actual Life</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>إرشاد يبدأ من واقع حياتك</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.title<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>A Clinical Approach To Nutrition, Built Around Real Life</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>نهج سريري في التغذية، قائم على واقع حياتك</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.vision<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Vision</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الرؤية</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">aboutPage.visionBody<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>A community where healthier choices come from understanding, not restriction — where nutrition care is personal, informed, and built to last a lifetime.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مجتمع تنبع فيه الخيارات الأفضل من الفهم لا من الحرمان — وتكون فيه الرعاية التغذوية شخصية ومبنية على المعرفة ومصمّمة لتدوم مدى الحياة.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">credential.licensedPharmacist<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Licensed Pharmacist</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>صيدلي مرخّص</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">credential.licensedPharmacistBody<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>A clinical foundation in pharmacology and how nutrition interacts with treatment.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أساس سريري في علم الأدوية وكيفية تفاعل التغذية مع العلاج.</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">credential.nutritionSpecialist<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Nutrition Specialist</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أخصائي تغذية</p></div>
+      </div>
+    </div>
+<div class="row flagged">
+      <div class="key">credential.nutritionSpecialistBody<span class="badge">review</span></div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Focused training in evidence-based dietary science and behavior change.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تدريب متخصص في علم التغذية القائم على الأدلة وتغيير السلوك.</p></div>
+      </div>
+    </div>
+<h2>Patient screens — account, booking, errors</h2>
+  <div class="row">
+      <div class="key">consultations.creditsRemaining</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p><span class="form">one</span>{count} of {limit} credit remaining</p><p><span class="form">other</span>{count} of {limit} credits remaining</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p><span class="form">zero</span>لم يتبقَ أي رصيد من {limit}</p><p><span class="form">one</span>متبقٍ رصيد واحد من {limit}</p><p><span class="form">two</span>متبقٍ رصيدان من {limit}</p><p><span class="form">few</span>متبقٍ {count} أرصدة من {limit}</p><p><span class="form">many</span>متبقٍ {count} رصيداً من {limit}</p><p><span class="form">other</span>متبقٍ {count} رصيد من {limit}</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">consultations.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Consultations</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الاستشارات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">notifications.coverageDays</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p><span class="form">one</span>Currently covering the next day.</p><p><span class="form">other</span>Currently covering the next {count} days.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p><span class="form">zero</span>لا يغطي أي أيام حالياً.</p><p><span class="form">one</span>يغطي حالياً اليوم التالي.</p><p><span class="form">two</span>يغطي حالياً اليومين التاليين.</p><p><span class="form">few</span>يغطي حالياً {count} أيام تالية.</p><p><span class="form">many</span>يغطي حالياً {count} يوماً تالياً.</p><p><span class="form">other</span>يغطي حالياً {count} يوم تالٍ.</p></div>
+      </div>
+    </div>
+<h2>Navigation and header</h2>
+  <div class="row">
+      <div class="key">cta.backToTop</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Back to top</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>العودة إلى الأعلى</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">cta.bookSession</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Book a Session</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>احجز جلسة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">cta.viewPrograms</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>View Programs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تصفّح البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.createAccount</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Create Account</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>إنشاء حساب</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.homeAriaLabel</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Monzer Allan home</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>منذر علان — الصفحة الرئيسية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.logoAlt</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Monzer Allan logo</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>شعار منذر علان</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.menuTitle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Menu</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>القائمة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.mobileNavLabel</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Mobile</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تنقل الهاتف</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.myAccount</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>My Account</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>حسابي</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.openMenu</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Open menu</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>فتح القائمة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.primaryNavLabel</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Primary</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>التنقل الرئيسي</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">header.signIn</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Sign In</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تسجيل الدخول</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.about</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>About</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>من نحن</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.blog</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Blog</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المقالات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.contact</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Contact</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تواصل معنا</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.faq</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>FAQ</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الأسئلة الشائعة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.gallery</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Gallery</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>معرض الصور</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.packages</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Packages</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">nav.shop</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Shop</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المتجر</p></div>
+      </div>
+    </div>
+<h2>Footer</h2>
+  <div class="row">
+      <div class="key">footer.contactPage</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Contact page</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>صفحة التواصل</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.disclaimer</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Educational content only and not a substitute for professional medical consultation.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>محتوى تثقيفي فقط، ولا يغني عن استشارة طبية متخصصة.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.getInTouch</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Get in Touch</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تواصل معنا</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.medicalDisclaimer</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Medical Disclaimer</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>إخلاء المسؤولية الطبية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.navigation</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Navigation</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>التنقل</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.popularServices</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Popular Services</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الخدمات الأكثر طلباً</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.privacy</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Privacy Policy</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>سياسة الخصوصية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.reachOut</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Reach out via the</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تواصل معنا عبر</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.tagline</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Trusted nutrition, health, and wellness guidance from a {title} — understand more, choose better, live healthier.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>إرشاد موثوق في التغذية والصحة من {title} — افهم أكثر، اختر أفضل، عش بصحة.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">footer.terms</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Terms of Service</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>شروط الخدمة</p></div>
+      </div>
+    </div>
+<h2>Home page sections</h2>
+  <div class="row">
+      <div class="key">beforeAfter.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Drag the slider to compare. This is about what is on the plate — not about anyone's body.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اسحب الشريط للمقارنة. الحديث هنا عمّا في الطبق — لا عن جسد أحد.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">beforeAfter.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>What Changes</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ما الذي يتغيّر</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">beforeAfter.storiesDescription</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Illustrative snapshots of client progress. Drag the slider to compare before and after results.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لمحات توضيحية عن تقدّم العملاء. اسحب الشريط للمقارنة بين ما قبل وما بعد.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">beforeAfter.storiesEyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Real Progress</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تقدّم حقيقي</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">beforeAfter.storiesTitle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Transformation Stories</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>قصص التحوّل</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">beforeAfter.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>The same table, two different evenings</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الطاولة نفسها، في مساءين مختلفين</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blog.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Free, evidence-based articles covering the topics that matter most to your health.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مقالات مجانية قائمة على الأدلة، تتناول المواضيع الأكثر أهمية لصحتك.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blog.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Blog</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المقالات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blog.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Learn The Science Behind The Advice</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تعرّف على العلم وراء النصيحة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">community.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Community</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المجتمع</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">community.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Join the Community</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>انضم إلى المجتمع</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">contactSection.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Reach out with questions, or book your first session directly — whichever is easiest for you.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تواصل معنا لأي استفسار، أو احجز جلستك الأولى مباشرة — أيهما أسهل بالنسبة لك.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">contactSection.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Contact</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تواصل معنا</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">contactSection.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Let's Start Your Nutrition Journey</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لنبدأ رحلتك الغذائية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">discovery.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Explore by Topic</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تصفّح حسب الموضوع</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">discovery.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Find Guidance For What Matters Most to You</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>إرشادات حول ما يهمّك أكثر</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqSection.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>FAQ</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الأسئلة الشائعة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqSection.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Frequently Asked Questions</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الأسئلة الشائعة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">gallery.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Gallery</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>معرض الصور</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">gallery.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>A Look Inside the Practice</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لمحة من داخل العيادة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">howItWorks.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>From choosing a program to your first consultation — a simple, transparent, one-time process.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>من اختيار البرنامج إلى استشارتك الأولى — خطوات بسيطة وواضحة، وبدفعة واحدة.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">howItWorks.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Programs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">howItWorks.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>How It Works</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>كيف يسير البرنامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">products.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Carefully selected products designed to support a healthier daily routine.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>منتجات مختارة بعناية لدعم روتينك اليومي الصحي.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">products.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Products</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المنتجات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">products.resultCount</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p><span class="form">one</span>{count} product found</p><p><span class="form">other</span>{count} products found</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p><span class="form">zero</span>لم يتم العثور على منتجات</p><p><span class="form">one</span>تم العثور على منتج واحد</p><p><span class="form">two</span>تم العثور على منتجين</p><p><span class="form">few</span>تم العثور على {count} منتجات</p><p><span class="form">many</span>تم العثور على {count} منتجاً</p><p><span class="form">other</span>تم العثور على {count} منتج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">products.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Featured Wellness Products</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>منتجات صحية مختارة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">programs.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>A treatment program with close medical follow-up — pick the level of consultation support you need, with no recurring billing.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>برنامج علاجي مع متابعة طبية عن قرب — اختر مستوى الدعم الاستشاري الذي تحتاجه، دون أي اشتراك متكرر.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">programs.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Programs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">programs.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Choose Your Path Forward</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اختر مسارك</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">services.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Twelve focused programs, each tailored to your body, your goals, and your medical needs.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اثنا عشر برنامجاً متخصصاً، كل منها مصمّم ليناسب جسمك وأهدافك وحالتك الطبية.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">services.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Services</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الخدمات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">services.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Specialized Nutrition Care For Every Stage Of Life</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>رعاية تغذوية متخصصة في كل مرحلة من مراحل الحياة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">testimonials.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Client Reviews</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>آراء العملاء</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">testimonials.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>What Clients Are Saying</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ماذا يقول العملاء</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videos.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Practical nutrition insights, explained clearly.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>معلومات تغذوية عملية، مشروحة ببساطة.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videos.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Watch &amp; Learn</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>شاهد وتعلّم</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videos.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Nutrition Insights on Video</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>معلومات تغذوية بالفيديو</p></div>
+      </div>
+    </div>
+<h2>Pages — FAQ, products, blog, packages, gallery</h2>
+  <div class="row">
+      <div class="key">blogPage.featured</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Featured Article</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مقال مختار</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blogPage.lede</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Practical, evidence-based articles to help you understand nutrition and make confident choices.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مقالات عملية قائمة على الأدلة تساعدك على فهم التغذية واتخاذ قرارات واثقة.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blogPage.readArticle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Read the Article</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اقرأ المقال</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blogPage.searchAriaLabel</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search articles</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البحث في المقالات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blogPage.searchPlaceholder</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search articles…</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ابحث في المقالات…</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">blogPage.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Nutrition Knowledge You Can Trust</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>معرفة تغذوية يمكنك الوثوق بها</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faq.resultCount</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p><span class="form">one</span>{count} question found</p><p><span class="form">other</span>{count} questions found</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p><span class="form">zero</span>لم يتم العثور على أسئلة</p><p><span class="form">one</span>تم العثور على سؤال واحد</p><p><span class="form">two</span>تم العثور على سؤالين</p><p><span class="form">few</span>تم العثور على {count} أسئلة</p><p><span class="form">many</span>تم العثور على {count} سؤالاً</p><p><span class="form">other</span>تم العثور على {count} سؤال</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faq.searchPlaceholder</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search questions</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ابحث في الأسئلة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.categoryAll</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>All</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الكل</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.contactUs</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Contact Us</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تواصل معنا</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.description</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search or filter by topic to find answers about programs, consultations, billing, and more.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ابحث أو صفِّ حسب الموضوع للعثور على إجابات حول البرامج والاستشارات والفواتير وغيرها.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.explorePrograms</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Explore Programs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تصفّح البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Knowledge Center</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مركز المعرفة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.noResults</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>No questions match your search. Try another keyword or category.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لا توجد أسئلة تطابق بحثك. جرّب كلمة أخرى أو تصنيفاً آخر.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.searchAriaLabel</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search FAQs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البحث في الأسئلة الشائعة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.searchPlaceholder</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search questions…</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ابحث في الأسئلة…</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.stillHaveQuestion</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Still Have a Question?</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>هل لديك سؤال آخر؟</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqPage.stillHaveQuestionBody</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Ask directly, or explore programs to see what's included in each package.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اسأل مباشرة، أو تصفّح البرامج لمعرفة ما يتضمنه كل برنامج.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyBehindKnowledge</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Behind the Knowledge</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ما وراء المعرفة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyBehindKnowledgeBody</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>How research and clinical training shape each recommendation.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>كيف يشكّل البحث والتدريب السريري كل توصية.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyEducational</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Educational Moments</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لحظات تثقيفية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyEducationalBody</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Snapshots from talks, sessions, and community education.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لقطات من محاضرات وجلسات وتثقيف مجتمعي.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyEvents</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Events &amp; Community</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الفعاليات والمجتمع</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyEventsBody</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Community initiatives and wellness events.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>مبادرات مجتمعية وفعاليات صحية.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyInPractice</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>In Practice</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>من داخل العيادة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyInPracticeBody</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Moments from real consultations and everyday practice life.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>لقطات من استشارات حقيقية ومن يوميات العمل.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyJourney</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Professional Journey</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المسيرة المهنية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">galleryPage.storyJourneyBody</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Milestones in clinical and nutrition specialization.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>محطات في التخصص السريري والتغذوي.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.creditsTitle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Program Credits</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أرصدة البرنامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.detailsEyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>The Details</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>التفاصيل</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.detailsTitle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>How Consultation Credits &amp; Meetings Work</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>كيف تعمل أرصدة الاستشارات والجلسات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.eyebrow</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Programs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.lede</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>A one-time payment for a guided nutrition or treatment program — the difference between tiers is simply how many doctor consultations are included. No recurring billing, no subscription.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>دفعة واحدة لبرنامج تغذوي أو علاجي مع متابعة — والفرق بين المستويات هو عدد استشارات الطبيب المتضمنة فقط. بلا اشتراك متكرر وبلا فواتير دورية.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.meetTitle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Google Meet</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>Google Meet</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">packagesPage.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Choose Your Program</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اختر برنامجك</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productsPage.lede</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Explore {name}2019s selection of branded wellness products, supplements, and home health-monitoring devices.</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تصفّح مجموعة {name} من منتجات العناية الصحية والمكمّلات وأجهزة المتابعة المنزلية.</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productsPage.searchAriaLabel</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search products</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البحث في المنتجات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productsPage.searchPlaceholder</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Search products…</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>ابحث في المنتجات…</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productsPage.title</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Wellness Products &amp; Health Devices</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>منتجات صحية وأجهزة طبية</p></div>
+      </div>
+    </div>
+<h2>Category labels</h2>
+  <div class="row">
+      <div class="key">articleCategory.clinicalNutrition</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Clinical Nutrition</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>التغذية السريرية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">articleCategory.digestiveHealth</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Digestive Health</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>صحة الجهاز الهضمي</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">articleCategory.familyNutrition</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Family Nutrition</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تغذية الأسرة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">articleCategory.heartHealth</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Heart Health</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>صحة القلب</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">articleCategory.sportsNutrition</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Sports Nutrition</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>تغذية الرياضيين</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">articleCategory.weightManagement</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Weight Management</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>إدارة الوزن</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">articleCategory.womensHealth</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Women's Health</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>صحة المرأة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.accountBilling</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Account &amp; Billing</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الحساب والفواتير</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.consultationCredits</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Consultation Credits</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أرصدة الاستشارات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.consultations</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Consultations</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الاستشارات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.generalQuestions</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>General Questions</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أسئلة عامة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.nutritionServices</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Nutrition Services</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>خدمات التغذية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.onlineMeetings</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Online Meetings</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الجلسات عبر الإنترنت</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.products</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Products</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المنتجات</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">faqCategory.programs</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Programs</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>البرامج</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productCategory.healthMonitoringDevices</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Health Monitoring Devices</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>أجهزة المتابعة الصحية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productCategory.herbalWellness</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Herbal Wellness</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الأعشاب الطبيعية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productCategory.supplements</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Supplements</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>المكمّلات الغذائية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">productCategory.vitaminsMinerals</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Vitamins &amp; Minerals</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الفيتامينات والمعادن</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videoCategory.education</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Education</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>توعية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videoCategory.lifestyle</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Lifestyle</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>نمط الحياة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videoCategory.metabolicHealth</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Metabolic Health</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>صحة الأيض</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videoCategory.nutrition</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Nutrition</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>التغذية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">videoCategory.wellness</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Wellness</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الصحة العامة</p></div>
+      </div>
+    </div>
+<h2>Everything else</h2>
+  <div class="row">
+      <div class="key">common.home</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Home</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>الرئيسية</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">common.language</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Language</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اللغة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">common.minRead</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>min read</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>دقائق قراءة</p></div>
+      </div>
+    </div>
+<div class="row">
+      <div class="key">common.read</div>
+      <div class="pair">
+        <div class="en" dir="ltr" lang="en"><p>Read</p></div>
+        <div class="ar" dir="rtl" lang="ar"><p>اقرأ</p></div>
+      </div>
+    </div>
+</main>
+</body>
+</html>
