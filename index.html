@@ -79,8 +79,15 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
     />
 
-    <!-- Preload key assets -->
-    <link rel="preload" as="image" href="/monzer-portrait.jpg" fetchpriority="high" />
+    <!-- No image preload here.
+         This file is served for EVERY route, so a preload in it fires on every
+         route. The home hero portrait was preloaded here, which meant each of
+         the six article pages fetched a 128KB image they never render, in
+         competition with the preload for their own hero — the exact resource
+         a preload is supposed to prioritise. Six pages paying for one page's
+         head start was the wrong trade.
+         Per-page preloads belong in the page component, where React 19 hoists
+         them into <head>; see EducationArticlePage. -->
 
     <script type="application/ld+json">
       {

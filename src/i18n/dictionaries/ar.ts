@@ -1,0 +1,59 @@
+import type { Entry } from "../types";
+import type { TranslationKey } from "./en";
+
+/**
+ * Arabic is `Partial` on purpose: a key with no Arabic form falls back to the
+ * English string at runtime rather than breaking the build. Requiring
+ * completeness would mean every new English string blocks `npm run build`
+ * until someone who reads Arabic is available — which, on a live site, means
+ * the enforcement gets deleted the first time it is inconvenient.
+ *
+ * The gap is reported instead of hidden: see `missingArabicKeys()` in
+ * ../coverage.ts, which the language switcher logs in development.
+ *
+ * TRANSLATION STATUS: these are UI microcopy only, written to demonstrate the
+ * six plural forms, and they need the doctor's review before launch. Long-form
+ * prose — articles, service descriptions, FAQs (FIX_PLAN 5.2) — is NOT
+ * translated here and must not be machine-translated: it is medical copy under
+ * his name.
+ */
+export const ar: Partial<Record<TranslationKey, Entry>> = {
+  // Six forms, because Arabic has six. `two` is a real dual noun
+  // ("سؤالين"), not the plural with a 2 in front of it.
+  "faq.resultCount": {
+    zero: "لم يتم العثور على أسئلة",
+    one: "تم العثور على سؤال واحد",
+    two: "تم العثور على سؤالين",
+    few: "تم العثور على {count} أسئلة",
+    many: "تم العثور على {count} سؤالاً",
+    other: "تم العثور على {count} سؤال",
+  },
+  "products.resultCount": {
+    zero: "لم يتم العثور على منتجات",
+    one: "تم العثور على منتج واحد",
+    two: "تم العثور على منتجين",
+    few: "تم العثور على {count} منتجات",
+    many: "تم العثور على {count} منتجاً",
+    other: "تم العثور على {count} منتج",
+  },
+  "notifications.coverageDays": {
+    zero: "لا يغطي أي أيام حالياً.",
+    one: "يغطي حالياً اليوم التالي.",
+    two: "يغطي حالياً اليومين التاليين.",
+    few: "يغطي حالياً {count} أيام تالية.",
+    many: "يغطي حالياً {count} يوماً تالياً.",
+    other: "يغطي حالياً {count} يوم تالٍ.",
+  },
+  "consultations.creditsRemaining": {
+    zero: "لم يتبقَ أي رصيد من {limit}",
+    one: "متبقٍ رصيد واحد من {limit}",
+    two: "متبقٍ رصيدان من {limit}",
+    few: "متبقٍ {count} أرصدة من {limit}",
+    many: "متبقٍ {count} رصيداً من {limit}",
+    other: "متبقٍ {count} رصيد من {limit}",
+  },
+
+  "common.language": "اللغة",
+  "consultations.title": "الاستشارات",
+  "faq.searchPlaceholder": "ابحث في الأسئلة",
+};
