@@ -40,16 +40,20 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-2.5 p-6">
-        <h3 className="font-display text-lg font-bold leading-snug text-navy">{product.name}</h3>
+        <h3 dir="auto" className="font-display text-lg font-bold leading-snug text-navy">
+          {product.name}
+        </h3>
         {(product.strength || product.quantity) && (
-          <p className="text-xs font-medium text-muted-foreground">
+          <p dir="auto" className="text-xs font-medium text-muted-foreground">
             {[product.strength, product.quantity].filter(Boolean).join(" · ")}
           </p>
         )}
-        <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+        <p dir="auto" className="flex-1 text-sm leading-relaxed text-muted-foreground">
           {product.shortDescription}
         </p>
-        <p className="font-display text-lg font-extrabold text-primary">{product.priceLabel}</p>
+        <p dir="auto" className="font-display text-lg font-extrabold text-primary">
+          {product.priceLabel}
+        </p>
 
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">
           <Link

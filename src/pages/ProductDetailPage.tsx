@@ -64,7 +64,7 @@ export default function ProductDetailPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/">{t("common.home")}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -134,7 +134,7 @@ export default function ProductDetailPage() {
               ))}
             </div>
           )}
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p dir="auto" className="mt-3 text-xs text-muted-foreground">
             Real product packaging supplied by {business.doctorName}. Additional gallery angles will
             appear here once provided.
           </p>
@@ -148,20 +148,25 @@ export default function ProductDetailPage() {
               </span>
               {isSoldOut && <SoldOutBadge />}
             </div>
-            <h1 className="mt-3 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl">
+            <h1
+              dir="auto"
+              className="mt-3 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl"
+            >
               {product.name}
             </h1>
             {(product.strength || product.quantity) && (
-              <p className="mt-1.5 text-sm font-medium text-muted-foreground">
+              <p dir="auto" className="mt-1.5 text-sm font-medium text-muted-foreground">
                 {[product.strength, product.quantity].filter(Boolean).join(" · ")}
               </p>
             )}
-            <p className="mt-3 font-display text-2xl font-extrabold text-primary">
+            <p dir="auto" className="mt-3 font-display text-2xl font-extrabold text-primary">
               {product.priceLabel}
             </p>
           </div>
 
-          <p className="text-sm leading-relaxed text-muted-foreground">{product.fullDescription}</p>
+          <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
+            {product.fullDescription}
+          </p>
 
           {product.highlights.length > 0 && (
             <ul className="space-y-1.5">
@@ -222,7 +227,9 @@ export default function ProductDetailPage() {
 
           {Object.keys(product.specifications).length > 0 && (
             <div className="rounded-xl border border-border/70 bg-card p-4">
-              <h2 className="font-display text-sm font-bold text-navy">Specifications</h2>
+              <h2 dir="auto" className="font-display text-sm font-bold text-navy">
+                Specifications
+              </h2>
               <dl className="mt-3 space-y-2">
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <div key={key} className="flex justify-between gap-4 text-sm">
@@ -234,7 +241,10 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          <p className="rounded-xl border border-border/70 bg-secondary/40 p-4 text-xs leading-relaxed text-muted-foreground">
+          <p
+            dir="auto"
+            className="rounded-xl border border-border/70 bg-secondary/40 p-4 text-xs leading-relaxed text-muted-foreground"
+          >
             Product information is provided for general informational purposes only. Dietary
             supplements are not intended to diagnose, treat, cure, or prevent any disease. Consult a
             qualified healthcare professional before using a supplement, especially if you are
@@ -247,7 +257,9 @@ export default function ProductDetailPage() {
 
       {related.length > 0 && (
         <div className="mt-16">
-          <h2 className="font-display text-xl font-bold text-navy">Related Products</h2>
+          <h2 dir="auto" className="font-display text-xl font-bold text-navy">
+            Related Products
+          </h2>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((item) => (
               <ProductCard key={item.id} product={item} />

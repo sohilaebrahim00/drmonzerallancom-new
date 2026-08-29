@@ -50,11 +50,16 @@ export default function EducationIndexPage() {
       />
 
       <div className="mx-auto max-w-2xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Blog</p>
-        <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+        <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+          Blog
+        </p>
+        <h1
+          dir="auto"
+          className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl"
+        >
           Nutrition Knowledge You Can Trust
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+        <p dir="auto" className="mt-4 text-base leading-relaxed text-muted-foreground">
           Practical, evidence-based articles to help you understand nutrition and make confident
           choices.
         </p>
@@ -94,10 +99,15 @@ export default function EducationIndexPage() {
               <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
                 {t(ARTICLE_CATEGORY_LABELS[featured.category])}
               </span>
-              <h2 className="font-display text-2xl font-extrabold leading-tight text-navy sm:text-3xl">
+              <h2
+                dir="auto"
+                className="font-display text-2xl font-extrabold leading-tight text-navy sm:text-3xl"
+              >
                 {featured.title}
               </h2>
-              <p className="text-sm leading-relaxed text-muted-foreground">{featured.excerpt}</p>
+              <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
+                {featured.excerpt}
+              </p>
               <div className="mt-2 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Clock className="h-3.5 w-3.5" /> {estimateReadingTime(featured)}{" "}
@@ -126,7 +136,10 @@ export default function EducationIndexPage() {
         </div>
       </div>
 
-      <p className="mx-auto mt-8 max-w-xl text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+      <p
+        dir="auto"
+        className="mx-auto mt-8 max-w-xl text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+      >
         Topic Explorer
       </p>
       <div className="mt-3 flex flex-wrap justify-center gap-2">
@@ -149,7 +162,9 @@ export default function EducationIndexPage() {
       </div>
 
       <div className="mt-14">
-        <h2 className="font-display text-lg font-bold text-navy">Latest Articles</h2>
+        <h2 dir="auto" className="font-display text-lg font-bold text-navy">
+          Latest Articles
+        </h2>
         <div className="mt-6">
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -160,7 +175,7 @@ export default function EducationIndexPage() {
               ))}
             </div>
           ) : (
-            <p className="py-16 text-center text-sm text-muted-foreground">
+            <p dir="auto" className="py-16 text-center text-sm text-muted-foreground">
               No articles match your search. Try a different keyword or category.
             </p>
           )}

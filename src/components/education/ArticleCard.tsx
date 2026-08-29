@@ -62,10 +62,15 @@ export function ArticleCard({ article }: { article: Article }) {
         </span>
       </div>
       <div className="flex flex-1 flex-col gap-2.5 p-6">
-        <h3 className="font-display text-lg font-bold leading-snug text-navy transition-colors group-hover:text-primary">
+        <h3
+          dir="auto"
+          className="font-display text-lg font-bold leading-snug text-navy transition-colors group-hover:text-primary"
+        >
           {article.title}
         </h3>
-        <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{article.excerpt}</p>
+        <p dir="auto" className="flex-1 text-sm leading-relaxed text-muted-foreground">
+          {article.excerpt}
+        </p>
         <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" /> {readingTime} {t("common.minRead")}

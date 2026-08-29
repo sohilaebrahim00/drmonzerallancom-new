@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import { business } from "@/data/business";
 import { breadcrumbSchema } from "@/lib/schema";
+import { useTranslate } from "@/i18n";
 
 export default function ContactPage() {
+  const t = useTranslate();
   const jsonLd = breadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Contact", path: "/contact" },
@@ -30,11 +32,11 @@ export default function ContactPage() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbLink href="/">{t("common.home")}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Contact</BreadcrumbPage>
+              <BreadcrumbPage>{t("nav.contact")}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -42,10 +44,13 @@ export default function ContactPage() {
 
       <section className="pt-6 text-center sm:pt-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+          <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             Get in Touch
           </p>
-          <h1 className="mx-auto mt-4 max-w-xl px-6 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl">
+          <h1
+            dir="auto"
+            className="mx-auto mt-4 max-w-xl px-6 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl"
+          >
             Let&apos;s Talk
           </h1>
         </div>

@@ -164,6 +164,7 @@ export const en = {
 
   "common.minRead": "min read",
   "common.read": "Read",
+  "common.home": "Home",
 
   // --- taxonomy labels --------------------------------------------------
   // DISPLAY ONLY. The identity stays the English string in the data files —
@@ -190,6 +191,25 @@ export const en = {
   "productCategory.vitaminsMinerals": "Vitamins & Minerals",
   "productCategory.herbalWellness": "Herbal Wellness",
   "productCategory.healthMonitoringDevices": "Health Monitoring Devices",
+
+  "videoCategory.nutrition": "Nutrition",
+  "videoCategory.wellness": "Wellness",
+  "videoCategory.education": "Education",
+  "videoCategory.lifestyle": "Lifestyle",
+  "videoCategory.metabolicHealth": "Metabolic Health",
+
+  // --- gallery page -----------------------------------------------------
+  "galleryPage.storyInPractice": "In Practice",
+  "galleryPage.storyInPracticeBody": "Moments from real consultations and everyday practice life.",
+  "galleryPage.storyBehindKnowledge": "Behind the Knowledge",
+  "galleryPage.storyBehindKnowledgeBody":
+    "How research and clinical training shape each recommendation.",
+  "galleryPage.storyEducational": "Educational Moments",
+  "galleryPage.storyEducationalBody": "Snapshots from talks, sessions, and community education.",
+  "galleryPage.storyEvents": "Events & Community",
+  "galleryPage.storyEventsBody": "Community initiatives and wellness events.",
+  "galleryPage.storyJourney": "Professional Journey",
+  "galleryPage.storyJourneyBody": "Milestones in clinical and nutrition specialization.",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */

@@ -19,11 +19,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { faqs } from "@/data/faqs";
 import { breadcrumbSchema } from "@/lib/schema";
+import { useTranslate } from "@/i18n";
 
 const RELEVANT_CATEGORIES = new Set(["Consultation Credits", "Online Meetings"]);
 const relevantFaqs = faqs.filter((faq) => RELEVANT_CATEGORIES.has(faq.category));
 
 export default function PackagesPage() {
+  const t = useTranslate();
   const jsonLd = breadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Packages", path: "/packages" },
@@ -42,11 +44,11 @@ export default function PackagesPage() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbLink href="/">{t("common.home")}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Packages</BreadcrumbPage>
+              <BreadcrumbPage>{t("nav.packages")}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -60,13 +62,22 @@ export default function PackagesPage() {
         />
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+            <p
+              dir="auto"
+              className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
+            >
               Programs
             </p>
-            <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl">
+            <h1
+              dir="auto"
+              className="mt-4 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl"
+            >
               Choose Your Program
             </h1>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+            <p
+              dir="auto"
+              className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground"
+            >
               A one-time payment for a guided nutrition or treatment program — the difference
               between tiers is simply how many doctor consultations are included. No recurring
               billing, no subscription.
@@ -81,10 +92,16 @@ export default function PackagesPage() {
       <section className="border-t border-border/60 bg-secondary/20 py-16 sm:py-24">
         <div className="mx-auto w-full max-w-5xl px-6 sm:px-10">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+            <p
+              dir="auto"
+              className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
+            >
               The Details
             </p>
-            <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
+            <h2
+              dir="auto"
+              className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
+            >
               How Consultation Credits &amp; Meetings Work
             </h2>
           </div>
@@ -95,8 +112,10 @@ export default function PackagesPage() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <CalendarCheck className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 font-display text-base font-bold text-navy">Program Credits</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <h3 dir="auto" className="mt-4 font-display text-base font-bold text-navy">
+                  Program Credits
+                </h3>
+                <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   Each program includes a fixed number of consultation credits, granted once at
                   purchase. Request a consultation from your account, and one credit is used per
                   confirmed session.
@@ -108,8 +127,10 @@ export default function PackagesPage() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <Video className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 font-display text-base font-bold text-navy">Google Meet</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <h3 dir="auto" className="mt-4 font-display text-base font-bold text-navy">
+                  Google Meet
+                </h3>
+                <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   Approved consultations are conducted online over Google Meet. Once confirmed, your
                   meeting link appears with the appointment in your account.
                 </p>
@@ -120,10 +141,10 @@ export default function PackagesPage() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 font-display text-base font-bold text-navy">
+                <h3 dir="auto" className="mt-4 font-display text-base font-bold text-navy">
                   No Recurring Billing
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   Every program is a single, one-time payment. There is nothing to cancel and
                   nothing that renews automatically.
                 </p>
@@ -138,8 +159,16 @@ export default function PackagesPage() {
         <section className="py-16 sm:py-24">
           <div className="mx-auto w-full max-w-3xl px-6 sm:px-10">
             <div className="text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">FAQ</p>
-              <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
+              <p
+                dir="auto"
+                className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
+              >
+                FAQ
+              </p>
+              <h2
+                dir="auto"
+                className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
+              >
                 Program Questions
               </h2>
             </div>
@@ -178,10 +207,16 @@ export default function PackagesPage() {
       <section className="pb-16 sm:pb-24">
         <div className="mx-auto w-full max-w-3xl px-6 text-center sm:px-10">
           <div className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14">
-            <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
+            <h2
+              dir="auto"
+              className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
+            >
               Not Sure Which Program Fits?
             </h2>
-            <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
+            <p
+              dir="auto"
+              className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base"
+            >
               Choose your program above, or reach out and we&apos;ll help you pick the right one.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">

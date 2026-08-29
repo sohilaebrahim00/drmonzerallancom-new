@@ -88,11 +88,11 @@ export default function EducationArticlePage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/">{t("common.home")}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/blog">Blog</BreadcrumbLink>
+            <BreadcrumbLink href="/blog">{t("nav.blog")}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -124,7 +124,10 @@ export default function EducationArticlePage() {
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
           {t(ARTICLE_CATEGORY_LABELS[article.category])}
         </span>
-        <h1 className="mt-4 font-display text-3xl font-extrabold leading-tight tracking-tight text-navy sm:text-4xl">
+        <h1
+          dir="auto"
+          className="mt-4 font-display text-3xl font-extrabold leading-tight tracking-tight text-navy sm:text-4xl"
+        >
           {article.title}
         </h1>
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
@@ -152,10 +155,16 @@ export default function EducationArticlePage() {
       <div className="mt-10 space-y-8">
         {article.sections.map((section) => (
           <div key={section.heading}>
-            <h2 className="font-display text-xl font-bold text-navy">{section.heading}</h2>
+            <h2 dir="auto" className="font-display text-xl font-bold text-navy">
+              {section.heading}
+            </h2>
             <div className="mt-3 space-y-4">
               {section.body.map((paragraph) => (
-                <p key={paragraph} className="text-base leading-relaxed text-muted-foreground">
+                <p
+                  dir="auto"
+                  key={paragraph}
+                  className="text-base leading-relaxed text-muted-foreground"
+                >
                   {paragraph}
                 </p>
               ))}
@@ -176,7 +185,9 @@ export default function EducationArticlePage() {
 
       {related.length > 0 && (
         <div className="mt-16">
-          <h2 className="font-display text-xl font-bold text-navy">Related Articles</h2>
+          <h2 dir="auto" className="font-display text-xl font-bold text-navy">
+            Related Articles
+          </h2>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
             {related.map((item) => (
               <ArticleCard key={item.slug} article={item} />

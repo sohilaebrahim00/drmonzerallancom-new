@@ -2,6 +2,7 @@ import type { SimpleTranslationKey } from "./dictionaries/en";
 import type { FaqCategory } from "@/data/faqs";
 import type { ArticleCategory } from "@/data/articles";
 import type { ProductCategory } from "@/data/products";
+import type { VideoCategory } from "@/data/videos";
 
 /**
  * Identity -> display key, for every taxonomy shown to a visitor.
@@ -35,6 +36,19 @@ export const ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, SimpleTranslationK
   "Family Nutrition": "articleCategory.familyNutrition",
   "Digestive Health": "articleCategory.digestiveHealth",
   "Heart Health": "articleCategory.heartHealth",
+};
+
+/**
+ * Video categories are identity too: getVideosByCategory() in src/data/videos.ts
+ * filters on the raw string, so translating the stored value would return an
+ * empty list rather than a visibly wrong one.
+ */
+export const VIDEO_CATEGORY_LABELS: Record<VideoCategory, SimpleTranslationKey> = {
+  Nutrition: "videoCategory.nutrition",
+  Wellness: "videoCategory.wellness",
+  Education: "videoCategory.education",
+  Lifestyle: "videoCategory.lifestyle",
+  "Metabolic Health": "videoCategory.metabolicHealth",
 };
 
 export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, SimpleTranslationKey> = {

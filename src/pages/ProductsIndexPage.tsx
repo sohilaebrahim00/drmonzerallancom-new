@@ -39,11 +39,16 @@ export default function ProductsIndexPage() {
       />
 
       <div className="mx-auto max-w-2xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Products</p>
-        <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+        <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+          Products
+        </p>
+        <h1
+          dir="auto"
+          className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl"
+        >
           Wellness Products &amp; Health Devices
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+        <p dir="auto" className="mt-4 text-base leading-relaxed text-muted-foreground">
           Explore Dr. Monzer Allan&rsquo;s selection of branded wellness products, supplements, and
           home health-monitoring devices.
         </p>
@@ -81,7 +86,11 @@ export default function ProductsIndexPage() {
         ))}
       </div>
 
-      <p className="mt-6 text-center text-xs font-medium text-muted-foreground" role="status">
+      <p
+        dir="auto"
+        className="mt-6 text-center text-xs font-medium text-muted-foreground"
+        role="status"
+      >
         {filtered.length} {filtered.length === 1 ? "product" : "products"} found
       </p>
 
@@ -95,7 +104,7 @@ export default function ProductsIndexPage() {
             ))}
           </div>
         ) : allProducts.length > 0 ? (
-          <p className="py-16 text-center text-sm text-muted-foreground">
+          <p dir="auto" className="py-16 text-center text-sm text-muted-foreground">
             No products match your search.
             <br />
             Try another product name or category.
@@ -106,10 +115,10 @@ export default function ProductsIndexPage() {
       </div>
 
       <div className="mx-auto mt-14 max-w-2xl rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm sm:p-8">
-        <h2 className="font-display text-lg font-bold text-navy">
+        <h2 dir="auto" className="font-display text-lg font-bold text-navy">
           Have Questions About Any Product?
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Book a consultation with Dr. Monzer Allan to talk through what fits your routine, or reach
           out about a specific product directly.
         </p>
@@ -118,7 +127,10 @@ export default function ProductsIndexPage() {
         </div>
       </div>
 
-      <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground/80">
+      <p
+        dir="auto"
+        className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground/80"
+      >
         Product information is provided for general informational purposes only. Dietary supplements
         are not intended to diagnose, treat, cure, or prevent any disease. Consult a qualified
         healthcare professional before using a supplement, especially if you are pregnant, nursing,

@@ -214,6 +214,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
 
   "common.minRead": "دقائق قراءة",
   "common.read": "اقرأ",
+  "common.home": "الرئيسية",
 
   // --- taxonomy labels --------------------------------------------------
   // DISPLAY ONLY — see the second rule at the top of this file.
@@ -238,4 +239,22 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "productCategory.vitaminsMinerals": "الفيتامينات والمعادن",
   "productCategory.herbalWellness": "الأعشاب الطبيعية",
   "productCategory.healthMonitoringDevices": "أجهزة المتابعة الصحية",
+
+  "videoCategory.nutrition": "التغذية",
+  "videoCategory.wellness": "الصحة العامة",
+  "videoCategory.education": "تثقيف",
+  "videoCategory.lifestyle": "نمط الحياة",
+  "videoCategory.metabolicHealth": "صحة الأيض",
+
+  // --- gallery page -----------------------------------------------------
+  "galleryPage.storyInPractice": "من داخل العيادة",
+  "galleryPage.storyInPracticeBody": "لقطات من استشارات حقيقية ومن يوميات العمل.",
+  "galleryPage.storyBehindKnowledge": "ما وراء المعرفة",
+  "galleryPage.storyBehindKnowledgeBody": "كيف يشكّل البحث والتدريب السريري كل توصية.",
+  "galleryPage.storyEducational": "لحظات تثقيفية",
+  "galleryPage.storyEducationalBody": "لقطات من محاضرات وجلسات وتثقيف مجتمعي.",
+  "galleryPage.storyEvents": "الفعاليات والمجتمع",
+  "galleryPage.storyEventsBody": "مبادرات مجتمعية وفعاليات صحية.",
+  "galleryPage.storyJourney": "المسيرة المهنية",
+  "galleryPage.storyJourneyBody": "محطات في التخصص السريري والتغذوي.",
 };
