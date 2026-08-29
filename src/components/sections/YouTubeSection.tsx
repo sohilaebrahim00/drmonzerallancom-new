@@ -64,10 +64,16 @@ export function YouTubeSection() {
                         )}
                       >
                         <div className="relative aspect-video overflow-hidden rounded-lg bg-navy/10">
+                          {/* hqdefault is always 480x360; stating it reserves
+                              the box so the strip does not reflow as eight
+                              thumbnails arrive one by one. */}
                           <img
                             src={`https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`}
                             alt=""
+                            width={480}
+                            height={360}
                             loading="lazy"
+                            decoding="async"
                             className="h-full w-full object-cover"
                           />
                           <span className="absolute inset-0 flex items-center justify-center bg-navy/20 opacity-0 transition-opacity group-hover:opacity-100">

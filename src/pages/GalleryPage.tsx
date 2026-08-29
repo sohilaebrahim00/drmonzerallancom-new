@@ -1,7 +1,6 @@
 import { ExternalLink, Images, ScrollText, Sparkles, UsersRound, Youtube } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { YouTubeEmbed } from "@/components/media/YouTubeEmbed";
 import { BookingButton } from "@/components/booking/BookingButton";
 import {
@@ -82,7 +81,7 @@ export default function GalleryPage() {
           aria-hidden="true"
         />
         <div className="mx-auto max-w-2xl px-6 sm:px-10">
-          <Reveal direction="up">
+          <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
               Gallery
             </p>
@@ -94,7 +93,7 @@ export default function GalleryPage() {
               and video here is real — before-and-after content is only ever published with a
               client&apos;s explicit consent.
             </p>
-          </Reveal>
+          </div>
         </div>
       </section>
 
@@ -102,7 +101,7 @@ export default function GalleryPage() {
       {featured ? (
         <section className="pb-16 sm:pb-24">
           <div className="mx-auto w-full max-w-5xl px-6 sm:px-10">
-            <Reveal direction="up">
+            <div>
               <YouTubeEmbed
                 videoId={featured.videoId}
                 title={featured.title}
@@ -117,16 +116,13 @@ export default function GalleryPage() {
                   {featured.caption}
                 </p>
               </div>
-            </Reveal>
+            </div>
           </div>
         </section>
       ) : (
         <section className="pb-16 sm:pb-24">
-          <div className="mx-auto w-full max-w-2xl px-6 sm:px-10">
-            <Reveal
-              direction="up"
-              className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-secondary/30 px-6 py-16 text-center"
-            >
+          <div className="mx-auto w-full max-w-3xl px-6 sm:px-10">
+            <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-secondary/30 px-6 py-16 text-center">
               <Youtube className="h-8 w-8 text-primary/60" />
               <p className="font-display text-lg font-bold text-navy">Video Stories Coming Soon</p>
               <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -140,7 +136,7 @@ export default function GalleryPage() {
               >
                 Visit the YouTube Channel <ExternalLink className="h-4 w-4" />
               </a>
-            </Reveal>
+            </div>
           </div>
         </section>
       )}
@@ -148,11 +144,10 @@ export default function GalleryPage() {
       {/* Alternating video story rows */}
       {videoStories.length > 0 && (
         <section className="pb-16 sm:pb-24">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 sm:px-10">
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-6 sm:px-10">
             {videoStories.map((video, index) => (
-              <Reveal
+              <div
                 key={video.id}
-                direction={index % 2 === 0 ? "right" : "left"}
                 className={`grid grid-cols-1 items-center gap-8 lg:grid-cols-2 ${
                   index % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
                 }`}
@@ -175,7 +170,7 @@ export default function GalleryPage() {
                     Watch on YouTube <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </div>
-              </Reveal>
+              </div>
             ))}
           </div>
         </section>
@@ -183,8 +178,8 @@ export default function GalleryPage() {
 
       {/* Visual stories — photo categories */}
       <section className="border-t border-border/60 bg-secondary/20 py-16 sm:py-24">
-        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
-          <Reveal direction="up" className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto w-full max-w-5xl px-6 sm:px-10">
+          <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
               Visual Stories
             </p>
@@ -195,11 +190,11 @@ export default function GalleryPage() {
               We&apos;re preparing approved photography for each of these categories. Nothing shown
               here is a placeholder photo — real images will appear once available.
             </p>
-          </Reveal>
+          </div>
 
           <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {VISUAL_STORIES.map((story, index) => (
-              <Reveal key={story.title} direction="up" delay={(index % 3) * 0.06}>
+              <div key={story.title}>
                 <div className="flex h-full flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-card p-8 text-center">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary">
                     <story.icon className="h-6 w-6" />
@@ -212,13 +207,13 @@ export default function GalleryPage() {
                     <Images className="h-3 w-3" /> Coming Soon
                   </span>
                 </div>
-              </Reveal>
+              </div>
             ))}
           </div>
 
-          <Reveal direction="up" delay={0.2} className="mt-12 flex justify-center">
+          <div className="mt-12 flex justify-center">
             <BookingButton label="Book a Consultation" />
-          </Reveal>
+          </div>
         </div>
       </section>
     </div>

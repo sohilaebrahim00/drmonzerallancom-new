@@ -2,7 +2,6 @@ import { Navigate, useParams } from "react-router-dom";
 import { Clock, Calendar } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { ArticleCard } from "@/components/education/ArticleCard";
 import { ShareButtons } from "@/components/education/ShareButtons";
 import {
@@ -70,7 +69,7 @@ export default function EducationArticlePage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <Reveal direction="up" className="mt-6">
+      <div className="mt-6">
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
           {article.category}
         </span>
@@ -86,15 +85,15 @@ export default function EducationArticlePage() {
           </span>
           <span>By {business.doctorName}</span>
         </div>
-      </Reveal>
+      </div>
 
-      <Reveal direction="up" delay={0.1}>
+      <div>
         <div className="mt-8 flex h-56 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/85 to-turquoise/70 sm:h-72">
           <Icon className="h-16 w-16 text-white/90" />
         </div>
-      </Reveal>
+      </div>
 
-      <Reveal direction="up" delay={0.15} className="mt-10 space-y-8">
+      <div className="mt-10 space-y-8">
         {article.sections.map((section) => (
           <div key={section.heading}>
             <h2 className="font-display text-xl font-bold text-navy">{section.heading}</h2>
@@ -107,7 +106,7 @@ export default function EducationArticlePage() {
             </div>
           </div>
         ))}
-      </Reveal>
+      </div>
 
       <div className="mt-10 rounded-xl border border-border/70 bg-secondary/40 p-5 text-xs leading-relaxed text-muted-foreground">
         This article is for general educational purposes only and is not a substitute for

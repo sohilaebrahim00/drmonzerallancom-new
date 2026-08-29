@@ -1,4 +1,3 @@
-import { Reveal } from "@/components/common/Reveal";
 import { Seo } from "@/components/seo/Seo";
 import { Contact } from "@/components/sections/Contact";
 import {
@@ -42,14 +41,14 @@ export default function ContactPage() {
       </div>
 
       <section className="pt-6 text-center sm:pt-8">
-        <Reveal direction="up">
+        <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             Get in Touch
           </p>
           <h1 className="mx-auto mt-4 max-w-xl px-6 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl">
             Let&apos;s Talk
           </h1>
-        </Reveal>
+        </div>
       </section>
 
       <Contact />

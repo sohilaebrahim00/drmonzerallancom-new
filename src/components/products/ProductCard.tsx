@@ -6,6 +6,7 @@ import { buildAvailabilityInquiryMessage, buildProductInquiryMessage } from "@/c
 import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { SoldOutBadge } from "@/components/products/SoldOutBadge";
+import { Photo } from "@/components/common/Photo";
 
 export function ProductCard({ product }: { product: Product }) {
   const isSoldOut = product.availability === "sold-out";
@@ -17,13 +18,13 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-turquoise/50 hover:shadow-[0_24px_50px_-24px_rgba(23,35,59,0.35)]">
       <div className="relative flex h-56 items-center justify-center overflow-hidden bg-secondary/40 p-4">
         {product.mainImage ? (
-          <img
+          <Photo
             src={product.mainImage}
             alt={product.name}
             width={480}
             height={480}
-            loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+            className="block h-full w-full"
+            imgClassName="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">

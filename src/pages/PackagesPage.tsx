@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { CalendarCheck, MessageCircle, ShieldCheck, Video } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { ProgramPackages } from "@/components/sections/ProgramPackages";
 import {
   Accordion,
@@ -60,7 +59,7 @@ export default function PackagesPage() {
           aria-hidden="true"
         />
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
-          <Reveal direction="up">
+          <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
               Programs
             </p>
@@ -72,7 +71,7 @@ export default function PackagesPage() {
               between tiers is simply how many doctor consultations are included. No recurring
               billing, no subscription.
             </p>
-          </Reveal>
+          </div>
         </div>
       </section>
 
@@ -81,17 +80,17 @@ export default function PackagesPage() {
       {/* How credits work */}
       <section className="border-t border-border/60 bg-secondary/20 py-16 sm:py-24">
         <div className="mx-auto w-full max-w-5xl px-6 sm:px-10">
-          <Reveal direction="up" className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
               The Details
             </p>
             <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
               How Consultation Credits &amp; Meetings Work
             </h2>
-          </Reveal>
+          </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <Reveal direction="up" delay={0.05}>
+            <div>
               <div className="h-full rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <CalendarCheck className="h-5 w-5" />
@@ -103,8 +102,8 @@ export default function PackagesPage() {
                   confirmed session.
                 </p>
               </div>
-            </Reveal>
-            <Reveal direction="up" delay={0.1}>
+            </div>
+            <div>
               <div className="h-full rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <Video className="h-5 w-5" />
@@ -115,8 +114,8 @@ export default function PackagesPage() {
                   meeting link appears with the appointment in your account.
                 </p>
               </div>
-            </Reveal>
-            <Reveal direction="up" delay={0.15}>
+            </div>
+            <div>
               <div className="h-full rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-primary">
                   <ShieldCheck className="h-5 w-5" />
@@ -129,7 +128,7 @@ export default function PackagesPage() {
                   nothing that renews automatically.
                 </p>
               </div>
-            </Reveal>
+            </div>
           </div>
         </div>
       </section>
@@ -138,13 +137,13 @@ export default function PackagesPage() {
       {relevantFaqs.length > 0 && (
         <section className="py-16 sm:py-24">
           <div className="mx-auto w-full max-w-3xl px-6 sm:px-10">
-            <Reveal direction="up" className="text-center">
+            <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">FAQ</p>
               <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
                 Program Questions
               </h2>
-            </Reveal>
-            <Reveal direction="up" delay={0.1} className="mt-10">
+            </div>
+            <div className="mt-10">
               <Accordion
                 type="single"
                 collapsible
@@ -165,12 +164,12 @@ export default function PackagesPage() {
                   </AccordionItem>
                 ))}
               </Accordion>
-            </Reveal>
-            <Reveal direction="up" delay={0.15} className="mt-6 text-center">
+            </div>
+            <div className="mt-6 text-center">
               <Link to="/faq" className="text-sm font-semibold text-primary hover:text-turquoise">
                 View All FAQs
               </Link>
-            </Reveal>
+            </div>
           </div>
         </section>
       )}
@@ -178,10 +177,7 @@ export default function PackagesPage() {
       {/* Questions CTA */}
       <section className="pb-16 sm:pb-24">
         <div className="mx-auto w-full max-w-3xl px-6 text-center sm:px-10">
-          <Reveal
-            direction="up"
-            className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14"
-          >
+          <div className="rounded-3xl border border-border/70 bg-gradient-to-br from-navy to-primary p-10 text-white shadow-[0_30px_70px_-30px_rgba(23,35,59,0.5)] sm:p-14">
             <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
               Not Sure Which Program Fits?
             </h2>
@@ -196,7 +192,7 @@ export default function PackagesPage() {
                 <MessageCircle className="h-4 w-4" /> Contact Us
               </Link>
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
     </div>

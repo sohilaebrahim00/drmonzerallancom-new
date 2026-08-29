@@ -2,11 +2,16 @@ import { Reveal } from "@/components/common/Reveal";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
-  eyebrow: string;
+  /** Optional: some page headings have no kicker above them. */
+  eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
   className?: string;
+  /** Anchor for the section's aria-labelledby. */
+  id?: string;
+  /** A page's primary heading is an h1; a section within it is an h2. */
+  level?: "h1" | "h2";
 }
 
 export function SectionHeading({
@@ -15,40 +20,46 @@ export function SectionHeading({
   description,
   align = "center",
   className,
+  id,
+  level = "h2",
 }: SectionHeadingProps) {
+  const Title = level;
+
   return (
-    <div
+    /* ONE Reveal for the whole block, not one per line. A kicker, a heading
+       and its lede are read as a single unit; three staggered fades across
+       them is decoration pretending to be sequence. */
+    <Reveal
+      direction="up"
       className={cn(
         "flex flex-col gap-4",
         align === "center" ? "items-center text-center" : "items-start text-left",
         className,
       )}
     >
-      <Reveal direction="up">
+      {eyebrow && (
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">{eyebrow}</p>
-      </Reveal>
-      <Reveal direction="up" delay={0.08}>
-        <h2
+      )}
+      <Title
+        id={id}
+        className={cn(
+          "max-w-2xl font-display font-extrabold leading-[1.15] tracking-tight text-navy",
+          level === "h1" ? "text-3xl sm:text-4xl md:text-5xl" : "text-3xl sm:text-4xl",
+          align === "center" && "mx-auto",
+        )}
+      >
+        {title}
+      </Title>
+      {description && (
+        <p
           className={cn(
-            "max-w-2xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-navy sm:text-4xl",
+            "max-w-2xl text-base leading-relaxed text-muted-foreground",
             align === "center" && "mx-auto",
           )}
         >
-          {title}
-        </h2>
-      </Reveal>
-      {description && (
-        <Reveal direction="up" delay={0.16}>
-          <p
-            className={cn(
-              "max-w-2xl text-base leading-relaxed text-muted-foreground",
-              align === "center" && "mx-auto",
-            )}
-          >
-            {description}
-          </p>
-        </Reveal>
+          {description}
+        </p>
       )}
-    </div>
+    </Reveal>
   );
 }

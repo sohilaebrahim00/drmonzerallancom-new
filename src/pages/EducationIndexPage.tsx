@@ -3,7 +3,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ArrowUpRight, Clock, Search } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { ArticleCard } from "@/components/education/ArticleCard";
 import { Input } from "@/components/ui/input";
 import { articles, categories, estimateReadingTime, type ArticleCategory } from "@/data/articles";
@@ -47,7 +46,7 @@ export default function EducationIndexPage() {
         path="/blog"
       />
 
-      <Reveal direction="up" className="mx-auto max-w-2xl text-center">
+      <div className="mx-auto max-w-2xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Blog</p>
         <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
           Nutrition Knowledge You Can Trust
@@ -56,10 +55,10 @@ export default function EducationIndexPage() {
           Practical, evidence-based articles to help you understand nutrition and make confident
           choices.
         </p>
-      </Reveal>
+      </div>
 
       {featured && (
-        <Reveal direction="up" delay={0.08} className="mt-12">
+        <div className="mt-12">
           <Link
             to={`/blog/${featured.slug}`}
             className="group grid grid-cols-1 overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-turquoise/50 hover:shadow-[0_30px_60px_-30px_rgba(23,35,59,0.35)] lg:grid-cols-[1.1fr_1fr]"
@@ -89,10 +88,10 @@ export default function EducationIndexPage() {
               </div>
             </div>
           </Link>
-        </Reveal>
+        </div>
       )}
 
-      <Reveal direction="up" delay={0.1} className="mx-auto mt-10 max-w-xl">
+      <div className="mx-auto mt-10 max-w-xl">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -103,12 +102,12 @@ export default function EducationIndexPage() {
             className="pl-10"
           />
         </div>
-      </Reveal>
+      </div>
 
       <p className="mx-auto mt-8 max-w-xl text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
         Topic Explorer
       </p>
-      <Reveal direction="up" delay={0.15} className="mt-3 flex flex-wrap justify-center gap-2">
+      <div className="mt-3 flex flex-wrap justify-center gap-2">
         {(["All", ...categories] as const).map((category) => (
           <button
             key={category}
@@ -125,7 +124,7 @@ export default function EducationIndexPage() {
             {category}
           </button>
         ))}
-      </Reveal>
+      </div>
 
       <div className="mt-14">
         <h2 className="font-display text-lg font-bold text-navy">Latest Articles</h2>
@@ -133,9 +132,9 @@ export default function EducationIndexPage() {
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((article, index) => (
-                <Reveal key={article.slug} direction="up" delay={(index % 3) * 0.06}>
+                <div key={article.slug}>
                   <ArticleCard article={article} />
-                </Reveal>
+                </div>
               ))}
             </div>
           ) : (

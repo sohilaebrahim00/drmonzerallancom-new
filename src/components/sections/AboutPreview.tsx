@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/common/Reveal";
 import { Photo } from "@/components/common/Photo";
 import { PHOTO_FRAME } from "@/components/common/photoFrame";
+import { CredentialChip } from "@/components/common/CredentialChip";
 import { bio, credentials } from "@/data/about";
 import { cn } from "@/lib/utils";
 
@@ -18,14 +19,16 @@ export function AboutPreview() {
                 className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] bg-secondary/70 blur-2xl"
                 aria-hidden="true"
               />
-              <div className={PHOTO_FRAME}>
-                <img
-                  src="/monzer-portrait.jpg"
+              <div className={cn(PHOTO_FRAME, "aspect-[4/5]")}>
+                <Photo
+                  base="/monzer-portrait"
+                  width={960}
+                  height={1280}
                   alt="Monzer Allan, Nutrition Specialist and Pharmacist"
-                  width={640}
-                  height={800}
-                  loading="lazy"
-                  className="aspect-[4/5] w-full object-cover object-top"
+                  hasWebp={false}
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover object-top"
+                  sizes="(min-width: 1024px) 384px, 100vw"
                 />
               </div>
             </div>
@@ -46,13 +49,7 @@ export function AboutPreview() {
             </p>
             <div className="flex flex-wrap gap-3">
               {credentials.map((credential) => (
-                <span
-                  key={credential.title}
-                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-semibold text-navy/80"
-                >
-                  <credential.icon className="h-3.5 w-3.5 text-primary" />
-                  {credential.title}
-                </span>
+                <CredentialChip key={credential.title} credential={credential} />
               ))}
             </div>
             <Reveal direction="up" delay={0.1}>

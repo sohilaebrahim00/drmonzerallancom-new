@@ -1,4 +1,4 @@
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
@@ -32,15 +32,29 @@ export function Reveal({
   amount = 0.25,
   as = "div",
 }: RevealProps) {
-  const variants: Variants = {
-    hidden: { opacity: 0, ...offsets[direction] },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition: { duration, delay, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
+  /**
+   * `prefers-reduced-motion` is a stated medical need for some visitors —
+   * vestibular disorders make travelling content genuinely unpleasant — so it
+   * is honoured here rather than per call site. The content still appears; it
+   * just appears rather than arrives.
+   *
+   * Note this must not degrade to "hidden forever": the element still has to
+   * end at opacity 1, so the reduced variant is a no-op transition, not a
+   * removed animation.
+   */
+  const reduceMotion = useReducedMotion();
+
+  const variants: Variants = reduceMotion
+    ? { hidden: { opacity: 1 }, visible: { opacity: 1, transition: { duration: 0 } } }
+    : {
+        hidden: { opacity: 0, ...offsets[direction] },
+        visible: {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          transition: { duration, delay, ease: [0.22, 1, 0.36, 1] },
+        },
+      };
 
   const MotionTag = as === "li" ? motion.li : motion.div;
 

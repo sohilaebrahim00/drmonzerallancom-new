@@ -14,9 +14,7 @@
  * TODO(phase-8): `alt` should come from the i18n dictionaries like any other
  * string once bilingual support lands. English only for now.
  */
-export interface PhotoProps {
-  /** Path without extension, e.g. "/images/plate-before". */
-  base: string;
+interface PhotoCommonProps {
   width: number;
   height: number;
   alt: string;
@@ -34,10 +32,36 @@ export interface PhotoProps {
    */
   mobileSource?: { base: string; media: string };
   sizes?: string;
+  /**
+   * Set false for a file that has no `.webp` sibling.
+   *
+   * This is not a nicety: a <picture> does NOT fall back to the <img> when a
+   * <source> it already matched fails to load. Emitting a WebP source for a
+   * file that does not exist shows a broken image on every browser that
+   * supports WebP — i.e. all of them.
+   */
+  hasWebp?: boolean;
 }
+
+/**
+ * Two ways to name the file:
+ *
+ *  `base` — a path WITHOUT extension, for a photograph that ships as a
+ *  WebP/JPEG pair. This is the normal case and gets the full <picture>.
+ *
+ *  `src` — one complete path, for a file that exists in a single format. The
+ *  product catalogue is WebP-only and its paths come from data with the
+ *  extension already on them; forcing those through `base` would emit a
+ *  <source> for a .jpg that does not exist. No <source> is emitted here — the
+ *  <img> alone is correct, and still gets the dimensions, loading and decoding
+ *  rules that are the point of this component.
+ */
+export type PhotoProps = PhotoCommonProps &
+  ({ base: string; src?: never } | { src: string; base?: never });
 
 export function Photo({
   base,
+  src,
   width,
   height,
   alt,
@@ -47,21 +71,22 @@ export function Photo({
   decorative = false,
   mobileSource,
   sizes,
+  hasWebp = true,
 }: PhotoProps) {
   return (
     <picture className={className}>
       {/* Order is the selection algorithm: the browser takes the FIRST source
           whose media and type it can use, so narrow-screen candidates must
           precede the wide ones, and WebP must precede JPEG within each pair. */}
-      {mobileSource && (
+      {base && mobileSource && hasWebp && (
         <source media={mobileSource.media} srcSet={`${mobileSource.base}.webp`} type="image/webp" />
       )}
-      {mobileSource && (
+      {base && mobileSource && (
         <source media={mobileSource.media} srcSet={`${mobileSource.base}.jpg`} type="image/jpeg" />
       )}
-      <source srcSet={`${base}.webp`} type="image/webp" />
+      {base && hasWebp && <source srcSet={`${base}.webp`} type="image/webp" />}
       <img
-        src={`${base}.jpg`}
+        src={src ?? `${base}.jpg`}
         width={width}
         height={height}
         alt={decorative ? "" : alt}

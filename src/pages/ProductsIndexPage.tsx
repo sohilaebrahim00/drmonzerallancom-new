@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductsEmptyState } from "@/components/products/ProductsEmptyState";
 import { BookingButton } from "@/components/booking/BookingButton";
@@ -37,7 +36,7 @@ export default function ProductsIndexPage() {
         path="/products"
       />
 
-      <Reveal direction="up" className="mx-auto max-w-2xl text-center">
+      <div className="mx-auto max-w-2xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Products</p>
         <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
           Wellness Products &amp; Health Devices
@@ -46,9 +45,9 @@ export default function ProductsIndexPage() {
           Explore Dr. Monzer Allan&rsquo;s selection of branded wellness products, supplements, and
           home health-monitoring devices.
         </p>
-      </Reveal>
+      </div>
 
-      <Reveal direction="up" delay={0.1} className="mx-auto mt-10 max-w-xl">
+      <div className="mx-auto mt-10 max-w-xl">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -59,9 +58,9 @@ export default function ProductsIndexPage() {
             className="pl-10"
           />
         </div>
-      </Reveal>
+      </div>
 
-      <Reveal direction="up" delay={0.15} className="mt-6 flex flex-wrap justify-center gap-2">
+      <div className="mt-6 flex flex-wrap justify-center gap-2">
         {(["All", ...productCategories] as const).map((category) => (
           <button
             key={category}
@@ -78,7 +77,7 @@ export default function ProductsIndexPage() {
             {category}
           </button>
         ))}
-      </Reveal>
+      </div>
 
       <p className="mt-6 text-center text-xs font-medium text-muted-foreground" role="status">
         {filtered.length} {filtered.length === 1 ? "product" : "products"} found
@@ -88,9 +87,9 @@ export default function ProductsIndexPage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((product, index) => (
-              <Reveal key={product.id} direction="up" delay={(index % 3) * 0.06}>
+              <div key={product.id}>
                 <ProductCard product={product} />
-              </Reveal>
+              </div>
             ))}
           </div>
         ) : allProducts.length > 0 ? (
@@ -104,11 +103,7 @@ export default function ProductsIndexPage() {
         )}
       </div>
 
-      <Reveal
-        direction="up"
-        delay={0.2}
-        className="mx-auto mt-14 max-w-2xl rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm sm:p-8"
-      >
+      <div className="mx-auto mt-14 max-w-2xl rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm sm:p-8">
         <h2 className="font-display text-lg font-bold text-navy">
           Have Questions About Any Product?
         </h2>
@@ -119,7 +114,7 @@ export default function ProductsIndexPage() {
         <div className="mt-5 flex justify-center">
           <BookingButton label="Book a Consultation" />
         </div>
-      </Reveal>
+      </div>
 
       <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground/80">
         Product information is provided for general informational purposes only. Dietary supplements

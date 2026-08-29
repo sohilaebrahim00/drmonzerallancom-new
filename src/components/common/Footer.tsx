@@ -40,6 +40,8 @@ export function Footer() {
                 alt="Monzer Allan logo"
                 width={65}
                 height={56}
+                loading="lazy"
+                decoding="async"
                 className="h-12 w-auto"
               />
               <span className="font-display text-lg font-bold tracking-tight text-navy">

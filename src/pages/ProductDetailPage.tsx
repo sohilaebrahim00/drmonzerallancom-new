@@ -3,9 +3,9 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { MessageCircle, PackageSearch } from "lucide-react";
 
 import { Seo } from "@/components/seo/Seo";
-import { Reveal } from "@/components/common/Reveal";
 import { ProductCard } from "@/components/products/ProductCard";
 import { SoldOutBadge } from "@/components/products/SoldOutBadge";
+import { Photo } from "@/components/common/Photo";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -51,7 +51,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-20">
+    <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
       <Seo
         title={product.name}
         description={product.shortDescription}
@@ -76,7 +76,7 @@ export default function ProductDetailPage() {
       </Breadcrumb>
 
       <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-2">
-        <Reveal direction="right">
+        <div>
           <div
             role="group"
             aria-label={`${product.name} image gallery`}
@@ -89,12 +89,14 @@ export default function ProductDetailPage() {
             className="relative overflow-hidden rounded-2xl border border-border/70 bg-secondary/40 p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {images[activeImage] ? (
-              <img
+              <Photo
                 src={images[activeImage]}
                 alt={product.name}
                 width={800}
                 height={800}
-                className="aspect-square w-full object-contain"
+                priority
+                className="block w-full"
+                imgClassName="aspect-square w-full object-contain"
               />
             ) : (
               <div className="flex aspect-square w-full items-center justify-center">
@@ -117,12 +119,14 @@ export default function ProductDetailPage() {
                     activeImage === index ? "border-primary" : "border-transparent",
                   )}
                 >
-                  <img
+                  <Photo
                     src={src}
                     alt=""
+                    decorative
                     width={64}
                     height={64}
-                    className="h-full w-full object-contain"
+                    className="block h-full w-full"
+                    imgClassName="h-full w-full object-contain"
                   />
                 </button>
               ))}
@@ -132,9 +136,9 @@ export default function ProductDetailPage() {
             Real product packaging supplied by {business.doctorName}. Additional gallery angles will
             appear here once provided.
           </p>
-        </Reveal>
+        </div>
 
-        <Reveal direction="left" className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
@@ -236,7 +240,7 @@ export default function ProductDetailPage() {
             for a child. Use health-monitoring devices according to their official instructions and
             seek professional medical advice when needed.
           </p>
-        </Reveal>
+        </div>
       </div>
 
       {related.length > 0 && (
