@@ -106,6 +106,12 @@ const FLAGGED = {
       "faqCategory.programs",
     ],
   },
+  "F-7": {
+    question: "We lengthened the Arabic for three of your intake questions (3, 4 and 5).",
+    detail:
+      "The Arabic for these three was shorter than your English — question 3 did not ask what the tests showed, question 4 did not ask for the results, and question 5 did not list breakfast/lunch/dinner/snacks. We brought them to parity so both patients are asked the same thing. If the shorter Arabic was deliberate, tell us and we will restore it. Separately: your Arabic for question 4 opens more broadly than your English, which names vitamin D, B12 and iron as examples — we left your wording alone there. Question 6 keeps your Arabic numerals exactly as you wrote them.",
+    keys: ["intake.label3", "intake.label4", "intake.label5"],
+  },
   "F-6": {
     question:
       'The credentials heading previously said "Verified Credentials". The word "Verified" was removed.',

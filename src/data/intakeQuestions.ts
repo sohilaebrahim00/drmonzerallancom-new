@@ -56,8 +56,15 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     label: "Recent tests, medicines and supplements",
     prompt:
       "Have you had any blood tests or medical investigations recently? If so, what did they show? Also list every medicine, vitamin and supplement you take.",
+    /**
+     * PARITY FILL, 30 Aug. The "…" here stood in for the English clause "If
+     * so, what did they show?", so an Arabic-reading patient was not asked for
+     * the results at all. His own wording either side is untouched; only the
+     * elision is filled. Flagged for him to reverse if the omission was
+     * deliberate.
+     */
     promptAr:
-      "هل أجريت أي تحاليل دم أو فحوصات طبية مؤخرًا؟ … واذكر جميع الأدوية أو الفيتامينات أو المكملات التي تتناولها.",
+      "هل أجريت أي تحاليل دم أو فحوصات طبية مؤخرًا؟ وإن كنت قد أجريتها، فما الذي أظهرته؟ واذكر جميع الأدوية أو الفيتامينات أو المكملات التي تتناولها.",
   },
   {
     number: 4,
@@ -65,8 +72,17 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     label: "Vitamin and mineral levels",
     prompt:
       "Have you ever had your vitamin and mineral levels checked — vitamin D, B12, iron, or similar? If you have, what were the results? If you haven't, just say so.",
+    /**
+     * PARITY FILL, 30 Aug. The "…" stood in for "If you have, what were the
+     * results?".
+     *
+     * NOT changed, and flagged separately: his Arabic opens more broadly than
+     * the English, which names vitamin D, B12 and iron as examples. That is a
+     * difference in his own phrasing rather than an elision, so it is his to
+     * decide, not ours to "correct".
+     */
     promptAr:
-      "هل أجريت أي تقييم للتغذية أو الفيتامينات والمعادن بما في ذلك تحاليل دم؟ … وإن لم تفعل ذلك فوضّح هذا الشيء أيضًا.",
+      "هل أجريت أي تقييم للتغذية أو الفيتامينات والمعادن بما في ذلك تحاليل دم؟ وإن كنت قد أجريته، فما كانت النتائج؟ وإن لم تفعل ذلك فوضّح هذا الشيء أيضًا.",
   },
   {
     number: 5,
@@ -74,7 +90,13 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     label: "A normal day of eating",
     prompt:
       "What does a normal day of eating look like for you? Breakfast, lunch, dinner and snacks — and roughly what time you have each.",
-    promptAr: "كيف تبدو عاداتك الغذائية اليومية؟ … مع ذكر أوقاتها.",
+    /**
+     * PARITY FILL, 30 Aug. The "…" stood in for "Breakfast, lunch, dinner and
+     * snacks" — the list that tells a patient what detail is wanted. Without
+     * it the Arabic asked only "how do your daily eating habits look?".
+     */
+    promptAr:
+      "كيف تبدو عاداتك الغذائية اليومية؟ الفطور والغداء والعشاء والوجبات الخفيفة — مع ذكر أوقاتها تقريبًا.",
   },
   {
     number: 6,
