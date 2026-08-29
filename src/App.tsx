@@ -8,6 +8,7 @@ import { BackToTop } from "@/components/common/BackToTop";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { StickyCta } from "@/components/common/StickyCta";
 import { AuthProvider } from "@/context/AuthContext";
+import { LocaleProvider } from "@/i18n";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DoctorRoute } from "@/components/auth/DoctorRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
@@ -299,13 +300,19 @@ export default function App() {
     <BrowserRouter>
       <MotionConfig reducedMotion="user">
         <AuthProvider>
-          {/* Inside AuthProvider and around BOTH shells, so a render crash in
-              the app build is caught too. Without this, React 19 unmounts the
-              whole tree on any render exception and the customer sees a blank
-              white page — which is exactly what happened on 28 Aug. */}
-          <RoutedErrorBoundary>
-            {appMode === "MARKETING_WEB" ? <WebApp /> : <AppExperience />}
-          </RoutedErrorBoundary>
+          {/* Inside AuthProvider, per PHASE_8_GO 8.1.1. It sets <html lang/dir>
+              and provides the translator; it does not depend on auth, but
+              sitting inside means a signed-in patient's screens are covered by
+              the same provider as the marketing pages. */}
+          <LocaleProvider>
+            {/* Inside AuthProvider and around BOTH shells, so a render crash in
+                the app build is caught too. Without this, React 19 unmounts the
+                whole tree on any render exception and the customer sees a blank
+                white page — which is exactly what happened on 28 Aug. */}
+            <RoutedErrorBoundary>
+              {appMode === "MARKETING_WEB" ? <WebApp /> : <AppExperience />}
+            </RoutedErrorBoundary>
+          </LocaleProvider>
         </AuthProvider>
       </MotionConfig>
     </BrowserRouter>

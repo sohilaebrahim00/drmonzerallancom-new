@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+import { useLocale, intlTagOf, type Locale } from "@/i18n";
 import {
   CalendarClock,
   CalendarPlus,
@@ -59,11 +61,15 @@ const statusStyle: Record<ConsultationRequest["status"], string> = {
  * middle of a formatted list reads as a different kind of bug, and the value
  * is unusable to the reader either way.
  */
-function formatAppointment(iso: string | null | undefined) {
+function formatAppointment(iso: string | null | undefined, locale: Locale) {
   if (!iso) return "—";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
+  // intlTagOf, not the locale code: Arabic resolves to `ar-u-nu-latn`, which
+  // is Arabic month and weekday names with Latin digits — decided once in
+  // src/i18n/config.ts, because Arabic-Indic digits beside a USD price read
+  // as a mistake.
+  return new Intl.DateTimeFormat(intlTagOf(locale), {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -104,6 +110,7 @@ function firstNameFrom(source: string): string {
 }
 
 export default function AccountPage() {
+  const { locale } = useLocale();
   const { user, signOut, configured } = useAuth();
   const [fullName, setFullName] = useState<string | null>(null);
   const [viewerRole, setViewerRole] = useState<UserRole | null>(null);
@@ -331,7 +338,7 @@ export default function AccountPage() {
                   </p>
                   <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-navy">
                     <CalendarClock className="h-4 w-4" />{" "}
-                    {formatAppointment(upcoming.appointment_start)}
+                    {formatAppointment(upcoming.appointment_start, locale)}
                   </p>
                   <div className="mt-2 flex items-center gap-3">
                     <span
@@ -379,7 +386,7 @@ export default function AccountPage() {
                           </p>
                           <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                             <CalendarClock className="h-3.5 w-3.5" />
-                            {formatAppointment(req.appointment_start)}
+                            {formatAppointment(req.appointment_start, locale)}
                           </p>
                         </div>
                         <span

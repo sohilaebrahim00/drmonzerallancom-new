@@ -739,3 +739,47 @@ proper wide desktop layout (tables, filters, split view) rather than a stretched
 **GATE:** the four commands, plus a manual pass signed in as a doctor account — set availability,
 open a patient, build and send a program, then sign in as that patient and confirm the program
 arrived and a bookable slot appears. Also the negative test in 6.1.
+
+---
+
+# PHASE 13 — `/ar/*` URLs, so the Arabic site can be found
+
+**Not built in Phase 8, deliberately. Phase 8 ships the language switch and the translations; the
+Arabic content lives at the same URL as the English.**
+
+## Why this is its own phase, and why it matters more than it sounds
+
+Without distinct URLs there is exactly one URL per page, and Google indexes whichever language it
+happens to be served. The `hreflang` tags Phase 8 emits are self-referential and tell a crawler
+nothing, because there is no second URL to point at. **The Arabic site is effectively invisible to
+search** — and Arabic speakers are this practice's actual audience, so the invisible half is the
+half that matters.
+
+A visitor cannot share a link to the Arabic version either: the recipient gets whatever their own
+stored preference or browser language resolves to.
+
+## What it costs
+
+- **Routing.** Every route gains an `/ar` prefix. `src/App.tsx` currently declares ~30 routes;
+  each needs a paired Arabic path, or a prefix-aware router wrapper.
+- **Locale resolution changes source.** `src/i18n/detect.ts` resolves stored choice ->
+  `navigator.language` -> default. The path must become the highest-priority source, above the
+  stored choice — otherwise a visitor with English stored who opens an `/ar/` link sees English at
+  an Arabic URL. The seam for this is already documented in `detect.ts`.
+- **The switch becomes a navigation.** Today it flips state in place. With prefixed URLs it must
+  rewrite the current path and push it, preserving deep links, query strings and hashes.
+- **Every internal link.** `<Link to="/packages">` must resolve to `/ar/packages` in Arabic. That
+  is a locale-aware `Link` wrapper, and every existing `to=` audited.
+- **SEO becomes real.** Reciprocal `hreflang` (`ar`, `en`, `x-default`), per-locale canonical URLs,
+  and both languages in the sitemap.
+- **Netlify.** The SPA rewrite already sends everything to `index.html`, so no redirect changes are
+  strictly required — but a root-level language redirect for first-time visitors would be.
+
+## Sequencing
+
+**After Phase 8.** The dictionaries, the provider and RTL must exist first; this phase only changes
+where the Arabic lives, not what it says.
+
+**GATE:** the four commands, plus `/ar/packages` and `/packages` both rendering in the right
+language on a cold load with no stored preference, reciprocal `hreflang` present on both, and the
+switch preserving the current route in both directions.

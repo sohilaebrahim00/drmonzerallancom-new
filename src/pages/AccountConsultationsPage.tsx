@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+
+import { useLocale, intlTagOf } from "@/i18n";
 import {
   CalendarClock,
   Check,
@@ -55,6 +57,7 @@ function clientTimeZone(): string {
 }
 
 export default function AccountConsultationsPage() {
+  const { locale } = useLocale();
   const { user } = useAuth();
   const tz = useMemo(clientTimeZone, []);
 
@@ -115,7 +118,7 @@ export default function AccountConsultationsPage() {
   function formatDateLabel(dateKey: string) {
     const [y, m, d] = dateKey.split("-").map(Number);
     const approx = new Date(Date.UTC(y, m - 1, d, 12));
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(intlTagOf(locale), {
       timeZone: tz,
       weekday: "long",
       month: "long",
@@ -138,7 +141,7 @@ export default function AccountConsultationsPage() {
   })();
 
   function formatTime(iso: string, timeZone: string) {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(intlTagOf(locale), {
       timeZone,
       hour: "numeric",
       minute: "2-digit",

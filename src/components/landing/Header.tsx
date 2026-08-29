@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, UserPlus } from "lucide-react";
 
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { LanguageSwitch } from "@/components/common/LanguageSwitch";
 import { BookingButton } from "@/components/booking/BookingButton";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { useAuth } from "@/context/AuthContext";
@@ -101,10 +102,15 @@ export function Header() {
                 </Link>
               </>
             ))}
+          <LanguageSwitch />
           <BookingButton size="sm" />
         </div>
 
+        {/* On mobile the switch sits OUTSIDE the drawer, next to the menu
+            button — the brief asks for it to be reachable without opening
+            anything. */}
         <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitch />
           <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
             <SheetTrigger asChild>
               <button

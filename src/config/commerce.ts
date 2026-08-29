@@ -2,13 +2,11 @@
 // WhatsApp inquiry. This file is the single seam to swap in Stripe Checkout
 // later without touching product/package UI components.
 
-export function formatPrice(price: number, currency: "USD" = "USD") {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: price % 1 === 0 ? 0 : 2,
-  }).format(price);
-}
+// formatPrice used to live here and was unreachable — nothing imported it,
+// because prices render from the `priceLabel` strings in programPackages.ts.
+// The live implementation is src/i18n/format.ts, which pins currency to en-US
+// deliberately. Two unreachable price formatters is how the next person edits
+// the wrong one, so this copy is gone.
 
 /** No confirmed price/availability info exists for any product yet — every inquiry asks for both. */
 export function buildProductInquiryMessage(productName: string, pageUrl: string) {

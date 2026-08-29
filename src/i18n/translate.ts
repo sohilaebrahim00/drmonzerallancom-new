@@ -5,6 +5,9 @@ import { ar } from "./dictionaries/ar";
 
 const DICTIONARIES: Record<Locale, Partial<Record<TranslationKey, Entry>>> = { en, ar };
 
+/** Dev-only: one warning per missing key, not one per render. */
+const warned = new Set<string>();
+
 /**
  * Intl objects are expensive to construct and are used per render, so they are
  * built once per locale and kept.
@@ -74,9 +77,35 @@ export type TranslateFn = <K extends TranslationKey>(key: K, ...args: ParamsFor<
 export function createTranslator(locale: Locale): TranslateFn {
   return <K extends TranslationKey>(key: K, ...args: ParamsFor<K>): string => {
     const params = (args[0] ?? {}) as TranslationParams;
-    const entry: Entry | undefined = DICTIONARIES[locale][key] ?? DICTIONARIES[DEFAULT_LOCALE][key];
+    const own = DICTIONARIES[locale][key];
+    const entry: Entry | undefined = own ?? DICTIONARIES[DEFAULT_LOCALE][key];
 
-    if (entry === undefined) return key;
+    /**
+     * The case that actually happens: the key exists in English but not yet in
+     * Arabic, so the visitor gets English rather than a hole. Warned once per
+     * key in development so the gap is visible while translating, and silent
+     * in production — a warning a visitor cannot act on is just noise in their
+     * console.
+     */
+    if (import.meta.env.DEV && own === undefined && locale !== DEFAULT_LOCALE && !warned.has(key)) {
+      warned.add(key);
+      console.warn(
+        `[i18n] "${key}" has no ${locale} translation — falling back to ${DEFAULT_LOCALE}. ` +
+          `Add it to src/i18n/dictionaries/${locale}.ts.`,
+      );
+    }
+
+    /**
+     * Unreachable through the typed API: TranslationKey is `keyof typeof en`,
+     * so a key missing from English is a compile error. This is the last
+     * resort for an untyped call. It returns the KEY rather than an empty
+     * string on purpose — a visible `faq.cta` is greppable and obviously
+     * wrong, whereas a blank space is invisible and ships unnoticed.
+     */
+    if (entry === undefined) {
+      if (import.meta.env.DEV) console.warn(`[i18n] "${key}" is missing from every dictionary.`);
+      return key;
+    }
 
     if (isPluralEntry(entry)) {
       const count = typeof params.count === "number" ? params.count : 0;
