@@ -27,6 +27,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-turquoise: var(--turquoise);
+  --color-turquoise-light: var(--turquoise-light);
   --color-turquoise-foreground: var(--turquoise-foreground);
   --color-green: var(--green);
   --color-navy: var(--navy);
@@ -80,6 +81,12 @@
 
   /* Turquoise — buttons & highlights */
   --turquoise: #38b7c7;
+  /* Lighter tint for small accent text on DARK photographic backgrounds.
+     #38b7c7 has a relative luminance of 0.39, which cannot reach the 4.5:1
+     WCAG AA ratio for small text over a lightened photo overlay; this tint is
+     at 0.59, which does. Use it only on dark backgrounds — on white it is too
+     pale, and --turquoise remains correct there. */
+  --turquoise-light: #7fd8e4;
   --turquoise-foreground: #fcfdfd;
   /* Fresh green — small accent only */
   --green: #72be2d;

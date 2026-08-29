@@ -6,7 +6,6 @@ import { AboutPreview } from "@/components/sections/AboutPreview";
 import { Services } from "@/components/sections/Services";
 import { ProgramPackages } from "@/components/sections/ProgramPackages";
 import { HowProgramsWork } from "@/components/sections/HowProgramsWork";
-import { ConsultDeskBand } from "@/components/sections/ConsultDeskBand";
 import { ProductsPreview } from "@/components/sections/ProductsPreview";
 import { MemberExperiencePreview } from "@/components/sections/MemberExperiencePreview";
 import { YouTubeSection } from "@/components/sections/YouTubeSection";
@@ -47,8 +46,6 @@ export default function HomePage() {
       <Services />
       <ProgramPackages />
       <HowProgramsWork />
-      {/* Full-bleed breathing space at the photograph's native 1600x730. */}
-      <ConsultDeskBand />
       <ProductsPreview />
       <MemberExperiencePreview />
       <YouTubeSection />

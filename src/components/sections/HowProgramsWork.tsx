@@ -68,7 +68,13 @@ export function HowProgramsWork() {
           imgClassName="h-full w-full object-cover rtl:-scale-x-100"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-navy/70 rtl:bg-gradient-to-l" />
+        {/* Uniform, not a gradient. The old overlay ran navy/95 -> navy/70
+            left to right, which put the LEAST cover over the right-hand side
+            where the olive oil and figs are brightest — worst contrast exactly
+            where the photograph is lightest — while burying the capsules on
+            the left under 95% navy so the still life was invisible.
+            A flat value is both more legible and more even. */}
+        <div className="absolute inset-0 bg-navy/70" />
       </div>
 
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
@@ -76,7 +82,7 @@ export function HowProgramsWork() {
             description). Rather than add a variant to a component used in a
             dozen places, this band states its own heading in light type. */}
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-turquoise">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-turquoise-light">
             Programs
           </p>
           <h2
@@ -91,34 +97,34 @@ export function HowProgramsWork() {
           </p>
         </div>
 
-        {/* Vertical journey on mobile, connected horizontal journey on desktop */}
-        <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-0">
+        {/* Three columns wrapping to two rows, not six in a single row. At
+            1440px six columns are 200px each, which wraps every title and
+            leaves the copy as cramped centred fragments; three gives ~373px
+            and the text reads as sentences.
+
+            The connector line went with it: a rule joining six items in a row
+            described the sequence, but drawn across a grid that wraps it would
+            imply the wrong order. The numbers carry the sequence now.
+
+            Left-aligned, because centred text at this width fragments on
+            every wrap. */}
+        <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {STEPS.map((step, index) => (
             <Reveal
               key={step.title}
               direction="up"
               delay={index * 0.06}
-              className="relative flex flex-1 gap-4 lg:flex-col lg:items-center lg:gap-3 lg:text-center"
+              className="flex gap-4 text-left"
             >
-              {index < STEPS.length - 1 && (
-                <span
-                  className="absolute left-6 top-14 h-[calc(100%+1.5rem)] w-px bg-white/25 lg:left-1/2 lg:top-6 lg:h-px lg:w-full lg:-translate-x-0 lg:translate-x-1/2"
-                  aria-hidden="true"
-                />
-              )}
-              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-turquoise text-sm font-bold text-navy shadow-md">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-turquoise text-sm font-bold text-navy shadow-md">
                 {index + 1}
               </span>
-              <div className="lg:px-2">
-                <div className="flex items-center gap-2 lg:flex-col lg:gap-2">
-                  <step.icon className="h-5 w-5 text-primary lg:h-6 lg:w-6" />
-                  <h3 className="font-display text-sm font-bold text-white sm:text-base">
-                    {step.title}
-                  </h3>
+              <div>
+                <div className="flex items-center gap-2">
+                  <step.icon className="h-5 w-5 shrink-0 text-turquoise-light" />
+                  <h3 className="font-display text-base font-bold text-white">{step.title}</h3>
                 </div>
-                <p className="mt-1.5 text-xs leading-relaxed text-white/70 sm:text-sm">
-                  {step.description}
-                </p>
+                <p className="mt-2 text-sm leading-relaxed text-white/85">{step.description}</p>
               </div>
             </Reveal>
           ))}
