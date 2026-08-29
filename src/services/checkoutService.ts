@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { PackageSlug } from "@/config/booking";
-import type { ProgramPackageSlug } from "@/data/programPackages";
+import { getProgramPackageBySlug, type ProgramPackageSlug } from "@/data/programPackages";
 
 export interface StartCheckoutInput {
   fullName: string;
@@ -72,21 +72,63 @@ export async function startProgramPackageCheckout(
   }
 
   try {
-    const { data, error } = await supabase.functions.invoke<{ url?: string; error?: string }>(
-      "create-consultation-checkout-session",
-      {
-        body: {
-          fullName: input.fullName,
-          email: input.email,
-          phone: input.phone,
-          packageId: input.packageId,
-        },
+    const { data, error } = await supabase.functions.invoke<{
+      url?: string;
+      amountCents?: number;
+      error?: string;
+    }>("create-consultation-checkout-session", {
+      body: {
+        fullName: input.fullName,
+        email: input.email,
+        phone: input.phone,
+        packageId: input.packageId,
       },
-    );
+    });
 
     if (error || !data?.url) {
       return { ok: false, error: data?.error ?? error?.message ?? "Could not start checkout." };
     }
+
+    /**
+     * LIVE PRICE CHECK — detection, not authorisation.
+     *
+     * The server decides the price and the browser cannot influence it; this
+     * only compares the amount the server says it used against the amount the
+     * visitor was actually shown on this page. If they disagree we refuse to
+     * forward them.
+     *
+     * This is the only check that survives the failure this project keeps
+     * hitting: the price changes, the frontend deploys, and the Edge Function
+     * is never redeployed. Both copies inside the stale function agree with
+     * each other, so its cold-start assertion stays quiet — but the figure it
+     * returns no longer matches the figure on the card, and this catches it.
+     *
+     * A missing `amountCents` means an older function is deployed, from before
+     * it reported one. That is not treated as a mismatch: it is a deploy we
+     * cannot verify, so it is allowed through rather than blocking every sale
+     * on a check that the server does not yet support.
+     */
+    const published = getProgramPackageBySlug(input.packageId)?.price;
+    if (
+      typeof data.amountCents === "number" &&
+      typeof published === "number" &&
+      data.amountCents !== Math.round(published * 100)
+    ) {
+      console.error(
+        `[checkout] Price mismatch for "${input.packageId}": the page shows ` +
+          `$${published.toFixed(2)} (${Math.round(published * 100)} cents) but the server would ` +
+          `charge ${data.amountCents} cents ($${(data.amountCents / 100).toFixed(2)}). ` +
+          `Refusing to open checkout. The Edge Function is probably running an older deploy — ` +
+          `redeploy create-consultation-checkout-session.`,
+      );
+      return {
+        ok: false,
+        error:
+          "The price for this program has changed since this page loaded. " +
+          "Please refresh and try again — you have not been charged.",
+      };
+    }
+
     return { ok: true, url: data.url };
   } catch {
     return { ok: false, error: "Could not start checkout. Please try again." };

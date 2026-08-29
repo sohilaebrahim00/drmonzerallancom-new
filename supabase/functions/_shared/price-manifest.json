@@ -1,0 +1,12 @@
+{
+  "_generated": "Run `npm run prices:emit`. Do not hand-edit — CI compares this against a fresh run.",
+  "_source": "src/data/programPackages.ts",
+  "amountCents": {
+    "diet_basic": 4000,
+    "diet_plus": 6900,
+    "diet_premium": 8900,
+    "treatment_basic": 11900,
+    "treatment_plus": 16900,
+    "treatment_premium": 19900
+  }
+}

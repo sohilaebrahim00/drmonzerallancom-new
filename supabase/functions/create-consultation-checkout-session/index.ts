@@ -36,6 +36,9 @@ import Stripe from "https://esm.sh/stripe@16?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/cors.ts";
+// Generated from src/data/programPackages.ts by `npm run prices:emit`.
+// See the cold-start assertion below for what it is for.
+import priceManifest from "../_shared/price-manifest.json" with { type: "json" };
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: "2024-06-20",
@@ -109,6 +112,50 @@ const PACKAGES: Record<string, PackageDefinition> = {
     packageType: "treatment",
   },
 };
+
+/**
+ * COLD-START PRICE ASSERTION.
+ *
+ * price-manifest.json is generated from src/data/programPackages.ts — the
+ * figures the site actually displays — and ships inside this function at
+ * deploy time. At module scope we assert the two agree, so a mismatch makes
+ * the function fail to boot rather than quietly charging the wrong amount.
+ *
+ * WHAT THIS CATCHES: someone edits one repo file and not the other, and it is
+ * caught before a single request is served.
+ *
+ * WHAT IT CANNOT CATCH — and this is the failure mode this project keeps
+ * having: the price changes, the frontend deploys, and this function is never
+ * redeployed. Both copies inside the OLD bundle are stale, they agree with
+ * each other perfectly, nothing throws, and the site shows one price while
+ * Stripe charges another. No deploy-time check can see that, because the
+ * check ships with the thing that went stale. The live guard for that case is
+ * client-side, in startProgramPackageCheckout: the browser compares the amount
+ * this function reports back against the price the visitor was shown, and
+ * refuses to forward them to a checkout that disagrees.
+ */
+for (const [slug, def] of Object.entries(PACKAGES)) {
+  const published = (priceManifest.amountCents as Record<string, number>)[slug];
+  if (published === undefined) {
+    throw new Error(
+      `Price manifest is missing "${slug}". Run \`npm run prices:emit\` and redeploy.`,
+    );
+  }
+  if (published !== def.amountCents) {
+    throw new Error(
+      `Price drift on "${slug}": the site publishes ${published} cents ` +
+        `($${(published / 100).toFixed(2)}) but this function charges ${def.amountCents} cents ` +
+        `($${(def.amountCents / 100).toFixed(2)}). Refusing to start.`,
+    );
+  }
+}
+for (const slug of Object.keys(priceManifest.amountCents)) {
+  if (!(slug in PACKAGES)) {
+    throw new Error(
+      `Package "${slug}" is published on the site but unknown to this function. Refusing to start.`,
+    );
+  }
+}
 
 interface RequestBody {
   fullName: string;
@@ -270,7 +317,13 @@ serve(async (req) => {
     .update({ stripe_session_id: session.id })
     .eq("id", payment.id);
 
-  return new Response(JSON.stringify({ url: session.url }), {
+  // `amountCents` is returned for DETECTION, not authorisation. The server has
+  // already decided and used this figure; the browser cannot influence it. It
+  // comes back only so the client can check that the amount actually being
+  // charged matches the price the visitor was shown, and refuse to forward
+  // them if it does not — the one check that still works when this function is
+  // running a stale deploy.
+  return new Response(JSON.stringify({ url: session.url, amountCents: def.amountCents }), {
     headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
   });
 });
