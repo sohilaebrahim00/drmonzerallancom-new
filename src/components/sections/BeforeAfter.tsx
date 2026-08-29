@@ -4,6 +4,7 @@ import { Reveal } from "@/components/common/Reveal";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { CompareSlider } from "@/components/common/CompareSlider";
 import { Photo } from "@/components/common/Photo";
+import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { transformations } from "@/data/transformations";
 import { cn } from "@/lib/utils";
 
@@ -82,7 +83,12 @@ export function BeforeAfter() {
         />
 
         <Reveal direction="up" className="mt-12">
-          <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm">
+          {/* Width is capped by BOTH the column (48rem) and the viewport
+              height: the slider is 4:3, so 82vh of width is ~61.5vh of
+              height, which keeps the block inside the 62vh ceiling on short
+              laptop screens where a flat 48rem would be 576px tall. 768px is
+              also well inside the files' native 1400px, so it never upscales. */}
+          <div className={cn("mx-auto max-w-[min(48rem,82vh)]", PHOTO_FRAME)}>
             <CompareSlider
               before={
                 <Photo
@@ -104,7 +110,7 @@ export function BeforeAfter() {
               }
             />
           </div>
-          <p className="mx-auto mt-4 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-[min(48rem,82vh)] text-center text-xs leading-relaxed text-muted-foreground">
             An illustration of a change in eating, photographed for this website. It is not a client
             photograph and does not show anyone&apos;s results.
           </p>

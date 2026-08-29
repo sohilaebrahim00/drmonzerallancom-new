@@ -3,7 +3,9 @@ import { ArrowUpRight } from "lucide-react";
 
 import { Reveal } from "@/components/common/Reveal";
 import { Photo } from "@/components/common/Photo";
+import { PHOTO_FRAME } from "@/components/common/photoFrame";
 import { bio, credentials } from "@/data/about";
+import { cn } from "@/lib/utils";
 
 export function AboutPreview() {
   return (
@@ -16,7 +18,7 @@ export function AboutPreview() {
                 className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] bg-secondary/70 blur-2xl"
                 aria-hidden="true"
               />
-              <div className="overflow-hidden rounded-[1.75rem] ring-1 ring-secondary shadow-[0_30px_70px_-30px_rgba(23,35,59,0.35)]">
+              <div className={PHOTO_FRAME}>
                 <img
                   src="/monzer-portrait.jpg"
                   alt="Monzer Allan, Nutrition Specialist and Pharmacist"
@@ -65,24 +67,51 @@ export function AboutPreview() {
           </div>
         </div>
 
-        {/* Given its own full-width row rather than being tucked beside text:
-            this one frame carries the whole positioning — a pharmacist, with
-            fresh food on his counter. The portrait above is untouched; this
-            is an addition, not a replacement for it. */}
+        {/* Paired with copy rather than given a full-width row of its own. A
+            photograph this size with nothing beside it reads as a screensaver:
+            it has to support content, not be content. The image column is
+            capped at 560px — well inside the file's native 1600px — so it is
+            never upscaled, and it is cropped to 3:2 inside a fixed aspect box
+            rather than by re-cutting the file. */}
         <Reveal direction="up" delay={0.1} className="mt-16">
-          <figure className="overflow-hidden rounded-[1.75rem] ring-1 ring-secondary shadow-[0_30px_70px_-30px_rgba(23,35,59,0.35)]">
-            <Photo
-              base="/images/pharmacy-counter"
-              width={1600}
-              height={1066}
-              alt="A plate of cherry tomatoes, sliced cucumber and olives on a wooden counter, with a handwritten notepad beside it and shelves of medicine boxes behind."
-              imgClassName="w-full"
-              sizes="(min-width: 1280px) 1200px, 100vw"
-            />
-          </figure>
-          <figcaption className="mt-3 text-center text-xs text-muted-foreground">
-            Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
-          </figcaption>
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,48fr)_minmax(0,52fr)] lg:gap-14">
+            <figure className="w-full">
+              {/* max-h caps the stacked mobile case, where a 3:2 box at the
+                  full column width would otherwise be 373px tall above the
+                  copy it belongs to. */}
+              <div
+                className={cn(
+                  PHOTO_FRAME,
+                  "mx-auto aspect-[3/2] w-full max-w-[560px] max-h-[260px] lg:max-h-none",
+                )}
+              >
+                <Photo
+                  base="/images/pharmacy-counter"
+                  width={1600}
+                  height={1066}
+                  alt="A plate of cherry tomatoes, sliced cucumber and olives on a wooden counter, with a handwritten notepad beside it and shelves of medicine boxes behind."
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover"
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                />
+              </div>
+              <figcaption className="mx-auto mt-3 max-w-[560px] text-center text-xs text-muted-foreground">
+                Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
+              </figcaption>
+            </figure>
+
+            <div className="flex flex-col gap-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+                The Approach
+              </p>
+              <h3 className="max-w-xl font-display text-2xl font-bold leading-tight tracking-tight text-navy sm:text-3xl">
+                Built around your life, not a template
+              </h3>
+              <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+                {bio.paragraphs[1]}
+              </p>
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>
