@@ -46,6 +46,12 @@ export interface ProgramPackage {
    * Stripe, and has no counterpart in the Edge Function's PACKAGES map — the
    * amount charged is `amountCents` there and nothing else. Setting or
    * changing this cannot alter what a customer pays.
+   *
+   * ── ONLY EVER A PRICE THAT WAS REALLY CHARGED ──────────────────────────
+   * A struck-through figure is a factual claim about past trading, not a
+   * decoration. Do not put a number here to make a saving look larger. If a
+   * package has no genuine previous price, leave this undefined — the card
+   * renders correctly without it.
    */
   previousPrice?: number;
   /**
@@ -134,6 +140,16 @@ export const programPackages: ProgramPackage[] = [
     tagline: "Begin your treatment plan with a first consultation",
     price: 119,
     priceLabel: "$119",
+    /**
+     * A real historical price, not a marketing device: this program was sold
+     * at $200 until 29 August 2026, when it moved to $119. Confirmed by
+     * Dr. Monzer Allan himself before it was published.
+     *
+     * Recorded here so the claim is defensible if it is ever questioned, and
+     * so a future reader does not assume the figure was invented to make the
+     * discount look bigger. If the price history changes again, update this
+     * comment with it — do not silently edit the number.
+     */
     previousPrice: 200,
     consultationCount: 2,
     features: ["Treatment plan", "2 doctor consultations"],

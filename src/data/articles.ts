@@ -110,6 +110,12 @@ export const articles: Article[] = [
   },
   {
     slug: "eating-well-with-type-2-diabetes",
+    image: {
+      base: "/images/blog/eating-well-with-type-2-diabetes",
+      alt: "A woman in a navy training top sitting at a kitchen table with a fork over a bowl of grilled chicken, quinoa, chickpeas, broccoli and red pepper, beside yoghurt with blueberries, halved boiled eggs, almonds, a salmon fillet, a bowl of lentils and a glass of water.",
+      card: { width: 960, height: 540 },
+      hero: { width: 960, height: 540 },
+    },
     title: "Eating Well With Type 2 Diabetes",
     excerpt:
       "A practical look at managing blood sugar through food choices, meal timing, and carbohydrate balance.",
