@@ -19,6 +19,8 @@ import {
   type ConsultationIntake,
 } from "@/services/intakeService";
 import { cn } from "@/lib/utils";
+import { useTranslate, useLocale } from "@/i18n";
+import { INTAKE_LABEL_KEYS } from "@/i18n/intakeLabels";
 
 /**
  * The pre-consultation intake as a real page rather than a chat.
@@ -35,6 +37,8 @@ import { cn } from "@/lib/utils";
  * something that looks like a problem.
  */
 export default function AccountIntakePage() {
+  const t = useTranslate();
+  const { locale } = useLocale();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -215,7 +219,11 @@ export default function AccountIntakePage() {
 
             <div className="mt-6 rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
               <p dir="auto" className="font-display text-base font-bold leading-relaxed text-navy">
-                {question.prompt}
+                {/* The doctor's OWN Arabic, not a translation of the English.
+                    promptAr in data/intakeQuestions.ts was recorded for exactly
+                    this. Three of the eight are abbreviated relative to the
+                    English and are flagged for him — see the review document. */}
+                {locale === "ar" && question.promptAr ? question.promptAr : question.prompt}
               </p>
               <textarea
                 value={draft}
@@ -223,7 +231,7 @@ export default function AccountIntakePage() {
                 rows={6}
                 placeholder="Type as much or as little as you like."
                 className="mt-4 w-full rounded-xl border border-border bg-background p-3 text-sm leading-relaxed"
-                aria-label={question.label}
+                aria-label={t(INTAKE_LABEL_KEYS[question.number])}
               />
 
               {error && (
@@ -285,6 +293,7 @@ function ReviewStep({
   onEdit: (n: number) => void;
   onDone: () => void;
 }) {
+  const t = useTranslate();
   const rows = intakeAnswers(intake);
   return (
     <div className="mt-8">
@@ -310,7 +319,7 @@ function ReviewStep({
           >
             <div className="flex items-start justify-between gap-3">
               <p dir="auto" className="text-xs font-semibold text-navy">
-                {row.number}. {row.label}
+                {row.number}. {t(INTAKE_LABEL_KEYS[row.number])}
               </p>
               <button
                 type="button"

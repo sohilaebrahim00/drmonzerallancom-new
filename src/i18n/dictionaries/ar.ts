@@ -362,4 +362,17 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "notFound.title": "تعذّر العثور على هذه الصفحة",
   "notFound.body":
     "قد تكون الصفحة التي تبحث عنها نُقلت أو لم تعد موجودة. لنعُد بك إلى المسار الصحيح.",
+  // --- consultation intake (ALL FLAGGED) ---------------------------------
+  "intake.label1": "سبب الاستشارة",
+  "intake.label2": "الأعراض الحالية",
+  "intake.label3": "التحاليل والأدوية والمكمّلات الأخيرة",
+  "intake.label4": "مستويات الفيتامينات والمعادن",
+  "intake.label5": "يوم اعتيادي من الطعام",
+  "intake.label6": "مستوى التوتر",
+  "intake.label7": "النشاط البدني",
+  "intake.label8": "النوم",
+  "intake.optionalNote": "بعض الأسئلة الاختيارية قبل استشارتك.",
+  // --- legal notice (ALL FLAGGED) ----------------------------------------
+  "legal.englishAuthoritative":
+    "هذه الصفحة متاحة باللغة الإنجليزية فقط. النص الإنجليزي هو النسخة المعتمدة وهو المعمول به.",
 };

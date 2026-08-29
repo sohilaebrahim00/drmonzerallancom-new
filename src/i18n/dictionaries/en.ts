@@ -311,6 +311,24 @@ export const en = {
   "notFound.title": "We couldn't find that page",
   "notFound.body":
     "The page you're looking for may have been moved or no longer exists. Let's get you back on track.",
+  // --- consultation intake (ALL FLAGGED — a clinician signs these off) ----
+  // The QUESTIONS are not here: promptAr in data/intakeQuestions.ts is the
+  // doctor own Arabic and is rendered directly. These are the short labels.
+  "intake.label1": "Reason for the consultation",
+  "intake.label2": "Current symptoms",
+  "intake.label3": "Recent tests, medicines and supplements",
+  "intake.label4": "Vitamin and mineral levels",
+  "intake.label5": "A normal day of eating",
+  "intake.label6": "Stress level",
+  "intake.label7": "Physical activity",
+  "intake.label8": "Sleep",
+  "intake.optionalNote": "A few optional questions before your consultation.",
+  // --- legal notice (ALL FLAGGED) ----------------------------------------
+  // Privacy, Terms and the Medical Disclaimer are NOT translated. A translated
+  // legal document creates ambiguity about which version governs in a dispute.
+  // Only this notice is, and it says exactly that.
+  "legal.englishAuthoritative":
+    "This page is available in English only. The English text is the authoritative version and is the one that applies.",
 } as const satisfies Record<string, Entry>;
 
 /** Every key that exists. Arabic is checked against this, and so is `t()`. */
