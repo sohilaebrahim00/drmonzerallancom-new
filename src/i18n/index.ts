@@ -17,3 +17,12 @@ export type { Entry, PluralForms, TranslationParams } from "./types";
 export { PACKAGE_LABELS, packageFeatures } from "./packageLabels";
 export { FAQ_LABELS } from "./faqLabels";
 export { productName, productShort, productHaystack } from "./productDisplay";
+export {
+  productFull,
+  productHighlightText,
+  productPriceLabel,
+  specKeyText,
+  specValueText,
+  productMeta,
+} from "./productDetailLabels";
+export { videoTitle, videoCaption } from "./videoDisplay";

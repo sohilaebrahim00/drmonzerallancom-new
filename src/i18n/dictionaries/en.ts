@@ -484,6 +484,231 @@ export const en = {
   "product.bloodGlucoseMeterKit.name": "Blood Glucose Meter Kit",
   "product.bloodGlucoseMeterKit.short":
     "A Monzer Allan-branded blood glucose meter kit for at-home glucose testing.",
+  // --- videos, and the rest of the product surface -------------------
+  "video.vitaminDDeficiencySigns.title": "10 Signs of Vitamin D Deficiency You Shouldn't Ignore.",
+  "video.vitaminDDeficiencySigns.caption":
+    "A rundown of common signs linked to low vitamin D — from fatigue and difficulty concentrating to joint stiffness and mood changes — plus general guidance on supplementation and target levels.",
+  "video.ironStoresDrop.title": "What Happens When Your Iron Stores Drop?",
+  "video.ironStoresDrop.caption":
+    "An overview of symptoms tied to low iron stores, such as fatigue, dizziness, and hair loss, along with practical guidance on testing and supporting healthy iron levels.",
+  "video.magnesiumTypesTiming.title": "Types of Magnesium and Best Times to Take Them",
+  "video.magnesiumTypesTiming.caption":
+    "A quick guide to the different forms of magnesium and when to take each one.",
+  "video.candidaTreatmentStageThree.title":
+    "Stage Three of Kandida Treatment: Essential Remedies and Vitamins for Both Spouses",
+  "video.candidaTreatmentStageThree.caption":
+    "A look at a later stage of a Candida-support protocol, covering natural remedies and the vitamins commonly recommended alongside it.",
+  "video.candidaTreatmentBoneBroth.title":
+    "Candida Treatment: Bone Broth, Steamed Veggies, and Herbal Remedies",
+  "video.candidaTreatmentBoneBroth.caption":
+    "A walkthrough of an early-stage Candida-support approach built around bone broth, steamed vegetables, and supportive herbs.",
+  "video.candidaFoodsToAvoid.title": "Candida Treatment: Foods to Avoid for Healing",
+  "video.candidaFoodsToAvoid.caption":
+    "Practical guidance on the foods commonly avoided during a Candida-support protocol, and why they can work against progress.",
+  "video.autoimmunePathBeforeMedication.title":
+    "The Path to Treating Autoimmune Diseases: Essential Steps Before Medication",
+  "video.autoimmunePathBeforeMedication.caption":
+    "A discussion on the foundational steps — digestion, diet, exercise, sleep, and stress management — often addressed before or alongside autoimmune treatment.",
+  "video.oneSimpleHabit.title": "One simple habit can support a healthier lifestyle.",
+  "video.oneSimpleHabit.caption":
+    "A short, practical habit that can make everyday healthy living easier to sustain.",
+  "product.omega3KrillOil.full":
+    "A Monzer Allan-branded omega-3 krill oil dietary supplement presented in capsule form, providing approximately 240 mg of omega-3s per the label. Strength and capsule count are shown on the product packaging.",
+  "product.irishMossBladderwrack.full":
+    "A Monzer Allan-branded Irish Moss + Bladderwrack sea mineral blend, presented as an ocean greens and wellness support capsule. Capsule count is shown on the packaging.",
+  "product.resveratrol.full":
+    "A Monzer Allan-branded resveratrol dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.betaCarotene.full":
+    "A Monzer Allan-branded Beta Carotene dietary supplement, labeled as a vitamin A precursor. Strength and capsule count are shown on the packaging.",
+  "product.norwegianCodLiverOil60.full":
+    "A Monzer Allan-branded Norwegian Cod Liver Oil dietary supplement in the 60-capsule size, with per-capsule amounts for omega-3, EPA, DHA, vitamin D3, vitamin A, and vitamin E printed on the label. This is a separate listing from the 120-capsule size.",
+  "product.tudca.full":
+    "A Monzer Allan-branded TUDCA dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.milkThistleExtract.full":
+    "A Monzer Allan-branded Milk Thistle Extract dietary supplement, standardized to 80% silymarin per the label, positioned for liver detox and protection support. Strength and capsule count are shown on the packaging.",
+  "product.glucosamineChondroitin.full":
+    "A Monzer Allan-branded Glucosamine with Chondroitin dietary supplement. Strength and capsule count are shown on the packaging.",
+  "product.berberinePlus.full":
+    "A Monzer Allan-branded Berberine Plus dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.alphaLipoicAcid.full":
+    "A Monzer Allan-branded Alpha Lipoic Acid dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.potassiumGluconate.full":
+    "A Monzer Allan-branded Potassium Gluconate dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.spirulina.full":
+    "A Monzer Allan-branded Spirulina dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.shilajitExtraStrength.full":
+    "A Monzer Allan-branded Shilajit Extra Strength dietary supplement presented in capsule form. Capsule count is displayed on the packaging.",
+  "product.stingingNettle.full":
+    "A Monzer Allan-branded Stinging Nettle dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.tongkatAli.full":
+    "A Monzer Allan-branded Tongkat Ali dietary supplement using the LJ100 extract per the label. Strength and capsule count are displayed on the packaging.",
+  "product.superMaleBComplex.full":
+    "A Monzer Allan-branded Super Male B-Complex dietary supplement presented in capsule form. Capsule count is displayed on the packaging.",
+  "product.glutathione.full":
+    "A Monzer Allan-branded Glutathione dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.grassFedBeefLiver.full":
+    "A Monzer Allan-branded Grass-Fed Beef Liver whole food formula dietary supplement, presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.vitaminD3K2.full":
+    "A Monzer Allan-branded Vitamin D3K2 dietary supplement using the MK-7 form of vitamin K2 per the label. Strength and tablet count are displayed on the packaging.",
+  "product.norwegianCodLiverOil120.full":
+    "A Monzer Allan-branded Norwegian Cod Liver Oil dietary supplement in the 120-capsule size, labeled Vitamins A & D + 3-Omega. This is a separate listing from the 60-capsule size and is not merged with it.",
+  "product.coq10.full":
+    "A Monzer Allan-branded CoQ10 dietary supplement presented in capsule form. Strength and capsule count are displayed on the packaging.",
+  "product.advancedBComplex.full":
+    "A Monzer Allan-branded Advanced B-Complex dietary supplement presented in capsule form. Capsule count is displayed on the packaging.",
+  "product.nonContactInfraredThermometer.full":
+    "A Monzer Allan-branded non-contact infrared thermometer for convenient at-home temperature checks. Refer to the included product instructions for correct setup and use.",
+  "product.digitalThermometer.full":
+    "A Monzer Allan-branded digital thermometer designed for convenient at-home measurements. Refer to the included product instructions for correct setup and use.",
+  "product.digitalBloodPressureMonitor.full":
+    "A Monzer Allan-branded digital upper-arm blood pressure monitor designed for convenient at-home measurements, including a universal-fit cuff. Refer to the included product instructions for correct setup and use.",
+  "product.smartBodyCompositionScale.full":
+    "A Monzer Allan-branded smart body composition scale designed for convenient at-home tracking, with Wi-Fi sync and support for unlimited user profiles per the label. Refer to the included product instructions for correct setup and use.",
+  "product.bloodGlucoseMeterKit.full":
+    "A Monzer Allan-branded blood glucose meter kit designed for convenient at-home testing. Refer to the included product instructions for correct setup and use.",
+  "productHighlight.epaDha": "EPA & DHA",
+  "productHighlight.heartCellularEnergy": "Heart & Cellular Energy (label claim)",
+  "productHighlight.immuneHeartSupport": "Immune + Heart Support (label claim)",
+  "productHighlight.vitaminAD": "Vitamin A & D",
+  "productHighlight.seaweedPower": "Seaweed Power",
+  "productHighlight.oceanNourished": "Ocean Nourished",
+  "productHighlight.mineralRichPlain": "Mineral Rich",
+  "productHighlight.dailyWellnessPlain": "Daily Wellness",
+  "productHighlight.antioxidantDefense": "Antioxidant defense (label claim)",
+  "productHighlight.healthyAging": "Healthy aging (label claim)",
+  "productHighlight.cellularSupport": "Cellular support (label claim)",
+  "productHighlight.visionSkinImmune":
+    "Supports vision, skin health, and immune function (label claim)",
+  "productHighlight.omega3Support": "Omega-3 Support",
+  "productHighlight.vitaminsAD": "Vitamins A & D",
+  "productHighlight.immuneHeart": "Immune + Heart (label claim)",
+  "productHighlight.liverHealth": "Liver health (label claim)",
+  "productHighlight.digestiveSupport": "Digestive support (label claim)",
+  "productHighlight.liverSupport": "Liver support (label claim)",
+  "productHighlight.detoxSupport": "Detox support (label claim)",
+  "productHighlight.antioxidantSupport": "Antioxidant support (label claim)",
+  "productHighlight.jointComfort": "Joint comfort (label claim)",
+  "productHighlight.cartilageSupport": "Cartilage support (label claim)",
+  "productHighlight.mobilitySupport": "Mobility support (label claim)",
+  "productHighlight.metabolicBalance": "Supports metabolic balance (label claim)",
+  "productHighlight.dailyWellnessClaim": "Daily wellness (label claim)",
+  "productHighlight.supportsAntioxidantDefense": "Supports antioxidant defense (label claim)",
+  "productHighlight.hydrationBalance": "Hydration balance (label claim)",
+  "productHighlight.mineralSupport": "Mineral support (label claim)",
+  "productHighlight.mineralRichClaim": "Mineral-rich (label claim)",
+  "productHighlight.plantBasedNutrition": "Plant-based nutrition (label claim)",
+  "productHighlight.power": "Power (label claim)",
+  "productHighlight.endurance": "Endurance (label claim)",
+  "productHighlight.vitality": "Vitality (label claim)",
+  "productHighlight.balance": "Balance (label claim)",
+  "productHighlight.wellness": "Wellness (label claim)",
+  "productHighlight.stamina": "Stamina (label claim)",
+  "productHighlight.performance": "Performance (label claim)",
+  "productHighlight.energy": "Energy (label claim)",
+  "productHighlight.focus": "Focus (label claim)",
+  "productHighlight.cellularDefense": "Cellular defense (label claim)",
+  "productHighlight.nutrientDense":
+    "Nutrient-dense support for energy, immunity, and vitality (label claim)",
+  "productHighlight.boneHeartImmune":
+    "Supports bone, heart, and immune system health (label claim)",
+  "productHighlight.dailyEnergySupport": "Daily Energy Support (label claim)",
+  "productHighlight.fastReading": "Fast Reading (label claim)",
+  "productHighlight.nonContact": "Non-Contact",
+  "productHighlight.threeColorFeverAlert": "3-Color Fever Alert (label claim)",
+  "productHighlight.highAccuracy": "High Accuracy (label claim)",
+  "productHighlight.beepAlert": "Beep Alert (label claim)",
+  "productHighlight.safeHygienic": "Safe & Hygienic (label claim)",
+  "productHighlight.irregularHeartbeat": "Irregular Heartbeat Detection (label claim)",
+  "productHighlight.comfortFitCuff": "ComfortFit Universal Cuff",
+  "productHighlight.memories120Users2": "120 Memories, 2 Users",
+  "productHighlight.oneTouchOperation": "One Touch Operation",
+  "productHighlight.bodyMetrics":
+    "Body Fat %, BMI, Muscle Mass, Body Water %, Bone Mass, Protein %",
+  "productHighlight.wifiSync": "Wi-Fi Sync",
+  "productHighlight.multiUser": "Multi-User",
+  "productHighlight.fiveSecondTest": "5 Second Test Time (label claim)",
+  "productHighlight.highAccuracyIso": "High Accuracy — EN ISO 15197:2015 (label claim)",
+  "productHighlight.testMemory500": "500 Test Memory",
+  "spec.strength": "Strength",
+  "spec.omega3Content": "Omega-3 content",
+  "spec.count": "Count",
+  "spec.form": "Form",
+  "spec.formula": "Formula",
+  "spec.type": "Type",
+  "spec.omega3": "Omega-3",
+  "spec.epa": "EPA",
+  "spec.dha": "DHA",
+  "spec.vitaminD3": "Vitamin D3",
+  "spec.vitaminA": "Vitamin A",
+  "spec.vitaminE": "Vitamin E",
+  "spec.standardization": "Standardization",
+  "spec.glucosamine": "Glucosamine",
+  "spec.chondroitin": "Chondroitin",
+  "spec.extract": "Extract",
+  "spec.k2Form": "K2 Form",
+  "spec.display": "Display",
+  "spec.normalRange": "Normal range shown",
+  "spec.lowFeverRange": "Low fever range shown",
+  "spec.highFeverRange": "High fever range shown",
+  "spec.cuff": "Cuff",
+  "spec.memory": "Memory",
+  "spec.operation": "Operation",
+  "spec.metricsTracked": "Metrics tracked",
+  "spec.connectivity": "Connectivity",
+  "spec.users": "Users",
+  "spec.testTime": "Test time",
+  "spec.sampleSize": "Sample size",
+  "spec.standard": "Standard",
+  "spec.kitIncludes": "Kit includes",
+  "product.qty.capsules60": "60 Capsules",
+  "product.qty.capsules120": "120 Capsules",
+  "product.qty.tablets120": "120 Tablets",
+  "product.qty.piece1": "1 Piece",
+  "product.priceLabel.contact": "Contact for Price",
+  "videos.emptyTitle": "Video Library Coming Soon",
+  "videos.emptyBody": "Featured videos will appear here directly from the channel.",
+  // --- product detail page furniture ---------------------------------
+  "product.breadcrumb": "Products",
+  "product.specificationsHeading": "Specifications",
+  // --- specification values that contain English words ---------------
+  "specValue.microlitres06": "0.6 µL (label)",
+  "specValue.piece1": "1 Piece",
+  "specValue.mcg1250": "1,250 mcg (label)",
+  "specValue.mg110": "110 mg (label)",
+  "specValue.capsules120": "120 Capsules",
+  "specValue.memories120Users2": "120 Memories / 2 Users (label)",
+  "specValue.tablets120": "120 Tablets",
+  "specValue.mg125": "125 mg (label)",
+  "specValue.bodyMetrics13":
+    "13 Body Metrics (label): Body Fat %, BMI, Muscle Mass, Body Water %, Bone Mass, Protein %",
+  "specValue.iu13": "13 IU (label)",
+  "specValue.mg235": "235 mg (label)",
+  "specValue.iu3125": "3,125 IU (label)",
+  "specValue.threeColorFeverAlert": "3-Color Fever Alert (label)",
+  "specValue.fiveSecondTest": "5 Second Test Time (label)",
+  "specValue.testMemory500": "500 Test Memory (label)",
+  "specValue.capsules60": "60 Capsules",
+  "specValue.silymarin80": "80% Silymarin",
+  "specValue.capsule": "Capsule",
+  "specValue.comfortFitCuff": "ComfortFit Universal Cuff (label)",
+  "specValue.completeFormula": "Complete Formula",
+  "specValue.digital": "Digital",
+  "specValue.digitalUpperArm": "Digital Upper-Arm",
+  "specValue.enIso15197": "EN ISO 15197:2015 (label)",
+  "specValue.mensSupportFormula": "Men's Support Formula",
+  "specValue.glucoseKitContents":
+    "Meter, lancing pen, lancets, test strips, batteries, user manual, quick start guide (per label)",
+  "specValue.mineralVitalityFormula": "Mineral Vitality Formula",
+  "specValue.nonContactInfrared": "Non-Contact Infrared",
+  "specValue.oneTouch": "One Touch (label)",
+  "specValue.performanceFormula": "Performance Formula",
+  "specValue.seaMineralBlend": "Sea Mineral Blend",
+  "specValue.tablet": "Tablet",
+  "specValue.unlimitedUsers": "Unlimited Users (label)",
+  "specValue.vitaminAPrecursor": "Vitamin A Precursor",
+  "specValue.wholeFoodFormula": "Whole Food Formula",
+  "specValue.wifiSync": "Wi-Fi Sync",
+  "specValue.mg240PerLabel": "~240 mg per label",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",

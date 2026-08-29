@@ -20,7 +20,18 @@ import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { breadcrumbSchema, productSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useTranslate, PRODUCT_CATEGORY_LABELS, productName, productShort } from "@/i18n";
+import {
+  useTranslate,
+  PRODUCT_CATEGORY_LABELS,
+  productName,
+  productShort,
+  productFull,
+  productHighlightText,
+  productPriceLabel,
+  productMeta,
+  specKeyText,
+  specValueText,
+} from "@/i18n";
 
 export default function ProductDetailPage() {
   const t = useTranslate();
@@ -68,7 +79,7 @@ export default function ProductDetailPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/products">Products</BreadcrumbLink>
+            <BreadcrumbLink href="/products">{t("product.breadcrumb")}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -156,16 +167,16 @@ export default function ProductDetailPage() {
             </h1>
             {(product.strength || product.quantity) && (
               <p dir="auto" className="mt-1.5 text-sm font-medium text-muted-foreground">
-                {[product.strength, product.quantity].filter(Boolean).join(" · ")}
+                {productMeta(product, t)}
               </p>
             )}
             <p dir="auto" className="mt-3 font-display text-2xl font-extrabold text-primary">
-              {product.priceLabel}
+              {productPriceLabel(product, t)}
             </p>
           </div>
 
           <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
-            {product.fullDescription}
+            {productFull(product, t)}
           </p>
 
           {product.highlights.length > 0 && (
@@ -173,7 +184,7 @@ export default function ProductDetailPage() {
               {product.highlights.map((highlight) => (
                 <li key={highlight} className="flex items-start gap-2 text-sm text-navy/80">
                   <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-turquoise" />
-                  {highlight}
+                  {productHighlightText(highlight, t)}
                 </li>
               ))}
             </ul>
@@ -228,13 +239,13 @@ export default function ProductDetailPage() {
           {Object.keys(product.specifications).length > 0 && (
             <div className="rounded-xl border border-border/70 bg-card p-4">
               <h2 dir="auto" className="font-display text-sm font-bold text-navy">
-                Specifications
+                {t("product.specificationsHeading")}
               </h2>
               <dl className="mt-3 space-y-2">
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <div key={key} className="flex justify-between gap-4 text-sm">
-                    <dt className="shrink-0 text-muted-foreground">{key}</dt>
-                    <dd className="text-end font-medium text-navy">{value}</dd>
+                    <dt className="shrink-0 text-muted-foreground">{specKeyText(key, t)}</dt>
+                    <dd className="text-end font-medium text-navy">{specValueText(value, t)}</dd>
                   </div>
                 ))}
               </dl>

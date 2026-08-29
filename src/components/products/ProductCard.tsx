@@ -7,7 +7,7 @@ import { whatsappLink } from "@/config/contact";
 import { business } from "@/data/business";
 import { SoldOutBadge } from "@/components/products/SoldOutBadge";
 import { Photo } from "@/components/common/Photo";
-import { productName, productShort } from "@/i18n";
+import { productName, productShort, productPriceLabel, productMeta } from "@/i18n";
 import { useTranslate, PRODUCT_CATEGORY_LABELS } from "@/i18n";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -46,14 +46,14 @@ export function ProductCard({ product }: { product: Product }) {
         </h3>
         {(product.strength || product.quantity) && (
           <p dir="auto" className="text-xs font-medium text-muted-foreground">
-            {[product.strength, product.quantity].filter(Boolean).join(" · ")}
+            {productMeta(product, t)}
           </p>
         )}
         <p dir="auto" className="flex-1 text-sm leading-relaxed text-muted-foreground">
           {productShort(product, t)}
         </p>
         <p dir="auto" className="font-display text-lg font-extrabold text-primary">
-          {product.priceLabel}
+          {productPriceLabel(product, t)}
         </p>
 
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">

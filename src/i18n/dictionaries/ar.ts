@@ -529,6 +529,231 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "product.bloodGlucoseMeterKit.name": "طقم جهاز قياس سكر الدم",
   "product.bloodGlucoseMeterKit.short":
     "طقم جهاز قياس سكر الدم بعلامة منذر علان، لفحص مستوى السكر في المنزل.",
+  // --- videos, and the rest of the product surface -------------------
+  "video.vitaminDDeficiencySigns.title": "10 علامات على نقص فيتامين D لا ينبغي تجاهلها.",
+  "video.vitaminDDeficiencySigns.caption":
+    "استعراض للعلامات الشائعة المرتبطة بانخفاض فيتامين D — من الإرهاق وصعوبة التركيز إلى تيبّس المفاصل وتقلّب المزاج — مع إرشادات عامة حول المكمّلات والمستويات المستهدفة.",
+  "video.ironStoresDrop.title": "ماذا يحدث عندما تنخفض مخازن الحديد لديك؟",
+  "video.ironStoresDrop.caption":
+    "نظرة عامة على الأعراض المرتبطة بانخفاض مخازن الحديد، مثل الإرهاق والدوخة وتساقط الشعر، مع إرشادات عملية حول الفحص ودعم مستويات حديد صحية.",
+  "video.magnesiumTypesTiming.title": "أنواع المغنيسيوم وأفضل أوقات تناولها",
+  "video.magnesiumTypesTiming.caption": "دليل سريع لأشكال المغنيسيوم المختلفة ووقت تناول كل منها.",
+  "video.candidaTreatmentStageThree.title":
+    "المرحلة الثالثة من علاج الكانديدا: العلاجات والفيتامينات الأساسية لكلا الزوجين",
+  "video.candidaTreatmentStageThree.caption":
+    "نظرة على مرحلة لاحقة من بروتوكول لدعم علاج الكانديدا، تتناول العلاجات الطبيعية والفيتامينات التي يُوصى بها عادةً إلى جانبه.",
+  "video.candidaTreatmentBoneBroth.title":
+    "علاج الكانديدا: مرق العظام والخضار المطهوّة على البخار والعلاجات العشبية",
+  "video.candidaTreatmentBoneBroth.caption":
+    "شرح لنهج في مرحلة مبكرة من دعم علاج الكانديدا يقوم على مرق العظام والخضار المطهوّة على البخار والأعشاب المساعدة.",
+  "video.candidaFoodsToAvoid.title": "علاج الكانديدا: الأطعمة التي يجب تجنّبها للتعافي",
+  "video.candidaFoodsToAvoid.caption":
+    "إرشادات عملية حول الأطعمة التي يُتجنّب تناولها عادةً خلال بروتوكول دعم علاج الكانديدا، ولماذا قد تعيق التقدّم.",
+  "video.autoimmunePathBeforeMedication.title":
+    "الطريق إلى علاج أمراض المناعة الذاتية: خطوات أساسية قبل الدواء",
+  "video.autoimmunePathBeforeMedication.caption":
+    "نقاش حول الخطوات الأساسية — الهضم والتغذية والحركة والنوم وإدارة التوتر — التي تُعالَج غالبًا قبل علاج المناعة الذاتية أو إلى جانبه.",
+  "video.oneSimpleHabit.title": "عادة واحدة بسيطة يمكن أن تدعم أسلوب حياة أكثر صحّة.",
+  "video.oneSimpleHabit.caption":
+    "عادة قصيرة وعملية يمكن أن تجعل الحياة الصحية اليومية أسهل في الاستمرار.",
+  "videos.emptyTitle": "مكتبة الفيديو قريبًا",
+  "videos.emptyBody": "ستظهر هنا مقاطع الفيديو المختارة مباشرةً من القناة.",
+  "product.omega3KrillOil.full":
+    "مكمّل غذائي من زيت الكريل أوميغا-3 بعلامة منذر علان، يُقدَّم على شكل كبسولات، ويوفّر نحو 240 mg من أوميغا-3 حسب الملصق. التركيز وعدد الكبسولات مذكوران على عبوة المنتج.",
+  "product.irishMossBladderwrack.full":
+    "خليط معادن بحرية من الطحلب الإيرلندي وعشب المثانة بعلامة منذر علان، يُقدَّم على شكل كبسولات لدعم العافية بخُضَر المحيط. عدد الكبسولات مذكور على العبوة.",
+  "product.resveratrol.full":
+    "مكمّل غذائي من الريسفيراترول بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.betaCarotene.full":
+    "مكمّل غذائي من بيتا كاروتين بعلامة منذر علان، مُوصوف على الملصق بأنه طليعة فيتامين A. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.norwegianCodLiverOil60.full":
+    "مكمّل غذائي من زيت كبد سمك القد النرويجي بعلامة منذر علان، بحجم 60 كبسولة، مع كميات كل كبسولة من أوميغا-3 وEPA وDHA وفيتامين D3 وفيتامين A وفيتامين E مطبوعة على الملصق. هذه قائمة منفصلة عن حجم 120 كبسولة.",
+  "product.tudca.full":
+    "مكمّل غذائي TUDCA بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.milkThistleExtract.full":
+    "مكمّل غذائي من مستخلص شوك الحليب بعلامة منذر علان، مقيَّس إلى 80% سيليمارين حسب الملصق، مخصص لدعم إزالة سموم الكبد وحمايته. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.glucosamineChondroitin.full":
+    "مكمّل غذائي من الجلوكوزامين مع الكوندرويتين بعلامة منذر علان. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.berberinePlus.full":
+    "مكمّل غذائي بربرين بلَس بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.alphaLipoicAcid.full":
+    "مكمّل غذائي من حمض ألفا ليبويك بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.potassiumGluconate.full":
+    "مكمّل غذائي من غلوكونات البوتاسيوم بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.spirulina.full":
+    "مكمّل غذائي من السبيرولينا بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.shilajitExtraStrength.full":
+    "مكمّل غذائي من الشيلاجيت بتركيز مضاعف بعلامة منذر علان، يُقدَّم على شكل كبسولات. عدد الكبسولات مذكور على العبوة.",
+  "product.stingingNettle.full":
+    "مكمّل غذائي من نبات القرّاص بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.tongkatAli.full":
+    "مكمّل غذائي من تونغكات علي بعلامة منذر علان، يستخدم مستخلص LJ100 حسب الملصق. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.superMaleBComplex.full":
+    "مكمّل غذائي سوبر مِيل بي-كومبلكس بعلامة منذر علان، يُقدَّم على شكل كبسولات. عدد الكبسولات مذكور على العبوة.",
+  "product.glutathione.full":
+    "مكمّل غذائي من الغلوتاثيون بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.grassFedBeefLiver.full":
+    "مكمّل غذائي من كبد بقري مرعي طبيعياً بتركيبة غذاء كامل بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.vitaminD3K2.full":
+    "مكمّل غذائي من فيتامين D3 وK2 بعلامة منذر علان، يستخدم شكل MK-7 من فيتامين K2 حسب الملصق. التركيز وعدد الأقراص مذكوران على العبوة.",
+  "product.norwegianCodLiverOil120.full":
+    "مكمّل غذائي من زيت كبد سمك القد النرويجي بعلامة منذر علان، بحجم 120 كبسولة، مُوصوف على الملصق بأنه فيتامين A وD + 3-أوميغا. هذه قائمة منفصلة عن حجم 60 كبسولة ولا تُدمج معها.",
+  "product.coq10.full":
+    "مكمّل غذائي CoQ10 بعلامة منذر علان، يُقدَّم على شكل كبسولات. التركيز وعدد الكبسولات مذكوران على العبوة.",
+  "product.advancedBComplex.full":
+    "مكمّل غذائي بي-كومبلكس المتقدّم بعلامة منذر علان، يُقدَّم على شكل كبسولات. عدد الكبسولات مذكور على العبوة.",
+  "product.nonContactInfraredThermometer.full":
+    "ميزان حرارة بالأشعة تحت الحمراء دون لمس بعلامة منذر علان، لقياس درجة الحرارة في المنزل بسهولة. راجع تعليمات المنتج المرفقة للإعداد والاستخدام الصحيحين.",
+  "product.digitalThermometer.full":
+    "ميزان حرارة رقمي بعلامة منذر علان، مصمَّم للقياس المنزلي بسهولة. راجع تعليمات المنتج المرفقة للإعداد والاستخدام الصحيحين.",
+  "product.digitalBloodPressureMonitor.full":
+    "جهاز قياس ضغط الدم الرقمي للذراع بعلامة منذر علان، مصمَّم للقياس المنزلي بسهولة، ويتضمّن كُفّة عالمية المقاس. راجع تعليمات المنتج المرفقة للإعداد والاستخدام الصحيحين.",
+  "product.smartBodyCompositionScale.full":
+    "ميزان ذكي لتحليل تكوين الجسم بعلامة منذر علان، مصمَّم للمتابعة المنزلية بسهولة، مع مزامنة Wi-Fi ودعم عدد غير محدود من ملفات المستخدمين حسب الملصق. راجع تعليمات المنتج المرفقة للإعداد والاستخدام الصحيحين.",
+  "product.bloodGlucoseMeterKit.full":
+    "طقم جهاز قياس سكر الدم بعلامة منذر علان، مصمَّم للفحص المنزلي بسهولة. راجع تعليمات المنتج المرفقة للإعداد والاستخدام الصحيحين.",
+  "productHighlight.epaDha": "EPA وDHA",
+  "productHighlight.heartCellularEnergy": "طاقة القلب والخلايا (ادّعاء مذكور على الملصق)",
+  "productHighlight.immuneHeartSupport": "دعم المناعة والقلب (ادّعاء مذكور على الملصق)",
+  "productHighlight.vitaminAD": "فيتامين A وD",
+  "productHighlight.seaweedPower": "قوّة الأعشاب البحرية",
+  "productHighlight.oceanNourished": "تغذية من المحيط",
+  "productHighlight.mineralRichPlain": "غني بالمعادن",
+  "productHighlight.dailyWellnessPlain": "عافية يومية",
+  "productHighlight.antioxidantDefense": "دفاع مضاد للأكسدة (ادّعاء مذكور على الملصق)",
+  "productHighlight.healthyAging": "شيخوخة صحية (ادّعاء مذكور على الملصق)",
+  "productHighlight.cellularSupport": "دعم خلوي (ادّعاء مذكور على الملصق)",
+  "productHighlight.visionSkinImmune":
+    "يدعم البصر وصحة البشرة ووظيفة المناعة (ادّعاء مذكور على الملصق)",
+  "productHighlight.omega3Support": "دعم أوميغا-3",
+  "productHighlight.vitaminsAD": "فيتامينا A وD",
+  "productHighlight.immuneHeart": "المناعة والقلب (ادّعاء مذكور على الملصق)",
+  "productHighlight.liverHealth": "صحة الكبد (ادّعاء مذكور على الملصق)",
+  "productHighlight.digestiveSupport": "دعم الهضم (ادّعاء مذكور على الملصق)",
+  "productHighlight.liverSupport": "دعم الكبد (ادّعاء مذكور على الملصق)",
+  "productHighlight.detoxSupport": "دعم إزالة السموم (ادّعاء مذكور على الملصق)",
+  "productHighlight.antioxidantSupport": "دعم مضاد للأكسدة (ادّعاء مذكور على الملصق)",
+  "productHighlight.jointComfort": "راحة المفاصل (ادّعاء مذكور على الملصق)",
+  "productHighlight.cartilageSupport": "دعم الغضاريف (ادّعاء مذكور على الملصق)",
+  "productHighlight.mobilitySupport": "دعم الحركة (ادّعاء مذكور على الملصق)",
+  "productHighlight.metabolicBalance": "يدعم التوازن الأيضي (ادّعاء مذكور على الملصق)",
+  "productHighlight.dailyWellnessClaim": "عافية يومية (ادّعاء مذكور على الملصق)",
+  "productHighlight.supportsAntioxidantDefense":
+    "يدعم الدفاع المضاد للأكسدة (ادّعاء مذكور على الملصق)",
+  "productHighlight.hydrationBalance": "توازن الترطيب (ادّعاء مذكور على الملصق)",
+  "productHighlight.mineralSupport": "دعم المعادن (ادّعاء مذكور على الملصق)",
+  "productHighlight.mineralRichClaim": "غني بالمعادن (ادّعاء مذكور على الملصق)",
+  "productHighlight.plantBasedNutrition": "تغذية نباتية المصدر (ادّعاء مذكور على الملصق)",
+  "productHighlight.power": "قوّة (ادّعاء مذكور على الملصق)",
+  "productHighlight.endurance": "تحمّل (ادّعاء مذكور على الملصق)",
+  "productHighlight.vitality": "حيوية (ادّعاء مذكور على الملصق)",
+  "productHighlight.balance": "توازن (ادّعاء مذكور على الملصق)",
+  "productHighlight.wellness": "عافية (ادّعاء مذكور على الملصق)",
+  "productHighlight.stamina": "قدرة على التحمّل (ادّعاء مذكور على الملصق)",
+  "productHighlight.performance": "أداء (ادّعاء مذكور على الملصق)",
+  "productHighlight.energy": "طاقة (ادّعاء مذكور على الملصق)",
+  "productHighlight.focus": "تركيز (ادّعاء مذكور على الملصق)",
+  "productHighlight.cellularDefense": "دفاع خلوي (ادّعاء مذكور على الملصق)",
+  "productHighlight.nutrientDense":
+    "دعم غني بالعناصر الغذائية للطاقة والمناعة والحيوية (ادّعاء مذكور على الملصق)",
+  "productHighlight.boneHeartImmune":
+    "يدعم صحة العظام والقلب وجهاز المناعة (ادّعاء مذكور على الملصق)",
+  "productHighlight.dailyEnergySupport": "دعم الطاقة اليومي (ادّعاء مذكور على الملصق)",
+  "productHighlight.fastReading": "قراءة سريعة (ادّعاء مذكور على الملصق)",
+  "productHighlight.nonContact": "بدون تلامس",
+  "productHighlight.threeColorFeverAlert": "تنبيه حمّى بثلاثة ألوان (ادّعاء مذكور على الملصق)",
+  "productHighlight.highAccuracy": "دقة عالية (ادّعاء مذكور على الملصق)",
+  "productHighlight.beepAlert": "تنبيه صوتي (ادّعاء مذكور على الملصق)",
+  "productHighlight.safeHygienic": "آمن وصحّي (ادّعاء مذكور على الملصق)",
+  "productHighlight.irregularHeartbeat": "كشف عدم انتظام ضربات القلب (ادّعاء مذكور على الملصق)",
+  "productHighlight.comfortFitCuff": "كُفّة ComfortFit عالمية المقاس",
+  "productHighlight.memories120Users2": "120 ذاكرة، مستخدمان",
+  "productHighlight.oneTouchOperation": "تشغيل بلمسة واحدة",
+  "productHighlight.bodyMetrics":
+    "نسبة دهون الجسم، ومؤشر كتلة الجسم، والكتلة العضلية، ونسبة ماء الجسم، وكتلة العظام، ونسبة البروتين",
+  "productHighlight.wifiSync": "مزامنة Wi-Fi",
+  "productHighlight.multiUser": "متعدد المستخدمين",
+  "productHighlight.fiveSecondTest": "زمن فحص 5 ثوانٍ (ادّعاء مذكور على الملصق)",
+  "productHighlight.highAccuracyIso": "دقة عالية — EN ISO 15197:2015 (ادّعاء مذكور على الملصق)",
+  "productHighlight.testMemory500": "ذاكرة 500 فحص",
+  "spec.strength": "التركيز",
+  "spec.omega3Content": "محتوى أوميغا-3",
+  "spec.count": "العدد",
+  "spec.form": "الشكل",
+  "spec.formula": "التركيبة",
+  "spec.type": "النوع",
+  "spec.omega3": "أوميغا-3",
+  "spec.epa": "EPA",
+  "spec.dha": "DHA",
+  "spec.vitaminD3": "فيتامين D3",
+  "spec.vitaminA": "فيتامين A",
+  "spec.vitaminE": "فيتامين E",
+  "spec.standardization": "التقييس",
+  "spec.glucosamine": "جلوكوزامين",
+  "spec.chondroitin": "كوندرويتين",
+  "spec.extract": "المستخلص",
+  "spec.k2Form": "شكل K2",
+  "spec.display": "الشاشة",
+  "spec.normalRange": "النطاق الطبيعي المعروض",
+  "spec.lowFeverRange": "نطاق الحمى المنخفضة المعروض",
+  "spec.highFeverRange": "نطاق الحمى المرتفعة المعروض",
+  "spec.cuff": "الكُفّة",
+  "spec.memory": "الذاكرة",
+  "spec.operation": "التشغيل",
+  "spec.metricsTracked": "المؤشرات المقاسة",
+  "spec.connectivity": "الاتصال",
+  "spec.users": "المستخدمون",
+  "spec.testTime": "زمن الفحص",
+  "spec.sampleSize": "حجم العينة",
+  "spec.standard": "المعيار",
+  "spec.kitIncludes": "تتضمّن العدّة",
+  "product.qty.capsules60": "60 كبسولة",
+  "product.qty.capsules120": "120 كبسولة",
+  "product.qty.tablets120": "120 قرص",
+  "product.qty.piece1": "قطعة واحدة",
+  "product.priceLabel.contact": "تواصل لمعرفة السعر",
+  // --- product detail page furniture ---------------------------------
+  "product.breadcrumb": "المنتجات",
+  "product.specificationsHeading": "المواصفات",
+  // --- specification values that contain English words ---------------
+  "specValue.microlitres06": "0.6 µL (حسب الملصق)",
+  "specValue.piece1": "قطعة واحدة",
+  "specValue.mcg1250": "1,250 mcg (حسب الملصق)",
+  "specValue.mg110": "110 mg (حسب الملصق)",
+  "specValue.capsules120": "120 كبسولة",
+  "specValue.memories120Users2": "120 ذاكرة / مستخدمان (حسب الملصق)",
+  "specValue.tablets120": "120 قرص",
+  "specValue.mg125": "125 mg (حسب الملصق)",
+  "specValue.bodyMetrics13":
+    "13 مؤشرًا للجسم (حسب الملصق): نسبة دهون الجسم، ومؤشر كتلة الجسم، والكتلة العضلية، ونسبة ماء الجسم، وكتلة العظام، ونسبة البروتين",
+  "specValue.iu13": "13 IU (حسب الملصق)",
+  "specValue.mg235": "235 mg (حسب الملصق)",
+  "specValue.iu3125": "3,125 IU (حسب الملصق)",
+  "specValue.threeColorFeverAlert": "تنبيه حمّى بثلاثة ألوان (حسب الملصق)",
+  "specValue.fiveSecondTest": "زمن فحص 5 ثوانٍ (حسب الملصق)",
+  "specValue.testMemory500": "ذاكرة 500 فحص (حسب الملصق)",
+  "specValue.capsules60": "60 كبسولة",
+  "specValue.silymarin80": "80% سيليمارين",
+  "specValue.capsule": "كبسولة",
+  "specValue.comfortFitCuff": "كُفّة ComfortFit عالمية المقاس (حسب الملصق)",
+  "specValue.completeFormula": "تركيبة كاملة",
+  "specValue.digital": "رقمي",
+  "specValue.digitalUpperArm": "رقمي للذراع",
+  "specValue.enIso15197": "EN ISO 15197:2015 (حسب الملصق)",
+  "specValue.mensSupportFormula": "تركيبة لدعم الرجال",
+  "specValue.glucoseKitContents":
+    "الجهاز، وقلم الوخز، والمشارط، وشرائط الفحص، والبطاريات، ودليل المستخدم، ودليل البدء السريع (حسب الملصق)",
+  "specValue.mineralVitalityFormula": "تركيبة الحيوية المعدنية",
+  "specValue.nonContactInfrared": "أشعة تحت حمراء دون لمس",
+  "specValue.oneTouch": "بلمسة واحدة (حسب الملصق)",
+  "specValue.performanceFormula": "تركيبة الأداء",
+  "specValue.seaMineralBlend": "خليط معادن بحرية",
+  "specValue.tablet": "قرص",
+  "specValue.unlimitedUsers": "عدد غير محدود من المستخدمين (حسب الملصق)",
+  "specValue.vitaminAPrecursor": "طليعة فيتامين A",
+  "specValue.wholeFoodFormula": "تركيبة غذاء كامل",
+  "specValue.wifiSync": "مزامنة Wi-Fi",
+  "specValue.mg240PerLabel": "نحو 240 mg حسب الملصق",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly": "المقالات بقلم الدكتور منذر علان ومتاحة باللغة الإنجليزية فقط.",
 };

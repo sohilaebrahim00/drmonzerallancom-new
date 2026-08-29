@@ -13,7 +13,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { videos, youtubeChannelUrl } from "@/data/videos";
 import { breadcrumbSchema } from "@/lib/schema";
-import { useTranslate, VIDEO_CATEGORY_LABELS, type SimpleTranslationKey } from "@/i18n";
+import {
+  useTranslate,
+  VIDEO_CATEGORY_LABELS,
+  type SimpleTranslationKey,
+  videoTitle,
+  videoCaption,
+} from "@/i18n";
 
 /**
  * Display-only cards. Unlike the FAQ/article/product/video categories these
@@ -126,7 +132,7 @@ export default function GalleryPage() {
             <div>
               <YouTubeEmbed
                 videoId={featured.videoId}
-                title={featured.title}
+                title={videoTitle(featured, t)}
                 className="shadow-[0_40px_80px_-30px_rgba(23,35,59,0.4)]"
               />
               <div className="mt-5 text-center">
@@ -134,13 +140,13 @@ export default function GalleryPage() {
                   {t(VIDEO_CATEGORY_LABELS[featured.category])}
                 </span>
                 <h2 dir="auto" className="mt-3 font-display text-xl font-bold text-navy">
-                  {featured.title}
+                  {videoTitle(featured, t)}
                 </h2>
                 <p
                   dir="auto"
                   className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground"
                 >
-                  {featured.caption}
+                  {videoCaption(featured, t)}
                 </p>
               </div>
             </div>
@@ -181,16 +187,16 @@ export default function GalleryPage() {
                   index % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
                 }`}
               >
-                <YouTubeEmbed videoId={video.videoId} title={video.title} />
+                <YouTubeEmbed videoId={video.videoId} title={videoTitle(video, t)} />
                 <div>
                   <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
                     {t(VIDEO_CATEGORY_LABELS[video.category])}
                   </span>
                   <h3 dir="auto" className="mt-3 font-display text-lg font-bold text-navy">
-                    {video.title}
+                    {videoTitle(video, t)}
                   </h3>
                   <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {video.caption}
+                    {videoCaption(video, t)}
                   </p>
                   <a
                     href={video.youtubeUrl}

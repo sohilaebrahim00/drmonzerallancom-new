@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { YouTubeEmbed } from "@/components/media/YouTubeEmbed";
 import { videos, youtubeChannelUrl } from "@/data/videos";
 import { cn } from "@/lib/utils";
-import { useTranslate } from "@/i18n";
+import { useTranslate, videoTitle, videoCaption } from "@/i18n";
 
 export function YouTubeSection() {
   const t = useTranslate();
@@ -29,7 +29,7 @@ export function YouTubeSection() {
                 <YouTubeEmbed
                   key={activeVideo.videoId}
                   videoId={activeVideo.videoId}
-                  title={activeVideo.title}
+                  title={videoTitle(activeVideo, t)}
                   className="shadow-[0_30px_60px_-30px_rgba(23,35,59,0.35)]"
                 />
               </div>
@@ -37,9 +37,11 @@ export function YouTubeSection() {
                 <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
                   {activeVideo.category}
                 </span>
-                <h3 className="font-display text-xl font-bold text-navy">{activeVideo.title}</h3>
+                <h3 dir="auto" className="font-display text-xl font-bold text-navy">
+                  {videoTitle(activeVideo, t)}
+                </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  {activeVideo.caption}
+                  {videoCaption(activeVideo, t)}
                 </p>
                 <a
                   href={activeVideo.youtubeUrl}
@@ -82,7 +84,7 @@ export function YouTubeSection() {
                           </span>
                         </div>
                         <span className="line-clamp-2 text-xs font-semibold text-navy">
-                          {video.title}
+                          {videoTitle(video, t)}
                         </span>
                       </button>
                     ))}
@@ -93,9 +95,11 @@ export function YouTubeSection() {
           ) : (
             <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-secondary/30 px-6 py-16 text-center">
               <Youtube className="h-8 w-8 text-primary/60" />
-              <p className="font-display text-lg font-bold text-navy">Video Library Coming Soon</p>
+              <p dir="auto" className="font-display text-lg font-bold text-navy">
+                {t("videos.emptyTitle")}
+              </p>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Featured videos will appear here directly from the channel.
+                {t("videos.emptyBody")}
               </p>
               <a
                 href={youtubeChannelUrl}
