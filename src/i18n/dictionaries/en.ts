@@ -225,7 +225,11 @@ export const en = {
   "aboutPage.philosophyBody":
     "Every plan begins with what a client is already eating, not a template imposed from the outside. By combining a pharmacist's clinical training with specialized nutrition science, the goal is always the same: guidance that respects a person's schedule, culture, and preferences while still being grounded in evidence. Change that lasts comes from small, realistic adjustments — not dramatic overhauls that are hard to sustain.",
   "aboutPage.backgroundEyebrow": "Professional Background",
-  "aboutPage.backgroundTitle": "Verified Credentials",
+  // F-6: "Verified" was removed. about.ts records in its own comment that none
+  // of these credentials have been verified, so the heading asserted something
+  // nothing in the repo supports. Removing an unsupported claim needs nobody's
+  // permission; adding one does. Restore the word only with documentation.
+  "aboutPage.backgroundTitle": "Credentials",
   "aboutPage.focusEyebrow": "Areas of Focus",
   "aboutPage.focusTitle": "Specialized Support Across Every Stage of Life",
   "aboutPage.ctaTitle": "Start Your Nutrition Journey",

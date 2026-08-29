@@ -286,7 +286,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "aboutPage.philosophyBody":
     "تبدأ كل خطة مما تأكله فعلاً، لا من قالب مفروض من الخارج. وبالجمع بين التدريب السريري للصيدلي وعلم التغذية المتخصص، يبقى الهدف واحداً: إرشاد يحترم جدولك وثقافتك وتفضيلاتك، ويظل في الوقت نفسه قائماً على الأدلة. التغيير الذي يدوم يأتي من تعديلات صغيرة وواقعية — لا من انقلابات جذرية يصعب الاستمرار عليها.",
   "aboutPage.backgroundEyebrow": "الخلفية المهنية",
-  "aboutPage.backgroundTitle": "مؤهلات موثّقة",
+  "aboutPage.backgroundTitle": "المؤهلات",
   "aboutPage.focusEyebrow": "مجالات التركيز",
   "aboutPage.focusTitle": "دعم متخصص في كل مرحلة من مراحل الحياة",
   "aboutPage.ctaTitle": "ابدأ رحلتك الغذائية",
