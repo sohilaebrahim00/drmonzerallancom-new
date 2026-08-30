@@ -146,8 +146,7 @@ export default function ProductDetailPage() {
             </div>
           )}
           <p dir="auto" className="mt-3 text-xs text-muted-foreground">
-            Real product packaging supplied by {business.doctorName}. Additional gallery angles will
-            appear here once provided.
+            {t("product.packagingNote", { name: business.doctorName })}
           </p>
         </div>
 
@@ -197,7 +196,7 @@ export default function ProductDetailPage() {
                   aria-disabled="true"
                   className="inline-flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-md bg-muted px-5 py-3 text-sm font-semibold text-muted-foreground"
                 >
-                  Currently Out of Stock
+                  {t("product.currentlyOutOfStock")}
                 </span>
                 {availabilityHref ? (
                   <a
@@ -206,14 +205,14 @@ export default function ProductDetailPage() {
                     rel="noopener noreferrer"
                     className="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise"
                   >
-                    <MessageCircle className="h-4 w-4" /> Ask About Availability
+                    <MessageCircle className="h-4 w-4" /> {t("product.askAvailability")}
                   </a>
                 ) : (
                   <Link
                     to="/contact"
                     className="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise"
                   >
-                    <MessageCircle className="h-4 w-4" /> Ask About Availability
+                    <MessageCircle className="h-4 w-4" /> {t("product.askAvailability")}
                   </Link>
                 )}
               </>
@@ -256,12 +255,7 @@ export default function ProductDetailPage() {
             dir="auto"
             className="rounded-xl border border-border/70 bg-secondary/40 p-4 text-xs leading-relaxed text-muted-foreground"
           >
-            Product information is provided for general informational purposes only. Dietary
-            supplements are not intended to diagnose, treat, cure, or prevent any disease. Consult a
-            qualified healthcare professional before using a supplement, especially if you are
-            pregnant, nursing, taking medication, managing a medical condition, or considering use
-            for a child. Use health-monitoring devices according to their official instructions and
-            seek professional medical advice when needed.
+            {t("product.disclaimer")}
           </p>
         </div>
       </div>
@@ -269,7 +263,7 @@ export default function ProductDetailPage() {
       {related.length > 0 && (
         <div className="mt-16">
           <h2 dir="auto" className="font-display text-xl font-bold text-navy">
-            Related Products
+            {t("product.related")}
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((item) => (

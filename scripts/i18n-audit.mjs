@@ -21,16 +21,22 @@
  * Exit code is non-zero on any finding that is not in ACCEPTED below, so this
  * can sit in CI beside tsc / lint / build:web / build:app.
  */
+import os from "node:os";
 import { readFileSync } from "node:fs";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
+import { parseDict, dictValues } from "./lib/parse-dict.mjs";
+
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
 const PORT = 4193;
+const HOST = "127.0.0.1";
 const VERBOSE = process.argv.includes("--list");
+/** Fewest visible text nodes a real page can plausibly have. */
+const MIN_LEAVES = 25;
 
 /* ---------------------------------------------------------------- routes -- */
 
@@ -103,51 +109,26 @@ const ACCEPTED = [
 
 /* ------------------------------------------------- English dictionary set -- */
 
-/** Same hand-written scanner the review script uses — not a regex. */
-function parseDict(src) {
-  const out = {};
-  let i = src.indexOf("{");
-  while (i >= 0 && i < src.length) {
-    const q = src.indexOf('"', i);
-    if (q < 0) break;
-    const key = readQuoted(src.slice(q));
-    if (key === null) break;
-    const after = src.indexOf('"', q + 1 + key.raw);
-    const colon = src.indexOf(":", after);
-    if (colon < 0) break;
-    let j = colon + 1;
-    while (j < src.length && /\s/.test(src[j])) j++;
-    if (src[j] === '"') {
-      const v = readQuoted(src.slice(j));
-      if (v === null) break;
-      out[key.value] = v.value;
-      i = j + v.raw;
-    } else {
-      i = colon + 1;
-    }
-  }
-  return out;
-}
-
-function readQuoted(s) {
-  if (s[0] !== '"') return null;
-  let v = "";
-  for (let i = 1; i < s.length; i++) {
-    const c = s[i];
-    if (c === "\\") {
-      const n = s[i + 1];
-      v += n === "n" ? "\n" : n === "t" ? "\t" : n;
-      i++;
-      continue;
-    }
-    if (c === '"') return { value: v, raw: i + 1 };
-    v += c;
-  }
-  return null;
-}
-
 const en = parseDict(readFileSync(resolve(root, "src/i18n/dictionaries/en.ts"), "utf8"));
-const enValues = new Set(Object.values(en).map((v) => v.trim()));
+const ar = parseDict(readFileSync(resolve(root, "src/i18n/dictionaries/ar.ts"), "utf8"));
+
+/**
+ * English values whose Arabic is DIFFERENT. A key whose Arabic is deliberately
+ * identical to its English — "TUDCA", "CoQ10", "Wi-Fi Sync" — is not evidence
+ * of an unwired component, so including it would make the gate cry wolf on the
+ * exact decisions we recorded on purpose.
+ */
+const enValues = new Set(
+  [...dictValues(en)].filter((v) => {
+    for (const [k, ev] of Object.entries(en)) {
+      if (typeof ev === "string" && ev.trim() === v) {
+        const av = ar[k];
+        if (typeof av === "string" && av.trim() === v) return false;
+      }
+    }
+    return true;
+  }),
+);
 
 /* ------------------------------------------------------------ classifier -- */
 
@@ -203,11 +184,20 @@ async function readLeaves(page) {
  */
 async function assertLegalNotice(page, findings) {
   for (const route of LEGAL_ROUTES) {
-    await page.goto(`http://localhost:${PORT}${route}?lang=ar`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(300);
-    const hasNotice = await page.evaluate(() =>
-      /النسخة الإنجليزية|باللغة الإنجليزية/.test(document.body.innerText)
-    );
+    await page.goto(`http://${HOST}:${PORT}${route}?lang=ar`, {
+      waitUntil: "domcontentloaded",
+      timeout: 20000,
+    });
+    // These routes are React.lazy, so a fixed short wait races the chunk and
+    // reports a missing notice that is simply not painted yet. Poll instead.
+    const hasNotice = await page
+      .waitForFunction(
+        () => /النسخة الإنجليزية|باللغة الإنجليزية/.test(document.body.innerText),
+        undefined,
+        { timeout: 15000 },
+      )
+      .then(() => true)
+      .catch(() => false);
     if (!hasNotice) {
       findings.push({
         route,
@@ -222,19 +212,55 @@ async function assertLegalNotice(page, findings) {
 /* ------------------------------------------------------------------ main -- */
 
 function startPreview() {
+  // Invoke vite through the current node binary rather than through npx: a
+  // spawned shell here does not resolve npx, and with stdio ignored that
+  // failure is silent — the audit just appears to hang.
   const p = spawn(
-    process.platform === "win32" ? "npx.cmd" : "npx",
-    ["vite", "preview", "--port", String(PORT), "--strictPort"],
-    { cwd: root, stdio: "ignore", shell: process.platform === "win32" }
+    process.execPath,
+    [
+      "node_modules/vite/bin/vite.js",
+      "preview",
+      "--host",
+      HOST,
+      "--port",
+      String(PORT),
+      "--strictPort",
+    ],
+    { cwd: root, stdio: "ignore" },
   );
+  p.on("error", (e) => {
+    console.error("i18n:audit — could not start preview server: " + e.message);
+    process.exit(2);
+  });
   return p;
+}
+
+/**
+ * On Windows the spawned `npx` is a shell wrapper, so killing it leaves the
+ * real vite process holding the port. The next run then either fails on
+ * --strictPort or, worse, silently audits the PREVIOUS build. Kill the tree.
+ */
+function stopPreview(p) {
+  if (!p || p.killed) return;
+  if (process.platform === "win32" && p.pid) {
+    try {
+      spawnSync("taskkill", ["/pid", String(p.pid), "/T", "/F"], { stdio: "ignore" });
+      return;
+    } catch {
+      /* fall through to kill() */
+    }
+  }
+  p.kill();
 }
 
 async function waitForServer(timeoutMs = 30000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     try {
-      const r = await fetch(`http://localhost:${PORT}/`);
+      // A bare fetch to a dead port can hang rather than reject, and the
+      // deadline above is only checked between iterations — so one hanging
+      // request would block the whole audit forever. Bound every attempt.
+      const r = await fetch(`http://${HOST}:${PORT}/`, { signal: AbortSignal.timeout(2000) });
       if (r.ok) return true;
     } catch {
       /* not up yet */
@@ -257,18 +283,48 @@ try {
   const findings = [];
 
   for (const route of ROUTES) {
-    await page.goto(`http://localhost:${PORT}${route}?lang=ar`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(400);
+    // "networkidle" can wait forever on a page that keeps a connection open,
+    // and this script has no per-route output, so that hang looks like a dead
+    // process rather than a slow one. Bound it, and say where we are.
+    process.stderr.write("  " + route + " … ");
+    await page.goto(`http://${HOST}:${PORT}${route}?lang=ar`, {
+      waitUntil: "domcontentloaded",
+      timeout: 20000,
+    });
+    await page.waitForLoadState("load", { timeout: 20000 }).catch(() => {});
+    await page.waitForTimeout(700);
 
     const dir = await page.evaluate(() => document.documentElement.getAttribute("dir"));
     if (dir !== "rtl") {
       findings.push({ route, zone: "html", text: `dir="${dir}" (expected rtl)`, kind: "not-rtl" });
     }
 
-    for (const { text, zone } of await readLeaves(page)) {
-      const kind = classify(text);
-      if (kind) findings.push({ route, zone, text, kind });
+    const leaves = await readLeaves(page);
+
+    // A page that throws during render unmounts the whole React tree and
+    // leaves an almost-empty body — which would score ZERO findings and read
+    // as a pass. That happened: / and /faq both reported 0 for one run while
+    // the home page was actually blank. A gate that cannot tell "clean" from
+    // "did not render" is measuring the artefact again, so assert the page
+    // actually produced content.
+    if (leaves.length < MIN_LEAVES) {
+      findings.push({
+        route,
+        zone: "html",
+        text: `page rendered only ${leaves.length} text nodes (expected >= ${MIN_LEAVES}) — blank or crashed, not clean`,
+        kind: "page-did-not-render",
+      });
     }
+
+    let found = 0;
+    for (const { text, zone } of leaves) {
+      const kind = classify(text);
+      if (kind) {
+        findings.push({ route, zone, text, kind });
+        found++;
+      }
+    }
+    process.stderr.write(String(found) + os.EOL);
   }
 
   await assertLegalNotice(page, findings);
@@ -283,7 +339,7 @@ try {
     byText.get(k).routes.push(f.route);
   }
   const unique = [...byText.values()].sort(
-    (a, b) => b.routes.length - a.routes.length || a.text.localeCompare(b.text)
+    (a, b) => b.routes.length - a.routes.length || a.text.localeCompare(b.text),
   );
 
   if (unique.length === 0) {
@@ -296,14 +352,14 @@ try {
         `(header ${byZone.header}, footer ${byZone.footer}, body ${byZone.body}` +
         (byZone.html ? `, html ${byZone.html}` : "") +
         (byZone.legal ? `, legal ${byZone.legal}` : "") +
-        `) across ${ROUTES.length} routes. FAIL`
+        `) across ${ROUTES.length} routes. FAIL`,
     );
     const show = VERBOSE ? unique : unique.slice(0, 25);
     for (const u of show) {
       const t = u.text.length > 100 ? u.text.slice(0, 100) + "…" : u.text;
       console.error(
         `  [${u.zone}/${u.kind}] ×${u.routes.length}  ${t}` +
-          (u.routes.length <= 2 ? `\n        on: ${u.routes.join(", ")}` : "")
+          (u.routes.length <= 2 ? `\n        on: ${u.routes.join(", ")}` : ""),
       );
     }
     if (!VERBOSE && unique.length > show.length) {
@@ -312,6 +368,6 @@ try {
     exitCode = 1;
   }
 } finally {
-  server.kill();
+  stopPreview(server);
 }
 process.exit(exitCode);

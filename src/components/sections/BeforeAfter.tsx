@@ -113,8 +113,7 @@ export function BeforeAfter() {
             />
           </div>
           <p className="mx-auto mt-4 max-w-[min(48rem,82vh)] text-center text-xs leading-relaxed text-muted-foreground">
-            An illustration of a change in eating, photographed for this website. It is not a client
-            photograph and does not show anyone&apos;s results.
+            {t("beforeAfter.illustrationNote")}
           </p>
         </div>
 

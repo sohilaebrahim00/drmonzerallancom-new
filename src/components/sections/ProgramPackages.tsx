@@ -98,7 +98,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                     {pkg.popular && (
                       <span className="absolute -top-3 start-6 inline-flex items-center gap-1 rounded-full bg-turquoise px-3 py-1 text-xs font-bold uppercase tracking-wide text-navy shadow-md">
                         <Sparkles className="h-3 w-3" />
-                        Most Popular
+                        {t("packages.mostPopular")}
                       </span>
                     )}
 
@@ -131,7 +131,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                           meaning rather than relying on the element. */}
                       {pkg.previousPrice !== undefined && (
                         <span className="flex items-baseline gap-2">
-                          <span className="sr-only">Previous price:</span>
+                          <span className="sr-only">{t("packages.previousPrice")}</span>
                           <s
                             className={cn(
                               "font-display text-xl font-semibold",
@@ -140,7 +140,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                           >
                             ${pkg.previousPrice}
                           </s>
-                          <span className="sr-only">Current price:</span>
+                          <span className="sr-only">{t("packages.currentPrice")}</span>
                         </span>
                       )}
                       <span
@@ -157,7 +157,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                           pkg.popular ? "text-white/60" : "text-muted-foreground",
                         )}
                       >
-                        one-time
+                        {t("packages.oneTime")}
                       </span>
                     </div>
 
@@ -167,7 +167,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
                         pkg.popular ? "bg-white/15 text-white" : "bg-secondary text-primary",
                       )}
                     >
-                      {pkg.consultationCount} Consultations
+                      {t("packages.consultationCount", { count: pkg.consultationCount })}
                     </span>
 
                     <ul className="mt-6 flex-1 space-y-2.5">
@@ -200,7 +200,7 @@ export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean
 
         <div className="mt-10">
           <p className="mx-auto max-w-3xl rounded-xl border border-border/70 bg-secondary/40 p-4 text-center text-xs leading-relaxed text-muted-foreground">
-            {programPackageDisclaimer}
+            {t("packages.legalNote")}
           </p>
         </div>
       </div>
@@ -220,6 +220,7 @@ function PurchaseDialog({
   pkg: ProgramPackage | null;
   onOpenChange: (open: boolean) => void;
 }) {
+  const t = useTranslate();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkoutUnavailable, setCheckoutUnavailable] = useState(false);
@@ -274,7 +275,12 @@ function PurchaseDialog({
         <DialogHeader>
           <DialogTitle>{pkg?.name}</DialogTitle>
           <DialogDescription>
-            {pkg?.priceLabel} one-time · {pkg?.consultationCount} consultations
+            {t("packages.dialogSummary", {
+              price: pkg?.priceLabel ?? "",
+              consultations: t("packages.consultationCount", {
+                count: pkg?.consultationCount ?? 0,
+              }),
+            })}
           </DialogDescription>
         </DialogHeader>
 

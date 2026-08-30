@@ -25,7 +25,10 @@ import type { TranslateFn } from "./translate";
  *   - Mixed values keep the number and translate the words, so
  *     "3,125 IU (label)" keeps "3,125 IU" and translates only the marker.
  *
- *   - product.strength is left whole: every one of its values is a dose.
+ *   - product.strength is left whole WHERE it is purely a dose. One value is
+ *     not — "1500 mg Glucosamine / 1200 mg Chondroitin" names two compounds —
+ *     so it goes through STRENGTH_LABELS under the same rule as the spec
+ *     values: figures kept, words translated.
  *
  * The same split is recorded in productLabels.ts for names, and it is flagged
  * for review rather than decided permanently here.
@@ -37,6 +40,11 @@ export const QUANTITY_LABELS: Record<string, SimpleTranslationKey> = {
   "120 Capsules": "product.qty.capsules120",
   "120 Tablets": "product.qty.tablets120",
   "1 Piece": "product.qty.piece1",
+};
+
+/** Strength values that contain English words. See the header comment. */
+export const STRENGTH_LABELS: Record<string, SimpleTranslationKey> = {
+  "1500 mg Glucosamine / 1200 mg Chondroitin": "product.strength.glucosamineChondroitin",
 };
 
 export const PRICE_LABELS: Record<string, SimpleTranslationKey> = {
@@ -122,6 +130,7 @@ export const SPEC_VALUE_LABELS: Record<string, SimpleTranslationKey> = {
   "Whole Food Formula": "specValue.wholeFoodFormula",
   "Wi-Fi Sync": "specValue.wifiSync",
   "~240 mg per label": "specValue.mg240PerLabel",
+  "1500 mg Glucosamine / 1200 mg Chondroitin": "product.strength.glucosamineChondroitin",
 };
 
 /**
@@ -269,5 +278,7 @@ export function specValueText(value: string, t: TranslateFn): string {
 export function productMeta(p: Product, t: TranslateFn): string {
   const qtyKey = p.quantity ? QUANTITY_LABELS[p.quantity] : undefined;
   const qty = p.quantity ? (qtyKey ? t(qtyKey) : p.quantity) : "";
-  return [p.strength, qty].filter(Boolean).join(" · ");
+  const strengthKey = p.strength ? STRENGTH_LABELS[p.strength] : undefined;
+  const strength = p.strength ? (strengthKey ? t(strengthKey) : p.strength) : "";
+  return [strength, qty].filter(Boolean).join(" · ");
 }

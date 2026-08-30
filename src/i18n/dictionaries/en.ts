@@ -26,6 +26,10 @@ export const en = {
     other: "{count} questions found",
   },
   // src/pages/ProductsIndexPage.tsx:84
+  "packages.consultationCount": {
+    one: "{count} Consultation",
+    other: "{count} Consultations",
+  },
   "products.resultCount": {
     one: "{count} product found",
     other: "{count} products found",
@@ -794,6 +798,170 @@ export const en = {
   // --- compare slider labels ----------------------------------------
   "beforeAfter.before": "Before",
   "beforeAfter.after": "After",
+  // --- how the programs work — six steps -----------------------------
+  "howItWorks.step1.title": "Choose Your Program",
+  "howItWorks.step1.desc":
+    "Pick a Treatment program, and a tier based on how many consultations you need.",
+  "howItWorks.step2.title": "Complete Secure Payment",
+  "howItWorks.step2.desc":
+    "A one-time payment, handled securely by Stripe — your card details never touch our servers.",
+  "howItWorks.step3.title": "Activate Your Account",
+  "howItWorks.step3.desc":
+    "Once payment is confirmed, your account activates and you set your password.",
+  "howItWorks.step4.title": "Access Your Consultation Credits",
+  "howItWorks.step4.desc":
+    "Your program's consultation credits are ready as soon as your account is active.",
+  "howItWorks.step5.title": "Request an Online Consultation",
+  "howItWorks.step5.desc":
+    "Use a credit to request a session directly from your dashboard, whenever you need it.",
+  "howItWorks.step6.title": "Meet Through Google Meet",
+  "howItWorks.step6.desc": "Approved consultations happen over a secure Google Meet link.",
+  // --- member experience preview (illustrative, signed-out only) -----
+  "cta.explorePrograms": "Explore Programs",
+  "memberPreview.eyebrow": "Member Experience",
+  "memberPreview.title": "Your Program, All in One Place",
+  "memberPreview.description":
+    "Once you start a program, your dashboard keeps your consultation credits and upcoming sessions organized in a single, simple view.",
+  "memberPreview.illustrative": "Illustrative Preview — Not Real Account Data",
+  "memberPreview.samplePlan": "Treatment Plus Program",
+  "memberPreview.credits": "Consultation Credits",
+  "memberPreview.creditsSample": "2 of 3 Remaining",
+  "memberPreview.next": "Next Consultation",
+  "memberPreview.nextSample": "Request Anytime",
+  "memberPreview.card1.title": "Your Program",
+  "memberPreview.card1.detail": "Program type and consultation credits at a glance",
+  "memberPreview.card2.title": "Consultation Credits",
+  "memberPreview.card2.detail": "See how many credits you have left to use",
+  "memberPreview.card3.title": "Upcoming Consultation",
+  "memberPreview.card3.detail": "Your next confirmed Google Meet session",
+  "memberPreview.card4.title": "Request Consultation",
+  "memberPreview.card4.detail": "Use a credit to request a new session anytime",
+  "memberPreview.card5.title": "Educational Resources",
+  "memberPreview.card5.detail": "Articles and videos picked for your goals",
+  // --- contact section and page -------------------------------------
+  "contact.phoneLabel": "Phone",
+  "contact.emailLabel": "Email",
+  "contact.beingFinalized":
+    "Direct contact details are being finalized. In the meantime, use the form or WhatsApp to reach us.",
+  "contact.followUs": "Follow us",
+  "contact.online": "Online consultations available worldwide",
+  "contact.inPerson": "In-person location details are shared upon booking confirmation.",
+  "contact.sentTitle": "Message sent",
+  "contact.sentBody":
+    "Thanks for reaching out — we've received your message and will get back to you soon.",
+  "contact.errorTitle": "Something went wrong",
+  "contact.errorBody": "{message} Nothing you entered has been sent — please try again.",
+  "contact.emailReadyTitle": "Message ready to send",
+  "contact.emailReadyBody":
+    "Your email app should have opened with your message pre-filled. Hit send there, and we'll get back to you soon.",
+  "contact.whatsappTitle": "Opening WhatsApp",
+  "contact.whatsappBody":
+    "We've opened WhatsApp with your message pre-filled — send it there and we'll reply as soon as we can.",
+  "contact.unavailableTitle": "Online submission isn't connected yet",
+  "contact.backToForm": "Back to form",
+  "contact.fieldName": "Full name",
+  "contact.fieldPhone": "Phone",
+  "contact.fieldEmail": "Email",
+  "contact.fieldMethod": "Preferred contact method",
+  "contact.fieldSubject": "Subject (optional)",
+  "contact.fieldMessage": "Message",
+  "contact.namePlaceholder": "Jane Doe",
+  "contact.subjectPlaceholder": "What's this about?",
+  "contact.messagePlaceholder": "Tell us about your goals…",
+  "contact.privacyNote":
+    "Please avoid sharing detailed medical history here — a nutrition specialist will follow up to discuss specifics privately.",
+  "contact.send": "Send Message",
+  "contact.methodWhatsapp": "WhatsApp",
+  "contact.methodEmail": "Email",
+  "contact.methodEither": "Either",
+  "contactPage.heading": "Get in Touch",
+  // --- product page furniture ---------------------------------------
+  "product.outOfStock": "Out of Stock",
+  "product.currentlyOutOfStock": "Currently Out of Stock",
+  "product.askAvailability": "Ask About Availability",
+  "product.askAvailabilityAria": "Ask about availability for {name}",
+  "product.viewDetails": "View Details",
+  "product.related": "Related Products",
+  "product.packagingNote":
+    "Real product packaging supplied by {name}. Additional gallery angles will appear here once provided.",
+  "product.disclaimer":
+    "Product information is provided for general informational purposes only. Dietary supplements are not intended to diagnose, treat, cure, or prevent any disease. Consult a qualified healthcare professional before using a supplement, especially if you are pregnant, nursing, taking medication, managing a medical condition, or considering use for a child. Use health-monitoring devices according to their official instructions and seek professional medical advice when needed.",
+  "productsPage.questionsTitle": "Have Questions About Any Product?",
+  "productsPage.questionsBody":
+    "Book a consultation with Dr. Monzer Allan to talk through what fits your routine, or reach out about a specific product directly.",
+  "productsPreview.viewAll": "View All Products",
+  "productsPreview.disclaimer":
+    "Products shown here are wellness-support items and are not intended to diagnose, treat, cure, or prevent any disease.",
+  "cta.bookConsultation": "Book a Consultation",
+  "product.strength.glucosamineChondroitin": "1500 mg Glucosamine / 1200 mg Chondroitin",
+  // --- packages, gallery, blog index and contact page ---------------
+  "packages.mostPopular": "Most Popular",
+  "packages.previousPrice": "Previous price:",
+  "packages.currentPrice": "Current price:",
+  "packages.oneTime": "one-time",
+  "packages.dialogSummary": "{price} one-time · {consultations}",
+  "packagesPage.creditsBody":
+    "Each program includes a fixed number of consultation credits, granted once at purchase. Request a consultation from your account, and one credit is used per confirmed session.",
+  "packagesPage.meetBody":
+    "Approved consultations are conducted online over Google Meet. Once confirmed, your meeting link appears with the appointment in your account.",
+  "packagesPage.noBillingTitle": "No Recurring Billing",
+  "packagesPage.noBillingBody":
+    "Every program is a single, one-time payment. There is nothing to cancel and nothing that renews automatically.",
+  "packagesPage.faqTitle": "Program Questions",
+  "packagesPage.viewAllFaqs": "View All FAQs",
+  "packagesPage.notSureTitle": "Not Sure Which Program Fits?",
+  "packagesPage.notSureBody":
+    "Choose your program above, or reach out and we'll help you pick the right one.",
+  "packages.legalNote":
+    "Program credits do not expire on a monthly cycle like membership credits, but are tied to your account and are non-transferable. Treatment programs are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Treatment programs include a maximum of 4 consultations.",
+  "cta.contactUs": "Contact Us",
+  "gallery.videoStoriesComingTitle": "Video Stories Coming Soon",
+  "gallery.videoStoriesComingBody":
+    "Featured video stories from the real channel will appear here.",
+  "gallery.comingSoon": "Coming Soon",
+  "gallery.watchOnYouTube": "Watch on YouTube",
+  "gallery.watchMore": "Watch More in the Gallery",
+  "gallery.description":
+    "Photography and video from consultations, education, and community life. Every image and video here is real — before-and-after content is only ever published with a client's explicit consent.",
+  "gallery.storiesEyebrow": "Visual Stories",
+  "gallery.storiesTitle": "Photography From the Practice",
+  "gallery.storiesDescription":
+    "We're preparing approved photography for each of these categories. Nothing shown here is a placeholder photo — real images will appear once available.",
+  "blogPage.eyebrow": "Blog",
+  "blogPage.topicExplorer": "Topic Explorer",
+  "blogPage.latestArticles": "Latest Articles",
+  "contactPage.subheading": "Let's Talk",
+  // --- last four -----------------------------------------------------
+  "productsPage.eyebrow": "Products",
+  "cta.requestConsultation": "Request Consultation",
+  // --- home page sections -------------------------------------------
+  "hero.eyebrowNutrition": "Nutrition",
+  "hero.eyebrowHealth": "Health",
+  "hero.eyebrowWellness": "Wellness",
+  "hero.titleLead": "Healthier Choices Start With",
+  "hero.titleAccent": "Better Knowledge.",
+  "hero.lede":
+    "Personalized nutrition programs and one-to-one online consultations from {name}, {title} — grounded in clinical expertise, delivered with real accountability.",
+  "hero.secureVideo": "Secure Video Consultations",
+  "hero.viewPackages": "View Packages",
+  "hero.instagram": "Follow along on Instagram",
+  "aboutPreview.eyebrow": "About Monzer",
+  "aboutPreview.title": "Nutrition Guidance Rooted In Real Clinical Expertise",
+  "aboutPreview.discover": "Discover My Story",
+  "aboutPreview.figcaption":
+    "Nutrition first, with a pharmacist's understanding of medicine behind it.",
+  "aboutPreview.approachEyebrow": "The Approach",
+  "aboutPreview.approachTitle": "Built around your life, not a template",
+  "educationPreview.readBlog": "Read the Blog",
+  "galleryTeaser.view": "View the Gallery",
+  "programCta.title": "Ready to Start Your Personalized Nutrition Journey?",
+  "programCta.body":
+    "Choose a one-time Treatment program and get access to consultation credits and ongoing guidance from {name} — no recurring billing.",
+  "beforeAfter.illustrationNote":
+    "An illustration of a change in eating, photographed for this website. It is not a client photograph and does not show anyone's results.",
+  // --- social community ---------------------------------------------
+  "community.description":
+    "Follow {name} for daily nutrition tips, behind-the-scenes updates, and educational content.",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",

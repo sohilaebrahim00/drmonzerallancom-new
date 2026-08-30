@@ -8,7 +8,10 @@ import { CredentialChip } from "@/components/common/CredentialChip";
 import { bio, credentials } from "@/data/about";
 import { cn } from "@/lib/utils";
 
+import { useTranslate } from "@/i18n";
+
 export function AboutPreview() {
+  const t = useTranslate();
   return (
     <section id="about" className="relative py-20 sm:py-28" aria-labelledby="about-preview-heading">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
@@ -39,17 +42,17 @@ export function AboutPreview() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              About Monzer
+              {t("aboutPreview.eyebrow")}
             </p>
             <h2
               dir="auto"
               id="about-preview-heading"
               className="max-w-xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-navy sm:text-4xl"
             >
-              Nutrition Guidance Rooted In Real Clinical Expertise
+              {t("aboutPreview.title")}
             </h2>
             <p dir="auto" className="max-w-xl text-base leading-relaxed text-muted-foreground">
-              {bio.paragraphs[0]}
+              {t("aboutPage.bio1")}
             </p>
             <div className="flex flex-wrap gap-3">
               {credentials.map((credential) => (
@@ -61,7 +64,7 @@ export function AboutPreview() {
                 to="/about"
                 className="group inline-flex w-fit cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-1 hover:border-turquoise/50"
               >
-                Discover My Story
+                {t("aboutPreview.discover")}
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
               </Link>
             </div>
@@ -122,7 +125,7 @@ export function AboutPreview() {
                   dir="auto"
                   className="mx-auto mt-3 max-w-[560px] text-center text-xs text-muted-foreground"
                 >
-                  Nutrition first, with a pharmacist&apos;s understanding of medicine behind it.
+                  {t("aboutPreview.figcaption")}
                 </figcaption>
               </figure>
             </Reveal>
@@ -137,16 +140,16 @@ export function AboutPreview() {
                 dir="auto"
                 className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
               >
-                The Approach
+                {t("aboutPreview.approachEyebrow")}
               </p>
               <h3
                 dir="auto"
                 className="max-w-xl font-display text-2xl font-bold leading-tight tracking-tight text-navy sm:text-3xl"
               >
-                Built around your life, not a template
+                {t("aboutPreview.approachTitle")}
               </h3>
               <p dir="auto" className="max-w-xl text-base leading-relaxed text-muted-foreground">
-                {bio.paragraphs[1]}
+                {t("aboutPage.bio2")}
               </p>
             </Reveal>
           </div>

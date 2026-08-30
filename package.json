@@ -25,7 +25,8 @@
     "cap:android": "npm run build && npx cap sync android && npx cap open android",
     "cap:ios": "npm run cap:sync:ios && npx cap open ios",
     "cap:assets": "npx capacitor-assets generate",
-    "i18n:audit": "node scripts/i18n-audit.mjs"
+    "i18n:audit": "node scripts/i18n-audit.mjs",
+    "gate": "npm run typecheck && npm run lint && npm run build:web && npm run build:app && npm run i18n:audit"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

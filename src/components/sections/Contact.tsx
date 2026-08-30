@@ -34,7 +34,7 @@ import { business, tel } from "@/data/business";
 import { whatsappLink } from "@/config/contact";
 import { submitContact, type ContactSubmitResult } from "@/services/contactService";
 import { cn } from "@/lib/utils";
-import { useTranslate } from "@/i18n";
+import { useTranslate, type SimpleTranslationKey } from "@/i18n";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your full name."),
@@ -56,10 +56,10 @@ const contactSchema = z.object({
 
 type ContactValues = z.infer<typeof contactSchema>;
 
-const CONTACT_METHODS = [
-  { value: "whatsapp", label: "WhatsApp" },
-  { value: "email", label: "Email" },
-  { value: "either", label: "Either" },
+const CONTACT_METHODS: { value: string; labelKey: SimpleTranslationKey }[] = [
+  { value: "whatsapp", labelKey: "contact.methodWhatsapp" },
+  { value: "email", labelKey: "contact.methodEmail" },
+  { value: "either", labelKey: "contact.methodEither" },
 ] as const;
 
 export function Contact() {
@@ -118,7 +118,7 @@ export function Contact() {
                       </span>
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          Phone
+                          {t("contact.phoneLabel")}
                         </p>
                         <a
                           href={tel(business.phone)}
@@ -136,7 +136,7 @@ export function Contact() {
                       </span>
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          Email
+                          {t("contact.emailLabel")}
                         </p>
                         <a
                           href={`mailto:${business.email}`}
@@ -182,8 +182,7 @@ export function Contact() {
                 </ul>
               ) : (
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  Direct contact details are being finalized. In the meantime, use the form or
-                  WhatsApp to reach us.
+                  {t("contact.beingFinalized")}
                 </p>
               )}
 
@@ -202,7 +201,7 @@ export function Contact() {
               </div>
               <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-4">
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Follow us
+                  {t("contact.followUs")}
                 </span>
                 <SocialLinks iconClassName="h-8 w-8" />
               </div>
@@ -224,12 +223,8 @@ export function Contact() {
               ) : (
                 <div className="flex h-64 flex-col items-center justify-center gap-2 bg-secondary/50 p-6 text-center">
                   <MapPin className="h-6 w-6 text-primary" />
-                  <p className="text-sm font-semibold text-navy">
-                    Online consultations available worldwide
-                  </p>
-                  <p className="max-w-xs text-xs text-muted-foreground">
-                    In-person location details are shared upon booking confirmation.
-                  </p>
+                  <p className="text-sm font-semibold text-navy">{t("contact.online")}</p>
+                  <p className="max-w-xs text-xs text-muted-foreground">{t("contact.inPerson")}</p>
                 </div>
               )}
             </div>
@@ -265,49 +260,60 @@ export function Contact() {
                     </motion.div>
                     {result.channel === "submitted" && (
                       <>
-                        <h3 className="font-display text-lg font-bold text-navy">Message sent</h3>
-                        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                          Thanks for reaching out — we've received your message and will get back to
-                          you soon.
+                        <h3 dir="auto" className="font-display text-lg font-bold text-navy">
+                          {t("contact.sentTitle")}
+                        </h3>
+                        <p
+                          dir="auto"
+                          className="max-w-sm text-sm leading-relaxed text-muted-foreground"
+                        >
+                          {t("contact.sentBody")}
                         </p>
                       </>
                     )}
                     {result.channel === "error" && (
                       <>
                         <h3 className="font-display text-lg font-bold text-navy">
-                          Something went wrong
+                          {t("contact.errorTitle")}
                         </h3>
-                        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                          {result.message} Nothing you entered has been sent — please try again.
+                        <p
+                          dir="auto"
+                          className="max-w-sm text-sm leading-relaxed text-muted-foreground"
+                        >
+                          {t("contact.errorBody", { message: result.message })}
                         </p>
                       </>
                     )}
                     {result.channel === "email" && (
                       <>
                         <h3 className="font-display text-lg font-bold text-navy">
-                          Message ready to send
+                          {t("contact.emailReadyTitle")}
                         </h3>
-                        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                          Your email app should have opened with your message pre-filled. Hit send
-                          there, and we'll get back to you soon.
+                        <p
+                          dir="auto"
+                          className="max-w-sm text-sm leading-relaxed text-muted-foreground"
+                        >
+                          {t("contact.emailReadyBody")}
                         </p>
                       </>
                     )}
                     {result.channel === "whatsapp" && (
                       <>
                         <h3 className="font-display text-lg font-bold text-navy">
-                          Opening WhatsApp
+                          {t("contact.whatsappTitle")}
                         </h3>
-                        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                          We've opened WhatsApp with your message pre-filled — send it there and
-                          we'll reply as soon as we can.
+                        <p
+                          dir="auto"
+                          className="max-w-sm text-sm leading-relaxed text-muted-foreground"
+                        >
+                          {t("contact.whatsappBody")}
                         </p>
                       </>
                     )}
                     {result.channel === "unavailable" && (
                       <>
                         <h3 className="font-display text-lg font-bold text-navy">
-                          Online submission isn't connected yet
+                          {t("contact.unavailableTitle")}
                         </h3>
                         <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
                           We haven't finished wiring up this form. Please reach out via{" "}
@@ -322,7 +328,7 @@ export function Contact() {
                       className="cursor-pointer"
                       onClick={() => setResult(null)}
                     >
-                      Back to form
+                      {t("contact.backToForm")}
                     </Button>
                   </motion.div>
                 ) : (
@@ -340,9 +346,13 @@ export function Contact() {
                             name="name"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Full name</FormLabel>
+                                <FormLabel>{t("contact.fieldName")}</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Jane Doe" autoComplete="name" {...field} />
+                                  <Input
+                                    placeholder={t("contact.namePlaceholder")}
+                                    autoComplete="name"
+                                    {...field}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -353,7 +363,7 @@ export function Contact() {
                             name="phone"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Phone</FormLabel>
+                                <FormLabel>{t("contact.fieldPhone")}</FormLabel>
                                 <FormControl>
                                   <Input
                                     placeholder="+1 555 123 4567"
@@ -371,7 +381,7 @@ export function Contact() {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Email</FormLabel>
+                              <FormLabel>{t("contact.fieldEmail")}</FormLabel>
                               <FormControl>
                                 <Input
                                   type="email"
@@ -389,7 +399,7 @@ export function Contact() {
                           name="preferredContactMethod"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Preferred contact method</FormLabel>
+                              <FormLabel>{t("contact.fieldMethod")}</FormLabel>
                               <div className="grid grid-cols-3 gap-2">
                                 {CONTACT_METHODS.map((method) => (
                                   <button
@@ -403,7 +413,7 @@ export function Contact() {
                                         : "border-border text-navy/70 hover:border-turquoise",
                                     )}
                                   >
-                                    {method.label}
+                                    {t(method.labelKey)}
                                   </button>
                                 ))}
                               </div>
@@ -416,9 +426,9 @@ export function Contact() {
                           name="subject"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Subject (optional)</FormLabel>
+                              <FormLabel>{t("contact.fieldSubject")}</FormLabel>
                               <FormControl>
-                                <Input placeholder="What's this about?" {...field} />
+                                <Input placeholder={t("contact.subjectPlaceholder")} {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -429,17 +439,16 @@ export function Contact() {
                           name="message"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Message</FormLabel>
+                              <FormLabel>{t("contact.fieldMessage")}</FormLabel>
                               <FormControl>
                                 <Textarea
                                   rows={5}
-                                  placeholder="Tell us about your goals…"
+                                  placeholder={t("contact.messagePlaceholder")}
                                   {...field}
                                 />
                               </FormControl>
                               <p className="text-xs text-muted-foreground">
-                                Please avoid sharing detailed medical history here — a nutrition
-                                specialist will follow up to discuss specifics privately.
+                                {t("contact.privacyNote")}
                               </p>
                               <FormMessage />
                             </FormItem>
@@ -470,7 +479,7 @@ export function Contact() {
                             </>
                           ) : (
                             <>
-                              <Send className="h-4 w-4" /> Send Message
+                              <Send className="h-4 w-4" /> {t("contact.send")}
                             </>
                           )}
                         </Button>

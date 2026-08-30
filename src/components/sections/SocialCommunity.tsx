@@ -11,7 +11,7 @@ export function SocialCommunity() {
         <SectionHeading
           eyebrow={t("community.eyebrow")}
           title={t("community.title")}
-          description={`Follow ${business.doctorName} for daily nutrition tips, behind-the-scenes updates, and educational content.`}
+          description={t("community.description", { name: business.doctorName })}
         />
         <div className="mt-8 flex justify-center">
           <SocialLinks iconClassName="h-12 w-12" />

@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/i18n";
 
 export function SoldOutBadge({ className }: { className?: string }) {
+  const t = useTranslate();
   return (
     <span
       className={cn(
@@ -8,7 +10,7 @@ export function SoldOutBadge({ className }: { className?: string }) {
         className,
       )}
     >
-      Out of Stock
+      {t("product.outOfStock")}
     </span>
   );
 }

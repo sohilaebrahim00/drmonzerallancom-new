@@ -80,6 +80,14 @@ import type { TranslationKey } from "./en";
 export const ar: Partial<Record<TranslationKey, Entry>> = {
   // Six forms, because Arabic has six. `two` is a real dual noun
   // ("سؤالين"), not the plural with a 2 in front of it.
+  "packages.consultationCount": {
+    zero: "بدون استشارات",
+    one: "استشارة واحدة",
+    two: "استشارتان",
+    few: "{count} استشارات",
+    many: "{count} استشارة",
+    other: "{count} استشارة",
+  },
   "faq.resultCount": {
     zero: "لم يتم العثور على أسئلة",
     one: "تم العثور على سؤال واحد",
@@ -839,6 +847,164 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   // --- compare slider labels ----------------------------------------
   "beforeAfter.before": "قبل",
   "beforeAfter.after": "بعد",
+  // --- how the programs work — six steps -----------------------------
+  "howItWorks.step1.title": "اختر برنامجك",
+  "howItWorks.step1.desc": "اختر برنامج علاج، ثم فئة بحسب عدد الاستشارات التي تحتاجها.",
+  "howItWorks.step2.title": "أتمم الدفع الآمن",
+  "howItWorks.step2.desc":
+    "دفعة واحدة، تُعالَج بأمان عبر Stripe — بيانات بطاقتك لا تمر بخوادمنا إطلاقًا.",
+  "howItWorks.step3.title": "فعّل حسابك",
+  "howItWorks.step3.desc": "بمجرد تأكيد الدفع، يُفعَّل حسابك وتضع كلمة المرور الخاصة بك.",
+  "howItWorks.step4.title": "استخدم رصيد استشاراتك",
+  "howItWorks.step4.desc": "يصبح رصيد استشارات برنامجك جاهزًا فور تفعيل حسابك.",
+  "howItWorks.step5.title": "اطلب استشارة عبر الإنترنت",
+  "howItWorks.step5.desc":
+    "استخدم رصيدًا لطلب جلسة مباشرةً من لوحة حسابك، في أي وقت تحتاج فيه إلى ذلك.",
+  "howItWorks.step6.title": "قابِل الطبيب عبر Google Meet",
+  "howItWorks.step6.desc": "تجري الاستشارات المعتمدة عبر رابط Google Meet آمن.",
+  // --- member experience preview (illustrative, signed-out only) -----
+  "cta.explorePrograms": "تصفّح البرامج",
+  "memberPreview.eyebrow": "تجربة العضوية",
+  "memberPreview.title": "برنامجك كله في مكان واحد",
+  "memberPreview.description":
+    "بمجرد أن تبدأ برنامجًا، تحفظ لوحة حسابك رصيد استشاراتك وجلساتك القادمة منظّمةً في عرض واحد بسيط.",
+  "memberPreview.illustrative": "عرض توضيحي — ليست بيانات حساب حقيقية",
+  "memberPreview.samplePlan": "برنامج العلاج بلَس",
+  "memberPreview.credits": "رصيد الاستشارات",
+  "memberPreview.creditsSample": "2 من 3 متبقية",
+  "memberPreview.next": "الاستشارة القادمة",
+  "memberPreview.nextSample": "اطلبها في أي وقت",
+  "memberPreview.card1.title": "برنامجك",
+  "memberPreview.card1.detail": "نوع البرنامج ورصيد الاستشارات في لمحة",
+  "memberPreview.card2.title": "رصيد الاستشارات",
+  "memberPreview.card2.detail": "اطّلع على عدد الاستشارات المتبقية لديك",
+  "memberPreview.card3.title": "الاستشارة القادمة",
+  "memberPreview.card3.detail": "جلستك المؤكَّدة القادمة عبر Google Meet",
+  "memberPreview.card4.title": "طلب استشارة",
+  "memberPreview.card4.detail": "استخدم رصيدًا لطلب جلسة جديدة في أي وقت",
+  "memberPreview.card5.title": "مصادر تثقيفية",
+  "memberPreview.card5.detail": "مقالات ومقاطع فيديو مختارة بحسب أهدافك",
+  // --- contact section and page -------------------------------------
+  "contact.phoneLabel": "الهاتف",
+  "contact.emailLabel": "البريد الإلكتروني",
+  "contact.beingFinalized":
+    "يجري استكمال بيانات التواصل المباشر. في هذه الأثناء، استخدم النموذج أو واتساب للوصول إلينا.",
+  "contact.followUs": "تابعنا",
+  "contact.online": "استشارات عبر الإنترنت متاحة في جميع أنحاء العالم",
+  "contact.inPerson": "تُشارَك تفاصيل الموقع للزيارات الحضورية عند تأكيد الحجز.",
+  "contact.sentTitle": "تم إرسال الرسالة",
+  "contact.sentBody": "شكرًا لتواصلك — وصلتنا رسالتك وسنعود إليك قريبًا.",
+  "contact.errorTitle": "حدث خطأ ما",
+  "contact.errorBody": "{message} لم يُرسَل أي شيء مما أدخلته — يرجى المحاولة مرة أخرى.",
+  "contact.emailReadyTitle": "الرسالة جاهزة للإرسال",
+  "contact.emailReadyBody":
+    "من المفترض أن يكون تطبيق البريد لديك قد فُتح ورسالتك معبّأة مسبقًا. أرسلها من هناك وسنعود إليك قريبًا.",
+  "contact.whatsappTitle": "جارٍ فتح واتساب",
+  "contact.whatsappBody":
+    "فتحنا واتساب ورسالتك معبّأة مسبقًا — أرسلها من هناك وسنرد في أقرب وقت ممكن.",
+  "contact.unavailableTitle": "الإرسال عبر الإنترنت غير مفعّل بعد",
+  "contact.backToForm": "العودة إلى النموذج",
+  "contact.fieldName": "الاسم الكامل",
+  "contact.fieldPhone": "رقم الهاتف",
+  "contact.fieldEmail": "البريد الإلكتروني",
+  "contact.fieldMethod": "طريقة التواصل المفضّلة",
+  "contact.fieldSubject": "الموضوع (اختياري)",
+  "contact.fieldMessage": "الرسالة",
+  "contact.namePlaceholder": "مثال: أحمد محمد",
+  "contact.subjectPlaceholder": "ما موضوع رسالتك؟",
+  "contact.messagePlaceholder": "أخبرنا عن أهدافك…",
+  "contact.privacyNote":
+    "يرجى تجنّب مشاركة تفاصيل تاريخك الطبي هنا — سيتواصل معك أخصائي تغذية لمناقشة التفاصيل بشكل خاص.",
+  "contact.send": "إرسال الرسالة",
+  "contact.methodWhatsapp": "واتساب",
+  "contact.methodEmail": "البريد الإلكتروني",
+  "contact.methodEither": "أيّهما",
+  "contactPage.heading": "تواصل معنا",
+  // --- product page furniture ---------------------------------------
+  "product.outOfStock": "نفد المخزون",
+  "product.currentlyOutOfStock": "غير متوفّر حاليًا",
+  "product.askAvailability": "اسأل عن التوفّر",
+  "product.askAvailabilityAria": "اسأل عن توفّر {name}",
+  "product.viewDetails": "عرض التفاصيل",
+  "product.related": "منتجات ذات صلة",
+  "product.packagingNote":
+    "عبوة المنتج الحقيقية مقدَّمة من {name}. ستظهر هنا زوايا تصوير إضافية فور توفّرها.",
+  "product.disclaimer":
+    "معلومات المنتج مقدَّمة لأغراض تثقيفية عامة فقط. المكمّلات الغذائية ليست مخصصة لتشخيص أي مرض أو علاجه أو الشفاء منه أو الوقاية منه. استشر مختصًا صحيًا مؤهلًا قبل استخدام أي مكمّل، خاصةً إن كنتِ حاملًا أو مرضعة، أو كنت تتناول أدوية، أو تعاني من حالة طبية، أو تفكّر في استخدامه لطفل. استخدم أجهزة المتابعة الصحية وفق تعليماتها الرسمية، واطلب المشورة الطبية المتخصصة عند الحاجة.",
+  "productsPage.questionsTitle": "لديك أسئلة عن أي منتج؟",
+  "productsPage.questionsBody":
+    "احجز استشارة مع الدكتور منذر علان لمناقشة ما يناسب روتينك، أو تواصل معنا بشأن منتج محدد مباشرةً.",
+  "productsPreview.viewAll": "عرض جميع المنتجات",
+  "productsPreview.disclaimer":
+    "المنتجات المعروضة هنا هي مواد داعمة للعافية، وليست مخصصة لتشخيص أي مرض أو علاجه أو الشفاء منه أو الوقاية منه.",
+  "cta.bookConsultation": "احجز استشارة",
+  "product.strength.glucosamineChondroitin": "1500 mg جلوكوزامين / 1200 mg كوندرويتين",
+  // --- packages, gallery, blog index and contact page ---------------
+  "packages.mostPopular": "الأكثر اختيارًا",
+  "packages.previousPrice": "السعر السابق:",
+  "packages.currentPrice": "السعر الحالي:",
+  "packages.oneTime": "دفعة واحدة",
+  "packages.dialogSummary": "{price} دفعة واحدة · {consultations}",
+  "packagesPage.creditsBody":
+    "يتضمّن كل برنامج عددًا ثابتًا من الاستشارات، يُمنح مرة واحدة عند الشراء. اطلب استشارة من حسابك، ويُخصم رصيد واحد عن كل جلسة مؤكَّدة.",
+  "packagesPage.meetBody":
+    "تجري الاستشارات المعتمدة عبر الإنترنت من خلال Google Meet. وبمجرد التأكيد، يظهر رابط الاجتماع مع الموعد في حسابك.",
+  "packagesPage.noBillingTitle": "لا فوترة متكرّرة",
+  "packagesPage.noBillingBody":
+    "كل برنامج هو دفعة واحدة فقط. لا يوجد ما يُلغى ولا ما يتجدّد تلقائيًا.",
+  "packagesPage.faqTitle": "أسئلة حول البرامج",
+  "packagesPage.viewAllFaqs": "عرض جميع الأسئلة الشائعة",
+  "packagesPage.notSureTitle": "لست متأكدًا أي برنامج يناسبك؟",
+  "packagesPage.notSureBody":
+    "اختر برنامجك من الأعلى، أو تواصل معنا وسنساعدك في اختيار البرنامج المناسب.",
+  "packages.legalNote":
+    "لا ينتهي رصيد البرنامج على أساس دورة شهرية كما هو الحال مع رصيد العضوية، لكنه مرتبط بحسابك وغير قابل للتحويل. برامج العلاج ذات طابع تثقيفي وداعم، وليست بديلًا عن رعاية الطوارئ أو التشخيص الطبي أو العلاج من طبيب مرخَّص. تتضمّن برامج العلاج 4 استشارات كحد أقصى.",
+  "cta.contactUs": "تواصل معنا",
+  "gallery.videoStoriesComingTitle": "قصص مصوّرة بالفيديو قريبًا",
+  "gallery.videoStoriesComingBody": "ستظهر هنا قصص الفيديو المختارة من القناة الحقيقية.",
+  "gallery.comingSoon": "قريبًا",
+  "gallery.watchOnYouTube": "شاهد على يوتيوب",
+  "gallery.watchMore": "شاهد المزيد في المعرض",
+  "gallery.description":
+    "صور ومقاطع فيديو من الاستشارات والتثقيف والحياة المجتمعية. كل صورة وكل مقطع هنا حقيقي — ولا يُنشر أي محتوى قبل وبعد إلا بموافقة صريحة من العميل.",
+  "gallery.storiesEyebrow": "قصص مصوّرة",
+  "gallery.storiesTitle": "تصوير من داخل العيادة",
+  "gallery.storiesDescription":
+    "نعمل على تجهيز صور معتمدة لكل فئة من هذه الفئات. لا شيء معروض هنا صورة مؤقتة — ستظهر الصور الحقيقية فور توفّرها.",
+  "blogPage.eyebrow": "المدوّنة",
+  "blogPage.topicExplorer": "استكشاف المواضيع",
+  "blogPage.latestArticles": "أحدث المقالات",
+  "contactPage.subheading": "لنتحدّث",
+  // --- last four -----------------------------------------------------
+  "productsPage.eyebrow": "المنتجات",
+  "cta.requestConsultation": "اطلب استشارة",
+  // --- home page sections -------------------------------------------
+  "hero.eyebrowNutrition": "تغذية",
+  "hero.eyebrowHealth": "صحة",
+  "hero.eyebrowWellness": "عافية",
+  "hero.titleLead": "خيارات أكثر صحّة تبدأ من",
+  "hero.titleAccent": "معرفة أفضل.",
+  "hero.lede":
+    "برامج تغذية مخصصة واستشارات فردية عبر الإنترنت من {name}، {title} — مبنية على خبرة سريرية، ومقدَّمة بمتابعة حقيقية.",
+  "hero.secureVideo": "استشارات فيديو آمنة",
+  "hero.viewPackages": "تصفّح الباقات",
+  "hero.instagram": "تابعنا على إنستغرام",
+  "aboutPreview.eyebrow": "عن منذر",
+  "aboutPreview.title": "إرشاد تغذوي قائم على خبرة سريرية حقيقية",
+  "aboutPreview.discover": "اقرأ قصتي",
+  "aboutPreview.figcaption": "التغذية أولًا، مع فهم صيدلاني للدواء من خلفها.",
+  "aboutPreview.approachEyebrow": "النهج",
+  "aboutPreview.approachTitle": "مبني على حياتك، لا على قالب جاهز",
+  "educationPreview.readBlog": "اقرأ المدوّنة",
+  "galleryTeaser.view": "تصفّح المعرض",
+  "programCta.title": "مستعد لبدء رحلتك الغذائية المخصصة؟",
+  "programCta.body":
+    "اختر برنامج علاج بدفعة واحدة، واحصل على رصيد استشارات ومتابعة مستمرة من {name} — بلا فوترة متكرّرة.",
+  "beforeAfter.illustrationNote":
+    "صورة توضيحية لتغيّر في نمط الأكل، التُقطت خصيصًا لهذا الموقع. ليست صورة لأحد العملاء ولا تُظهر نتائج أي شخص.",
+  // --- social community ---------------------------------------------
+  "community.description":
+    "تابع {name} للحصول على نصائح غذائية يومية، ولقطات من كواليس العمل، ومحتوى تثقيفي.",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly": "المقالات بقلم الدكتور منذر علان ومتاحة باللغة الإنجليزية فقط.",
 };

@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { YouTubeEmbed } from "@/components/media/YouTubeEmbed";
 import { videos, youtubeChannelUrl } from "@/data/videos";
 import { cn } from "@/lib/utils";
-import { useTranslate, videoTitle, videoCaption } from "@/i18n";
+import { useTranslate, videoTitle, videoCaption, VIDEO_CATEGORY_LABELS } from "@/i18n";
 
 export function YouTubeSection() {
   const t = useTranslate();
@@ -35,7 +35,7 @@ export function YouTubeSection() {
               </div>
               <div className="flex flex-col gap-4">
                 <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-                  {activeVideo.category}
+                  {t(VIDEO_CATEGORY_LABELS[activeVideo.category])}
                 </span>
                 <h3 dir="auto" className="font-display text-xl font-bold text-navy">
                   {videoTitle(activeVideo, t)}
@@ -49,7 +49,7 @@ export function YouTubeSection() {
                   rel="noopener noreferrer"
                   className="inline-flex w-fit cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary hover:text-turquoise"
                 >
-                  Watch on YouTube <ExternalLink className="h-3.5 w-3.5" />
+                  {t("gallery.watchOnYouTube")} <ExternalLink className="h-3.5 w-3.5" />
                 </a>
 
                 {videos.length > 1 && (
@@ -116,7 +116,7 @@ export function YouTubeSection() {
         {videos.length > 0 && (
           <div className="mt-10 flex justify-center">
             <Link to="/gallery" className="text-sm font-semibold text-primary hover:text-turquoise">
-              Watch More in the Gallery
+              {t("gallery.watchMore")}
             </Link>
           </div>
         )}

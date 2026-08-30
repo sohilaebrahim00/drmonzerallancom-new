@@ -3,7 +3,10 @@ import { Sparkles, UserRound } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 
+import { useTranslate } from "@/i18n";
+
 export function ProgramCta() {
+  const t = useTranslate();
   const { user } = useAuth();
 
   return (
@@ -15,21 +18,20 @@ export function ProgramCta() {
             id="program-cta-heading"
             className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
           >
-            Ready to Start Your Personalized Nutrition Journey?
+            {t("programCta.title")}
           </h2>
           <p
             dir="auto"
             className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base"
           >
-            Choose a one-time Treatment program and get access to consultation credits and ongoing
-            guidance from {"Dr. Monzer Allan"} — no recurring billing.
+            {t("programCta.body", { name: "Dr. Monzer Allan" })}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               to="/packages"
               className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-turquoise px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
             >
-              <Sparkles className="h-4 w-4" /> Choose Your Program
+              <Sparkles className="h-4 w-4" /> {t("howItWorks.step1.title")}
             </Link>
             {user && (
               <Link

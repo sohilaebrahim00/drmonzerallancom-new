@@ -45,13 +45,13 @@ export default function ContactPage() {
       <section className="pt-6 text-center sm:pt-8">
         <div>
           <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-            Get in Touch
+            {t("contactPage.heading")}
           </p>
           <h1
             dir="auto"
             className="mx-auto mt-4 max-w-xl px-6 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl"
           >
-            Let&apos;s Talk
+            {t("contactPage.subheading")}
           </h1>
         </div>
       </section>

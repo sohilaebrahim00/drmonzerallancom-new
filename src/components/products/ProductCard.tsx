@@ -61,7 +61,7 @@ export function ProductCard({ product }: { product: Product }) {
             to={`/products/${product.slug}`}
             className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            View Details
+            {t("product.viewDetails")}
             <ArrowUpRight className="h-3.5 w-3.5 rtl:-scale-x-100" />
           </Link>
           {isSoldOut ? (
@@ -71,10 +71,10 @@ export function ProductCard({ product }: { product: Product }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border bg-secondary/60 px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                aria-label={`Ask about availability for ${productName(product, t)}`}
+                aria-label={t("product.askAvailabilityAria", { name: productName(product, t) })}
               >
                 <MessageCircle className="h-3.5 w-3.5" />
-                Ask About Availability
+                {t("product.askAvailability")}
               </a>
             ) : (
               <Link
@@ -82,7 +82,7 @@ export function ProductCard({ product }: { product: Product }) {
                 className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border bg-secondary/60 px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <MessageCircle className="h-3.5 w-3.5" />
-                Ask About Availability
+                {t("product.askAvailability")}
               </Link>
             )
           ) : inquiryHref ? (

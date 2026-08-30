@@ -279,13 +279,13 @@ export default function AboutPage() {
                 to="/packages"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-turquoise px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
               >
-                <Sparkles className="h-4 w-4" /> Explore Programs
+                <Sparkles className="h-4 w-4" /> {t("cta.explorePrograms")}
               </Link>
               <Link
                 to="/contact"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/10"
               >
-                <CalendarCheck className="h-4 w-4" /> Request Consultation
+                <CalendarCheck className="h-4 w-4" /> {t("cta.requestConsultation")}
               </Link>
             </div>
           </div>

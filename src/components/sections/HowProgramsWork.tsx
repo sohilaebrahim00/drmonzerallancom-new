@@ -2,42 +2,41 @@ import { CalendarCheck, ClipboardCheck, Lock, Sparkles, UserPlus, Video } from "
 
 import { Reveal } from "@/components/common/Reveal";
 import { Photo } from "@/components/common/Photo";
-import { useTranslate } from "@/i18n";
+import { useTranslate, type SimpleTranslationKey } from "@/i18n";
+import type { LucideIcon } from "lucide-react";
 
 const STEPS = [
   {
     icon: Sparkles,
-    title: "Choose Your Program",
-    description: "Pick a Treatment program, and a tier based on how many consultations you need.",
+    titleKey: "howItWorks.step1.title",
+    descKey: "howItWorks.step1.desc",
   },
   {
     icon: Lock,
-    title: "Complete Secure Payment",
-    description:
-      "A one-time payment, handled securely by Stripe — your card details never touch our servers.",
+    titleKey: "howItWorks.step2.title",
+    descKey: "howItWorks.step2.desc",
   },
   {
     icon: UserPlus,
-    title: "Activate Your Account",
-    description: "Once payment is confirmed, your account activates and you set your password.",
+    titleKey: "howItWorks.step3.title",
+    descKey: "howItWorks.step3.desc",
   },
   {
     icon: ClipboardCheck,
-    title: "Access Your Consultation Credits",
-    description: "Your program's consultation credits are ready as soon as your account is active.",
+    titleKey: "howItWorks.step4.title",
+    descKey: "howItWorks.step4.desc",
   },
   {
     icon: CalendarCheck,
-    title: "Request an Online Consultation",
-    description:
-      "Use a credit to request a session directly from your dashboard, whenever you need it.",
+    titleKey: "howItWorks.step5.title",
+    descKey: "howItWorks.step5.desc",
   },
   {
     icon: Video,
-    title: "Meet Through Google Meet",
-    description: "Approved consultations happen over a secure Google Meet link.",
+    titleKey: "howItWorks.step6.title",
+    descKey: "howItWorks.step6.desc",
   },
-];
+] satisfies { icon: LucideIcon; titleKey: SimpleTranslationKey; descKey: SimpleTranslationKey }[];
 
 export function HowProgramsWork() {
   const t = useTranslate();
@@ -122,7 +121,7 @@ export function HowProgramsWork() {
         <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {STEPS.map((step, index) => (
             <Reveal
-              key={step.title}
+              key={step.titleKey}
               direction="up"
               delay={index * 0.06}
               className="flex gap-4 text-start"
@@ -133,9 +132,13 @@ export function HowProgramsWork() {
               <div>
                 <div className="flex items-center gap-2">
                   <step.icon className="h-5 w-5 shrink-0 text-turquoise-light" />
-                  <h3 className="font-display text-base font-bold text-white">{step.title}</h3>
+                  <h3 dir="auto" className="font-display text-base font-bold text-white">
+                    {t(step.titleKey)}
+                  </h3>
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-white/85">{step.description}</p>
+                <p dir="auto" className="mt-2 text-sm leading-relaxed text-white/85">
+                  {t(step.descKey)}
+                </p>
               </div>
             </Reveal>
           ))}

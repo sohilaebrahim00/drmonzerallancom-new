@@ -105,21 +105,19 @@ export default function GalleryPage() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              Gallery
+              {t("gallery.eyebrow")}
             </p>
             <h1
               dir="auto"
               className="mt-4 font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl"
             >
-              A Look Inside the Practice
+              {t("gallery.title")}
             </h1>
             <p
               dir="auto"
               className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground"
             >
-              Photography and video from consultations, education, and community life. Every image
-              and video here is real — before-and-after content is only ever published with a
-              client&apos;s explicit consent.
+              {t("gallery.description")}
             </p>
           </div>
         </div>
@@ -158,10 +156,10 @@ export default function GalleryPage() {
             <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-secondary/30 px-6 py-16 text-center">
               <Youtube className="h-8 w-8 text-primary/60" />
               <p dir="auto" className="font-display text-lg font-bold text-navy">
-                Video Stories Coming Soon
+                {t("gallery.videoStoriesComingTitle")}
               </p>
               <p dir="auto" className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                Featured video stories from the real channel will appear here.
+                {t("gallery.videoStoriesComingBody")}
               </p>
               <a
                 href={youtubeChannelUrl}
@@ -204,7 +202,7 @@ export default function GalleryPage() {
                     rel="noopener noreferrer"
                     className="mt-3 inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary hover:text-turquoise"
                   >
-                    Watch on YouTube <ExternalLink className="h-3.5 w-3.5" />
+                    {t("gallery.watchOnYouTube")} <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </div>
               </div>
@@ -221,17 +219,16 @@ export default function GalleryPage() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              Visual Stories
+              {t("gallery.storiesEyebrow")}
             </p>
             <h2
               dir="auto"
               className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
             >
-              Photography From the Practice
+              {t("gallery.storiesTitle")}
             </h2>
             <p dir="auto" className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              We&apos;re preparing approved photography for each of these categories. Nothing shown
-              here is a placeholder photo — real images will appear once available.
+              {t("gallery.storiesDescription")}
             </p>
           </div>
 
@@ -249,7 +246,7 @@ export default function GalleryPage() {
                     {t(story.descriptionKey)}
                   </p>
                   <span className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-secondary/70 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-muted-foreground">
-                    <Images className="h-3 w-3" /> Coming Soon
+                    <Images className="h-3 w-3" /> {t("gallery.comingSoon")}
                   </span>
                 </div>
               </div>
@@ -257,7 +254,7 @@ export default function GalleryPage() {
           </div>
 
           <div className="mt-12 flex justify-center">
-            <BookingButton label="Book a Consultation" />
+            <BookingButton label={t("cta.bookConsultation")} />
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import type { Credential } from "@/data/about";
 import { cn } from "@/lib/utils";
-import { useTranslate, type SimpleTranslationKey } from "@/i18n";
+import { useTranslate, CREDENTIAL_LABELS, type SimpleTranslationKey } from "@/i18n";
 
 interface CredentialChipProps {
   credential: Credential;
@@ -29,8 +29,14 @@ export function CredentialChip({
   descriptionKey,
 }: CredentialChipProps) {
   const t = useTranslate();
-  const title = titleKey ? t(titleKey) : credential.title;
-  const description = descriptionKey ? t(descriptionKey) : credential.description;
+  // Fall back to the shared map, not to the English: a caller that forgets
+  // to pass the keys should still render Arabic. Only a credential missing
+  // from the map falls through to its stored English.
+  const mapped = CREDENTIAL_LABELS[credential.title];
+  const resolvedTitle = titleKey ?? mapped?.title;
+  const resolvedDescription = descriptionKey ?? mapped?.description;
+  const title = resolvedTitle ? t(resolvedTitle) : credential.title;
+  const description = resolvedDescription ? t(resolvedDescription) : credential.description;
   if (variant === "pill") {
     return (
       <span

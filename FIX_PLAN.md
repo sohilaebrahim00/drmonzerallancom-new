@@ -21,22 +21,44 @@ Execute **one phase per session**. Do not start a phase before the previous one'
      (`if not exists`, `create or replace`, `drop policy if exists` before `create policy`,
      `do $$ begin ... exception when duplicate_object then null; end $$;` around `create type`).
    - State clearly in your report which branch you took and why.
-4. **After every phase run all four and paste the real output:**
+4. **After every phase run all five and paste the real output:**
    ```
    npx tsc --noEmit
    npm run lint
    npm run build:web
    npm run build:app
+   npm run i18n:audit      # needs a build in dist/ first
    ```
-   Zero TS errors and zero lint errors is the gate. Warnings that already existed are acceptable;
-   new ones are not.
+   (`npm run gate` runs all five in order.)
+
+   Zero TS errors, zero lint errors and zero reachable English is the gate. Warnings that already
+   existed are acceptable; new ones are not.
 
    **A PASSING BUILD IS NOT EVIDENCE OF TYPE CORRECTNESS. Never substitute one for the other.**
    Vite does not typecheck — it strips types and bundles. `npm run build:web` will go green on
    code with a missing import, an undefined name or a wrong prop type, and `tsc` is the only one
    of the four that catches them. Observed on 30 Aug: `ProductsIndexPage.tsx` referenced an
    unimported `business`, `tsc` failed with TS2304, and `build:web` succeeded in the same run.
-   Run all four, read all four, and never infer one from another.
+   Run all five, read all five, and never infer one from another.
+
+   **A GREEN METRIC MUST MEASURE THE OUTCOME, NOT THE ARTEFACT.**
+   This is the general form of the rule above, and it has now bitten twice.
+   `tsc` measures the types; a passing build does not. `npm run i18n:review` measures the
+   DICTIONARY — it reported "0 missing Arabic" for weeks while the site header rendered
+   "Book a Session" in Arabic, because `cta.bookSession` existed in both dictionaries and
+   `BookingButton` held the English in a default prop and never asked for it. Key parity
+   cannot see an unwired component. `npm run i18n:audit` loads every in-scope route in Arabic
+   and reads what a reader would actually see, which is the thing we actually care about.
+
+   **When a check has been green for a long time while something is visibly wrong, suspect the
+   check.** Ask what it measures, and whether that is the same as what you want to be true.
+   Two specific traps found this way, both worth grepping for after any UI change:
+   - a **default prop holding display text** (`label = "Book a Session"`) — the key exists, the
+     dictionary is complete, and the component never asks;
+   - a **page that renders nothing** scoring zero findings and reading as a pass. The audit now
+     asserts a minimum number of visible text nodes per route for exactly this reason.
+
+   Key parity stays as a check. It is no longer THE check.
 5. **Never print or commit a secret.** Before committing, grep the staged diff and `dist/`,
    `dist-app/` for `sk_live`, `sk_test`, `GOCSPX-`, `SERVICE_ROLE`, `GEMINI_API_KEY`.
 6. **One commit per phase**, message `fix(phase-N): <short summary>`. Do not push unless asked.

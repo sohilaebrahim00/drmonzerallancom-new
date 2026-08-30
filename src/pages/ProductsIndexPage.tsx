@@ -36,7 +36,7 @@ export default function ProductsIndexPage() {
 
       <div className="mx-auto max-w-2xl text-center">
         <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-          Products
+          {t("productsPage.eyebrow")}
         </p>
         <h1
           dir="auto"
@@ -86,7 +86,7 @@ export default function ProductsIndexPage() {
         className="mt-6 text-center text-xs font-medium text-muted-foreground"
         role="status"
       >
-        {filtered.length} {filtered.length === 1 ? "product" : "products"} found
+        {t("products.resultCount", { count: filtered.length })}
       </p>
 
       <div className="mt-8">
@@ -111,14 +111,13 @@ export default function ProductsIndexPage() {
 
       <div className="mx-auto mt-14 max-w-2xl rounded-2xl border border-border/70 bg-card p-6 text-center shadow-sm sm:p-8">
         <h2 dir="auto" className="font-display text-lg font-bold text-navy">
-          Have Questions About Any Product?
+          {t("productsPage.questionsTitle")}
         </h2>
         <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Book a consultation with Dr. Monzer Allan to talk through what fits your routine, or reach
-          out about a specific product directly.
+          {t("productsPage.questionsBody")}
         </p>
         <div className="mt-5 flex justify-center">
-          <BookingButton label="Book a Consultation" />
+          <BookingButton label={t("cta.bookConsultation")} />
         </div>
       </div>
 
@@ -126,12 +125,7 @@ export default function ProductsIndexPage() {
         dir="auto"
         className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground/80"
       >
-        Product information is provided for general informational purposes only. Dietary supplements
-        are not intended to diagnose, treat, cure, or prevent any disease. Consult a qualified
-        healthcare professional before using a supplement, especially if you are pregnant, nursing,
-        taking medication, managing a medical condition, or considering use for a child. Use
-        health-monitoring devices according to their official instructions and seek professional
-        medical advice when needed.
+        {t("product.disclaimer")}
       </p>
     </div>
   );

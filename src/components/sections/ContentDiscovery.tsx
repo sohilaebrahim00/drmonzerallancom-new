@@ -3,7 +3,7 @@ import { Apple, Baby, Bike, Droplets, HeartPulse, Soup, type LucideIcon } from "
 
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { categories, type ArticleCategory } from "@/data/articles";
-import { useTranslate } from "@/i18n";
+import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
 
 const TOPIC_ICONS: Partial<Record<ArticleCategory, LucideIcon>> = {
   "Weight Management": Bike,
@@ -34,7 +34,9 @@ export function ContentDiscovery() {
                   <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary transition-transform duration-300 group-hover:scale-110">
                     <Icon className="h-6 w-6" />
                   </span>
-                  <span className="text-sm font-semibold text-navy">{category}</span>
+                  <span dir="auto" className="text-sm font-semibold text-navy">
+                    {t(ARTICLE_CATEGORY_LABELS[category])}
+                  </span>
                 </Link>
               </div>
             );

@@ -20,6 +20,7 @@ import {
 import { faqs } from "@/data/faqs";
 import { breadcrumbSchema } from "@/lib/schema";
 import { useTranslate } from "@/i18n";
+import { toDisplay } from "@/i18n/faqDisplay";
 
 const RELEVANT_CATEGORIES = new Set(["Consultation Credits", "Online Meetings"]);
 const relevantFaqs = faqs.filter((faq) => RELEVANT_CATEGORIES.has(faq.category));
@@ -114,9 +115,7 @@ export default function PackagesPage() {
                   {t("packagesPage.creditsTitle")}
                 </h3>
                 <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Each program includes a fixed number of consultation credits, granted once at
-                  purchase. Request a consultation from your account, and one credit is used per
-                  confirmed session.
+                  {t("packagesPage.creditsBody")}
                 </p>
               </div>
             </div>
@@ -126,11 +125,10 @@ export default function PackagesPage() {
                   <Video className="h-5 w-5" />
                 </div>
                 <h3 dir="auto" className="mt-4 font-display text-base font-bold text-navy">
-                  Google Meet
+                  {t("packagesPage.meetTitle")}
                 </h3>
                 <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Approved consultations are conducted online over Google Meet. Once confirmed, your
-                  meeting link appears with the appointment in your account.
+                  {t("packagesPage.meetBody")}
                 </p>
               </div>
             </div>
@@ -140,11 +138,10 @@ export default function PackagesPage() {
                   <ShieldCheck className="h-5 w-5" />
                 </div>
                 <h3 dir="auto" className="mt-4 font-display text-base font-bold text-navy">
-                  No Recurring Billing
+                  {t("packagesPage.noBillingTitle")}
                 </h3>
                 <p dir="auto" className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Every program is a single, one-time payment. There is nothing to cancel and
-                  nothing that renews automatically.
+                  {t("packagesPage.noBillingBody")}
                 </p>
               </div>
             </div>
@@ -161,13 +158,13 @@ export default function PackagesPage() {
                 dir="auto"
                 className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
               >
-                FAQ
+                {t("nav.faq")}
               </p>
               <h2
                 dir="auto"
                 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl"
               >
-                Program Questions
+                {t("packagesPage.faqTitle")}
               </h2>
             </div>
             <div className="mt-10">
@@ -183,10 +180,10 @@ export default function PackagesPage() {
                     className="border-border/60"
                   >
                     <AccordionTrigger className="py-5 text-start font-display text-base font-bold text-navy hover:no-underline">
-                      {faq.question}
+                      {toDisplay([faq], t)[0].question}
                     </AccordionTrigger>
                     <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                      {faq.answer}
+                      {toDisplay([faq], t)[0].answer}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -194,7 +191,7 @@ export default function PackagesPage() {
             </div>
             <div className="mt-6 text-center">
               <Link to="/faq" className="text-sm font-semibold text-primary hover:text-turquoise">
-                View All FAQs
+                {t("packagesPage.viewAllFaqs")}
               </Link>
             </div>
           </div>
@@ -209,20 +206,20 @@ export default function PackagesPage() {
               dir="auto"
               className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
             >
-              Not Sure Which Program Fits?
+              {t("packagesPage.notSureTitle")}
             </h2>
             <p
               dir="auto"
               className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base"
             >
-              Choose your program above, or reach out and we&apos;ll help you pick the right one.
+              {t("packagesPage.notSureBody")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/contact"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-turquoise px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise/90"
               >
-                <MessageCircle className="h-4 w-4" /> Contact Us
+                <MessageCircle className="h-4 w-4" /> {t("cta.contactUs")}
               </Link>
             </div>
           </div>

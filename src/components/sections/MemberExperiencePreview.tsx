@@ -1,38 +1,42 @@
 import { Link } from "react-router-dom";
 import { BookOpen, CalendarClock, CreditCard, Sparkles, UserRound } from "lucide-react";
 
+import type { LucideIcon } from "lucide-react";
+
 import { useAuth } from "@/context/AuthContext";
+import { useTranslate, type SimpleTranslationKey } from "@/i18n";
 
 const PREVIEW_CARDS = [
   {
     icon: UserRound,
-    title: "Your Program",
-    detail: "Program type and consultation credits at a glance",
+    titleKey: "memberPreview.card1.title",
+    detailKey: "memberPreview.card1.detail",
   },
   {
     icon: CreditCard,
-    title: "Consultation Credits",
-    detail: "See how many credits you have left to use",
+    titleKey: "memberPreview.card2.title",
+    detailKey: "memberPreview.card2.detail",
   },
   {
     icon: CalendarClock,
-    title: "Upcoming Consultation",
-    detail: "Your next confirmed Google Meet session",
+    titleKey: "memberPreview.card3.title",
+    detailKey: "memberPreview.card3.detail",
   },
   {
     icon: Sparkles,
-    title: "Request Consultation",
-    detail: "Use a credit to request a new session anytime",
+    titleKey: "memberPreview.card4.title",
+    detailKey: "memberPreview.card4.detail",
   },
   {
     icon: BookOpen,
-    title: "Educational Resources",
-    detail: "Articles and videos picked for your goals",
+    titleKey: "memberPreview.card5.title",
+    detailKey: "memberPreview.card5.detail",
   },
-];
+] satisfies { icon: LucideIcon; titleKey: SimpleTranslationKey; detailKey: SimpleTranslationKey }[];
 
 export function MemberExperiencePreview() {
   const { user } = useAuth();
+  const t = useTranslate();
   if (user) return null;
 
   return (
@@ -44,24 +48,23 @@ export function MemberExperiencePreview() {
               dir="auto"
               className="text-xs font-semibold uppercase tracking-[0.28em] text-primary"
             >
-              Member Experience
+              {t("memberPreview.eyebrow")}
             </p>
             <h2
               dir="auto"
               id="member-preview-heading"
               className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy sm:text-3xl"
             >
-              Your Program, All in One Place
+              {t("memberPreview.title")}
             </h2>
             <p dir="auto" className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Once you start a program, your dashboard keeps your consultation credits and upcoming
-              sessions organized in a single, simple view.
+              {t("memberPreview.description")}
             </p>
             <Link
               to="/packages"
               className="mt-6 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
             >
-              <Sparkles className="h-4 w-4" /> Explore Programs
+              <Sparkles className="h-4 w-4" /> {t("cta.explorePrograms")}
             </Link>
           </div>
 
@@ -72,27 +75,27 @@ export function MemberExperiencePreview() {
                   dir="auto"
                   className="text-xs font-semibold uppercase tracking-wide text-white/70"
                 >
-                  Illustrative Preview — Not Real Account Data
+                  {t("memberPreview.illustrative")}
                 </p>
                 <p dir="auto" className="mt-2 font-display text-lg font-bold">
-                  Treatment Plus Program
+                  {t("memberPreview.samplePlan")}
                 </p>
                 <div className="mt-3 flex items-center justify-between text-sm">
-                  <span className="text-white/80">Consultation Credits</span>
-                  <span className="font-semibold">2 of 3 Remaining</span>
+                  <span className="text-white/80">{t("memberPreview.credits")}</span>
+                  <span className="font-semibold">{t("memberPreview.creditsSample")}</span>
                 </div>
                 <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/20">
                   <div className="h-full w-1/2 rounded-full bg-turquoise" />
                 </div>
                 <div className="mt-3 flex items-center justify-between text-sm">
-                  <span className="text-white/80">Next Consultation</span>
-                  <span className="font-semibold">Request Anytime</span>
+                  <span className="text-white/80">{t("memberPreview.next")}</span>
+                  <span className="font-semibold">{t("memberPreview.nextSample")}</span>
                 </div>
               </div>
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {PREVIEW_CARDS.map((card) => (
                   <div
-                    key={card.title}
+                    key={card.titleKey}
                     className="flex items-start gap-3 rounded-xl border border-border/60 bg-background p-4"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
@@ -100,13 +103,13 @@ export function MemberExperiencePreview() {
                     </span>
                     <div>
                       <p dir="auto" className="text-sm font-semibold text-navy">
-                        {card.title}
+                        {t(card.titleKey)}
                       </p>
                       <p
                         dir="auto"
                         className="mt-0.5 text-xs leading-relaxed text-muted-foreground"
                       >
-                        {card.detail}
+                        {t(card.detailKey)}
                       </p>
                     </div>
                   </div>

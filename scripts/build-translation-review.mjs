@@ -17,6 +17,8 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { parseDict } from "./lib/parse-dict.mjs";
+
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
 const OUT = resolve(root, "docs/translation-review/index.html");
@@ -24,55 +26,6 @@ const OUT = resolve(root, "docs/translation-review/index.html");
 /** Parses a dictionary file into { key: value } without importing TypeScript.
  *  A hand-written scanner rather than a regex: the values contain quotes,
  *  escapes and invisible bidi isolates, and the regex for that is unreadable. */
-function parseDict(src) {
-  const out = {};
-  const lines = src.split("\n");
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (!line.startsWith('  "')) continue;
-    const endQuote = line.indexOf('":', 3);
-    if (endQuote === -1) continue;
-    const key = line.slice(3, endQuote);
-    let rest = line.slice(endQuote + 2).trim();
-    if (rest.startsWith("{")) {
-      const forms = {};
-      for (let j = i + 1; j < lines.length && !lines[j].trim().startsWith("}"); j++) {
-        const t = lines[j].trim();
-        const c = t.indexOf(":");
-        if (c === -1) continue;
-        const form = t.slice(0, c).trim();
-        const v = readQuoted(t.slice(c + 1));
-        if (v !== null) forms[form] = v;
-      }
-      out[key] = forms;
-      continue;
-    }
-    if (rest === "") {
-      rest = (lines[i + 1] || "").trim();
-    }
-    const v = readQuoted(rest);
-    if (v !== null) out[key] = v;
-  }
-  return out;
-}
-
-/** Reads the first double-quoted JS string in `s`, honouring escapes. */
-function readQuoted(s) {
-  const start = s.indexOf('"');
-  if (start === -1) return null;
-  let buf = "";
-  for (let i = start + 1; i < s.length; i++) {
-    const ch = s[i];
-    if (ch === "\\") {
-      buf += s[i + 1] === "n" ? "\n" : s[i + 1];
-      i++;
-      continue;
-    }
-    if (ch === '"') return buf;
-    buf += ch;
-  }
-  return null;
-}
 
 const en = parseDict(readFileSync(resolve(root, "src/i18n/dictionaries/en.ts"), "utf8"));
 const ar = parseDict(readFileSync(resolve(root, "src/i18n/dictionaries/ar.ts"), "utf8"));

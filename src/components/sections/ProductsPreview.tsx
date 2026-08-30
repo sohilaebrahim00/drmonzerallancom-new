@@ -46,14 +46,13 @@ export function ProductsPreview() {
             to="/products"
             className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-navy transition-all duration-300 hover:border-turquoise hover:text-turquoise"
           >
-            View All Products
+            {t("productsPreview.viewAll")}
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
           </Link>
         </div>
 
         <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground/80">
-          Products shown here are wellness-support items and are not intended to diagnose, treat,
-          cure, or prevent any disease.
+          {t("productsPreview.disclaimer")}
         </p>
       </div>
     </section>

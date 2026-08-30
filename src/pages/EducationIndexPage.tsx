@@ -52,7 +52,7 @@ export default function EducationIndexPage() {
 
       <div className="mx-auto max-w-2xl text-center">
         <p dir="auto" className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-          Blog
+          {t("blogPage.eyebrow")}
         </p>
         <h1
           dir="auto"
@@ -152,7 +152,7 @@ export default function EducationIndexPage() {
         dir="auto"
         className="mx-auto mt-8 max-w-xl text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
       >
-        Topic Explorer
+        {t("blogPage.topicExplorer")}
       </p>
       <div className="mt-3 flex flex-wrap justify-center gap-2">
         {(["All", ...categories] as const).map((category) => (
@@ -175,7 +175,7 @@ export default function EducationIndexPage() {
 
       <div className="mt-14">
         <h2 dir="auto" className="font-display text-lg font-bold text-navy">
-          Latest Articles
+          {t("blogPage.latestArticles")}
         </h2>
         <div className="mt-6">
           {filtered.length > 0 ? (
