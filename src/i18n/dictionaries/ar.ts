@@ -1040,6 +1040,31 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
     "هذا المقال لأغراض تثقيفية عامة فقط، وليس بديلًا عن استشارة طبية أو غذائية مخصصة. يرجى استشارة مختص صحي مؤهل قبل إجراء أي تغييرات على نظامك الغذائي.",
   "article.related": "مقالات ذات صلة",
   "article.share": "شارك:",
+  // --- purchase dialog — the payment form --------------------------
+  "purchase.fullName": "الاسم الكامل",
+  "purchase.email": "البريد الإلكتروني",
+  "purchase.phone": "رقم الهاتف",
+  "purchase.namePlaceholder": "مثال: أحمد محمد",
+  "purchase.emailPlaceholder": "ahmed@email.com",
+  "purchase.phonePlaceholder": "+971 50 123 4567",
+  "purchase.phoneReason": "ليتمكن الدكتور منذر علان من التواصل معك بشأن برنامجك.",
+  "purchase.submit": "تابع إلى الدفع الآمن",
+  "purchase.submitting": "جارٍ التحويل إلى الدفع الآمن…",
+  "purchase.stripeNote":
+    "تتم معالجة الدفع بأمان عبر Stripe. نحن لا نرى بيانات بطاقتك ولا نحتفظ بها إطلاقًا.",
+  "purchase.unavailable":
+    "الدفع الإلكتروني غير مفعّل بعد. يرجى المحاولة لاحقًا، أو التواصل معنا مباشرةً.",
+  "purchase.viaWhatsapp": "تابع عبر واتساب",
+  "purchase.close": "إغلاق",
+  "purchase.errName": "يرجى إدخال اسمك الكامل.",
+  "purchase.errEmail": "يرجى إدخال بريد إلكتروني صحيح.",
+  "purchase.errPhoneChars": "يرجى إدخال رقم هاتف يمكننا التواصل معك عليه.",
+  "purchase.errPhoneLong": "رقم الهاتف هذا يبدو طويلًا أكثر من اللازم.",
+  // --- purchase dialog validation ----------------------------------
+  "purchase.errPhoneChars2": "استخدم الأرقام والمسافات والرموز + ( ) - فقط.",
+  "purchase.errPhoneDigits": "يرجى إدخال الرقم كاملاً، مع رمز الدولة إن كنت خارج الإمارات.",
+  // --- the doctor name with honorific ------------------------------
+  "common.doctorNameFormal": "الدكتور منذر علان",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly": "المقالات بقلم الدكتور منذر علان ومتاحة باللغة الإنجليزية فقط.",
 };

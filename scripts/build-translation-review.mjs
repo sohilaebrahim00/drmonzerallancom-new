@@ -59,6 +59,13 @@ const FLAGGED = {
       "faqCategory.programs",
     ],
   },
+  "F-8": {
+    question:
+      "Should the Arabic address a reader as male, as it currently does on every page?",
+    detail:
+      "Arabic has no genderless \"you\". Every instruction on the site therefore has to pick one, and ours currently picks masculine: we counted 96 masculine verb forms (اختر, استشر, تابع, احجز, ابدأ) and none feminine. That means a woman reading the site is addressed as a man on every page — in the intake questions, on the buy button, and in the medical disclaimers. The English \"choose\", \"consult\", \"book\" hid this choice from us; Arabic cannot. The pregnancy article happens to avoid it, because it contains no gendered verb at all. Three options, and only you can pick: keep masculine as the convention; use both forms where it matters (اختر/اختاري), which is accurate but heavier to read; or rephrase the instructions impersonally (\"يمكن اختيار\") so no gender is asserted anywhere. This is an editorial decision about how your practice speaks to patients, not a translation question.",
+    keys: ["cta.bookSession", "cta.explorePrograms", "purchase.submit", "intake.label1"],
+  },
   "F-7": {
     question: "We lengthened the Arabic for three of your intake questions (3, 4 and 5).",
     detail:

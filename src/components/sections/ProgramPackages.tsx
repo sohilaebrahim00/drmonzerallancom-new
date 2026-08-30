@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -35,28 +35,35 @@ import { startProgramPackageCheckout } from "@/services/checkoutService";
 import { openExternal } from "@/lib/externalLink";
 import { whatsappLink } from "@/config/contact";
 import { cn } from "@/lib/utils";
-import { useTranslate, PACKAGE_LABELS, packageFeatures } from "@/i18n";
+import { useTranslate, PACKAGE_LABELS, packageFeatures, type TranslateFn } from "@/i18n";
 
-const purchaseSchema = z.object({
-  fullName: z.string().trim().min(2, "Please enter your full name."),
-  email: z.string().trim().email("Please enter a valid email address."),
-  // Required, and validated for shape rather than just presence. Deliberately
-  // permissive about FORMAT — international numbers vary far too much to
-  // pattern-match safely, and rejecting a real number is worse than accepting
-  // an odd one. What it does enforce: only characters a phone number can
-  // contain, and enough digits to be dialable.
-  phone: z
-    .string()
-    .trim()
-    .min(7, "Please enter a phone number we can reach you on.")
-    .max(32, "That phone number looks too long.")
-    .regex(/^[0-9+\-\s()]+$/, "Use digits, spaces, and + ( ) - only.")
-    .refine((v) => (v.match(/\d/g) ?? []).length >= 7, {
-      message: "Please include the full number, with country code if you're outside the UAE.",
-    }),
-});
+/**
+ * Built from `t` rather than declared at module scope, because these messages
+ * are shown to the buyer. A module-level schema is evaluated once, before any
+ * locale exists, which is why every validation error on this form used to
+ * appear in English on an Arabic page — including on the phone field, which is
+ * the one most likely to be rejected.
+ *
+ * The RULES are unchanged: permissive about international formats, because
+ * rejecting a real number is worse than accepting an odd one.
+ */
+function buildPurchaseSchema(t: TranslateFn) {
+  return z.object({
+    fullName: z.string().trim().min(2, t("purchase.errName")),
+    email: z.string().trim().email(t("purchase.errEmail")),
+    phone: z
+      .string()
+      .trim()
+      .min(7, t("purchase.errPhoneChars"))
+      .max(32, t("purchase.errPhoneLong"))
+      .regex(/^[0-9+\-\s()]+$/, t("purchase.errPhoneChars2"))
+      .refine((v) => (v.match(/\d/g) ?? []).length >= 7, {
+        message: t("purchase.errPhoneDigits"),
+      }),
+  });
+}
 
-type PurchaseValues = z.infer<typeof purchaseSchema>;
+type PurchaseValues = z.infer<ReturnType<typeof buildPurchaseSchema>>;
 
 export function ProgramPackages({ hideHeading = false }: { hideHeading?: boolean }) {
   const t = useTranslate();
@@ -221,6 +228,9 @@ function PurchaseDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const t = useTranslate();
+  // Rebuilt when the language changes so a message already on screen is not
+  // left in the previous language.
+  const purchaseSchema = useMemo(() => buildPurchaseSchema(t), [t]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkoutUnavailable, setCheckoutUnavailable] = useState(false);
@@ -273,7 +283,7 @@ function PurchaseDialog({
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{pkg?.name}</DialogTitle>
+          <DialogTitle>{pkg ? t(PACKAGE_LABELS[pkg.slug].name) : ""}</DialogTitle>
           <DialogDescription>
             {t("packages.dialogSummary", {
               price: pkg?.priceLabel ?? "",
@@ -286,9 +296,7 @@ function PurchaseDialog({
 
         {!isSupabaseConfigured && (
           <Alert className="border-amber-300 bg-amber-50 text-amber-900">
-            <AlertDescription>
-              Checkout isn&apos;t connected yet. Please check back soon, or contact us directly.
-            </AlertDescription>
+            <AlertDescription>{t("purchase.unavailable")}</AlertDescription>
           </Alert>
         )}
 
@@ -299,9 +307,13 @@ function PurchaseDialog({
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full name</FormLabel>
+                  <FormLabel>{t("purchase.fullName")}</FormLabel>
                   <FormControl>
-                    <Input autoComplete="name" placeholder="Jane Doe" {...field} />
+                    <Input
+                      autoComplete="name"
+                      placeholder={t("purchase.namePlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -312,12 +324,12 @@ function PurchaseDialog({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("purchase.email")}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       autoComplete="email"
-                      placeholder="jane@email.com"
+                      placeholder={t("purchase.emailPlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -330,21 +342,19 @@ function PurchaseDialog({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone number</FormLabel>
+                  <FormLabel>{t("purchase.phone")}</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
                       autoComplete="tel"
-                      placeholder="+971 50 123 4567"
+                      placeholder={t("purchase.phonePlaceholder")}
                       {...field}
                     />
                   </FormControl>
                   {/* Say why we want it. A required field with no reason given
                       reads as data harvesting; this one has a use the buyer
                       actually benefits from. */}
-                  <p className="text-xs text-muted-foreground">
-                    So Dr. Monzer Allan can reach you about your program.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{t("purchase.phoneReason")}</p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -362,7 +372,7 @@ function PurchaseDialog({
                         rel="noopener noreferrer"
                         className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-turquoise"
                       >
-                        <MessageCircle className="h-3.5 w-3.5" /> Continue via WhatsApp
+                        <MessageCircle className="h-3.5 w-3.5" /> {t("purchase.viaWhatsapp")}
                       </a>
                     </div>
                   )}
@@ -377,18 +387,18 @@ function PurchaseDialog({
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Redirecting to secure payment…
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t("purchase.submitting")}
                 </>
               ) : (
                 <>
-                  <Lock className="h-4 w-4" /> Continue to Secure Payment
+                  <Lock className="h-4 w-4" /> {t("purchase.submit")}
                 </>
               )}
             </Button>
 
             <p className="flex items-start gap-1.5 text-[0.7rem] leading-relaxed text-muted-foreground">
               <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-              Payment is handled securely by Stripe. We never see or store your card details.
+              {t("purchase.stripeNote")}
             </p>
           </form>
         </Form>

@@ -993,6 +993,32 @@ export const en = {
     "This article is for general educational purposes only and is not a substitute for personalized medical or nutritional advice. Please consult a qualified healthcare provider before making changes to your diet.",
   "article.related": "Related Articles",
   "article.share": "Share:",
+  // --- purchase dialog — the payment form --------------------------
+  "purchase.fullName": "Full name",
+  "purchase.email": "Email",
+  "purchase.phone": "Phone number",
+  "purchase.namePlaceholder": "Jane Doe",
+  "purchase.emailPlaceholder": "jane@email.com",
+  "purchase.phonePlaceholder": "+971 50 123 4567",
+  "purchase.phoneReason": "So Dr. Monzer Allan can reach you about your program.",
+  "purchase.submit": "Continue to Secure Payment",
+  "purchase.submitting": "Redirecting to secure payment…",
+  "purchase.stripeNote":
+    "Payment is handled securely by Stripe. We never see or store your card details.",
+  "purchase.unavailable":
+    "Checkout isn't connected yet. Please check back soon, or contact us directly.",
+  "purchase.viaWhatsapp": "Continue via WhatsApp",
+  "purchase.close": "Close",
+  "purchase.errName": "Please enter your full name.",
+  "purchase.errEmail": "Please enter a valid email address.",
+  "purchase.errPhoneChars": "Please enter a phone number we can reach you on.",
+  "purchase.errPhoneLong": "That phone number looks too long.",
+  // --- purchase dialog validation ----------------------------------
+  "purchase.errPhoneChars2": "Use digits, spaces, and + ( ) - only.",
+  "purchase.errPhoneDigits":
+    "Please include the full number, with country code if you're outside the UAE.",
+  // --- the doctor name with honorific ------------------------------
+  "common.doctorNameFormal": "Dr. Monzer Allan",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",

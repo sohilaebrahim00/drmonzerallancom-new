@@ -160,15 +160,33 @@ function classify(text) {
   // allow-list entry for the whole code, and both then read as untranslated
   // English sitting in the middle of an Arabic sentence.
   const words = s.match(/[A-Za-z][A-Za-z0-9'’-]*/g) || [];
-  const offenders = words.filter((w) => !ALLOW_TOKEN.some((rx) => rx.test(w)));
-  if (offenders.length >= 2) return "latin-prose";
-  // A single English word on its own is still prose ("Products", "Blog").
-  //
-  // The threshold is 2, not 4, because it was 4 and "By Monzer Allan" walked
-  // straight through it: "Monzer" and "Allan" are allow-listed proper nouns,
-  // leaving one offender — "By" — two characters long. An allow-listed name
-  // must not be able to hide the English function word standing next to it.
-  if (offenders.length === 1 && offenders[0].length >= 2) return "latin-word";
+  const suspects = words.filter((w) => !ALLOW_TOKEN.some((rx) => rx.test(w)));
+  if (!suspects.length) return null;
+
+  /*
+   * EVERY TOKEN IS JUDGED ON ITS OWN. The count below picks the LABEL only —
+   * it never decides whether to report.
+   *
+   * This used to be a length threshold on the single-offender case, and that
+   * was the bug, not the number. "By Monzer Allan" rendered untranslated on
+   * every article page while this returned clean: "Monzer" and "Allan" are
+   * allow-listed proper nouns, so filtering them left ONE survivor, which
+   * demoted the string from the unconditional multi-word branch into a branch
+   * gated on word length — where "By", at two characters, was dropped.
+   *
+   * Lowering the threshold from 4 to 2 did not fix that. It moved it. The same
+   * masking still waited behind every allow-listed name with a short English
+   * neighbour — in, at, to, of, on, by, no, vs, or — and behind any
+   * single-character survivor at all.
+   *
+   * So there is no length heuristic any more. A Latin token that is not on the
+   * allow-list is reported, however short it is and however many allow-listed
+   * words stand next to it. Short tokens that are legitimately Latin — unit
+   * abbreviations, vitamin letters, standards bodies — belong in ALLOW_TOKEN
+   * with a reason attached, where the decision is visible and reviewable,
+   * rather than hidden inside a number.
+   */
+  return suspects.length >= 2 ? "latin-prose" : "latin-word";
   return null;
 }
 
@@ -196,6 +214,97 @@ async function readLeaves(page) {
     }
     return out;
   });
+}
+
+/**
+ * Surfaces that only exist AFTER an interaction.
+ *
+ * The crawl above loads a route and reads it. That measures the page as
+ * DELIVERED, not everything a visitor can reach — and the gap was not
+ * theoretical: the purchase dialog, which holds the name, email and phone
+ * fields and the "Continue to Secure Payment" button, was entirely English in
+ * Arabic mode while this script reported zero findings across twenty routes.
+ * It is the most commercially important surface on the site and the crawler
+ * had never opened it.
+ *
+ * Each entry opens one such surface and returns the element to read. Anything
+ * behind a click, a tab or a disclosure belongs here; if it needs an
+ * interaction to appear, the crawl cannot see it.
+ */
+const INTERACTIVE = [
+  {
+    route: "/packages",
+    name: "purchase dialog",
+    open: async (page) => {
+      const btn = page.locator("button", { hasText: /ابدأ برنامجك|Start Your Program/ }).first();
+      if (!(await btn.count())) return null;
+      await btn.click();
+      await page.waitForSelector('[role="dialog"]', { timeout: 8000 });
+      await page.waitForTimeout(600);
+      return '[role="dialog"]';
+    },
+  },
+];
+
+async function crawlInteractive(page, findings) {
+  for (const item of INTERACTIVE) {
+    process.stderr.write("  " + item.route + " › " + item.name + " … ");
+    await page.goto(`http://${HOST}:${PORT}${item.route}?lang=ar`, {
+      waitUntil: "domcontentloaded",
+      timeout: 20000,
+    });
+    await page.waitForTimeout(900);
+    let selector = null;
+    try {
+      selector = await item.open(page);
+    } catch {
+      selector = null;
+    }
+    if (!selector) {
+      // Not finding the surface is itself a finding: it means this probe has
+      // silently stopped covering what it claims to cover.
+      findings.push({
+        route: item.route,
+        zone: "html",
+        text: "could not open " + item.name + " — this probe is no longer covering it",
+        kind: "probe-broken",
+      });
+      process.stderr.write("COULD NOT OPEN\n");
+      continue;
+    }
+    const leaves = await readLeavesWithin(page, selector);
+    let found = 0;
+    for (const { text, zone } of leaves) {
+      const kind = classify(text);
+      if (kind) {
+        findings.push({ route: item.route + " › " + item.name, zone, text, kind });
+        found++;
+      }
+    }
+    process.stderr.write(found + "\n");
+  }
+}
+
+async function readLeavesWithin(page, selector) {
+  return page.evaluate((sel) => {
+    const root = document.querySelector(sel);
+    if (!root) return [];
+    const out = [];
+    const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walk.nextNode())) {
+      const s = (n.textContent || "").trim();
+      if (!s) continue;
+      const el = n.parentElement;
+      if (!el || el.closest("script,style,noscript")) continue;
+      if (el.closest('[lang="en"]')) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width === 0 && r.height === 0) continue;
+      if (getComputedStyle(el).visibility === "hidden") continue;
+      out.push({ text: s, zone: "body" });
+    }
+    return out;
+  }, selector);
 }
 
 /**
@@ -291,6 +400,100 @@ async function waitForServer(timeoutMs = 30000) {
   return false;
 }
 
+/* ------------------------------------------------------ classifier self-test */
+
+/**
+ * THE CLASSIFIER IS PROVEN AGAINST KNOWN DEFECTS BEFORE IT IS TRUSTED.
+ *
+ * A checker that fails silent is worse than no checker: it manufactures
+ * confidence that gets acted on. This one did exactly that twice — it reported
+ * clean while "By Monzer Allan" sat untranslated on seven article pages, and
+ * again while "LJ100" was being split into a bogus "LJ".
+ *
+ * So every run starts by re-introducing those defects and confirming they are
+ * caught. If any case below fails, the audit exits WITHOUT crawling: a
+ * classifier that cannot catch a bug we already know about must not be allowed
+ * to report a clean site.
+ *
+ * MUST_FLAG entries are real strings that shipped, or the class of string that
+ * shipped. MUST_PASS entries are the false positives that were fixed; they
+ * exist so tightening the classifier cannot quietly start crying wolf.
+ */
+const MUST_FLAG = [
+  [
+    "By Monzer Allan",
+    "the regression that shipped: allow-listed names beside a short English word",
+  ],
+  ["in Monzer Allan", "same masking, different preposition"],
+  ["at Monzer Allan", "same masking"],
+  ["to Monzer Allan", "same masking"],
+  ["of Monzer Allan", "same masking"],
+  ["on Monzer Allan", "same masking"],
+  ["or Monzer Allan", "same masking"],
+  ["vs Monzer Allan", "same masking"],
+  ["no Monzer Allan", "same masking"],
+  ["a Monzer Allan", "single-character survivor, which the old length gate also dropped"],
+  ["Products", "a lone English word with no allow-listed neighbour at all"],
+  ["Blog", "short lone English word"],
+  ["Watch on YouTube", "English around an allow-listed brand"],
+  ["Read the Blog", "ordinary English prose"],
+];
+
+const MUST_PASS = [
+  ["1000 mg", "a transcribed dose"],
+  ["5000 IU (MK-7)", "dose plus a form code — the false positive from splitting on digits"],
+  ["1000 mg (LJ100) · 120 كبسولة", "the real product meta line that was wrongly flagged"],
+  ["EPA وDHA", "scientific tokens inside Arabic"],
+  ["فيتامين D3 وK2", "vitamin letters inside Arabic"],
+  ["مزامنة Wi-Fi", "a brand token inside Arabic"],
+  ["إنزيم CoQ10", "a compound name inside Arabic"],
+  ["عبوة المنتج الحقيقية مقدَّمة من ⁨Monzer Allan⁩.", "Arabic prose naming the doctor"],
+  [
+    "برامج تغذية مخصصة من ⁨Nutrition Specialist & Pharmacist⁩",
+    "the credential kept English by decision",
+  ],
+  ["30 يناير 2026", "an Arabic date"],
+  ["$119", "a price"],
+  ["استشارتان", "plain Arabic"],
+];
+
+function selfTest() {
+  const failures = [];
+  for (const [text, why] of MUST_FLAG) {
+    if (classify(text) === null) failures.push(["MISSED", text, why]);
+  }
+  for (const [text, why] of MUST_PASS) {
+    const k = classify(text);
+    if (k !== null) failures.push(["FALSE POSITIVE (" + k + ")", text, why]);
+  }
+  return failures;
+}
+
+const selfTestFailures = selfTest();
+if (selfTestFailures.length) {
+  console.error(
+    "i18n:audit — CLASSIFIER SELF-TEST FAILED (" +
+      selfTestFailures.length +
+      " of " +
+      (MUST_FLAG.length + MUST_PASS.length) +
+      " cases). Not crawling: a classifier that cannot catch a known bug must not report a clean site.",
+  );
+  for (const [kind, text, why] of selfTestFailures) {
+    console.error("  " + kind + "  " + JSON.stringify(text) + "\n      " + why);
+  }
+  process.exit(3);
+}
+if (process.argv.includes("--self-test")) {
+  console.log(
+    "i18n:audit — classifier self-test passed: " +
+      MUST_FLAG.length +
+      " known defects caught, " +
+      MUST_PASS.length +
+      " known-good strings left alone.",
+  );
+  process.exit(0);
+}
+
 const server = startPreview();
 let exitCode = 0;
 try {
@@ -348,6 +551,7 @@ try {
     process.stderr.write(String(found) + os.EOL);
   }
 
+  await crawlInteractive(page, findings);
   await assertLegalNotice(page, findings);
   await browser.close();
 

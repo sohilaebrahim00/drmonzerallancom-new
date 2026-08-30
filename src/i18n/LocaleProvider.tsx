@@ -19,43 +19,65 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /**
-   * Non-English dictionaries are separate chunks, so there is a moment where
-   * the locale is Arabic and its strings have not arrived.
+   * REQUESTED vs RENDERED locale.
    *
-   * We hold the tree rather than painting English and swapping. Swapping would
-   * not just replace words — it flips `dir` on <html>, so the whole layout
-   * would mirror in front of the reader. A brief hold is the smaller cost, and
-   * it only ever applies to a reader who asked for Arabic.
+   * Non-English dictionaries are separate chunks, so between "the reader asked
+   * for Arabic" and "Arabic can be drawn" there is a gap. `locale` is what they
+   * asked for; `activeLocale` is what the tree is currently rendered in, and it
+   * only advances once the new dictionary has settled.
    *
-   * The memoised `t` deliberately does NOT depend on load state: the translator
-   * looks the dictionary up when it is CALLED, not when it is created, and the
-   * gate below guarantees nothing renders before the chunk has settled.
+   * THIS EXISTS TO PROTECT THE PURCHASE FORM. The previous version unmounted
+   * the whole tree while the chunk was in flight. The switch sits in the header
+   * on every page, including the one with the name, email and phone fields on
+   * it, so a customer part-way through paying who decided they would rather
+   * read in Arabic lost everything they had typed. A translation arriving a
+   * beat late is a small cost; a half-typed phone number disappearing on a site
+   * taking real payments is not, and some of those people do not start again.
+   *
+   * So nothing unmounts on a switch. The page keeps rendering in the locale it
+   * already had — coherently, with matching `lang` and `dir` — and flips to the
+   * new one atomically when it is ready. React keeps every form input mounted
+   * throughout, so their values survive by construction rather than by our
+   * remembering to save them.
    */
-  const [settledLocale, setSettledLocale] = useState<Locale | null>(null);
-
-  /**
-   * Ready means "we are done waiting", NOT "the dictionary arrived". A locale
-   * whose chunk failed to load is also ready: every key falls back to English,
-   * so the reader gets an English page. Blocking forever on a flaky connection
-   * would be the worse failure, and gating on `isDictionaryLoaded` alone would
-   * do exactly that.
-   */
-  const ready = isDictionaryLoaded(locale) || settledLocale === locale;
+  const [activeLocale, setActiveLocale] = useState<Locale>(locale);
+  const [firstPaintDone, setFirstPaintDone] = useState(() => isDictionaryLoaded(locale));
 
   useEffect(() => {
-    if (isDictionaryLoaded(locale)) return;
+    if (isDictionaryLoaded(locale)) {
+      setActiveLocale(locale);
+      setFirstPaintDone(true);
+      return;
+    }
     let cancelled = false;
     loadDictionary(locale)
+      .then(() => {
+        if (!cancelled) setActiveLocale(locale);
+      })
       .catch(() => {
-        /* handled by the fallback described above */
+        /*
+         * THE CHUNK NEVER ARRIVED. Do NOT advance.
+         *
+         * Advancing would set lang/dir to Arabic while every string still
+         * resolved to its English fallback — a mirrored, right-to-left English
+         * checkout page. Measured, and it is worse than the switch appearing
+         * not to take: the reader can still read and complete an unchanged
+         * English page, and cannot easily read a flipped one.
+         *
+         * So the page stays exactly as it was. The requested locale is rolled
+         * back so the control reflects what is actually on screen rather than
+         * showing Arabic selected on an English page, and the reader can try
+         * again. Nothing unmounts either way, so the form keeps its contents.
+         */
+        if (!cancelled) setLocaleState(activeLocale);
       })
       .finally(() => {
-        if (!cancelled) setSettledLocale(locale);
+        if (!cancelled) setFirstPaintDone(true);
       });
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [locale, activeLocale]);
 
   /**
    * `lang` and `dir` go on <html>, not on a wrapper div. Screen readers take
@@ -66,9 +88,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
    */
   useEffect(() => {
     const root = document.documentElement;
-    root.lang = locale;
-    root.dir = dirOf(locale);
-  }, [locale]);
+    root.lang = activeLocale;
+    root.dir = dirOf(activeLocale);
+  }, [activeLocale]);
 
   useEffect(() => {
     if (!import.meta.env.DEV) return;
@@ -81,28 +103,28 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         `[i18n] Arabic: ${translated}/${total} keys translated, ${missing} falling back to English.`,
       );
     }
-  }, [settledLocale]);
+  }, [activeLocale]);
 
   const value = useMemo<LocaleContextValue>(
     () => ({
-      locale,
-      dir: dirOf(locale),
+      locale: activeLocale,
+      dir: dirOf(activeLocale),
       setLocale,
-      t: createTranslator(locale),
-      formatDate: (v, options) => formatDate(v, locale, options),
-      formatNumber: (v, options) => formatNumber(v, locale, options),
+      t: createTranslator(activeLocale),
+      formatDate: (v, options) => formatDate(v, activeLocale, options),
+      formatNumber: (v, options) => formatNumber(v, activeLocale, options),
       formatPrice,
     }),
-    [locale, setLocale],
+    [activeLocale, setLocale],
   );
 
-  /**
-   * Holding renders nothing for one paint. On a locale SWITCH this also
-   * unmounts and remounts the tree, which loses in-progress form state — worth
-   * knowing before the switch is turned on. Preloading the Arabic chunk when
-   * the switch becomes visible would avoid it.
+  /*
+   * Only the FIRST paint may hold, and only when there is nothing on screen to
+   * lose. A later switch never reaches this line: activeLocale simply lags
+   * until the chunk lands, so the tree — and every form input in it — stays
+   * mounted throughout.
    */
-  if (!ready) return null;
+  if (!firstPaintDone) return null;
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }

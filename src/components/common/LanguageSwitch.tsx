@@ -1,5 +1,6 @@
 import { LOCALES, LOCALE_META, type Locale } from "@/i18n";
 import { useLocale } from "@/i18n";
+import { loadDictionary } from "@/i18n/translate";
 import { cn } from "@/lib/utils";
 import { SHOW_LANGUAGE_SWITCH } from "@/config/features";
 
@@ -21,6 +22,25 @@ import { SHOW_LANGUAGE_SWITCH } from "@/config/features";
  */
 export function LanguageSwitch({ className }: { className?: string }) {
   const { locale, setLocale } = useLocale();
+
+  /**
+   * Fetch the other language the moment someone shows intent, so the switch
+   * has nothing to wait for when they actually click.
+   *
+   * ON INTENT, NOT ON MOUNT. Preloading when the header renders would hand the
+   * Arabic chunk to every English visitor on every page — 18 KB gzipped for a
+   * language most of them will never select, which is the exact cost the
+   * dictionary split was done to remove. Hover and focus give a desktop reader
+   * a comfortable head start; pointerdown gives a touch reader the gap between
+   * finger-down and finger-up. If neither is enough, nothing breaks: the
+   * provider keeps rendering the current language until the chunk lands.
+   */
+  const preload = (code: Locale) => {
+    if (code === locale) return;
+    void loadDictionary(code).catch(() => {
+      /* The switch still works; the provider falls back to English per key. */
+    });
+  };
 
   /**
    * Hidden until the dictionaries cover the IN list — see SHOW_LANGUAGE_SWITCH
@@ -46,6 +66,9 @@ export function LanguageSwitch({ className }: { className?: string }) {
             key={code}
             type="button"
             onClick={() => setLocale(code)}
+            onPointerEnter={() => preload(code)}
+            onPointerDown={() => preload(code)}
+            onFocus={() => preload(code)}
             aria-pressed={active}
             /* lang on the button so a screen reader pronounces "العربية" with
                Arabic phonetics rather than spelling it out in English. */

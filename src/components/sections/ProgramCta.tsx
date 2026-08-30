@@ -24,7 +24,7 @@ export function ProgramCta() {
             dir="auto"
             className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base"
           >
-            {t("programCta.body", { name: "Dr. Monzer Allan" })}
+            {t("programCta.body", { name: t("common.doctorNameFormal") })}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

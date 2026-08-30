@@ -4,10 +4,22 @@ import type { ArticleSection } from "@/data/articles";
  * "Nutrition Through Every Trimester of Pregnancy" — Arabic body.
  * FLAGGED IN FULL as a unit. Read end to end against the English.
  *
- * ADDRESSED TO A PREGNANT READER, so the second person is feminine throughout
- * (طفلك ... جسمك ... حملك). The English "you" is genderless and the Arabic
- * cannot be; feminine is the only reading that fits the subject. Flagged
- * because it is a choice the English did not have to make.
+ * ON GENDER — a correction to an earlier claim about this file.
+ *
+ * This was previously described as "feminine throughout", citing طفلك, جسمك
+ * and حملك. That was wrong, and the error is worth keeping written down: the
+ * pronoun suffix ك is spelled identically for masculine (كَ) and feminine (كِ)
+ * in unvocalised Arabic, so none of those words carries gender at all. Only
+ * verb morphology does — اختاري against اختر, تحتاجين against تحتاج — and this
+ * article contains none of it.
+ *
+ * So the text is genuinely gender-neutral as written, by accident rather than
+ * by design. It reads naturally to a pregnant reader without ever inflecting
+ * for her, which is a good outcome here but not a decision anyone made.
+ *
+ * The real question is site-wide, not article-level, and is flagged as F-8:
+ * the rest of the Arabic uses 96 masculine imperatives and zero feminine ones,
+ * so a female patient is addressed as male everywhere except here.
  *
  * SCOPE KEPT EXACTLY:
  *   "Caloric needs barely change in the first trimester" — "barely change",
