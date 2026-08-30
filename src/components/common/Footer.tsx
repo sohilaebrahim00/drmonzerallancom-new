@@ -46,8 +46,14 @@ export function Footer() {
                 decoding="async"
                 className="h-12 w-auto"
               />
-              <span className="font-display text-lg font-bold tracking-tight text-navy">
-                {business.doctorName}
+              {/* Same wordmark treatment as the header: the name in Arabic
+                  script in Arabic, so the display face can actually draw it.
+                  The two must agree — the audit caught them disagreeing. */}
+              <span
+                dir="auto"
+                className="font-display-ar font-display text-lg font-bold tracking-tight text-navy"
+              >
+                {t("common.doctorName")}
               </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">

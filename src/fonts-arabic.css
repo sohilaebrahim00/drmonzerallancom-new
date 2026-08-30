@@ -88,3 +88,125 @@
 :lang(ar) :is(h1, h2, h3, h4) {
   line-height: max(1.45em, 1lh);
 }
+
+/* ── Aref Ruqaa — the Arabic DISPLAY face ───────────────────────────────
+ *
+ * Ruq'ah is a handwriting style, not a text style. It is here for headings and
+ * nothing else: it is beautiful at 32px and unreadable as body copy at 15px,
+ * which is the mistake this comment exists to prevent.
+ *
+ * ONE WEIGHT, 700, ON PURPOSE. The display stack is used with both
+ * `font-bold` (700) and `font-extrabold` (800). Shipping only 700 and clamping
+ * Arabic display text to it (see the rule below) means the browser never
+ * SYNTHESISES 800 by smearing the outlines — which on a calligraphic face
+ * turns clean pen strokes into mud. Adding the 400 is one file and one line if
+ * a lighter heading is ever wanted; it is 36 KB and nothing currently uses it.
+ *
+ * DIGITS ARE NOT IN THIS FONT. The file is subsetted to exclude U+0660-0669
+ * and U+06F0-06F9, and the unicode-range below excludes them again. Prices,
+ * doses and quantities render in Latin digits inside Arabic prose, and a
+ * calligraphic digit in a clinical sentence is a misreading risk rather than a
+ * style choice. Two independent mechanisms, so editing either one by mistake
+ * does not quietly reintroduce the problem. See
+ * scripts/subset-arabic-display-font.mjs.
+ */
+@font-face {
+  font-family: "Aref Ruqaa";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/aref-ruqaa-700.woff2") format("woff2");
+  /* Arabic letters and marks only. NOTE the two gaps: U+0660-0669 and
+     U+06F0-06F9 are the Arabic-Indic digit runs and are deliberately absent,
+     so digits fall through to IBM Plex Sans Arabic. Latin is absent for the
+     same reason — Latin digits and Latin words never reach this face. */
+  unicode-range:
+    U+0600-065F, U+066A-06EF, U+06FA-06FF, U+0750-077F, U+200C-200F, U+2010-2011, U+2013-2014,
+    U+2018-201D, U+2026, U+2066-2069, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+/* ── Where the display face applies ─────────────────────────────────────
+ *
+ * ARABIC ONLY. Scoped to :lang(ar) so an English visitor's typography is
+ * byte-identical to before this change, and — because the @font-face above is
+ * unicode-range limited to Arabic — an English page never requests the file at
+ * all.
+ *
+ * Applied to the display CLASS rather than to h1..h4, because that is what the
+ * design actually uses to mean "this is display type". A heading that is
+ * deliberately set in the text face (there are a few) stays in the text face.
+ */
+/* HEADINGS ONLY — deliberately not every .font-display element.
+ *
+ * The price is `<span class="font-display text-3xl font-extrabold">$119</span>`.
+ * Matching it here does not change its GLYPHS (Ruqaa has no digits, so they
+ * fall through correctly), but it did hand a 30px price a 49.5px line box and
+ * clamp its weight — measured as a collision against its neighbour in a flex
+ * row on both mobile and desktop. Ruq’ah leading belongs to headings, not to
+ * every element that happens to use the display family.
+ */
+:lang(ar) :is(h1, h2, h3, h4).font-display,
+:lang(ar) :is(h1, h2, h3, h4) .font-display,
+/* Opt-in for display type that is deliberately not a heading — the wordmark.
+   A class, not a widened selector: widening this back over every .font-display
+   span is what handed a 30px price a 49.5px line box. */
+:lang(ar) .font-display-ar {
+  /* "Plus Jakarta Sans" sits between the Arabic faces and the generic on
+     purpose. An Arabic heading still contains non-Arabic characters — the
+     full stop, the space, a Latin brand token — and NEITHER Arabic face
+     covers those, because both are unicode-range limited. Without the Latin
+     display face here they fell through to the generic and rendered in Times
+     New Roman: measured, 6 glyphs of an Arabic hero heading were Times. */
+  font-family: "Aref Ruqaa", "IBM Plex Sans Arabic", "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  /* Clamp to the one weight we ship, so `font-extrabold` cannot ask the
+     browser to fake an 800. */
+  font-weight: 700;
+  /* Ruq'ah has steep diagonals and long descenders. The Latin heading leading
+     clips them; this is looser than the :lang(ar) heading rule above because
+     that one is tuned for the sans. */
+  line-height: max(1.65em, 1lh);
+  /* The strokes carry the emphasis. Latin letter-spacing tightening fights the
+     joins in a script where letters connect. */
+  letter-spacing: normal;
+}
+
+/* Numbers inside an Arabic heading stay in the sans, belt-and-braces with the
+   unicode-range above: if a future edit widens the Ruqaa range, this still
+   pins anything explicitly marked numeric to the legible face. */
+:lang(ar) .font-display .tabular-nums,
+:lang(ar) .font-display [data-numeric] {
+  font-family: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+/* ── The language-switch label ──────────────────────────────────────────
+ *
+ * The switch is labelled in each language's own script, so an ENGLISH page
+ * carries one Arabic word: العربية. That single word was pulling the whole
+ * 45,688-byte Plex Arabic face on every English visit — measured, and it is
+ * the only Arabic on an English page.
+ *
+ * This face contains those six letters and nothing else: 4,124 bytes, a saving
+ * of 41,564 on every English visit.
+ *
+ * SHAPING WAS VERIFIED BY LOOKING, not by byte count. Arabic joining lives in
+ * the OpenType layout tables, and a subsetter that drops them renders العربية
+ * as seven disconnected letters — which on a site whose proposition is Arabic
+ * looks worse than broken. Rendered side by side with the full face at both
+ * display and real UI size: identical, fully joined.
+ */
+@font-face {
+  font-family: "Plex Arabic Switch Label";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/switch-label-ar.woff2") format("woff2");
+  /* Only the letters in العربية. Anything else on the page falls straight
+     past this face, so it can never be asked to draw a glyph it lacks. */
+  unicode-range: U+0627, U+0628, U+0631, U+0639, U+0644, U+064A, U+0629, U+200C-200D;
+}
+
+.lang-switch-label-ar {
+  font-family:
+    "Plex Arabic Switch Label", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+}

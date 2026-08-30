@@ -1019,6 +1019,8 @@ export const en = {
     "Please include the full number, with country code if you're outside the UAE.",
   // --- the doctor name with honorific ------------------------------
   "common.doctorNameFormal": "Dr. Monzer Allan",
+  // --- the wordmark name -------------------------------------------
+  "common.doctorName": "Monzer Allan",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",

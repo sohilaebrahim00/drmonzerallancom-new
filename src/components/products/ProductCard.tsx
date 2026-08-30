@@ -46,7 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
         </h3>
         {(product.strength || product.quantity) && (
           <p dir="auto" className="text-xs font-medium text-muted-foreground">
-            {productMeta(product, t)}
+            <bdi>{productMeta(product, t)}</bdi>
           </p>
         )}
         <p dir="auto" className="flex-1 text-sm leading-relaxed text-muted-foreground">

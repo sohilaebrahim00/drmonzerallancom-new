@@ -58,8 +58,17 @@ export function Header() {
             height={140}
             className="h-12 w-auto sm:h-14"
           />
-          <span className="hidden font-display text-lg font-bold tracking-tight text-navy sm:inline">
-            Monzer Allan
+          {/* The wordmark carries the display face in BOTH languages. In Arabic
+              the name is written in Arabic script, so Aref Ruqaa can actually
+              draw it — "Monzer Allan" in Latin never could, whatever the stack
+              said. `font-display-ar` opts this one element in without widening
+              the heading rule back over every .font-display span, which is what
+              handed a 30px price a 49.5px line box. */}
+          <span
+            dir="auto"
+            className="font-display-ar hidden font-display text-lg font-bold tracking-tight text-navy sm:inline"
+          >
+            {t("common.doctorName")}
           </span>
         </Link>
 

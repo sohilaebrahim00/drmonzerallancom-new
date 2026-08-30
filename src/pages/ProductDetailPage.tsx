@@ -166,7 +166,7 @@ export default function ProductDetailPage() {
             </h1>
             {(product.strength || product.quantity) && (
               <p dir="auto" className="mt-1.5 text-sm font-medium text-muted-foreground">
-                {productMeta(product, t)}
+                <bdi>{productMeta(product, t)}</bdi>
               </p>
             )}
             <p dir="auto" className="mt-3 font-display text-2xl font-extrabold text-primary">
@@ -244,7 +244,12 @@ export default function ProductDetailPage() {
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <div key={key} className="flex justify-between gap-4 text-sm">
                     <dt className="shrink-0 text-muted-foreground">{specKeyText(key, t)}</dt>
-                    <dd className="text-end font-medium text-navy">{specValueText(value, t)}</dd>
+                    <dd className="text-end font-medium text-navy">
+                      {/* <bdi> so a transcribed dose or standard code is a self-contained
+                          run whatever surrounds it. Measured correct without it in this
+                          container; the isolate makes that independent of the container. */}
+                      <bdi>{specValueText(value, t)}</bdi>
+                    </dd>
                   </div>
                 ))}
               </dl>
