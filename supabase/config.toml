@@ -17,3 +17,11 @@ project_id = "nkvycfmxabtwmoirrjxv"
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+# chat-heartbeat calls the assistant twice per invocation, so an open endpoint
+# is a way to spend Gemini quota. Pinned EXPLICITLY rather than relying on the
+# global default: deploying once with --no-verify-jwt set it false on the
+# platform, and a later deploy WITHOUT the flag did not put it back. The flag
+# is sticky; the only reliable statement is the one written down here.
+[functions.chat-heartbeat]
+verify_jwt = true
