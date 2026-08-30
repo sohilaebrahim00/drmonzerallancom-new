@@ -8,12 +8,33 @@
 // lives right here (DEFAULT_GEMINI_MODEL) so it's never hardcoded in more
 // than one place.
 
-// "gemini-2.0-flash" (and even "gemini-2.5-flash") were retired by Google —
-// requests now fail with 404 NOT_FOUND ("no longer available to new users").
-// "gemini-flash-latest" is Google's own stable alias that always points at
-// their current recommended flash model, so this file never needs to be
-// updated again just because a dated model name is deprecated.
-const DEFAULT_GEMINI_MODEL = "gemini-flash-latest";
+// PIN THE MODEL. DO NOT REPLACE THIS WITH A "-latest" ALIAS.
+//
+// This used to be "gemini-flash-latest", chosen deliberately so that a retired
+// dated model could never break us again. That instinct was right and the
+// outcome taught the opposite lesson.
+//
+// 30 August 2026: gemini-flash-latest stopped responding for this project.
+// Not an error — no response at all. Every generateContent request hung until
+// our 12s abort, twice per call, for days. The key was valid (models.list
+// returned 200 in 69ms), egress was fine (a keyless GET to the same host was
+// refused in 43ms), and the alias was listed as available and supporting
+// generateContent. Google simply never answered, and never said why.
+//
+// Compare the two failure modes:
+//   a PINNED model that gets retired fails LOUDLY and INSTANTLY — 404 in
+//     ~77ms, which is exactly what gemini-2.5-flash did when we tested it;
+//   a FLOATING alias that breaks fails SILENTLY and SLOWLY — a hang, no
+//     status, no error, while every dashboard stays green.
+//
+// Take the failure you can see. A 404 wakes someone up the same hour; a hang
+// just makes the product quietly worse.
+//
+// Chosen on ANSWERS, not latency: of the candidates that responded at all,
+// this one returned zero fallbacks across six real patient questions, declined
+// to give a vitamin D dose and routed to the doctor in both languages, and was
+// the only one that answered an Arabic question in Arabic.
+const DEFAULT_GEMINI_MODEL = "gemini-3.1-flash-lite";
 // Bounded so a slow/overloaded Gemini can never keep a visitor staring at
 // "Thinking..." for anywhere near a minute. MAX_ATTEMPTS bounds total
 // attempts (1 initial + 1 retry); RETRY_BASE_DELAY_MS is a short fixed
