@@ -27,3 +27,4 @@ export {
 } from "./productDetailLabels";
 export { videoTitle, videoCaption } from "./videoDisplay";
 export { serviceTitle, serviceDescription, serviceHighlights } from "./serviceLabels";
+export { articleTitle, articleExcerpt, articleHaystack } from "./articleLabels";

@@ -8,7 +8,14 @@ import { Photo } from "@/components/common/Photo";
 import { Input } from "@/components/ui/input";
 import { articles, categories, estimateReadingTime, type ArticleCategory } from "@/data/articles";
 import { cn } from "@/lib/utils";
-import { useTranslate, useLocale, ARTICLE_CATEGORY_LABELS } from "@/i18n";
+import {
+  useTranslate,
+  useLocale,
+  ARTICLE_CATEGORY_LABELS,
+  articleTitle,
+  articleExcerpt,
+  articleHaystack,
+} from "@/i18n";
 
 export default function EducationIndexPage() {
   const t = useTranslate();
@@ -35,12 +42,13 @@ export default function EducationIndexPage() {
       const q = query.trim().toLowerCase();
       const matchesQuery =
         !q ||
-        article.title.toLowerCase().includes(q) ||
-        article.excerpt.toLowerCase().includes(q) ||
-        article.category.toLowerCase().includes(q);
+        // Searches BOTH languages: an Arabic reader may still type
+        // "protein". Depends on `t`, so results refresh on a language change
+        // instead of staying stale from the previous locale.
+        articleHaystack(article, t).includes(q);
       return matchesCategory && matchesQuery;
     });
-  }, [query, activeCategory, featured?.slug]);
+  }, [query, activeCategory, featured?.slug, t]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:px-10 sm:py-20">
@@ -115,15 +123,15 @@ export default function EducationIndexPage() {
                 dir="auto"
                 className="font-display text-2xl font-extrabold leading-tight text-navy sm:text-3xl"
               >
-                {featured.title}
+                {articleTitle(featured, t)}
               </h2>
               <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
-                {featured.excerpt}
+                {articleExcerpt(featured, t)}
               </p>
               <div className="mt-2 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5" /> {estimateReadingTime(featured)}{" "}
-                  {t("common.minRead")}
+                  <Clock className="h-3.5 w-3.5" />
+                  {t("common.minRead", { count: estimateReadingTime(featured) })}
                 </span>
                 <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:text-turquoise">
                   {t("blogPage.readArticle")}

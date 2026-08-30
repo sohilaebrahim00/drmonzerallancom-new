@@ -154,11 +154,21 @@ function classify(text) {
   if (enValues.has(s)) return "english-dictionary-value";
 
   // (b) Latin-script prose: two or more adjacent non-allowed Latin words
-  const words = s.match(/[A-Za-z][A-Za-z'’-]{1,}/g) || [];
+  //
+  // Digits belong INSIDE a token, not between them: without them "LJ100"
+  // splits into "LJ" and "MK-7" into "MK", neither of which matches the
+  // allow-list entry for the whole code, and both then read as untranslated
+  // English sitting in the middle of an Arabic sentence.
+  const words = s.match(/[A-Za-z][A-Za-z0-9'’-]*/g) || [];
   const offenders = words.filter((w) => !ALLOW_TOKEN.some((rx) => rx.test(w)));
   if (offenders.length >= 2) return "latin-prose";
-  // A single long English word on its own is still prose ("Products", "Blog").
-  if (offenders.length === 1 && offenders[0].length >= 4) return "latin-word";
+  // A single English word on its own is still prose ("Products", "Blog").
+  //
+  // The threshold is 2, not 4, because it was 4 and "By Monzer Allan" walked
+  // straight through it: "Monzer" and "Allan" are allow-listed proper nouns,
+  // leaving one offender — "By" — two characters long. An allow-listed name
+  // must not be able to hide the English function word standing next to it.
+  if (offenders.length === 1 && offenders[0].length >= 2) return "latin-word";
   return null;
 }
 

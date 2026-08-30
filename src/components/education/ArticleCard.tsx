@@ -4,7 +4,7 @@ import { ArrowUpRight, Clock } from "lucide-react";
 import type { Article } from "@/data/articles";
 import { estimateReadingTime } from "@/data/articles";
 import { Photo } from "@/components/common/Photo";
-import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
+import { useTranslate, ARTICLE_CATEGORY_LABELS, articleTitle, articleExcerpt } from "@/i18n";
 
 const categoryGradients: Record<string, string> = {
   "Weight Management": "from-primary/85 to-turquoise/70",
@@ -66,14 +66,14 @@ export function ArticleCard({ article }: { article: Article }) {
           dir="auto"
           className="font-display text-lg font-bold leading-snug text-navy transition-colors group-hover:text-primary"
         >
-          {article.title}
+          {articleTitle(article, t)}
         </h3>
         <p dir="auto" className="flex-1 text-sm leading-relaxed text-muted-foreground">
-          {article.excerpt}
+          {articleExcerpt(article, t)}
         </p>
         <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" /> {readingTime} {t("common.minRead")}
+            <Clock className="h-3.5 w-3.5" /> {t("common.minRead", { count: readingTime })}
           </span>
           <span className="inline-flex items-center gap-1 font-semibold text-primary group-hover:text-turquoise">
             {t("common.read")}

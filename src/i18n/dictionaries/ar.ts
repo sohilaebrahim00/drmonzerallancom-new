@@ -80,6 +80,14 @@ import type { TranslationKey } from "./en";
 export const ar: Partial<Record<TranslationKey, Entry>> = {
   // Six forms, because Arabic has six. `two` is a real dual noun
   // ("سؤالين"), not the plural with a 2 in front of it.
+  "common.minRead": {
+    zero: "أقل من دقيقة قراءة",
+    one: "دقيقة قراءة واحدة",
+    two: "دقيقتا قراءة",
+    few: "{count} دقائق قراءة",
+    many: "{count} دقيقة قراءة",
+    other: "{count} دقيقة قراءة",
+  },
   "packages.consultationCount": {
     zero: "بدون استشارات",
     one: "استشارة واحدة",
@@ -237,7 +245,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "blogPage.featured": "مقال مختار",
   "blogPage.readArticle": "اقرأ المقال",
 
-  "common.minRead": "دقائق قراءة",
+  "article.byline": "بقلم {name}",
   "common.read": "اقرأ",
   "common.home": "الرئيسية",
 
@@ -1005,6 +1013,33 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   // --- social community ---------------------------------------------
   "community.description":
     "تابع {name} للحصول على نصائح غذائية يومية، ولقطات من كواليس العمل، ومحتوى تثقيفي.",
+  // --- article titles and excerpts (ALL FLAGGED) --------------------
+  "article.sustainableWeightLoss.title": "إنقاص وزن مستدام دون حميات قاسية",
+  "article.sustainableWeightLoss.excerpt":
+    "لماذا يأتي التقييد الشديد بنتائج عكسية، وكيف تبدو خطة إنقاص الوزن الواقعية على أرض الواقع.",
+  "article.type2Diabetes.title": "الأكل الجيد مع السكري من النوع الثاني",
+  "article.type2Diabetes.excerpt":
+    "نظرة عملية على إدارة سكر الدم من خلال اختيارات الطعام وأوقات الوجبات وتوازن الكربوهيدرات.",
+  "article.athleticPerformance.title": "تغذية الأداء الرياضي والتعافي",
+  "article.athleticPerformance.excerpt":
+    "كيف تؤثر اختياراتك الغذائية قبل التمرين وبعده على الطاقة والتحمّل وسرعة تعافيك.",
+  "article.pregnancyTrimesters.title": "التغذية في كل مرحلة من مراحل الحمل",
+  "article.pregnancyTrimesters.excerpt":
+    "ما الذي يتغيّر غذائيًا من المرحلة الأولى إلى الثالثة، وأي العناصر الغذائية تستحق انتباهًا أكبر.",
+  "article.digestiveComfort.title": "فهم الطعام وراحة الجهاز الهضمي",
+  "article.digestiveComfort.excerpt":
+    "كيف تتعامل مع الانتفاخ والانزعاج وحساسيات الطعام دون استبعاد مجموعات غذائية كاملة دون داعٍ.",
+  "article.heartHealthy.title": "الأكل الصحي للقلب: الكوليسترول وضغط الدم",
+  "article.heartHealthy.excerpt":
+    "الأنماط الغذائية الأكثر ارتباطًا باطّراد بتحسّن مؤشرات القلب والأوعية، مشروحة ببساطة.",
+  "article.howMuchProtein.title": "كم من البروتين تحتاج فعلًا؟",
+  "article.howMuchProtein.excerpt":
+    "تبديد الضجيج حول كمية البروتين وتوقيت تناوله ومصادره لأهداف مختلفة.",
+  // --- article page furniture ---------------------------------------
+  "article.disclaimer":
+    "هذا المقال لأغراض تثقيفية عامة فقط، وليس بديلًا عن استشارة طبية أو غذائية مخصصة. يرجى استشارة مختص صحي مؤهل قبل إجراء أي تغييرات على نظامك الغذائي.",
+  "article.related": "مقالات ذات صلة",
+  "article.share": "شارك:",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly": "المقالات بقلم الدكتور منذر علان ومتاحة باللغة الإنجليزية فقط.",
 };

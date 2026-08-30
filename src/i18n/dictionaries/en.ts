@@ -30,6 +30,10 @@ export const en = {
     one: "{count} Consultation",
     other: "{count} Consultations",
   },
+  "common.minRead": {
+    one: "{count} min read",
+    other: "{count} min read",
+  },
   "products.resultCount": {
     one: "{count} product found",
     other: "{count} products found",
@@ -166,7 +170,7 @@ export const en = {
   "blogPage.featured": "Featured Article",
   "blogPage.readArticle": "Read the Article",
 
-  "common.minRead": "min read",
+  "article.byline": "By {name}",
   "common.read": "Read",
   "common.home": "Home",
 
@@ -962,6 +966,33 @@ export const en = {
   // --- social community ---------------------------------------------
   "community.description":
     "Follow {name} for daily nutrition tips, behind-the-scenes updates, and educational content.",
+  // --- article titles and excerpts (ALL FLAGGED) --------------------
+  "article.sustainableWeightLoss.title": "Sustainable Weight Loss Without Crash Diets",
+  "article.sustainableWeightLoss.excerpt":
+    "Why extreme restriction backfires, and what a realistic weight-loss plan looks like in practice.",
+  "article.type2Diabetes.title": "Eating Well With Type 2 Diabetes",
+  "article.type2Diabetes.excerpt":
+    "A practical look at managing blood sugar through food choices, meal timing, and carbohydrate balance.",
+  "article.athleticPerformance.title": "Fueling Athletic Performance and Recovery",
+  "article.athleticPerformance.excerpt":
+    "How pre- and post-workout nutrition choices affect energy, endurance, and how quickly you bounce back.",
+  "article.pregnancyTrimesters.title": "Nutrition Through Every Trimester of Pregnancy",
+  "article.pregnancyTrimesters.excerpt":
+    "What changes nutritionally from the first trimester to the third, and the nutrients worth paying closer attention to.",
+  "article.digestiveComfort.title": "Understanding Food and Digestive Comfort",
+  "article.digestiveComfort.excerpt":
+    "How to approach bloating, discomfort, and food sensitivities without cutting out entire food groups unnecessarily.",
+  "article.heartHealthy.title": "Heart-Healthy Eating for Cholesterol and Blood Pressure",
+  "article.heartHealthy.excerpt":
+    "The dietary patterns most consistently linked to better cardiovascular numbers, explained simply.",
+  "article.howMuchProtein.title": "How Much Protein Do You Actually Need?",
+  "article.howMuchProtein.excerpt":
+    "Cutting through the noise around protein intake, timing, and sources for different goals.",
+  // --- article page furniture ---------------------------------------
+  "article.disclaimer":
+    "This article is for general educational purposes only and is not a substitute for personalized medical or nutritional advice. Please consult a qualified healthcare provider before making changes to your diet.",
+  "article.related": "Related Articles",
+  "article.share": "Share:",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",

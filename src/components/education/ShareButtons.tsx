@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Check, Link2, Linkedin, Send } from "lucide-react";
 
+import { useTranslate } from "@/i18n";
+
 interface ShareButtonsProps {
   url: string;
   title: string;
 }
 
 export function ShareButtons({ url, title }: ShareButtonsProps) {
+  const t = useTranslate();
   const [copied, setCopied] = useState(false);
 
   const links = [
@@ -35,7 +38,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2.5">
       <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        Share:
+        {t("article.share")}
       </span>
       {links.map((link) => (
         <a

@@ -19,10 +19,11 @@ import { useArticleSections } from "@/i18n/useArticleSections";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { business } from "@/data/business";
-import { useTranslate, ARTICLE_CATEGORY_LABELS } from "@/i18n";
+import { useTranslate, useLocale, ARTICLE_CATEGORY_LABELS, articleTitle } from "@/i18n";
 
 export default function EducationArticlePage() {
   const t = useTranslate();
+  const { formatDate } = useLocale();
   const { slug } = useParams<{ slug: string }>();
   const article = slug ? getArticleBySlug(slug) : undefined;
   // Called before the early return below, so the hook order is unconditional.
@@ -36,11 +37,9 @@ export default function EducationArticlePage() {
   const readingTime = estimateReadingTime(article);
   const related = getRelatedArticles(article);
   const url = `${business.domain}/blog/${article.slug}`;
-  const dateLabel = new Date(article.date).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  // Was toLocaleDateString(undefined, ...), which follows the BROWSER locale
+  // rather than the page locale — an Arabic page showed an English month name.
+  const dateLabel = formatDate(article.date, { year: "numeric", month: "long", day: "numeric" });
 
   const jsonLd = [
     articleSchema(article, url),
@@ -99,7 +98,7 @@ export default function EducationArticlePage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{article.title}</BreadcrumbPage>
+            <BreadcrumbPage>{articleTitle(article, t)}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -131,16 +130,16 @@ export default function EducationArticlePage() {
           dir="auto"
           className="mt-4 font-display text-3xl font-extrabold leading-tight tracking-tight text-navy sm:text-4xl"
         >
-          {article.title}
+          {articleTitle(article, t)}
         </h1>
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4" /> {dateLabel}
           </span>
           <span className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" /> {readingTime} min read
+            <Clock className="h-4 w-4" /> {t("common.minRead", { count: readingTime })}
           </span>
-          <span>By {business.doctorName}</span>
+          <span dir="auto">{t("article.byline", { name: business.doctorName })}</span>
         </div>
       </div>
 
@@ -180,19 +179,17 @@ export default function EducationArticlePage() {
       </div>
 
       <div className="mt-10 rounded-xl border border-border/70 bg-secondary/40 p-5 text-xs leading-relaxed text-muted-foreground">
-        This article is for general educational purposes only and is not a substitute for
-        personalized medical or nutritional advice. Please consult a qualified healthcare provider
-        before making changes to your diet.
+        {t("article.disclaimer")}
       </div>
 
       <div className="mt-8 border-t border-border/60 pt-6">
-        <ShareButtons url={url} title={article.title} />
+        <ShareButtons url={url} title={articleTitle(article, t)} />
       </div>
 
       {related.length > 0 && (
         <div className="mt-16">
           <h2 dir="auto" className="font-display text-xl font-bold text-navy">
-            Related Articles
+            {t("article.related")}
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
             {related.map((item) => (
