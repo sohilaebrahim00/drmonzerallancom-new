@@ -21,7 +21,7 @@
  *
  * Usage: npm run check:functions
  */
-import { readdirSync, existsSync } from "node:fs";
+import { readdirSync, existsSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -64,4 +64,41 @@ if (failed) {
   console.error(`\ncheck:functions — ${failed} of ${entries.length} functions failed type checking.`);
   process.exit(1);
 }
-console.log(`\ncheck:functions — ${entries.length} functions type-checked, 0 errors.`);
+
+/**
+ * Every function must declare verify_jwt in supabase/config.toml.
+ *
+ * `supabase functions deploy --no-verify-jwt` writes that setting to the
+ * platform permanently, and a later deploy WITHOUT the flag does not undo it.
+ * An absent [functions.x] block therefore does not mean "the secure default" —
+ * it means "whatever someone last typed in a terminal", and the repository
+ * records no evidence either way. chat-heartbeat sat open exactly that way on
+ * 30 August 2026 and looked perfectly fine in review.
+ *
+ * A flag in a command is invisible state. A line in a file is reviewable
+ * state. This turns the second into a requirement.
+ */
+const configPath = resolve(root, "supabase/config.toml");
+const config = existsSync(configPath) ? readFileSync(configPath, "utf8") : "";
+const declared = new Set(
+  [...config.matchAll(/^\[functions\.([A-Za-z0-9_-]+)\]/gm)].map((m) => m[1]),
+);
+const undeclared = entries.map((e) => e.name).filter((n) => !declared.has(n));
+const orphaned = [...declared].filter((n) => !entries.some((e) => e.name === n));
+
+if (undeclared.length || orphaned.length) {
+  console.error("\ncheck:functions — supabase/config.toml does not describe what gets deployed:\n");
+  for (const n of undeclared) {
+    console.error(`  MISSING   [functions.${n}] — deploys with whatever verify_jwt the platform`);
+    console.error(`            already holds, which nothing in this repo records.`);
+  }
+  for (const n of orphaned) {
+    console.error(`  ORPHANED  [functions.${n}] — declared here, no such function on disk.`);
+  }
+  console.error("\n  A flag in a command is invisible state; a line in a file is reviewable state.");
+  process.exit(1);
+}
+
+console.log(
+  `\ncheck:functions — ${entries.length} functions type-checked, 0 errors; all ${declared.size} declared in config.toml.`,
+);

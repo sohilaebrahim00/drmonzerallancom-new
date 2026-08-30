@@ -1,27 +1,94 @@
 # Supabase CLI project configuration.
 #
-# This file exists for exactly one reason: Stripe does not send a Supabase
-# JWT. Edge Functions verify a JWT by default, so without the block below the
-# webhook endpoint answers 401 before a single line of its handler runs — the
-# signature check inside stripe-webhook never gets the chance to do its job,
-# and every payment silently records nothing.
+# WHY EVERY FUNCTION IS LISTED HERE, INCLUDING THE BORING ONES.
+#
+# `supabase functions deploy --no-verify-jwt` writes that setting to the
+# PLATFORM and it stays there. Redeploying the same function without the flag
+# does not put it back — verified on 30 August 2026, when chat-heartbeat still
+# answered 200 to a request carrying a deliberately bogus token after a clean
+# redeploy. An absent [functions.x] block does not mean "the default"; it means
+# "leave whatever is already up there", which may be something a person typed
+# once, months ago, in a terminal nobody kept.
+#
+# That is invisible state. A reviewer reading this repository would have seen
+# nothing wrong. So the rule is: a flag in a command is invisible state, a line
+# in a file is reviewable state — and everything a deploy flag can set silently
+# gets declared here instead, even where it only restates the default.
+#
+# This file previously said "Every other function keeps the default
+# verify_jwt = true." That sentence was an assumption, not a fact, and it was
+# the assumption the incident disproved.
+
+project_id = "nkvycfmxabtwmoirrjxv"
+
+# ── The one genuine exception ───────────────────────────────────────────────
+#
+# Stripe does not send a Supabase JWT. Edge Functions verify a JWT by default,
+# so without this block the webhook answers 401 before a single line of its
+# handler runs — the signature check inside stripe-webhook never gets the
+# chance to do its job, and every payment silently records nothing.
 #
 # The endpoint is NOT left unauthenticated by doing this: stripe-webhook
 # verifies the Stripe signature itself (constructEventAsync against
 # STRIPE_WEBHOOK_SECRET) and returns 400 on a missing or bad signature before
 # touching the database. That signature, not a JWT, is this endpoint's auth.
-#
-# Every other function keeps the default verify_jwt = true.
-
-project_id = "nkvycfmxabtwmoirrjxv"
-
 [functions.stripe-webhook]
 verify_jwt = false
 
+# ── Everything else: authenticated, stated explicitly ───────────────────────
+#
+# Confirmed by probe on 30 August 2026: each of these rejects an unauthenticated
+# request with 401. The declarations below are what keeps that true through the
+# next deploy rather than merely describing what happened to be true that day.
+
+# Browser-facing, called by the website and the native app.
+[functions.ai-chat]
+verify_jwt = true
+
+[functions.food-scan]
+verify_jwt = true
+
+[functions.food-search]
+verify_jwt = true
+
+[functions.contact-submit]
+verify_jwt = true
+
+[functions.get-availability]
+verify_jwt = true
+
+[functions.create-consultation]
+verify_jwt = true
+
+[functions.create-consultation-checkout-session]
+verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.notify-program-activated]
+verify_jwt = true
+
+# Staff-only surfaces. These check the caller's role inside the handler as
+# well; the JWT gate is the first of two, not the only one.
+[functions.admin-availability]
+verify_jwt = true
+
+[functions.admin-subscribers]
+verify_jwt = true
+
 # chat-heartbeat calls the assistant twice per invocation, so an open endpoint
-# is a way to spend Gemini quota. Pinned EXPLICITLY rather than relying on the
-# global default: deploying once with --no-verify-jwt set it false on the
-# platform, and a later deploy WITHOUT the flag did not put it back. The flag
-# is sticky; the only reliable statement is the one written down here.
+# is a way to spend Gemini quota on someone else's behalf.
 [functions.chat-heartbeat]
+verify_jwt = true
+
+# ── Present in the repository, not deployed ─────────────────────────────────
+#
+# These three answer 404 in production: they exist here but have never been
+# pushed. Declared anyway, so that whoever deploys them first gets the intended
+# setting rather than whatever the platform invents.
+[functions.create-checkout-session]
+verify_jwt = true
+
+[functions.stripe-preflight]
 verify_jwt = true

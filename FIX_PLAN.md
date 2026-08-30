@@ -878,3 +878,48 @@ unreviewed `stripe-preflight` function live.
 step 3 above is done and confirmed, **delete that exemption** — see the comment in
 `src/services/checkoutService.ts`. Left in place it is a permanent silent bypass of the live price
 check.
+
+---
+
+## 30 August 2026 — Edge Function auth, checked rather than assumed
+
+Every deployed Edge Function was probed with an unauthenticated GET.
+
+| Result | Functions |
+|---|---|
+| 401, JWT enforced | `admin-availability`, `ai-chat`, `chat-heartbeat`, `contact-submit`, `create-consultation`, `create-consultation-checkout-session`, `delete-account`, `food-scan`, `food-search`, `get-availability`, `notify-program-activated` |
+| 400, exempt by design | `stripe-webhook` — Stripe does not send a Supabase JWT; the endpoint's auth is the Stripe signature, verified before any database write |
+| 404, never deployed | `admin-subscribers`, `create-checkout-session`, `stripe-preflight` |
+
+Nothing was found exposed. The reason the sweep happened is worth more than
+the result: `chat-heartbeat` had been deployed once with `--no-verify-jwt`, and
+a later clean redeploy did **not** put verification back — a request carrying a
+deliberately bogus token still returned 200. The flag writes to the platform and
+stays there.
+
+**A flag in a command is invisible state; a line in a file is reviewable state.**
+
+An absent `[functions.x]` block does not mean "the default". It means "whatever
+someone last typed in a terminal", and the repository records no evidence
+either way — a reviewer reading this project would have seen nothing wrong.
+All 15 functions now declare `verify_jwt` explicitly in `supabase/config.toml`,
+including the 13 that only restate the default, and `check:functions` fails the
+build if a function on disk has no declaration (or a declaration has no
+function). Proven by deleting the `ai-chat` block and watching it fail.
+
+### The same day: the assistant was quoting retired prices
+
+`scripts/build-ai-knowledge.ts` imported `src/data/packages` — the monthly
+memberships retired in `024cee0`. That commit changed the UI and left the
+generator pointing at the dead file, `build:knowledge` was not in the gate, and
+so the assistant told visitors "$29 per month (down from $58)" while checkout
+charged $119 once. Found by accident, by the chat heartbeat, while it was
+asserting something else.
+
+`npm run check:knowledge` now compares every price and product name in the
+knowledge base against the catalogue `checkoutService` uses, and runs inside
+`npm run gate`. Proven against the real defect: run against the knowledge base
+that was actually serving customers, it exits 1 and names every retired price.
+
+**A GREEN METRIC MUST MEASURE THE OUTCOME, NOT THE ARTEFACT** — the knowledge
+base was a committed artefact that no check ever compared to the product.
