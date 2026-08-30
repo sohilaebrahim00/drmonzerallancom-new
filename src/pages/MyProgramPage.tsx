@@ -13,6 +13,7 @@ import {
   type NutritionProgram,
   type ProgramDay,
 } from "@/services/programService";
+import { EnglishOnlyNotice } from "@/components/common/EnglishOnlyNotice";
 
 const MEAL_ORDER = ["breakfast", "snack", "lunch", "dinner"] as const;
 
@@ -67,6 +68,8 @@ export default function MyProgramPage() {
         path="/my-program"
         noindex
       />
+
+      <EnglishOnlyNotice />
 
       <Reveal direction="up">
         <h1

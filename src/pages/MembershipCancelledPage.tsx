@@ -33,7 +33,7 @@ export default function MembershipCancelledPage() {
             to="/packages"
             className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
           >
-            <Sparkles className="h-4 w-4" /> View Packages
+            <Sparkles className="h-4 w-4" /> {t("hero.viewPackages")}
           </Link>
           {waHref && (
             <a
@@ -42,7 +42,7 @@ export default function MembershipCancelledPage() {
               rel="noopener noreferrer"
               className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise"
             >
-              <MessageCircle className="h-4 w-4" /> Ask a Question
+              <MessageCircle className="h-4 w-4" /> {t("membership.askQuestion")}
             </a>
           )}
         </div>

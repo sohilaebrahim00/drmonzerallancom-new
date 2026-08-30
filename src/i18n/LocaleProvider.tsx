@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 
 import { dirOf, type Locale } from "./config";
 import { detectInitialLocale, storeLocale } from "./detect";
@@ -6,6 +7,7 @@ import { LocaleContext, type LocaleContextValue } from "./context";
 import { createTranslator, isDictionaryLoaded, loadDictionary } from "./translate";
 import { formatDate, formatNumber, formatPrice } from "./format";
 import { arabicCoverage } from "./coverage";
+import { renderLocaleFor } from "./englishOnlyRoutes";
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   // Read once, lazily: detection touches localStorage and navigator, and
@@ -40,8 +42,30 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
    * throughout, so their values survive by construction rather than by our
    * remembering to save them.
    */
+  const { pathname } = useLocation();
+
   const [activeLocale, setActiveLocale] = useState<Locale>(locale);
   const [firstPaintDone, setFirstPaintDone] = useState(() => isDictionaryLoaded(locale));
+
+  /**
+   * The locale the tree actually renders in.
+   *
+   * THREE VALUES, NOT TWO. `locale` is what the reader asked for, and is what
+   * gets stored. `activeLocale` is what has finished loading. `renderLocale`
+   * is what this route is allowed to show — the account area is English-only,
+   * so it overrides the other two there and nowhere else.
+   *
+   * Applied HERE, at the single point everything else derives from, rather
+   * than at each consumer. Strings, `dir` and `lang` all read this one value,
+   * so the direction cannot disagree with the words on the page — which is
+   * exactly the failure this guard exists to remove, and the same one we
+   * refused to ship for two seconds on the chunk-failure path.
+   *
+   * It never touches the STORED preference. A reader who chose Arabic, opened
+   * their account and went back to a public page is still in Arabic. A
+   * preference that quietly erases itself is a bug, not a preference.
+   */
+  const renderLocale = renderLocaleFor(pathname, activeLocale);
 
   useEffect(() => {
     if (isDictionaryLoaded(locale)) {
@@ -88,9 +112,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
    */
   useEffect(() => {
     const root = document.documentElement;
-    root.lang = activeLocale;
-    root.dir = dirOf(activeLocale);
-  }, [activeLocale]);
+    root.lang = renderLocale;
+    root.dir = dirOf(renderLocale);
+  }, [renderLocale]);
 
   useEffect(() => {
     if (!import.meta.env.DEV) return;
@@ -107,15 +131,17 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<LocaleContextValue>(
     () => ({
-      locale: activeLocale,
-      dir: dirOf(activeLocale),
+      locale: renderLocale,
+      requestedLocale: activeLocale,
+      localeForcedEnglish: renderLocale !== activeLocale,
+      dir: dirOf(renderLocale),
       setLocale,
-      t: createTranslator(activeLocale),
-      formatDate: (v, options) => formatDate(v, activeLocale, options),
-      formatNumber: (v, options) => formatNumber(v, activeLocale, options),
+      t: createTranslator(renderLocale),
+      formatDate: (v, options) => formatDate(v, renderLocale, options),
+      formatNumber: (v, options) => formatNumber(v, renderLocale, options),
       formatPrice,
     }),
-    [activeLocale, setLocale],
+    [renderLocale, activeLocale, setLocale],
   );
 
   /*

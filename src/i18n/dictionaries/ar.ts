@@ -1067,6 +1067,33 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "common.doctorNameFormal": "الدكتور منذر علان",
   // --- the wordmark name -------------------------------------------
   "common.doctorName": "منذر علان",
+  // --- auth and post-payment pages ---------------------------------
+  "notFound.backHome": "العودة إلى الرئيسية",
+  "notFound.browseArticles": "تصفّح المقالات",
+  "membership.askQuestion": "اطرح سؤالًا",
+  "membership.goToAccount": "الذهاب إلى حسابي",
+  "membership.goToSignIn": "الذهاب إلى تسجيل الدخول",
+  "membership.contactUs": "تواصل معنا",
+  "nav.myAccount": "حسابي",
+  "auth.chooseProgram": "اختر برنامجًا",
+  "auth.signInUnavailable":
+    "تسجيل دخول الأعضاء غير مفعّل بعد. يرجى المحاولة لاحقًا، أو التواصل معنا عبر صفحة التواصل.",
+  "auth.forgotPassword": "نسيت كلمة المرور؟",
+  "auth.signingIn": "جارٍ تسجيل الدخول…",
+  "auth.logIn": "تسجيل الدخول",
+  "auth.backToSignIn": "العودة إلى تسجيل الدخول",
+  "auth.passwordUpdated": "تم تحديث كلمة المرور. جارٍ تحويلك إلى حسابك…",
+  "auth.resetUnavailable":
+    "إعادة تعيين كلمة المرور غير مفعّلة بعد. يجب فتح هذا الرابط من رسالة إعادة تعيين حقيقية بعد إعداد Supabase.",
+  "auth.sendYourselfLink": "أرسل لنفسك رابط إعادة تعيين",
+  "auth.updating": "جارٍ التحديث…",
+  "auth.updatePassword": "تحديث كلمة المرور",
+  "auth.resetSent":
+    "إن كان هناك حساب مسجَّل بهذا البريد الإلكتروني، فقد أُرسلت إليه تعليمات إعادة تعيين كلمة المرور.",
+  "auth.sending": "جارٍ الإرسال…",
+  "auth.sendResetInstructions": "إرسال تعليمات إعادة التعيين",
+  // --- account area — English by decision ---------------------------
+  "account.englishOnlyNotice": "هذا القسم من الموقع متاح حاليًا باللغة الإنجليزية فقط.",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly": "المقالات بقلم الدكتور منذر علان ومتاحة باللغة الإنجليزية فقط.",
 };

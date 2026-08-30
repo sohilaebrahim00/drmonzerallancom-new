@@ -60,7 +60,7 @@ export default function MembershipSuccessPage() {
               to="/account"
               className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
             >
-              <UserRound className="h-4 w-4" /> Go to My Account
+              <UserRound className="h-4 w-4" /> {t("membership.goToAccount")}
             </Link>
           </>
         ) : (
@@ -76,12 +76,12 @@ export default function MembershipSuccessPage() {
               to="/login"
               className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-turquoise"
             >
-              <UserRound className="h-4 w-4" /> Go to Sign In
+              <UserRound className="h-4 w-4" /> {t("membership.goToSignIn")}
             </Link>
             <p dir="auto" className="mt-4 text-xs text-muted-foreground">
               Didn&apos;t receive anything after a few minutes?{" "}
               <Link to="/contact" className="font-semibold text-primary hover:text-turquoise">
-                Contact us
+                {t("membership.contactUs")}
               </Link>{" "}
               and we&apos;ll help directly.
             </p>

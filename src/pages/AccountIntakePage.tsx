@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useTranslate, useLocale } from "@/i18n";
 import { INTAKE_LABEL_KEYS } from "@/i18n/intakeLabels";
+import { EnglishOnlyNotice } from "@/components/common/EnglishOnlyNotice";
 
 /**
  * The pre-consultation intake as a real page rather than a chat.
@@ -141,6 +142,8 @@ export default function AccountIntakePage() {
         path="/account/consultations/intake"
         noindex
       />
+
+      <EnglishOnlyNotice />
 
       <Reveal direction="up">
         <Link

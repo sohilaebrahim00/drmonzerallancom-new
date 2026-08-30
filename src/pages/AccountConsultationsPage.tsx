@@ -38,6 +38,7 @@ import { getProgramPackageBySlug } from "@/data/programPackages";
 import { DOCTOR_TIMEZONE, MINIMUM_BOOKING_NOTICE_HOURS } from "@/config/consultations";
 import { hapticSuccess } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
+import { EnglishOnlyNotice } from "@/components/common/EnglishOnlyNotice";
 
 const CONSULTATION_TYPES = [
   "Monthly Check-In",
@@ -193,6 +194,8 @@ export default function AccountConsultationsPage() {
         noindex
         jsonLd={jsonLd}
       />
+
+      <EnglishOnlyNotice />
 
       <Breadcrumb>
         <BreadcrumbList>

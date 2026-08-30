@@ -67,7 +67,7 @@ export default function ForgotPasswordPage() {
       subtitle={t("auth.forgotBody")}
       footer={
         <Link to="/login" className="font-semibold text-primary hover:text-turquoise">
-          Back to Sign In
+          {t("auth.backToSignIn")}
         </Link>
       }
     >
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
         <div className="flex flex-col items-center gap-3 py-4 text-center">
           <CheckCircle2 className="h-10 w-10 text-turquoise" />
           <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
-            If an account exists for this email, password reset instructions have been sent.
+            {t("auth.resetSent")}
           </p>
         </div>
       ) : (
@@ -118,11 +118,11 @@ export default function ForgotPasswordPage() {
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Sending…
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t("auth.sending")}
                 </>
               ) : (
                 <>
-                  <Send className="h-4 w-4" /> Send Reset Instructions
+                  <Send className="h-4 w-4" /> {t("auth.sendResetInstructions")}
                 </>
               )}
             </Button>

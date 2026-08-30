@@ -74,7 +74,7 @@ export default function LoginPage() {
         <>
           New here?{" "}
           <Link to="/packages" className="font-semibold text-primary hover:text-turquoise">
-            Choose a Program
+            {t("auth.chooseProgram")}
           </Link>
         </>
       }
@@ -88,10 +88,7 @@ export default function LoginPage() {
 
       {!configured && (
         <Alert className="mb-5 border-amber-300 bg-amber-50 text-amber-900">
-          <AlertDescription>
-            Member sign-in isn&apos;t connected yet. Please check back soon, or reach out via the
-            Contact page.
-          </AlertDescription>
+          <AlertDescription>{t("auth.signInUnavailable")}</AlertDescription>
         </Alert>
       )}
 
@@ -126,7 +123,7 @@ export default function LoginPage() {
                     to="/forgot-password"
                     className="text-xs font-semibold text-primary hover:text-turquoise"
                   >
-                    Forgot password?
+                    {t("auth.forgotPassword")}
                   </Link>
                 </div>
                 <FormControl>
@@ -150,11 +147,11 @@ export default function LoginPage() {
           >
             {submitting ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("auth.signingIn")}
               </>
             ) : (
               <>
-                <LogIn className="h-4 w-4" /> Log In
+                <LogIn className="h-4 w-4" /> {t("auth.logIn")}
               </>
             )}
           </Button>

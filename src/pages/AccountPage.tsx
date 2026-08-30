@@ -31,6 +31,7 @@ import {
   type Subscription,
 } from "@/services/membershipService";
 import { cn } from "@/lib/utils";
+import { EnglishOnlyNotice } from "@/components/common/EnglishOnlyNotice";
 
 const statusLabel: Record<ConsultationRequest["status"], string> = {
   pending: "Pending",
@@ -177,6 +178,8 @@ export default function AccountPage() {
         path="/account"
         noindex
       />
+
+      <EnglishOnlyNotice />
 
       <Reveal direction="up" className="flex flex-wrap items-center justify-between gap-4">
         <div>

@@ -1021,6 +1021,33 @@ export const en = {
   "common.doctorNameFormal": "Dr. Monzer Allan",
   // --- the wordmark name -------------------------------------------
   "common.doctorName": "Monzer Allan",
+  // --- auth and post-payment pages ---------------------------------
+  "notFound.backHome": "Back to Home",
+  "notFound.browseArticles": "Browse Articles",
+  "membership.askQuestion": "Ask a Question",
+  "membership.goToAccount": "Go to My Account",
+  "membership.goToSignIn": "Go to Sign In",
+  "membership.contactUs": "Contact us",
+  "nav.myAccount": "My Account",
+  "auth.chooseProgram": "Choose a Program",
+  "auth.signInUnavailable":
+    "Member sign-in isn't connected yet. Please check back soon, or reach out via the Contact page.",
+  "auth.forgotPassword": "Forgot password?",
+  "auth.signingIn": "Signing in…",
+  "auth.logIn": "Log In",
+  "auth.backToSignIn": "Back to Sign In",
+  "auth.passwordUpdated": "Your password has been updated. Redirecting to your account…",
+  "auth.resetUnavailable":
+    "Password reset isn't connected yet. This link must be opened from a real reset email once Supabase is configured.",
+  "auth.sendYourselfLink": "Send yourself a reset link",
+  "auth.updating": "Updating…",
+  "auth.updatePassword": "Update Password",
+  "auth.resetSent":
+    "If an account exists for this email, password reset instructions have been sent.",
+  "auth.sending": "Sending…",
+  "auth.sendResetInstructions": "Send Reset Instructions",
+  // --- account area — English by decision ---------------------------
+  "account.englishOnlyNotice": "This section of the site is currently available in English only.",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",

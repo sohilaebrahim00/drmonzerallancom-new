@@ -30,13 +30,13 @@ export default function NotFoundPage() {
             to="/"
             className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-turquoise"
           >
-            <Home className="h-4 w-4" /> Back to Home
+            <Home className="h-4 w-4" /> {t("notFound.backHome")}
           </Link>
           <Link
             to="/blog"
             className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-navy transition-colors hover:border-turquoise hover:text-turquoise"
           >
-            <Search className="h-4 w-4" /> Browse Articles
+            <Search className="h-4 w-4" /> {t("notFound.browseArticles")}
           </Link>
         </div>
       </Reveal>

@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
       subtitle={t("auth.resetBody")}
       footer={
         <Link to="/login" className="font-semibold text-primary hover:text-turquoise">
-          Back to Sign In
+          {t("auth.backToSignIn")}
         </Link>
       }
     >
@@ -104,7 +104,7 @@ export default function ResetPasswordPage() {
         <div className="flex flex-col items-center gap-3 py-4 text-center">
           <CheckCircle2 className="h-10 w-10 text-turquoise" />
           <p dir="auto" className="text-sm leading-relaxed text-muted-foreground">
-            Your password has been updated. Redirecting to your account…
+            {t("auth.passwordUpdated")}
           </p>
         </div>
       ) : (
@@ -112,10 +112,7 @@ export default function ResetPasswordPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" noValidate>
             {!configured && (
               <Alert className="border-amber-300 bg-amber-50 text-amber-900">
-                <AlertDescription>
-                  Password reset isn&apos;t connected yet. This link must be opened from a real
-                  reset email once Supabase is configured.
-                </AlertDescription>
+                <AlertDescription>{t("auth.resetUnavailable")}</AlertDescription>
               </Alert>
             )}
             <FormField
@@ -154,7 +151,7 @@ export default function ResetPasswordPage() {
                     to="/forgot-password"
                     className="font-semibold underline underline-offset-2"
                   >
-                    Send yourself a reset link
+                    {t("auth.sendYourselfLink")}
                   </Link>{" "}
                   and open this page from that email.
                 </AlertDescription>
@@ -174,11 +171,11 @@ export default function ResetPasswordPage() {
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Updating…
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t("auth.updating")}
                 </>
               ) : (
                 <>
-                  <KeyRound className="h-4 w-4" /> Update Password
+                  <KeyRound className="h-4 w-4" /> {t("auth.updatePassword")}
                 </>
               )}
             </Button>

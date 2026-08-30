@@ -23,7 +23,7 @@ import { SHOW_LANGUAGE_SWITCH } from "@/config/features";
  * and the brief asks for it to be visible without opening anything on mobile.
  */
 export function LanguageSwitch({ className }: { className?: string }) {
-  const { locale, setLocale } = useLocale();
+  const { requestedLocale: locale, setLocale } = useLocale();
 
   /**
    * Which language is being fetched right now, if any.

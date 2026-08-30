@@ -161,7 +161,7 @@ export function Header() {
                       onClick={() => setDrawerOpen(false)}
                       className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-navy/80 transition-colors hover:border-turquoise hover:text-turquoise"
                     >
-                      My Account
+                      {t("nav.myAccount")}
                     </Link>
                   ) : (
                     <>
