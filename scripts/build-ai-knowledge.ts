@@ -12,7 +12,22 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-import { packages, packageDisclaimer, comparisonRows } from "../src/data/packages";
+// THE CATALOGUE THE TILL USES, and therefore the only one the assistant may
+// describe.
+//
+// This used to import `../src/data/packages` — the monthly membership tiers
+// (Basic $29/mo, Premium $61/mo, VIP Elite $103/mo). Those were retired from
+// the site in 024cee0, but that commit changed the UI and left this pointing at
+// the dead file. Nothing regenerated, nothing complained, and for weeks the
+// assistant quoted $29/month to visitors that checkout then charged $119 once.
+//
+// `purchasableProgramPackages`, not `programPackages`: three Diet programs are
+// present in the data with availableForPurchase: false. The assistant must not
+// offer what the site will not sell.
+import {
+  purchasableProgramPackages,
+  programPackageDisclaimer,
+} from "../src/data/programPackages";
 import { getPublishedProducts } from "../src/data/products";
 import { services } from "../src/data/services";
 import { faqs } from "../src/data/faqs";
@@ -33,6 +48,18 @@ function slugKeywords(...values: (string | undefined)[]): string[] {
   );
 }
 
+/**
+ * The tier names as a readable list, e.g. "Treatment Basic, Treatment Plus, or
+ * Treatment Premium" — read from the catalogue so hand-written prose can name
+ * the products without hardcoding them. The retired version of this sentence
+ * said "Basic, Premium, or VIP Elite" because it was typed out by hand.
+ */
+function listTiers(): string {
+  const names = purchasableProgramPackages.map((p) => p.name);
+  if (names.length <= 1) return names.join("");
+  return `${names.slice(0, -1).join(", ")}, or ${names[names.length - 1]}`;
+}
+
 const items: KnowledgeItem[] = [];
 
 // ── doctor ──────────────────────────────────────────────────────────────
@@ -50,28 +77,64 @@ items.push({
   route: "/about",
 });
 
-// ── membership (how it works, general rules) ───────────────────────────
+// ── programs (how it works, general rules) ─────────────────────────────
+//
+// The prose below is hand-written, so it is the part most able to drift from
+// the catalogue. Everything countable in it is interpolated from the data
+// rather than typed out, so the sentence cannot outlive the facts: the tier
+// names and the credit counts come from purchasableProgramPackages, and the
+// gate (scripts/check-knowledge.mjs) fails the build if a price or a product
+// name appears here that the catalogue does not contain.
 items.push({
-  id: "membership-overview",
+  id: "program-overview",
   category: "membership",
-  title: "How Membership Works",
+  title: "How Programs Work",
   content:
-    "Membership works in six steps: choose a membership (Basic, Premium, or VIP Elite), complete secure payment via Stripe Checkout, your member account activates once payment is confirmed, your monthly consultation credits become available, you request an online consultation from your account dashboard using a credit, and approved consultations happen over Google Meet. Creating an account is not free — it begins with choosing and paying for a membership package. " +
-    packageDisclaimer,
-  keywords: slugKeywords("membership", "how", "works", "join", "sign", "up", "create", "account", "free", "trial"),
+    `Programs work in six steps: choose a program (${listTiers()}), complete secure payment via Stripe Checkout, your account activates once payment is confirmed, your consultation credits become available, you request an online consultation from your account dashboard using a credit, and approved consultations happen over Google Meet. Each program is a ONE-TIME purchase, not a subscription — there is no recurring billing and no monthly renewal. Creating an account is not free — it begins with choosing and paying for a program. ` +
+    programPackageDisclaimer,
+  keywords: slugKeywords("membership", "program", "how", "works", "join", "sign", "up", "create", "account", "free", "trial", "subscription", "recurring"),
   // No `route` — navigating to view/choose a membership is the VIEW_MEMBERSHIP
   // action concept (see supabase/functions/_shared/actionRegistry.ts), which
   // resolves to the correct platform-specific destination server-side.
 });
+
+// A KNOWLEDGE BASE THAT ONLY STATES POSITIVES CANNOT ANSWER "DO YOU HAVE X?"
+//
+// After the catalogue was repointed, prices were correct but "Do you have a
+// monthly membership?" still got "Yes, I offer various membership packages" —
+// because the denial existed only as a clause inside a longer passage about
+// how programs work, and retrieval surfaced the passage rather than the point.
+//
+// Emitted only while nothing recurring is sold, so it disappears by itself if
+// a subscription is ever reintroduced. That is the difference between an
+// assertion and a hardcoded sentence.
+if (!purchasableProgramPackages.some((p) => /month|subscription/i.test(p.priceLabel))) {
+  items.push({
+    id: "no-subscription",
+    category: "membership",
+    title: "Is There a Monthly Membership or Subscription?",
+    content:
+      "No. There is no monthly membership, no subscription, and no recurring billing. Everything sold is a one-time purchase: " +
+      `${purchasableProgramPackages.map((p) => `${p.name} at ${p.priceLabel}`).join(", ")}. ` +
+      "You pay once, the consultations included in that program are granted to your account, and nothing renews or charges again. " +
+      "Monthly membership tiers were offered in the past and are no longer available, so any price quoted per month is out of date.",
+    keywords: slugKeywords(
+      "membership", "monthly", "month", "subscription", "subscribe", "recurring", "renew", "renewal",
+      "cancel", "billing", "plan", "tier", "free", "trial", "one", "time", "once",
+    ),
+  });
+}
 
 items.push({
   id: "consultation-credits",
   category: "consultations",
   title: "Consultation Credits & Requests",
   content:
-    "Each membership includes a monthly consultation-credit allowance: Basic includes 1, Premium includes 3, VIP Elite includes " +
-    packages.find((p) => p.slug === "vip-elite")?.consultationCredits +
-    ". A credit is only used once a booking is actually confirmed with a real Google Meet link — not just for opening the booking page or selecting a date. Members book from their account by choosing an available date and time, reviewing the appointment, and confirming. If a member has no credits remaining, they're offered the option to upgrade or renew their membership. Detailed medical history should not be shared through the consultation booking form — that stays with the consultation itself.",
+    "Each program includes a fixed number of consultation credits, granted once at purchase and not renewed monthly: " +
+    purchasableProgramPackages
+      .map((p) => `${p.name} includes ${p.consultationCount}`)
+      .join(", ") +
+    ". A credit is only used once a booking is actually confirmed with a real Google Meet link — not just for opening the booking page or selecting a date. Clients book from their account by choosing an available date and time, reviewing the appointment, and confirming. If someone has no credits remaining, they can purchase another program — there is no renewal, because there is no subscription. Detailed medical history should not be shared through the consultation booking form — that stays with the consultation itself.",
   keywords: slugKeywords("consultation", "credit", "credits", "book", "booking", "meeting", "meet", "google", "request", "schedule", "appointment"),
   // No `route` — booking is the BOOK_CONSULTATION action concept.
 });
@@ -103,32 +166,42 @@ items.push({
 });
 
 // ── packages ────────────────────────────────────────────────────────────
-for (const pkg of packages) {
+for (const pkg of purchasableProgramPackages) {
   items.push({
     id: `package-${pkg.slug}`,
     category: "packages",
-    title: `${pkg.name} Membership`,
+    title: `${pkg.name} Program`,
     content: [
       `${pkg.name}: ${pkg.tagline}.`,
-      `Current price: ${pkg.priceLabel} (was $${pkg.originalPrice}).`,
-      `Includes ${pkg.consultationCredits} consultation credit${pkg.consultationCredits === 1 ? "" : "s"} per month.`,
-      pkg.badge ? `Badge: ${pkg.badge}.` : "",
-      pkg.hotline ? "Includes Priority Hotline access." : "",
+      // previousPrice is optional and only set where a real earlier price
+      // existed, so the "(was ...)" clause has to be conditional. The old code
+      // printed it unconditionally off a required field — which is how a
+      // package with no price history would have grown a fake discount.
+      `Price: ${pkg.priceLabel}, a one-time payment${pkg.previousPrice ? ` (was $${pkg.previousPrice})` : ""}.`,
+      `Includes ${pkg.consultationCount} doctor consultation${pkg.consultationCount === 1 ? "" : "s"}, granted once at purchase.`,
       `Features: ${pkg.features.join("; ")}.`,
     ]
       .filter(Boolean)
       .join(" "),
-    keywords: slugKeywords(pkg.name, pkg.slug, "price", "cost", "membership", "package", "plan", pkg.badge),
-    // No `route` — viewing/choosing a membership is the VIEW_MEMBERSHIP action concept.
+    keywords: slugKeywords(pkg.name, pkg.slug, pkg.packageType, pkg.tier, "price", "cost", "program", "package", "plan"),
+    // No `route` — viewing/choosing a program is the VIEW_MEMBERSHIP action concept.
   });
 }
 
+// Built from the catalogue rather than a hand-maintained comparison table.
+// The old version read `comparisonRows` from the retired file, which is why it
+// still compared Basic/Premium/VIP Elite by *monthly* price long after the site
+// stopped selling anything monthly.
 items.push({
   id: "package-comparison",
   category: "packages",
-  title: "Package Comparison",
-  content: comparisonRows.map((r) => `${r.label} — Basic: ${r.basic}; Premium: ${r.premium}; VIP Elite: ${r.vipElite}.`).join(" "),
-  keywords: slugKeywords("compare", "comparison", "difference", "basic", "premium", "vip"),
+  title: "Program Comparison",
+  content: [
+    `One-time price — ${purchasableProgramPackages.map((p) => `${p.name}: ${p.priceLabel}`).join("; ")}.`,
+    `Consultations included — ${purchasableProgramPackages.map((p) => `${p.name}: ${p.consultationCount}`).join("; ")}.`,
+    `The tiers differ only in how many consultations are included. There is no monthly plan and no recurring charge.`,
+  ].join(" "),
+  keywords: slugKeywords("compare", "comparison", "difference", "tier", "tiers", ...purchasableProgramPackages.map((p) => p.name)),
   // No `route` — the VIEW_MEMBERSHIP action concept covers this.
 });
 
@@ -248,7 +321,13 @@ items.push({
   category: "navigation",
   title: "Navigation",
   content:
-    "On the website: Home, About, Packages, Shop/Products, Blog, Gallery, FAQ, Contact, Sign In, Create Account / Join a membership, My Account (requires sign-in). On the native mobile app, navigation instead uses five bottom tabs: Home (dashboard), Health (Food Scanner, Prayer Times, Qibla, Products, Blog, Videos), AI (the AI Concierge), Consultations (membership, credits, booking), and Account (profile, settings, help). Create Account begins a paid membership purchase — it is not a free signup, on either platform.",
+    // NOTE: the mobile-app half of this sentence is deliberately left saying
+    // "membership". src/app-native/ still imports the retired src/data/packages
+    // and still presents monthly tiers, so on that platform the wording is
+    // accurate. Correcting it here would make the assistant describe an app
+    // that does not exist yet. Flagged for the app to be repointed; see
+    // FIX_PLAN.md.
+    "On the website: Home, About, Packages, Shop/Products, Blog, Gallery, FAQ, Contact, Sign In, Create Account / Choose a program, My Account (requires sign-in). On the native mobile app, navigation instead uses five bottom tabs: Home (dashboard), Health (Food Scanner, Prayer Times, Qibla, Products, Blog, Videos), AI (the AI Concierge), Consultations (membership, credits, booking), and Account (profile, settings, help). Create Account begins a paid purchase — it is not a free signup, on either platform.",
   keywords: slugKeywords("navigate", "navigation", "page", "pages", "find", "where", "menu", "sign", "login", "account", "tab", "tabs"),
 });
 
@@ -287,8 +366,8 @@ items.push({
 items.push({
   id: "policy-membership-disclaimer",
   category: "policies",
-  title: "Membership & Nutrition Service Disclaimer",
-  content: packageDisclaimer,
+  title: "Program & Nutrition Service Disclaimer",
+  content: programPackageDisclaimer,
   keywords: slugKeywords("disclaimer", "policy", "medical", "diagnosis", "emergency"),
 });
 items.push({
@@ -309,7 +388,7 @@ items.push({
 });
 
 const knowledgeBase: KnowledgeBase = {
-  generatedFrom: "src/data/{packages,products,services,faqs,articles,videos,business,about}.ts",
+  generatedFrom: "src/data/{programPackages,products,services,faqs,articles,videos,business,about}.ts",
   items,
 };
 

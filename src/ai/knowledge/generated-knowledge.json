@@ -1,5 +1,5 @@
 {
-  "generatedFrom": "src/data/{packages,products,services,faqs,articles,videos,business,about}.ts",
+  "generatedFrom": "src/data/{programPackages,products,services,faqs,articles,videos,business,about}.ts",
   "items": [
     {
       "id": "doctor-profile",
@@ -21,12 +21,13 @@
       "route": "/about"
     },
     {
-      "id": "membership-overview",
+      "id": "program-overview",
       "category": "membership",
-      "title": "How Membership Works",
-      "content": "Membership works in six steps: choose a membership (Basic, Premium, or VIP Elite), complete secure payment via Stripe Checkout, your member account activates once payment is confirmed, your monthly consultation credits become available, you request an online consultation from your account dashboard using a credit, and approved consultations happen over Google Meet. Creating an account is not free — it begins with choosing and paying for a membership package. Nutrition services are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Laboratory review does not constitute a medical diagnosis. Membership pricing and consultation credits are set by the current promotion and may change.",
+      "title": "How Programs Work",
+      "content": "Programs work in six steps: choose a program (Treatment Basic, Treatment Plus, or Treatment Premium), complete secure payment via Stripe Checkout, your account activates once payment is confirmed, your consultation credits become available, you request an online consultation from your account dashboard using a credit, and approved consultations happen over Google Meet. Each program is a ONE-TIME purchase, not a subscription — there is no recurring billing and no monthly renewal. Creating an account is not free — it begins with choosing and paying for a program. Program credits do not expire on a monthly cycle like membership credits, but are tied to your account and are non-transferable. Treatment programs are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Treatment programs include a maximum of 4 consultations.",
       "keywords": [
         "membership",
+        "program",
         "how",
         "works",
         "join",
@@ -34,14 +35,41 @@
         "create",
         "account",
         "free",
-        "trial"
+        "trial",
+        "subscription",
+        "recurring"
+      ]
+    },
+    {
+      "id": "no-subscription",
+      "category": "membership",
+      "title": "Is There a Monthly Membership or Subscription?",
+      "content": "No. There is no monthly membership, no subscription, and no recurring billing. Everything sold is a one-time purchase: Treatment Basic at $119, Treatment Plus at $169, Treatment Premium at $199. You pay once, the consultations included in that program are granted to your account, and nothing renews or charges again. Monthly membership tiers were offered in the past and are no longer available, so any price quoted per month is out of date.",
+      "keywords": [
+        "membership",
+        "monthly",
+        "month",
+        "subscription",
+        "subscribe",
+        "recurring",
+        "renew",
+        "renewal",
+        "cancel",
+        "billing",
+        "plan",
+        "tier",
+        "free",
+        "trial",
+        "one",
+        "time",
+        "once"
       ]
     },
     {
       "id": "consultation-credits",
       "category": "consultations",
       "title": "Consultation Credits & Requests",
-      "content": "Each membership includes a monthly consultation-credit allowance: Basic includes 1, Premium includes 3, VIP Elite includes 12. A credit is only used once a booking is actually confirmed with a real Google Meet link — not just for opening the booking page or selecting a date. Members book from their account by choosing an available date and time, reviewing the appointment, and confirming. If a member has no credits remaining, they're offered the option to upgrade or renew their membership. Detailed medical history should not be shared through the consultation booking form — that stays with the consultation itself.",
+      "content": "Each program includes a fixed number of consultation credits, granted once at purchase and not renewed monthly: Treatment Basic includes 2, Treatment Plus includes 3, Treatment Premium includes 4. A credit is only used once a booking is actually confirmed with a real Google Meet link — not just for opening the booking page or selecting a date. Clients book from their account by choosing an available date and time, reviewing the appointment, and confirming. If someone has no credits remaining, they can purchase another program — there is no renewal, because there is no subscription. Detailed medical history should not be shared through the consultation booking form — that stays with the consultation itself.",
       "keywords": [
         "consultation",
         "credit",
@@ -79,46 +107,46 @@
       ]
     },
     {
-      "id": "package-basic",
+      "id": "package-treatment_basic",
       "category": "packages",
-      "title": "Basic Membership",
-      "content": "Basic: A focused introduction to guided nutrition. Current price: $29 / Month (was $58). Includes 1 consultation credit per month. Features: Personalized nutrition plan; Health-focused follow-up based on the client's condition and goals; 1 consultation credit per month; Google Meet consultation booked at least three days in advance; One nutrition plan adjustment per month; Member account access.",
+      "title": "Treatment Basic Program",
+      "content": "Treatment Basic: Begin your treatment plan with a first consultation. Price: $119, a one-time payment (was $200). Includes 2 doctor consultations, granted once at purchase. Features: Treatment plan; 2 doctor consultations.",
       "keywords": [
+        "treatment",
         "basic",
         "price",
         "cost",
-        "membership",
+        "program",
         "package",
         "plan"
       ]
     },
     {
-      "id": "package-premium",
+      "id": "package-treatment_plus",
       "category": "packages",
-      "title": "Premium Membership",
-      "content": "Premium: Structured guidance with real accountability. Current price: $61 / Month (was $122). Includes 3 consultation credits per month. Badge: Most Popular. Features: Everything included in Basic; 3 consultation credits per month; Priority scheduling; Two nutrition plan adjustments per month; Basic review of laboratory results; Faster inquiry response; Exclusive nutrition resources; Member account access.",
+      "title": "Treatment Plus Program",
+      "content": "Treatment Plus: Closer follow-up through your treatment plan. Price: $169, a one-time payment. Includes 3 doctor consultations, granted once at purchase. Features: Treatment plan; 3 doctor consultations.",
       "keywords": [
-        "premium",
+        "treatment",
+        "plus",
         "price",
         "cost",
-        "membership",
+        "program",
         "package",
-        "plan",
-        "most",
-        "popular"
+        "plan"
       ]
     },
     {
-      "id": "package-vip-elite",
+      "id": "package-treatment_premium",
       "category": "packages",
-      "title": "VIP Elite Membership",
-      "content": "VIP Elite: White-glove nutrition care, fully personalized. Current price: $103 / Month (was $206). Includes 12 consultation credits per month. Badge: VIP. Includes Priority Hotline access. Features: Everything included in Premium; 12 consultation credits per month; Highest booking priority; Same-day consultation requests when availability permits; Unlimited nutrition plan adjustments, per plan policy; Detailed review of laboratory results; Highest-priority responses; Intensive health follow-up; Priority Hotline access; Member account access.",
+      "title": "Treatment Premium Program",
+      "content": "Treatment Premium: The closest level of medical follow-up available. Price: $199, a one-time payment. Includes 4 doctor consultations, granted once at purchase. Features: Treatment plan; 4 doctor consultations.",
       "keywords": [
-        "vip",
-        "elite",
+        "treatment",
+        "premium",
         "price",
         "cost",
-        "membership",
+        "program",
         "package",
         "plan"
       ]
@@ -126,15 +154,18 @@
     {
       "id": "package-comparison",
       "category": "packages",
-      "title": "Package Comparison",
-      "content": "Monthly price — Basic: $29 (was $58); Premium: $61 (was $122); VIP Elite: $103 (was $206). Consultation credits — Basic: 1 / month; Premium: 3 / month; VIP Elite: 12 / month. Plan adjustments — Basic: 1 / month; Premium: 2 / month; VIP Elite: Unlimited (per plan policy). Lab review — Basic: Not included; Premium: Basic review; VIP Elite: Detailed review. Response priority — Basic: Standard; Premium: Faster response; VIP Elite: Highest priority. Booking priority — Basic: 3+ days notice; Premium: 2+ days notice; VIP Elite: Same-day, subject to availability. Priority Hotline — Basic: Not included; Premium: Not included; VIP Elite: Included.",
+      "title": "Program Comparison",
+      "content": "One-time price — Treatment Basic: $119; Treatment Plus: $169; Treatment Premium: $199. Consultations included — Treatment Basic: 2; Treatment Plus: 3; Treatment Premium: 4. The tiers differ only in how many consultations are included. There is no monthly plan and no recurring charge.",
       "keywords": [
         "compare",
         "comparison",
         "difference",
+        "tier",
+        "tiers",
+        "treatment",
         "basic",
-        "premium",
-        "vip"
+        "plus",
+        "premium"
       ]
     },
     {
@@ -1283,7 +1314,7 @@
       "id": "site-navigation",
       "category": "navigation",
       "title": "Navigation",
-      "content": "On the website: Home, About, Packages, Shop/Products, Blog, Gallery, FAQ, Contact, Sign In, Create Account / Join a membership, My Account (requires sign-in). On the native mobile app, navigation instead uses five bottom tabs: Home (dashboard), Health (Food Scanner, Prayer Times, Qibla, Products, Blog, Videos), AI (the AI Concierge), Consultations (membership, credits, booking), and Account (profile, settings, help). Create Account begins a paid membership purchase — it is not a free signup, on either platform.",
+      "content": "On the website: Home, About, Packages, Shop/Products, Blog, Gallery, FAQ, Contact, Sign In, Create Account / Choose a program, My Account (requires sign-in). On the native mobile app, navigation instead uses five bottom tabs: Home (dashboard), Health (Food Scanner, Prayer Times, Qibla, Products, Blog, Videos), AI (the AI Concierge), Consultations (membership, credits, booking), and Account (profile, settings, help). Create Account begins a paid purchase — it is not a free signup, on either platform.",
       "keywords": [
         "navigate",
         "navigation",
@@ -1348,8 +1379,8 @@
     {
       "id": "policy-membership-disclaimer",
       "category": "policies",
-      "title": "Membership & Nutrition Service Disclaimer",
-      "content": "Nutrition services are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Laboratory review does not constitute a medical diagnosis. Membership pricing and consultation credits are set by the current promotion and may change.",
+      "title": "Program & Nutrition Service Disclaimer",
+      "content": "Program credits do not expire on a monthly cycle like membership credits, but are tied to your account and are non-transferable. Treatment programs are educational and supportive in nature and are not a replacement for emergency care, medical diagnosis, or treatment from a licensed physician. Treatment programs include a maximum of 4 consultations.",
       "keywords": [
         "disclaimer",
         "policy",
