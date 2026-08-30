@@ -27,9 +27,26 @@ Execute **one phase per session**. Do not start a phase before the previous one'
    npm run lint
    npm run build:web
    npm run build:app
-   npm run i18n:audit      # needs a build in dist/ first
+   npm run check:functions       # deno check over supabase/functions/**
+   npm run check:functions:cors  # CORS on every response path, errors included
+   npm run i18n:audit            # needs a build in dist/ first
    ```
-   (`npm run gate` runs all five in order.)
+   (`npm run gate` runs all seven in order.)
+
+   **tsc DOES NOT LOOK AT supabase/functions.** Neither does `vite build`.
+   Until `check:functions` existed, every Edge Function in this project had
+   shipped without a type check for its entire life — and those are the files
+   that take money. An undefined identifier at module scope in ai-chat passed
+   both `tsc` and `build:web`.
+
+   **AND deno check IS NOT ENOUGH EITHER.** It accepts `{ ...someFunction }` —
+   legal TypeScript, an empty object at runtime. That is how a 502 shipped with
+   no CORS headers while type checking stayed green, which would have turned a
+   readable error back into an opaque network failure. `check:functions:cors`
+   covers that specific hole. Error paths are where CORS gets forgotten,
+   because everyone exercises the success path by hand and nobody exercises the
+   5xx. If a browser cannot read our error, we do not have an error — we have a
+   mystery.
 
    Zero TS errors, zero lint errors and zero reachable English is the gate. Warnings that already
    existed are acceptable; new ones are not.
