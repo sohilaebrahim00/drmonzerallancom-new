@@ -3,6 +3,8 @@ import { ChevronsLeftRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+import { useTranslate } from "@/i18n";
+
 interface CompareSliderProps {
   before: ReactNode;
   after: ReactNode;
@@ -14,10 +16,11 @@ interface CompareSliderProps {
 export function CompareSlider({
   before,
   after,
-  beforeLabel = "Before",
-  afterLabel = "After",
+  beforeLabel,
+  afterLabel,
   className,
 }: CompareSliderProps) {
+  const t = useTranslate();
   const containerRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
   const [position, setPosition] = useState(50);
@@ -99,7 +102,7 @@ export function CompareSlider({
       <div className="absolute inset-0">{after}</div>
       {/* "After" sits at the inline END — right in English, left in Arabic. */}
       <span className="absolute end-3 top-3 z-10 rounded-full bg-navy/70 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
-        {afterLabel}
+        {afterLabel ?? t("beforeAfter.after")}
       </span>
 
       <div
@@ -114,7 +117,7 @@ export function CompareSlider({
         {before}
         {/* "Before" sits at the inline START — left in English, right in Arabic. */}
         <span className="absolute start-3 top-3 z-10 rounded-full bg-navy/70 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
-          {beforeLabel}
+          {beforeLabel ?? t("beforeAfter.before")}
         </span>
       </div>
 

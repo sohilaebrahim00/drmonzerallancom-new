@@ -1,4 +1,6 @@
 import { Link, type LinkProps } from "react-router-dom";
+
+import { useTranslate } from "@/i18n";
 import { CalendarCheck } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
 
@@ -18,12 +20,13 @@ interface BookingButtonProps extends Omit<LinkProps, "to">, VariantProps<typeof 
  */
 export function BookingButton({
   showIcon = true,
-  label = "Book a Session",
+  label,
   className,
   variant,
   size,
   ...props
 }: BookingButtonProps) {
+  const t = useTranslate();
   return (
     <Link
       to="/packages"
@@ -33,7 +36,7 @@ export function BookingButton({
       {showIcon && (
         <CalendarCheck className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
       )}
-      {label}
+      {label ?? t("cta.bookSession")}
     </Link>
   );
 }

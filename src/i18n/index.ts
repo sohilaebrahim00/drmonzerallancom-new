@@ -26,3 +26,4 @@ export {
   productMeta,
 } from "./productDetailLabels";
 export { videoTitle, videoCaption } from "./videoDisplay";
+export { serviceTitle, serviceDescription, serviceHighlights } from "./serviceLabels";

@@ -18,6 +18,8 @@ import { getAppMode } from "@/hooks/use-native-platform";
 import { isClientDemoBuild } from "@/dev/demoMode";
 import { ClientDemoApp } from "@/dev/ClientDemoApp";
 
+import { useTranslate } from "@/i18n";
+
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const PackagesPage = lazy(() => import("@/pages/PackagesPage"));
@@ -154,6 +156,7 @@ function DoctorShell() {
 }
 
 function WebApp() {
+  const t = useTranslate();
   const { pathname } = useLocation();
 
   // The doctor's screens get their own shell. Rendering them inside the
@@ -173,7 +176,7 @@ function WebApp() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-primary-foreground"
       >
-        Skip to main content
+        {t("a11y.skipToContent")}
       </a>
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background">
         <ScrollRestoration />

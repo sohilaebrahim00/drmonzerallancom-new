@@ -754,6 +754,91 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   "specValue.wholeFoodFormula": "تركيبة غذاء كامل",
   "specValue.wifiSync": "مزامنة Wi-Fi",
   "specValue.mg240PerLabel": "نحو 240 mg حسب الملصق",
+  // --- the twelve services ------------------------------------------
+  "service.nutritionConsultation.title": "استشارة تغذية",
+  "service.nutritionConsultation.desc":
+    "تقييم شخصي فردي لعاداتك الغذائية ونمط حياتك وأهدافك الصحية، لبناء خطة تناسب حياتك فعلًا.",
+  "service.nutritionConsultation.h1": "تقييم غذائي شامل",
+  "service.nutritionConsultation.h2": "خطة تغذية مخصصة",
+  "service.nutritionConsultation.h3": "متابعة مستمرة",
+  "service.weightLoss.title": "إنقاص الوزن",
+  "service.weightLoss.desc":
+    "إدارة وزن مستدامة وسليمة طبيًا، مبنية على طعام حقيقي، لا على أساليب متطرفة أو حميات رائجة لا تدوم.",
+  "service.weightLoss.h1": "تقييم الأيض",
+  "service.weightLoss.h2": "بنية وجبات واقعية",
+  "service.weightLoss.h3": "تتبّع التقدّم",
+  "service.weightGain.title": "زيادة الوزن",
+  "service.weightGain.desc":
+    "خطط منظّمة للسعرات والعناصر الغذائية تساعدك على بناء كتلة صحية بأمان، سواء للصحة أو القوة أو التعافي.",
+  "service.weightGain.h1": "تخطيط فائض السعرات",
+  "service.weightGain.h2": "قوائم غنية بالعناصر الغذائية",
+  "service.weightGain.h3": "إرشاد داعم للقوة",
+  "service.clinicalNutrition.title": "التغذية السريرية",
+  "service.clinicalNutrition.desc":
+    "علاج تغذوي قائم على الأدلة يعمل إلى جانب علاجك الطبي للحالات المزمنة أو المعقّدة.",
+  "service.clinicalNutrition.h1": "خطط خاصة بكل حالة",
+  "service.clinicalNutrition.h2": "تنسيق مع الأطباء",
+  "service.clinicalNutrition.h3": "تعديلات وفق نتائج التحاليل",
+  "service.sportsNutrition.title": "تغذية رياضية",
+  "service.sportsNutrition.desc":
+    "استراتيجيات تغذية للرياضيين والأشخاص النشطين لتحسين الأداء والتعافي والتحمّل.",
+  "service.sportsNutrition.h1": "تغذية الأداء",
+  "service.sportsNutrition.h2": "تغذية التعافي",
+  "service.sportsNutrition.h3": "استراتيجية الترطيب",
+  "service.diabetesNutrition.title": "تغذية مرضى السكري",
+  "service.diabetesNutrition.desc":
+    "تخطيط وجبات يراعي سكر الدم، مصمَّم ليساعدك على إدارة السكري بثقة والاستمتاع بطعامك من جديد.",
+  "service.diabetesNutrition.h1": "تخطيط الحمل الغلايسيمي",
+  "service.diabetesNutrition.h2": "قوائم متوازنة الكربوهيدرات",
+  "service.diabetesNutrition.h3": "إرشاد لنمط الحياة",
+  "service.hypertension.title": "ارتفاع ضغط الدم",
+  "service.hypertension.desc":
+    "استراتيجيات تغذية صحية للقلب وقليلة الصوديوم، مصمَّمة للمساعدة في إدارة ضغط الدم بطرق طبيعية.",
+  "service.hypertension.h1": "تخطيط يراعي الصوديوم",
+  "service.hypertension.h2": "بدائل صحية للقلب",
+  "service.hypertension.h3": "دعم نمط الحياة",
+  "service.cholesterol.title": "الكوليسترول",
+  "service.cholesterol.desc":
+    "تغييرات غذائية موجّهة للمساعدة في تحسين صورة الدهون لديك ودعم صحة القلب والأوعية على المدى الطويل.",
+  "service.cholesterol.h1": "قوائم مناسبة للدهون",
+  "service.cholesterol.h2": "توازن الألياف والدهون",
+  "service.cholesterol.h3": "متابعة التقدّم",
+  "service.digestiveHealth.title": "صحة الجهاز الهضمي",
+  "service.digestiveHealth.desc":
+    "تغذية تركّز على الأمعاء لتخفيف الانزعاج وتحسين الهضم والتعرّف على حساسيات الطعام.",
+  "service.digestiveHealth.h1": "إرشاد الحمية الإقصائية",
+  "service.digestiveHealth.h2": "قوائم لطيفة على الأمعاء",
+  "service.digestiveHealth.h3": "تتبّع الأعراض",
+  "service.pregnancyNutrition.title": "تغذية الحامل",
+  "service.pregnancyNutrition.desc":
+    "إرشاد آمن وغني بالعناصر الغذائية لدعمك ودعم طفلك خلال كل مرحلة من مراحل الحمل.",
+  "service.pregnancyNutrition.h1": "تخطيط حسب مرحلة الحمل",
+  "service.pregnancyNutrition.h2": "تركيز على المغذيات الدقيقة",
+  "service.pregnancyNutrition.h3": "إرشاد حول الأطعمة الآمنة",
+  "service.seniorNutrition.title": "تغذية كبار السن",
+  "service.seniorNutrition.desc":
+    "رعاية تغذوية مدروسة تدعم القوة والمناعة وجودة الحياة في السنوات المتأخرة.",
+  "service.seniorNutrition.h1": "دعم العظام والعضلات",
+  "service.seniorNutrition.h2": "قوائم تناسب ضعف الشهية",
+  "service.seniorNutrition.h3": "تخطيط يراعي الأدوية",
+  "service.oncologyNutrition.title": "الدعم التغذوي لمرضى السرطان",
+  "service.oncologyNutrition.desc":
+    "دعم تغذوي أثناء علاج السرطان وبعده، بالعمل إلى جانب فريق الأورام المعالج لك. التركيز عملي: الحفاظ على وزنك وقوتك، ومساعدتك على مواصلة الأكل عندما يجعل العلاج ذلك صعبًا. هذه رعاية داعمة تُكمّل خطة العلاج من طبيب الأورام الخاص بك — ولا تحل محلها أبدًا.",
+  "service.oncologyNutrition.h1": "الحفاظ على الوزن والكتلة العضلية",
+  "service.oncologyNutrition.h2": "فقدان الشهية والغثيان وتغيّر حاسة التذوّق",
+  "service.oncologyNutrition.h3": "الأكل رغم الأعراض الجانبية",
+  "service.oncologyNutrition.h4": "بالتنسيق مع فريق الأورام المعالج لك",
+  // --- services section furniture -----------------------------------
+  "services.spotlightEyebrow": "من هنا تبدأ كل خطة",
+  "services.bookThis": "احجز هذه الخدمة",
+  // --- global chrome ------------------------------------------------
+  "a11y.skipToContent": "تخطَّ إلى المحتوى الرئيسي",
+  "footer.rights": "© {year} {name}. جميع الحقوق محفوظة.",
+  "footer.disclaimerConsult":
+    "استشر دائمًا مختصًا صحيًا مؤهلًا قبل إجراء أي تغييرات على نظامك الغذائي، خاصةً إن كنت تعاني من حالة طبية قائمة.",
+  // --- compare slider labels ----------------------------------------
+  "beforeAfter.before": "قبل",
+  "beforeAfter.after": "بعد",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly": "المقالات بقلم الدكتور منذر علان ومتاحة باللغة الإنجليزية فقط.",
 };

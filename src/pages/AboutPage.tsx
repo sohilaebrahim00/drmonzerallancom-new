@@ -19,7 +19,7 @@ import { services } from "@/data/services";
 import { business } from "@/data/business";
 import { breadcrumbSchema, personSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useTranslate, CREDENTIAL_LABELS } from "@/i18n";
+import { useTranslate, CREDENTIAL_LABELS, serviceTitle } from "@/i18n";
 
 export default function AboutPage() {
   const t = useTranslate();
@@ -250,7 +250,7 @@ export default function AboutPage() {
                   className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2.5 text-sm font-semibold text-navy/80 transition-colors hover:border-turquoise hover:text-turquoise"
                 >
                   <service.icon className="h-4 w-4 text-primary transition-colors group-hover:text-turquoise" />
-                  {service.title}
+                  {serviceTitle(service, t)}
                 </Link>
               </div>
             ))}

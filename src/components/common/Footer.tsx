@@ -5,7 +5,7 @@ import { SocialLinks } from "@/components/common/SocialLinks";
 import { business, tel } from "@/data/business";
 import { whatsappLink } from "@/config/contact";
 import { services } from "@/data/services";
-import { useTranslate, type SimpleTranslationKey } from "@/i18n";
+import { useTranslate, type SimpleTranslationKey, serviceTitle } from "@/i18n";
 
 const NAV_LINKS: { labelKey: SimpleTranslationKey; href: string }[] = [
   { labelKey: "nav.about", href: "/about" },
@@ -85,7 +85,7 @@ export function Footer() {
                     to="/#services"
                     className="text-sm text-muted-foreground transition-colors hover:text-turquoise"
                   >
-                    {service.title}
+                    {serviceTitle(service, t)}
                   </Link>
                 </li>
               ))}
@@ -154,7 +154,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-border/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
-            © {year} {business.doctorName}. All rights reserved.
+            {t("footer.rights", { year, name: business.doctorName })}
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {LEGAL_LINKS.map((link) => (
@@ -169,9 +169,7 @@ export function Footer() {
           </div>
         </div>
         <p className="mt-4 max-w-2xl text-xs leading-relaxed text-muted-foreground/80">
-          {t("footer.disclaimer")}
-          Always consult a qualified healthcare provider before making changes to your diet,
-          especially if you have an existing medical condition.
+          {t("footer.disclaimer")} {t("footer.disclaimerConsult")}
         </p>
       </div>
     </footer>

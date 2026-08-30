@@ -709,6 +709,91 @@ export const en = {
   "specValue.wholeFoodFormula": "Whole Food Formula",
   "specValue.wifiSync": "Wi-Fi Sync",
   "specValue.mg240PerLabel": "~240 mg per label",
+  // --- the twelve services ------------------------------------------
+  "service.nutritionConsultation.title": "Nutrition Consultation",
+  "service.nutritionConsultation.desc":
+    "A personalized one-on-one assessment of your eating habits, lifestyle, and health goals to build a plan that actually fits your life.",
+  "service.nutritionConsultation.h1": "Full dietary assessment",
+  "service.nutritionConsultation.h2": "Custom nutrition plan",
+  "service.nutritionConsultation.h3": "Ongoing follow-up",
+  "service.weightLoss.title": "Weight Loss",
+  "service.weightLoss.desc":
+    "Sustainable, medically sound weight management built around real food, not extremes or fad diets that don't last.",
+  "service.weightLoss.h1": "Metabolic evaluation",
+  "service.weightLoss.h2": "Realistic meal structure",
+  "service.weightLoss.h3": "Progress tracking",
+  "service.weightGain.title": "Weight Gain",
+  "service.weightGain.desc":
+    "Structured calorie and nutrient plans to help you build healthy mass safely, whether for health, strength, or recovery.",
+  "service.weightGain.h1": "Caloric surplus planning",
+  "service.weightGain.h2": "Nutrient-dense menus",
+  "service.weightGain.h3": "Strength-friendly guidance",
+  "service.clinicalNutrition.title": "Clinical Nutrition",
+  "service.clinicalNutrition.desc":
+    "Evidence-based nutrition therapy that works alongside your medical treatment for chronic or complex conditions.",
+  "service.clinicalNutrition.h1": "Condition-specific plans",
+  "service.clinicalNutrition.h2": "Coordination with physicians",
+  "service.clinicalNutrition.h3": "Lab-informed adjustments",
+  "service.sportsNutrition.title": "Sports Nutrition",
+  "service.sportsNutrition.desc":
+    "Fueling strategies for athletes and active people to improve performance, recovery, and endurance.",
+  "service.sportsNutrition.h1": "Performance fueling",
+  "service.sportsNutrition.h2": "Recovery nutrition",
+  "service.sportsNutrition.h3": "Hydration strategy",
+  "service.diabetesNutrition.title": "Diabetes Nutrition",
+  "service.diabetesNutrition.desc":
+    "Blood-sugar-conscious meal planning designed to help you manage diabetes with confidence and enjoy your food again.",
+  "service.diabetesNutrition.h1": "Glycemic load planning",
+  "service.diabetesNutrition.h2": "Carb-balanced menus",
+  "service.diabetesNutrition.h3": "Lifestyle coaching",
+  "service.hypertension.title": "Hypertension",
+  "service.hypertension.desc":
+    "Heart-healthy, low-sodium nutrition strategies tailored to help manage blood pressure naturally.",
+  "service.hypertension.h1": "Sodium-conscious planning",
+  "service.hypertension.h2": "Heart-healthy swaps",
+  "service.hypertension.h3": "Lifestyle support",
+  "service.cholesterol.title": "Cholesterol",
+  "service.cholesterol.desc":
+    "Targeted dietary changes to help improve your lipid profile and support long-term cardiovascular health.",
+  "service.cholesterol.h1": "Lipid-friendly menus",
+  "service.cholesterol.h2": "Fiber & fat balance",
+  "service.cholesterol.h3": "Progress monitoring",
+  "service.digestiveHealth.title": "Digestive Health",
+  "service.digestiveHealth.desc":
+    "Gut-focused nutrition to ease discomfort, improve digestion, and identify food sensitivities.",
+  "service.digestiveHealth.h1": "Elimination guidance",
+  "service.digestiveHealth.h2": "Gut-friendly menus",
+  "service.digestiveHealth.h3": "Symptom tracking",
+  "service.pregnancyNutrition.title": "Pregnancy Nutrition",
+  "service.pregnancyNutrition.desc":
+    "Safe, nutrient-rich guidance to support you and your baby through every trimester.",
+  "service.pregnancyNutrition.h1": "Trimester-based planning",
+  "service.pregnancyNutrition.h2": "Micronutrient focus",
+  "service.pregnancyNutrition.h3": "Safe-food guidance",
+  "service.seniorNutrition.title": "Senior Nutrition",
+  "service.seniorNutrition.desc":
+    "Thoughtful nutrition care that supports strength, immunity, and quality of life in later years.",
+  "service.seniorNutrition.h1": "Bone & muscle support",
+  "service.seniorNutrition.h2": "Appetite-friendly menus",
+  "service.seniorNutrition.h3": "Medication-aware planning",
+  "service.oncologyNutrition.title": "Nutrition Support for Cancer Patients",
+  "service.oncologyNutrition.desc":
+    "Nutritional support during and after cancer treatment, working alongside your oncology team. The focus is practical: keeping your weight and strength up, and helping you keep eating when treatment makes that hard. This is supportive care that complements — never replaces — the treatment plan from your oncologist.",
+  "service.oncologyNutrition.h1": "Weight & muscle maintenance",
+  "service.oncologyNutrition.h2": "Appetite loss, nausea & taste changes",
+  "service.oncologyNutrition.h3": "Eating through side effects",
+  "service.oncologyNutrition.h4": "Coordinated with your oncology team",
+  // --- services section furniture -----------------------------------
+  "services.spotlightEyebrow": "Where Every Plan Starts",
+  "services.bookThis": "Book this service",
+  // --- global chrome ------------------------------------------------
+  "a11y.skipToContent": "Skip to main content",
+  "footer.rights": "© {year} {name}. All rights reserved.",
+  "footer.disclaimerConsult":
+    "Always consult a qualified healthcare provider before making changes to your diet, especially if you have an existing medical condition.",
+  // --- compare slider labels ----------------------------------------
+  "beforeAfter.before": "Before",
+  "beforeAfter.after": "After",
   // --- articles are English only (ALL FLAGGED) ---------------------------
   "blog.englishOnly":
     "The articles are written by Dr. Monzer Allan and are available in English only.",
