@@ -11,6 +11,7 @@ import {
   ShieldAlert,
   Sparkles,
   Video,
+  TriangleAlert,
   X,
 } from "lucide-react";
 
@@ -21,6 +22,15 @@ import { cn } from "@/lib/utils";
 
 interface DisplayMessage extends ChatMessage {
   actions?: ChatAction[];
+  /**
+   * The assistant could not answer. Rendered as a FAILURE, not as a reply.
+   *
+   * Without this the unavailable sentence arrives in the transcript styled
+   * exactly like an answer, so a reader believes the assistant responded and
+   * we lose the one signal a person could have acted on. Same defect as the
+   * function returning 200 for a failed call — this is its other half.
+   */
+  isError?: boolean;
 }
 
 const PAGE_PROMPTS: { prefix: string; prompt: string; authedPrompt?: string }[] = [
@@ -54,6 +64,7 @@ const QUICK_ACTIONS = [
 
 function MessageBubble({ message }: { message: DisplayMessage }) {
   const isUser = message.role === "user";
+  const isError = !isUser && message.isError === true;
   return (
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
@@ -61,9 +72,18 @@ function MessageBubble({ message }: { message: DisplayMessage }) {
           "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
           isUser
             ? "rounded-br-md bg-primary text-primary-foreground"
-            : "rounded-bl-md border border-border/70 bg-card text-navy/90",
+            : isError
+              ? "rounded-bl-md border border-amber-300 bg-amber-50 text-amber-900"
+              : "rounded-bl-md border border-border/70 bg-card text-navy/90",
         )}
+        role={isError ? "alert" : undefined}
       >
+        {isError && (
+          <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide">
+            <TriangleAlert className="h-3.5 w-3.5" aria-hidden="true" />
+            Assistant unavailable
+          </p>
+        )}
         <p className="whitespace-pre-wrap">{message.content}</p>
         {!isUser && message.actions && message.actions.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -141,6 +161,7 @@ export default function ChatBody({
         ...prev,
         {
           role: "assistant",
+          isError: true,
           content: result.error,
           actions: result.rateLimited
             ? []

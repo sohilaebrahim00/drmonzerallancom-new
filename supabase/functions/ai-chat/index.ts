@@ -24,9 +24,18 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/cors.ts";
 import { callGemini, isGeminiConfigured } from "../_shared/gemini.ts";
-import { getKnownRoutes, retrieveContext, type KnowledgeItem } from "../_shared/knowledge-retrieval.ts";
+import {
+  getKnownRoutes,
+  retrieveContext,
+  type KnowledgeItem,
+} from "../_shared/knowledge-retrieval.ts";
 import { clientIp, isRateLimited } from "../_shared/rateLimit.ts";
-import { getActionConceptsForPlatform, resolveAction, sanitizeActions, type Platform } from "../_shared/actionRegistry.ts";
+import {
+  getActionConceptsForPlatform,
+  resolveAction,
+  sanitizeActions,
+  type Platform,
+} from "../_shared/actionRegistry.ts";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -53,16 +62,61 @@ const ALLOWED_INTENTS = new Set([
   "medical-escalation",
 ]);
 
+/**
+ * Stable, non-revealing reasons for an unavailable assistant.
+ *
+ * NEVER carries the upstream text. A Gemini error can contain the project id,
+ * the model path or fragments of the key, and this response is readable by
+ * anyone who opens the page. The detail is logged server-side; the browser
+ * gets a coarse code it can branch on and nothing more.
+ */
+export type ChatUnavailableReason = "not_configured" | "upstream_failed" | "upstream_unreadable";
+
 /** The Contact Team action differs by platform, so the fallback response is built per-request, not a static constant. */
-function buildFallbackResponse(platform: Platform) {
+function buildFallbackResponse(platform: Platform, reason: ChatUnavailableReason) {
   const contact = resolveAction("CONTACT_TEAM", platform);
   return {
+    // WORDING UNCHANGED. The sentence was never the problem — returning it
+    // with a 200 was. The visitor should still read something calm and useful.
     answer:
       "Our virtual assistant is temporarily unavailable. You can still explore the app or contact our team.",
     intent: "general",
-    actions: contact ? [{ type: "internal-route", label: contact.label, route: contact.route }] : [],
+    actions: contact
+      ? [{ type: "internal-route", label: contact.label, route: contact.route }]
+      : [],
     needsHuman: true,
+    /** Machine-readable and deliberately coarse — the client renders an error state on this. */
+    unavailable: true,
+    reason,
   };
+}
+
+/**
+ * A failed assistant call is a FAILED call.
+ *
+ * This used to return 200 with the friendly sentence in the body. That made
+ * every downstream diagnostic blind: the client's error branch never ran, the
+ * browser console stayed clean, and an empty console read as evidence that the
+ * chat was healthy. It cost a round of misdirected debugging before anyone
+ * thought to read the response body instead of the status.
+ *
+ * 502 is the honest code — the function was reached; what it depends on was
+ * not. The friendly sentence still travels in the body.
+ */
+function unavailableResponse(
+  platform: Platform,
+  reason: ChatUnavailableReason,
+  headers: Record<string, string>,
+) {
+  return new Response(JSON.stringify(buildFallbackResponse(platform, reason)), {
+    status: 502,
+    // The CORS headers are computed per-request from the Origin, so they must
+    // be PASSED IN. Spreading the imported factory here instead type-checks
+    // cleanly and sends no CORS headers at all, which would leave the browser
+    // unable to read the 502 — turning a fixed diagnostic back into an opaque
+    // network error.
+    headers: { ...headers, "Content-Type": "application/json" },
+  });
 }
 
 /**
@@ -266,35 +320,40 @@ async function getMemberContext(userId: string): Promise<MemberContext | null> {
 async function getHealthContext(userId: string): Promise<HealthContext> {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  const [{ data: meals }, { data: target }, { data: program }, { data: tasks }, { data: steps }] = await Promise.all([
-    supabaseAdmin.from("meal_logs").select("meal_type, total_calories").eq("user_id", userId).gte("meal_time", since),
-    supabaseAdmin
-      .from("daily_targets")
-      .select("daily_target, source")
-      .eq("user_id", userId)
-      .eq("is_current", true)
-      .maybeSingle(),
-    supabaseAdmin
-      .from("nutrition_programs")
-      .select("start_date")
-      .eq("patient_id", userId)
-      .eq("status", "active")
-      .order("start_date", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabaseAdmin
-      .from("activity_tasks")
-      .select("activity_id, activity_library(name)")
-      .eq("user_id", userId)
-      .eq("status", "pending")
-      .limit(1),
-    supabaseAdmin
-      .from("step_logs")
-      .select("steps")
-      .eq("user_id", userId)
-      .eq("date", new Date().toISOString().slice(0, 10))
-      .maybeSingle(),
-  ]);
+  const [{ data: meals }, { data: target }, { data: program }, { data: tasks }, { data: steps }] =
+    await Promise.all([
+      supabaseAdmin
+        .from("meal_logs")
+        .select("meal_type, total_calories")
+        .eq("user_id", userId)
+        .gte("meal_time", since),
+      supabaseAdmin
+        .from("daily_targets")
+        .select("daily_target, source")
+        .eq("user_id", userId)
+        .eq("is_current", true)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("nutrition_programs")
+        .select("start_date")
+        .eq("patient_id", userId)
+        .eq("status", "active")
+        .order("start_date", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("activity_tasks")
+        .select("activity_id, activity_library(name)")
+        .eq("user_id", userId)
+        .eq("status", "pending")
+        .limit(1),
+      supabaseAdmin
+        .from("step_logs")
+        .select("steps")
+        .eq("user_id", userId)
+        .eq("date", new Date().toISOString().slice(0, 10))
+        .maybeSingle(),
+    ]);
 
   const mealsToday = (meals ?? []).map((m) => ({ type: m.meal_type, calories: m.total_calories }));
   const caloriesToday = mealsToday.reduce((sum, m) => sum + (m.calories ?? 0), 0);
@@ -328,7 +387,9 @@ function formatHealthContextBlock(ctx: HealthContext): string {
   const target = ctx.dailyTarget
     ? `${Math.round(ctx.dailyTarget)} kcal (${ctx.targetSource === "doctor" ? "set by Dr. Monzer" : "estimated"}), ${Math.max(Math.round(ctx.dailyTarget - ctx.caloriesToday), 0)} kcal remaining`
     : "not set yet";
-  const program = ctx.programDay ? `Day ${ctx.programDay} of ${ctx.programTotalDays}` : "no active program";
+  const program = ctx.programDay
+    ? `Day ${ctx.programDay} of ${ctx.programTotalDays}`
+    : "no active program";
 
   return `HEALTH CONTEXT (last 24h): Calories consumed: ~${Math.round(ctx.caloriesToday)} kcal. Meals: ${meals}. Daily target: ${target}. Nutrition program: ${program}. Pending activity task: ${ctx.pendingActivity ?? "none"}. Steps today: ${ctx.stepsToday ?? "not recorded"}. Use ONLY these real numbers when answering questions about calories/program/activity/steps — never invent a meal or number not listed here. If asked about something not listed (e.g. yesterday's meals), say you don't have that in view right now rather than guessing.`;
 }
@@ -340,14 +401,52 @@ function formatHealthContextBlock(ctx: HealthContext): string {
  * mentioned blood tests; that is the only change to his wording.
  */
 const INTAKE_QUESTIONS: { n: number; column: string; prompt: string }[] = [
-  { n: 1, column: "q1_reason", prompt: "What brings you to this consultation? Tell me the condition or the main problem you want to work on." },
-  { n: 2, column: "q2_symptoms", prompt: "What symptoms are you having at the moment? Include everything, even things that seem minor." },
-  { n: 3, column: "q3_tests_and_medications", prompt: "Have you had any blood tests or medical investigations recently? If so, what did they show? Also list every medicine, vitamin and supplement you take." },
-  { n: 4, column: "q4_vitamin_mineral_levels", prompt: "Have you ever had your vitamin and mineral levels checked — vitamin D, B12, iron, or similar? If you have, what were the results? If you haven't, just say so." },
-  { n: 5, column: "q5_daily_eating", prompt: "What does a normal day of eating look like for you? Breakfast, lunch, dinner and snacks — and roughly what time you have each." },
-  { n: 6, column: "q6_stress", prompt: "On a scale of 1 to 10, how would you rate your stress right now? And what are the main things causing it?" },
-  { n: 7, column: "q7_activity", prompt: "How physically active are you? What kind of exercise, and how many times a week?" },
-  { n: 8, column: "q8_sleep", prompt: "How do you normally sleep? Roughly how many hours, and how well?" },
+  {
+    n: 1,
+    column: "q1_reason",
+    prompt:
+      "What brings you to this consultation? Tell me the condition or the main problem you want to work on.",
+  },
+  {
+    n: 2,
+    column: "q2_symptoms",
+    prompt:
+      "What symptoms are you having at the moment? Include everything, even things that seem minor.",
+  },
+  {
+    n: 3,
+    column: "q3_tests_and_medications",
+    prompt:
+      "Have you had any blood tests or medical investigations recently? If so, what did they show? Also list every medicine, vitamin and supplement you take.",
+  },
+  {
+    n: 4,
+    column: "q4_vitamin_mineral_levels",
+    prompt:
+      "Have you ever had your vitamin and mineral levels checked — vitamin D, B12, iron, or similar? If you have, what were the results? If you haven't, just say so.",
+  },
+  {
+    n: 5,
+    column: "q5_daily_eating",
+    prompt:
+      "What does a normal day of eating look like for you? Breakfast, lunch, dinner and snacks — and roughly what time you have each.",
+  },
+  {
+    n: 6,
+    column: "q6_stress",
+    prompt:
+      "On a scale of 1 to 10, how would you rate your stress right now? And what are the main things causing it?",
+  },
+  {
+    n: 7,
+    column: "q7_activity",
+    prompt: "How physically active are you? What kind of exercise, and how many times a week?",
+  },
+  {
+    n: 8,
+    column: "q8_sleep",
+    prompt: "How do you normally sleep? Roughly how many hours, and how well?",
+  },
 ];
 const INTAKE_DONE = INTAKE_QUESTIONS.length + 1;
 
@@ -384,7 +483,11 @@ async function getIntakeContext(userId: string): Promise<IntakeContext | null> {
       .select("*")
       .eq("consultation_request_id", booking.id)
       .maybeSingle(),
-    supabaseAdmin.from("body_profiles").select("activity_level").eq("user_id", userId).maybeSingle(),
+    supabaseAdmin
+      .from("body_profiles")
+      .select("activity_level")
+      .eq("user_id", userId)
+      .maybeSingle(),
   ]);
 
   const activityBand = (body?.activity_level as string | undefined) ?? null;
@@ -416,7 +519,9 @@ function formatIntakeContextBlock(ctx: IntakeContext | null): string {
     return "INTAKE: This visitor has already been through every pre-consultation question. Do not start again. If they want to change an answer, tell them they can review and edit their answers from their account before the call.";
   }
   const current = INTAKE_QUESTIONS.find((q) => q.n === ctx.nextQuestion);
-  const remaining = INTAKE_QUESTIONS.filter((q) => q.n > ctx.nextQuestion).map((q) => `${q.n}. ${q.prompt}`);
+  const remaining = INTAKE_QUESTIONS.filter((q) => q.n > ctx.nextQuestion).map(
+    (q) => `${q.n}. ${q.prompt}`,
+  );
   const band = ctx.activityBand
     ? `Their activity band from sign-up is "${ctx.activityBand}" — already known, never ask for it again; question 7 wants the TYPE of exercise and how often.`
     : "";
@@ -425,7 +530,9 @@ function formatIntakeContextBlock(ctx: IntakeContext | null): string {
     `Questions already answered: ${ctx.answered.length ? ctx.answered.join(", ") : "none yet"}.`,
     `THE QUESTION TO ASK NOW is number ${ctx.nextQuestion}: ${current?.prompt ?? ""}`,
     band,
-    remaining.length ? `Still to come after it (do NOT ask these yet): ${remaining.join(" ")}` : "This is the last question.",
+    remaining.length
+      ? `Still to come after it (do NOT ask these yet): ${remaining.join(" ")}`
+      : "This is the last question.",
     "Ask only the current one. Collect, never assess.",
   ]
     .filter(Boolean)
@@ -477,7 +584,10 @@ function formatKnowledgeBlock(items: KnowledgeItem[]): string {
   return (
     "WEBSITE KNOWLEDGE:\n" +
     items
-      .map((item) => `- [${item.category}] ${item.title}: ${item.content}${item.route ? ` (route: ${item.route})` : ""}`)
+      .map(
+        (item) =>
+          `- [${item.category}] ${item.title}: ${item.content}${item.route ? ` (route: ${item.route})` : ""}`,
+      )
       .join("\n")
   );
 }
@@ -558,18 +668,15 @@ serve(async (req) => {
   const rawCurrentPath = typeof body.currentPath === "string" ? body.currentPath.trim() : "";
   const currentPath = CURRENT_PATH_PATTERN.test(rawCurrentPath) ? rawCurrentPath : "";
   const history = Array.isArray(body.history)
-    ? body.history
-        .slice(-MAX_HISTORY_TURNS)
-        .map((h) => ({
-          role: h.role === "assistant" ? ("model" as const) : ("user" as const),
-          text: (h.content ?? "").toString().slice(0, MAX_HISTORY_MESSAGE_LENGTH),
-        }))
+    ? body.history.slice(-MAX_HISTORY_TURNS).map((h) => ({
+        role: h.role === "assistant" ? ("model" as const) : ("user" as const),
+        text: (h.content ?? "").toString().slice(0, MAX_HISTORY_MESSAGE_LENGTH),
+      }))
     : [];
 
   if (!isGeminiConfigured()) {
-    return new Response(JSON.stringify(buildFallbackResponse(platform)), {
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    });
+    console.error("[ai-chat] GEMINI_API_KEY is not configured");
+    return unavailableResponse(platform, "not_configured", CORS_HEADERS);
   }
 
   const memberContext = userId ? await getMemberContext(userId) : null;
@@ -627,25 +734,21 @@ serve(async (req) => {
 
   if (!result.ok) {
     console.error("[ai-chat] Gemini call failed:", result.error);
-    return new Response(JSON.stringify(buildFallbackResponse(platform)), {
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    });
+    return unavailableResponse(platform, "upstream_failed", CORS_HEADERS);
   }
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(result.text);
   } catch {
-    return new Response(JSON.stringify(buildFallbackResponse(platform)), {
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    });
+    console.error("[ai-chat] Gemini returned unparseable JSON");
+    return unavailableResponse(platform, "upstream_unreadable", CORS_HEADERS);
   }
 
   const validated = validateAndSanitize(parsed, platform, knownRoutes);
   if (!validated) {
-    return new Response(JSON.stringify(buildFallbackResponse(platform)), {
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    });
+    console.error("[ai-chat] Gemini response failed schema validation");
+    return unavailableResponse(platform, "upstream_unreadable", CORS_HEADERS);
   }
 
   // Store the visitor's OWN words against the pending question. Deliberately
