@@ -13,7 +13,7 @@
  * on the site: it is an internal working document, and putting it behind a URL
  * would make it a page someone could find.
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -123,6 +123,117 @@ const SECTIONS = [
 ];
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/* ------------------------------------------------------- articles ------- */
+
+/**
+ * Articles are rendered as CONTINUOUS DOCUMENTS, not as key/value rows.
+ *
+ * He has to read each one end to end to judge whether the Arabic says what the
+ * English says — a clinical article split into thirty labelled fragments
+ * cannot be read that way, and the meaning that goes wrong is usually the
+ * meaning that spans two sentences.
+ *
+ * The English lives inline in src/data/articles.ts; the Arabic bodies are
+ * per-article modules under src/i18n/articles/<locale>/. Both are read from
+ * source here rather than imported, for the same reason the dictionaries are:
+ * this script must not need a build.
+ */
+function readEnglishArticles() {
+  const src = readFileSync(resolve(root, "src/data/articles.ts"), "utf8");
+  return src
+    .split(/\n  \{\n/)
+    .slice(1)
+    .map((b) => {
+      const slug = (b.match(/slug:\s*"([^"]+)"/) || [])[1];
+      if (!slug) return null;
+      const sec = (b.match(/sections:\s*\[([\s\S]*?)\n {4}\],/) || [])[1] || "";
+      const sections = [...sec.matchAll(/heading:\s*"([^"]*)",\s*\n\s*body:\s*\[([\s\S]*?)\n\s*\],/g)].map(
+        (m) => ({
+          heading: m[1],
+          body: [...m[2].matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((p) => p[1].replace(/\\"/g, '"')),
+        }),
+      );
+      return {
+        slug,
+        title: (b.match(/title:\s*\n?\s*"([^"]*)"/) || [])[1] || "",
+        excerpt: (b.match(/excerpt:\s*\n?\s*"([^"]*)"/) || [])[1] || "",
+        sections,
+      };
+    })
+    .filter(Boolean);
+}
+
+function readArabicArticleBody(slug) {
+  const path = resolve(root, "src/i18n/articles/ar/" + slug + ".ts");
+  if (!existsSync(path)) return null;
+  const src = readFileSync(path, "utf8");
+  const sec = (src.match(/export const sections[^=]*=\s*\[([\s\S]*?)\n\];/) || [])[1] || "";
+  return [...sec.matchAll(/heading:\s*"([^"]*)",\s*\n\s*body:\s*\[([\s\S]*?)\n\s*\],/g)].map((m) => ({
+    heading: m[1],
+    body: [...m[2].matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((p) => p[1].replace(/\\"/g, '"')),
+  }));
+}
+
+/** slug -> the dictionary keys holding its translated title and excerpt. */
+const ARTICLE_TITLE_KEYS = {
+  "sustainable-weight-loss-without-crash-diets": "article.sustainableWeightLoss",
+  "eating-well-with-type-2-diabetes": "article.type2Diabetes",
+  "fueling-athletic-performance-and-recovery": "article.athleticPerformance",
+  "nutrition-through-every-trimester-of-pregnancy": "article.pregnancyTrimesters",
+  "understanding-food-and-digestive-comfort": "article.digestiveComfort",
+  "heart-healthy-eating-for-cholesterol-and-blood-pressure": "article.heartHealthy",
+  "how-much-protein-do-you-actually-need": "article.howMuchProtein",
+};
+
+function renderArticles() {
+  const list = readEnglishArticles();
+  return list
+    .map((a, i) => {
+      const arBody = readArabicArticleBody(a.slug);
+      const base = ARTICLE_TITLE_KEYS[a.slug];
+      const arTitle = base ? ar[base + ".title"] : undefined;
+      const arExcerpt = base ? ar[base + ".excerpt"] : undefined;
+
+      const para = (enText, arText) =>
+        `<div class="apair">
+           <div class="en" dir="ltr" lang="en"><p>${esc(enText)}</p></div>
+           <div class="ar" dir="rtl" lang="ar">${
+             arText === undefined
+               ? '<p class="missing">— left in English on purpose —</p>'
+               : "<p>" + esc(arText) + "</p>"
+           }</div>
+         </div>`;
+
+      const body = a.sections
+        .map((sec, si) => {
+          const arSec = arBody ? arBody[si] : undefined;
+          const heads = `<div class="apair ahead">
+             <div class="en" dir="ltr" lang="en"><h4>${esc(sec.heading)}</h4></div>
+             <div class="ar" dir="rtl" lang="ar">${
+               arSec ? "<h4>" + esc(arSec.heading) + "</h4>" : '<h4 class="missing">— English kept —</h4>'
+             }</div>
+           </div>`;
+          const paras = sec.body
+            .map((p, pi) => para(p, arSec ? arSec.body[pi] : undefined))
+            .join("\n");
+          return heads + paras;
+        })
+        .join("\n");
+
+      return `<article class="doc" id="article-${esc(a.slug)}">
+        <div class="docnum">Article ${i + 1} of ${list.length} — read this one end to end</div>
+        <div class="apair atitle">
+          <div class="en" dir="ltr" lang="en"><h3>${esc(a.title)}</h3></div>
+          <div class="ar" dir="rtl" lang="ar"><h3>${arTitle ? esc(arTitle) : "—"}</h3></div>
+        </div>
+        ${para(a.excerpt, arExcerpt)}
+        ${body}
+      </article>`;
+    })
+    .join("\n");
+}
+
 const isFlagged = (k) => FLAG_PREFIXES.some((p) => k.startsWith(p));
 
 function renderValue(v) {
@@ -198,6 +309,16 @@ const html = `<!doctype html>
   .intro p { margin:.4rem 0; }
   .q { background:var(--flag); border:1px solid var(--flagline); border-radius:10px; padding:.9rem 1rem; margin:.8rem 0; }
   .q h3 { margin:0 0 .4rem; font-size:.98rem; }
+  .note { color:var(--muted); font-size:.9rem; margin:.2rem 0 1rem; }
+  .doc { background:#fff; border:1px solid var(--line); border-left:4px solid var(--flagline); border-radius:10px; padding:1rem 1.1rem; margin:1.2rem 0; }
+  .docnum { color:var(--flagline); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.6rem; }
+  .apair { display:grid; grid-template-columns:1fr 1fr; gap:1rem; padding:.35rem 0; }
+  .apair .en, .apair .ar { min-width:0; }
+  .apair p { margin:.25rem 0; }
+  .atitle h3 { margin:.2rem 0 .4rem; font-size:1.05rem; }
+  .ahead h4 { margin:.9rem 0 .2rem; font-size:.95rem; }
+  .doc .missing { color:#a33; font-style:italic; }
+  @media (max-width:44rem) { .apair { grid-template-columns:1fr; } }
   .q p { margin:.35rem 0; font-size:.92rem; }
   .keys code { background:#fff; border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem; font-size:.78rem; }
   .row { background:#fff; border:1px solid var(--line); border-radius:10px; margin:.6rem 0; overflow:hidden; }
@@ -228,6 +349,10 @@ const html = `<!doctype html>
 
   <h2>Questions for you</h2>
   ${questions}
+
+  <h2>The seven articles — read each one end to end</h2>
+  <p class="note">These are clinical articles published under your name, so please read each one as a whole rather than line by line: the meaning that goes wrong is usually the meaning that spans two sentences. Numbers, doses and timings are transcribed exactly as you wrote them, never converted or rounded. Where the English hedges — "may help", "tends to", "talk to your doctor" — the Arabic hedges in the same place. If a passage reads as more certain in Arabic than you intended it in English, that is the thing to tell us.</p>
+  ${renderArticles()}
 
   ${sections
     .map(
