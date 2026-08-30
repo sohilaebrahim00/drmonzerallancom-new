@@ -1,6 +1,8 @@
+import { useState } from "react";
+
 import { LOCALES, LOCALE_META, type Locale } from "@/i18n";
 import { useLocale } from "@/i18n";
-import { loadDictionary } from "@/i18n/translate";
+import { isDictionaryLoaded, loadDictionary } from "@/i18n/translate";
 import { cn } from "@/lib/utils";
 import { SHOW_LANGUAGE_SWITCH } from "@/config/features";
 
@@ -24,6 +26,19 @@ export function LanguageSwitch({ className }: { className?: string }) {
   const { locale, setLocale } = useLocale();
 
   /**
+   * Which language is being fetched right now, if any.
+   *
+   * THIS EXISTS BECAUSE TOUCH HAS NO HOVER. The preload below buys a desktop
+   * reader a comfortable head start, and buys a touch reader almost nothing:
+   * pointerdown fires as the finger lands, so the fetch and the tap are
+   * simultaneous and a phone on a slow connection always takes the waiting
+   * path. That path is safe — the page stays readable and no form loses its
+   * contents — but it is SILENT, and a button that appears to do nothing gets
+   * tapped again.
+   */
+  const [pendingLocale, setPendingLocale] = useState<Locale | null>(null);
+
+  /**
    * Fetch the other language the moment someone shows intent, so the switch
    * has nothing to wait for when they actually click.
    *
@@ -40,6 +55,29 @@ export function LanguageSwitch({ className }: { className?: string }) {
     void loadDictionary(code).catch(() => {
       /* The switch still works; the provider falls back to English per key. */
     });
+  };
+
+  /**
+   * Switch, showing the wait when there is one.
+   *
+   * The dictionary is fetched HERE rather than left to the provider, so the
+   * control knows when it is finished and can say so. If the chunk never
+   * arrives the language is left alone — better a switch that visibly did not
+   * take than a mirrored right-to-left English page.
+   */
+  const choose = (code: Locale) => {
+    if (code === locale || pendingLocale) return;
+    if (isDictionaryLoaded(code)) {
+      setLocale(code);
+      return;
+    }
+    setPendingLocale(code);
+    loadDictionary(code)
+      .then(() => setLocale(code))
+      .catch(() => {
+        /* Language unchanged. The reader can tap again. */
+      })
+      .finally(() => setPendingLocale(null));
   };
 
   /**
@@ -65,16 +103,28 @@ export function LanguageSwitch({ className }: { className?: string }) {
           <button
             key={code}
             type="button"
-            onClick={() => setLocale(code)}
+            onClick={() => choose(code)}
             onPointerEnter={() => preload(code)}
             onPointerDown={() => preload(code)}
             onFocus={() => preload(code)}
             aria-pressed={active}
+            aria-busy={pendingLocale === code || undefined}
+            disabled={pendingLocale !== null}
             /* lang on the button so a screen reader pronounces "العربية" with
                Arabic phonetics rather than spelling it out in English. */
             lang={code}
+            /* The Arabic label gets a six-glyph face of its own — see
+               fonts-arabic.css. Without it, one word costs an English visitor
+               a whole Arabic font. */
+            data-label-locale={code}
             className={cn(
               "cursor-pointer rounded-full px-2.5 py-1 text-xs font-semibold transition-colors",
+              code === "ar" && "lang-switch-label-ar",
+              /* The wait is shown ON THE CONTROL, not as an overlay: the page
+                 itself is fine and readable, and covering it would be a lie
+                 about what is happening. */
+              pendingLocale === code && "animate-pulse opacity-70",
+              pendingLocale !== null && pendingLocale !== code && "opacity-40",
               active ? "bg-primary text-primary-foreground" : "text-navy/70 hover:text-turquoise",
             )}
           >

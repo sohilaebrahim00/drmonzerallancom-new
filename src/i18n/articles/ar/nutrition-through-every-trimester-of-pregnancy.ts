@@ -17,9 +17,17 @@ import type { ArticleSection } from "@/data/articles";
  * by design. It reads naturally to a pregnant reader without ever inflecting
  * for her, which is a good outcome here but not a decision anyone made.
  *
- * The real question is site-wide, not article-level, and is flagged as F-8:
- * the rest of the Arabic uses 96 masculine imperatives and zero feminine ones,
- * so a female patient is addressed as male everywhere except here.
+ * NOW WRITTEN IMPERSONALLY, deliberately. "طفلك" carried no gender in
+ * writing but is voiced with one, and a reader using a screen reader would
+ * hear it. The two occurrences are now "الجنين", so the article addresses
+ * nobody's gender at all rather than relying on an orthographic accident.
+ *
+ * This is the interim for the two surfaces where getting the gender wrong is
+ * not cosmetic — this article, whose reader is definitionally not male, and
+ * the medical disclaimers, where the person addressed is the person warned.
+ * It holds whichever option the doctor picks in F-8: the rest of the Arabic
+ * still uses 96 masculine verb forms and zero feminine, and that decision is
+ * his to make.
  *
  * SCOPE KEPT EXACTLY:
  *   "Caloric needs barely change in the first trimester" — "barely change",
@@ -42,13 +50,13 @@ export const sections: ArticleSection[] = [
   {
     heading: "المرحلة الثانية: احتياجات متزايدة",
     body: [
-      "مع ارتفاع احتياجات الطاقة، ترتفع أيضًا أهمية البروتين والكالسيوم وأحماض أوميغا-3 الدهنية لدعم نمو طفلك. وغالبًا ما تكون هذه المرحلة الأسهل لبناء عادات غذائية منتظمة ومتوازنة.",
+      "مع ارتفاع احتياجات الطاقة، ترتفع أيضًا أهمية البروتين والكالسيوم وأحماض أوميغا-3 الدهنية لدعم نمو الجنين. وغالبًا ما تكون هذه المرحلة الأسهل لبناء عادات غذائية منتظمة ومتوازنة.",
     ],
   },
   {
     heading: "المرحلة الثالثة: الاستعداد للولادة",
     body: [
-      "تبلغ الاحتياجات من الحديد والبروتين ذروتها مع اكتساب طفلك للوزن بسرعة. والوجبات الأصغر والأكثر تكرارًا غالبًا ما تكون أكثر راحة مع تناقص المساحة المتاحة لمعدة ممتلئة.",
+      "تبلغ الاحتياجات من الحديد والبروتين ذروتها مع اكتساب الجنين للوزن بسرعة. والوجبات الأصغر والأكثر تكرارًا غالبًا ما تكون أكثر راحة مع تناقص المساحة المتاحة لمعدة ممتلئة.",
       "كل حمل مختلف، والخطة المخصصة تراعي الحالات الصحية القائمة وتغيّرات الشهية وأي مضاعفات قد تطرأ على طول الطريق.",
     ],
   },

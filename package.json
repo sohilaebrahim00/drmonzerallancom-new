@@ -26,7 +26,8 @@
     "cap:ios": "npm run cap:sync:ios && npx cap open ios",
     "cap:assets": "npx capacitor-assets generate",
     "i18n:audit": "node scripts/i18n-audit.mjs",
-    "gate": "npm run typecheck && npm run lint && npm run build:web && npm run build:app && npm run i18n:audit"
+    "gate": "npm run typecheck && npm run lint && npm run build:web && npm run build:app && npm run i18n:audit",
+    "i18n:audit:setup": "playwright install chromium"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

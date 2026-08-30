@@ -502,7 +502,30 @@ try {
     process.exit(2);
   }
 
-  const browser = await chromium.launch();
+  /*
+   * npm ci installs the playwright PACKAGE but not its browser binaries: those
+   * live in a shared per-user cache. So this gate passes on a machine that has
+   * run playwright before and fails on a fresh checkout or in CI, with an error
+   * that does not say what to do about it. Say what to do about it.
+   */
+  let browser;
+  try {
+    browser = await chromium.launch();
+  } catch (e) {
+    const msg = String(e && e.message);
+    if (/Executable doesn.t exist|please run|browserType.launch/i.test(msg)) {
+      console.error(
+        [
+          "i18n:audit — Playwright is installed but its browser is not.",
+          "  Run once per machine:  npm run i18n:audit:setup",
+          "  (npm ci does not do this; the binaries live in a shared user cache,",
+          "   so this gate can pass locally and fail on a fresh checkout or in CI.)",
+        ].join(os.EOL),
+      );
+      process.exit(4);
+    }
+    throw e;
+  }
   const page = await browser.newPage({ viewport: { width: 1440, height: 1200 } });
   const findings = [];
 
