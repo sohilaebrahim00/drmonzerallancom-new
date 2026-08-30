@@ -1,5 +1,5 @@
 import { en, type TranslationKey } from "./dictionaries/en";
-import { ar } from "./dictionaries/ar";
+import { dictionaryFor } from "./translate";
 
 /**
  * Which keys have no Arabic yet.
@@ -11,6 +11,11 @@ import { ar } from "./dictionaries/ar";
  * question should be answered with rather than a guess.
  */
 export function missingArabicKeys(): TranslationKey[] {
+  // Reads the LOADED Arabic dictionary rather than importing it, so asking
+  // this question does not drag the Arabic chunk into the entry bundle. Call
+  // it after loadDictionary("ar") has resolved; before that every key counts
+  // as missing, which is true — nothing is translated yet.
+  const ar = dictionaryFor("ar");
   return (Object.keys(en) as TranslationKey[]).filter((key) => ar[key] === undefined);
 }
 

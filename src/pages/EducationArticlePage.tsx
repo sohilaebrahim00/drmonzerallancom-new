@@ -15,6 +15,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getArticleBySlug, estimateReadingTime, getRelatedArticles } from "@/data/articles";
+import { useArticleSections } from "@/i18n/useArticleSections";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { business } from "@/data/business";
@@ -24,6 +25,8 @@ export default function EducationArticlePage() {
   const t = useTranslate();
   const { slug } = useParams<{ slug: string }>();
   const article = slug ? getArticleBySlug(slug) : undefined;
+  // Called before the early return below, so the hook order is unconditional.
+  const { sections, pending } = useArticleSections(article);
 
   if (!article) {
     return <Navigate to="/blog" replace />;
@@ -152,9 +155,12 @@ export default function EducationArticlePage() {
         )}
       </div>
 
-      <div className="mt-10 space-y-8">
-        {article.sections.map((section) => (
-          <div key={section.heading}>
+      <div className="mt-10 space-y-8" aria-busy={pending || undefined}>
+        {/* Keyed by index, not by heading: once translated the heading is a
+            DISPLAY string, and a display string is never an identity. The list
+            is static and never reorders, so the index is stable here. */}
+        {sections.map((section, i) => (
+          <div key={i}>
             <h2 dir="auto" className="font-display text-xl font-bold text-navy">
               {section.heading}
             </h2>

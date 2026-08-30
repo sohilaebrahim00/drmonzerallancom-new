@@ -1,9 +1,48 @@
 import { DEFAULT_LOCALE, intlTagOf, type Locale } from "./config";
 import { isPluralEntry, type Entry, type TranslationParams } from "./types";
 import { en, type TranslationKey } from "./dictionaries/en";
-import { ar } from "./dictionaries/ar";
 
-const DICTIONARIES: Record<Locale, Partial<Record<TranslationKey, Entry>>> = { en, ar };
+type Dictionary = Partial<Record<TranslationKey, Entry>>;
+
+/**
+ * ENGLISH IS STATIC, EVERY OTHER LOCALE IS LAZY.
+ *
+ * English is the fallback for any missing key, so it has to be present before
+ * the first render — there is no version of this where it loads late. Arabic
+ * is not: it is 71 kB raw / 19.6 kB gzipped, and bundling it into the entry
+ * chunk made every English reader download a language they will never see, on
+ * every page. It is now its own chunk, fetched only when the active locale
+ * needs it.
+ *
+ * `import()` is called with a literal specifier per locale rather than a
+ * computed template: Vite can only split a dynamic import it can read
+ * statically, and a computed path silently degrades to bundling everything.
+ */
+const DICTIONARIES: Partial<Record<Locale, Dictionary>> = { en };
+
+export function isDictionaryLoaded(locale: Locale): boolean {
+  return DICTIONARIES[locale] !== undefined;
+}
+
+/**
+ * Resolves once the locale can render its own strings.
+ *
+ * A failure here is NOT fatal and must not be treated as one: the translator
+ * already falls back to English per key, so a reader whose Arabic chunk fails
+ * to arrive gets an English page rather than a blank one.
+ */
+export async function loadDictionary(locale: Locale): Promise<void> {
+  if (DICTIONARIES[locale]) return;
+  if (locale === "ar") {
+    const mod = await import("./dictionaries/ar");
+    DICTIONARIES.ar = mod.ar;
+  }
+}
+
+/** The loaded dictionary for a locale, or an empty one if it has not arrived. */
+export function dictionaryFor(locale: Locale): Dictionary {
+  return DICTIONARIES[locale] ?? {};
+}
 
 /** Dev-only: one warning per missing key, not one per render. */
 const warned = new Set<string>();
@@ -104,8 +143,8 @@ export type TranslateFn = <K extends TranslationKey>(key: K, ...args: ParamsFor<
 export function createTranslator(locale: Locale): TranslateFn {
   return <K extends TranslationKey>(key: K, ...args: ParamsFor<K>): string => {
     const params = (args[0] ?? {}) as TranslationParams;
-    const own = DICTIONARIES[locale][key];
-    const entry: Entry | undefined = own ?? DICTIONARIES[DEFAULT_LOCALE][key];
+    const own = dictionaryFor(locale)[key];
+    const entry: Entry | undefined = own ?? dictionaryFor(DEFAULT_LOCALE)[key];
 
     /**
      * The case that actually happens: the key exists in English but not yet in
@@ -140,7 +179,7 @@ export function createTranslator(locale: Locale): TranslateFn {
       // Arabic is missing and we fell back to English, asking Arabic's rules
       // for a category would look for `few` in a two-form entry and land on
       // `other` — right by luck for 3, wrong for 1.
-      const entryLocale: Locale = DICTIONARIES[locale][key] ? locale : DEFAULT_LOCALE;
+      const entryLocale: Locale = dictionaryFor(locale)[key] ? locale : DEFAULT_LOCALE;
       return interpolate(selectForm(entry, count, entryLocale), params, locale);
     }
 

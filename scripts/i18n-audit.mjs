@@ -71,6 +71,17 @@ const ROUTES = [
   "/blog",
   "/education",
   "/contact",
+  // Every article, so translated bodies are gated too. An article body left in
+  // English on purpose belongs in ACCEPTED with its reason, not omitted from
+  // this list — the difference between "decided" and "forgotten" has to stay
+  // visible.
+  "/blog/sustainable-weight-loss-without-crash-diets",
+  "/blog/eating-well-with-type-2-diabetes",
+  "/blog/fueling-athletic-performance-and-recovery",
+  "/blog/nutrition-through-every-trimester-of-pregnancy",
+  "/blog/understanding-food-and-digestive-comfort",
+  "/blog/heart-healthy-eating-for-cholesterol-and-blood-pressure",
+  "/blog/how-much-protein-do-you-actually-need",
 ];
 
 const LEGAL_ROUTES = ["/terms", "/privacy-policy", "/medical-disclaimer"];
