@@ -83,8 +83,42 @@ const config = existsSync(configPath) ? readFileSync(configPath, "utf8") : "";
 const declared = new Set(
   [...config.matchAll(/^\[functions\.([A-Za-z0-9_-]+)\]/gm)].map((m) => m[1]),
 );
-const undeclared = entries.map((e) => e.name).filter((n) => !declared.has(n));
-const orphaned = [...declared].filter((n) => !entries.some((e) => e.name === n));
+
+/**
+ * Compared against what GIT TRACKS, not what happens to be on this disk.
+ *
+ * config.toml describes the repository. An untracked directory is somebody's
+ * local scratch: declaring it fails the gate on every other machine, and not
+ * declaring it fails the gate on theirs. Neither is a real finding, and a gate
+ * that produces false positives dies as surely as one that produces false
+ * negatives. So untracked functions are still TYPE-CHECKED above — local work
+ * should not escape that — but they are not held to the declaration rule until
+ * the moment they are committed, which is exactly when the declaration starts
+ * to matter to anyone else.
+ */
+let tracked = null;
+try {
+  const ls = spawnSync("git", ["ls-files", "supabase/functions"], { cwd: root, encoding: "utf8" });
+  if (ls.status === 0) {
+    tracked = new Set(
+      ls.stdout
+        .split("\n")
+        .map((p) => /^supabase\/functions\/([^/]+)\/index\.ts$/.exec(p.trim())?.[1])
+        .filter((n) => n && n !== "_shared"),
+    );
+  }
+} catch {
+  /* no git — fall through to the on-disk list below */
+}
+
+const governed = entries.map((e) => e.name).filter((n) => (tracked ? tracked.has(n) : true));
+const untracked = entries.map((e) => e.name).filter((n) => tracked && !tracked.has(n));
+const undeclared = governed.filter((n) => !declared.has(n));
+const orphaned = [...declared].filter((n) => !governed.includes(n));
+
+for (const n of untracked) {
+  console.log(`  note  ${n} is not committed — type-checked, but exempt from the config.toml rule until it is`);
+}
 
 if (undeclared.length || orphaned.length) {
   console.error("\ncheck:functions — supabase/config.toml does not describe what gets deployed:\n");
