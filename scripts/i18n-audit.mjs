@@ -217,6 +217,83 @@ async function readLeaves(page) {
 }
 
 /**
+ * Chrome that only exists AFTER a SCROLL.
+ *
+ * Same failure as the purchase dialog below, on a different axis. This script
+ * loaded each route and read it where it landed — at scrollY 0. The "View
+ * Programs" pill appears at scrollY > 480 and the scroll-to-top button at
+ * > 640, so neither was ever in the DOM when the leaves were read. The pill
+ * hardcoded the English string "View Programs" and shipped it to Arabic
+ * visitors, sitting on top of the purchase button, while this audit reported
+ * "0 reachable English strings across 20 routes" for weeks.
+ *
+ * Reading the page as delivered measures the page as delivered. A visitor
+ * scrolls.
+ */
+async function revealByScrolling(page) {
+  await page.evaluate(async () => {
+    const step = Math.round(window.innerHeight * 0.75);
+    const end = document.body.scrollHeight;
+    for (let y = step; y <= end; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 90));
+    }
+    // Settle somewhere both scroll-triggered controls are up (> 640) rather
+    // than at the very bottom, where a footer can cover them.
+    window.scrollTo(0, Math.min(900, end));
+    await new Promise((r) => setTimeout(r, 250));
+  });
+  await page.waitForTimeout(500);
+}
+
+/**
+ * SELF-TEST FOR THE SCROLL PASS ITSELF.
+ *
+ * Standing rule: every gate defect found in the wild becomes a self-test case.
+ * The defect here was not a misclassified string — `classify` would have
+ * flagged "View Programs" instantly if it had ever been handed it. The defect
+ * was COVERAGE, and a classifier test cannot see a coverage hole.
+ *
+ * So this plants a synthetic English string that only enters the DOM past the
+ * same scroll threshold the real pill used, then asserts the scan finds it. If
+ * anyone removes the scroll pass, this fails on the next run instead of the
+ * audit quietly going back to reporting zero.
+ */
+async function assertScrollPassWorks(page) {
+  const CANARY = "This canary sentence proves the audit scrolls before it reads";
+  await page.goto(`http://${HOST}:${PORT}/about?lang=ar`, {
+    waitUntil: "domcontentloaded",
+    timeout: 20000,
+  });
+  await page.waitForTimeout(400);
+  await page.evaluate((text) => {
+    const el = document.createElement("div");
+    el.id = "__scroll_canary__";
+    el.style.cssText = "position:fixed;bottom:4px;left:4px;z-index:1;";
+    const paint = () => {
+      // Mirrors StickyCta's own threshold, so the test fails for the same
+      // reason the real defect hid.
+      el.textContent = window.scrollY > 480 ? text : "";
+    };
+    paint();
+    window.addEventListener("scroll", paint, { passive: true });
+    document.body.appendChild(el);
+  }, CANARY);
+
+  const before = (await readLeaves(page)).some((l) => l.text.includes(CANARY));
+  await revealByScrolling(page);
+  const after = (await readLeaves(page)).find((l) => l.text.includes(CANARY));
+
+  if (before) return "canary was visible without scrolling — the test proves nothing";
+  if (!after) return "the scroll pass did not reveal scroll-triggered content";
+  // End to end, not just reachability: the revealed string must also be
+  // CLASSIFIED as English. Reading it and then not flagging it would fail in
+  // precisely the same way — a clean report over a visible English pill.
+  if (!classify(after.text)) return "scroll-revealed English text was read but not classified as English";
+  return null;
+}
+
+/**
  * Surfaces that only exist AFTER an interaction.
  *
  * The crawl above loads a route and reads it. That measures the page as
@@ -529,6 +606,20 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1200 } });
   const findings = [];
 
+  // Before trusting a single route: prove the scroll pass actually reveals
+  // scroll-triggered content. A crawl that silently stopped scrolling would
+  // otherwise report the same reassuring zero it reported all through the
+  // pill defect.
+  const scrollProblem = await assertScrollPassWorks(page);
+  if (scrollProblem) {
+    console.error(`i18n:audit — SELF-TEST FAILED: ${scrollProblem}`);
+    console.error("  The crawl cannot see scroll-revealed chrome, so a clean result would mean nothing.");
+    await browser.close();
+    stopPreview(server);
+    process.exit(3);
+  }
+  process.stderr.write("  scroll pass self-test … ok" + os.EOL);
+
   for (const route of ROUTES) {
     // "networkidle" can wait forever on a page that keeps a connection open,
     // and this script has no per-route output, so that hang looks like a dead
@@ -563,8 +654,19 @@ try {
       });
     }
 
+    // Read again after scrolling, and merge. Scroll-revealed chrome (the
+    // View Programs pill, the scroll-to-top button) is invisible to the pass
+    // above, which is exactly how an English pill sat over the purchase
+    // button while this script reported zero.
+    await revealByScrolling(page);
+    const scrolled = await readLeaves(page);
+
+    const seen = new Set();
     let found = 0;
-    for (const { text, zone } of leaves) {
+    for (const { text, zone } of [...leaves, ...scrolled]) {
+      const key = zone + " " + text;
+      if (seen.has(key)) continue;
+      seen.add(key);
       const kind = classify(text);
       if (kind) {
         findings.push({ route, zone, text, kind });

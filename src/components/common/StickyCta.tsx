@@ -2,11 +2,29 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
+import { useTranslate } from "@/i18n";
+import { useFloatingSlot } from "@/components/common/floatingStack";
 
-const ELIGIBLE_PREFIXES = ["/about", "/packages", "/blog", "/faq"];
+/**
+ * Where the "View Programs" pill may appear.
+ *
+ * /packages IS DELIBERATELY ABSENT. The pill links to /packages, so on that
+ * page it invited the visitor to the page they were already on — while sitting
+ * on top of the Treatment cards' own "Start Your Program" buttons (measured:
+ * 24% of one of them covered, on the live site, at a real scroll position on a
+ * phone). A call to action that points at the current page and obscures the
+ * real one is worse than no call to action.
+ *
+ * The rule for adding a prefix here: the pill must not be pointing at the
+ * page's own primary action. /about, /blog and /faq are pages that inform; the
+ * pill is the only route to the storefront from them, which is the job it
+ * exists to do.
+ */
+const ELIGIBLE_PREFIXES = ["/about", "/blog", "/faq"];
 
 export function StickyCta() {
   const { pathname } = useLocation();
+  const t = useTranslate();
   const [dismissed, setDismissed] = useState(false);
   const [pastHero, setPastHero] = useState(false);
 
@@ -27,6 +45,12 @@ export function StickyCta() {
 
   const visible = eligible && pastHero && !dismissed;
 
+  // Publishes presence to the shared stack so BackToTop lifts clear of this
+  // pill instead of sitting on top of its dismiss button. The pill itself is
+  // order 0 on its side, so its own offset is always 0 — it registers for the
+  // benefit of what stacks above it.
+  useFloatingSlot("viewProgramsPill", visible);
+
   return (
     <AnimatePresence>
       {visible && (
@@ -41,12 +65,17 @@ export function StickyCta() {
             to="/packages"
             className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-navy transition-colors hover:text-primary"
           >
-            <Sparkles className="h-4 w-4 text-primary" /> View Programs
+            {/* Both strings were hardcoded English and shipped that way to
+                Arabic visitors, on top of the purchase button, while the audit
+                reported "0 reachable English strings across 20 routes". The
+                translation already existed — the component simply never asked
+                for it. */}
+            <Sparkles className="h-4 w-4 text-primary" /> {t("cta.viewPrograms")}
           </Link>
           <button
             type="button"
             onClick={() => setDismissed(true)}
-            aria-label="Dismiss"
+            aria-label={t("cta.dismissViewPrograms")}
             className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-navy"
           >
             <X className="h-3.5 w-3.5" />

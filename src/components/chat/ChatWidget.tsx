@@ -4,6 +4,7 @@ import { Loader2, MessageCircle } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useFloatingSlot } from "@/components/common/floatingStack";
 
 // The conversation UI (message state, aiChatService, quick actions) and the
 // mobile bottom-sheet shell (which pulls in the vaul drag/gesture library)
@@ -24,6 +25,13 @@ function ChatBodyFallback() {
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  // Registers with the shared floating stack. Nothing sits above the bubble
+  // today, so this changes no pixels — it is here so the stack's picture of
+  // the screen is complete, and a fourth control placed on this side clears
+  // the bubble automatically instead of landing on top of it, which is the
+  // mistake that put BackToTop over the pill's dismiss button.
+  useFloatingSlot("chat", true);
 
   useEffect(() => {
     if (!open) return;

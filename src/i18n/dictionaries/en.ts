@@ -87,6 +87,7 @@ export const en = {
   // --- shared controls --------------------------------------------------
   "cta.bookSession": "Book a Session",
   "cta.viewPrograms": "View Programs",
+  "cta.dismissViewPrograms": "Dismiss the View Programs shortcut",
   "cta.backToTop": "Back to top",
 
   // --- home sections: heading blocks ------------------------------------

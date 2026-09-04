@@ -166,6 +166,7 @@ export const ar: Partial<Record<TranslationKey, Entry>> = {
   // --- shared controls --------------------------------------------------
   "cta.bookSession": "احجز جلسة",
   "cta.viewPrograms": "تصفّح البرامج",
+  "cta.dismissViewPrograms": "إخفاء اختصار تصفّح البرامج",
   "cta.backToTop": "العودة إلى الأعلى",
 
   // --- home sections: heading blocks ------------------------------------
