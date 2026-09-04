@@ -164,6 +164,17 @@ export const programPackages: ProgramPackage[] = [
     tagline: "Closer follow-up through your treatment plan",
     price: 169,
     priceLabel: "$169",
+    /**
+     * A real historical price, not a marketing device: this program was sold
+     * at $269 before it moved to $169. Confirmed by Sohila on 30 August 2026
+     * as a price that was actually charged.
+     *
+     * Recorded here so the claim is defensible if it is ever questioned, and
+     * so a future reader does not assume the figure was invented to make the
+     * discount look bigger. If the price history changes again, update this
+     * comment with it — do not silently edit the number.
+     */
+    previousPrice: 269,
     consultationCount: 3,
     features: ["Treatment plan", "3 doctor consultations"],
     cta: "Start Your Program",
@@ -178,6 +189,17 @@ export const programPackages: ProgramPackage[] = [
     tagline: "The closest level of medical follow-up available",
     price: 199,
     priceLabel: "$199",
+    /**
+     * A real historical price, not a marketing device: this program was sold
+     * at $349 before it moved to $199. Confirmed by Sohila on 30 August 2026
+     * as a price that was actually charged.
+     *
+     * Recorded here so the claim is defensible if it is ever questioned, and
+     * so a future reader does not assume the figure was invented to make the
+     * discount look bigger. If the price history changes again, update this
+     * comment with it — do not silently edit the number.
+     */
+    previousPrice: 349,
     consultationCount: 4,
     features: ["Treatment plan", "4 doctor consultations"],
     cta: "Start Your Program",

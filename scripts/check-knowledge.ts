@@ -44,25 +44,56 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const KB_PATH = path.resolve(here, "../src/ai/knowledge/generated-knowledge.json");
 
 export interface Finding {
-  kind: "unknown-price" | "unsellable-package" | "retired-product-name";
+  kind: "unknown-price" | "reference-price-as-current" | "unsellable-package" | "retired-product-name";
   item: string;
   detail: string;
 }
 
-/** Every amount the site is willing to charge or to show struck through. */
-function allowedAmounts(): Set<number> {
-  const amounts = new Set<number>();
-  for (const p of purchasableProgramPackages) {
-    amounts.add(p.price);
-    if (p.previousPrice) amounts.add(p.previousPrice);
-  }
-  // Products currently have price: null ("Contact for Price"), so this adds
-  // nothing today. It is here so that the day a product gets a real price, the
-  // gate does not start failing on a legitimate change.
+/**
+ * Amounts a customer can actually be charged today.
+ *
+ * Products currently have price: null ("Contact for Price"), so they add
+ * nothing here. Included so that the day a product gets a real price, the gate
+ * does not start failing on a legitimate change.
+ */
+function currentAmounts(): Set<number> {
+  const amounts = new Set<number>(purchasableProgramPackages.map((p) => p.price));
   for (const p of getPublishedProducts()) {
     if (typeof p.price === "number") amounts.add(p.price);
   }
   return amounts;
+}
+
+/**
+ * Amounts that were really charged in the past and are shown struck through.
+ *
+ * A RETIRED PRICE AND A CURRENT PRICE ARE DIFFERENT KINDS OF FACT, and the
+ * first version of this gate could not tell them apart — it merged both into
+ * one "allowed" set. That was fine while only treatment_basic had a previous
+ * price, and wrong the moment there were three: it would have let the
+ * assistant say "Treatment Plus costs $269" without complaint, which is a
+ * price no customer can pay and the site does not offer.
+ *
+ * So a reference price is allowed ONLY in a construction that marks it as
+ * historical. Anywhere else it is treated exactly like an invented number.
+ */
+function referenceAmounts(): Set<number> {
+  return new Set(
+    purchasableProgramPackages
+      .map((p) => p.previousPrice)
+      .filter((v): v is number => typeof v === "number"),
+  );
+}
+
+/**
+ * Does this occurrence mark the amount as a past price rather than an offer?
+ *
+ * Matches what the generator emits — "(was $269)" — and the label used on the
+ * cards ("Previous price:"), so the two stay in step.
+ */
+function readsAsHistorical(text: string, matchIndex: number): boolean {
+  const before = text.slice(Math.max(0, matchIndex - 40), matchIndex);
+  return /\bwas\s*$|\bpreviously\s*$|previous price:?\s*$/i.test(before);
 }
 
 /**
@@ -93,7 +124,8 @@ function retiredOnlyNames(): string[] {
 
 export function checkKnowledge(items: KnowledgeItem[]): Finding[] {
   const findings: Finding[] = [];
-  const amounts = allowedAmounts();
+  const current = currentAmounts();
+  const reference = referenceAmounts();
   const retired = retiredOnlyNames();
   const sellableSlugs = new Set(purchasableProgramPackages.map((p) => p.slug));
 
@@ -105,13 +137,26 @@ export function checkKnowledge(items: KnowledgeItem[]): Finding[] {
     for (const m of text.matchAll(/\$\s?([0-9][0-9,]*(?:\.[0-9]{1,2})?)/g)) {
       const value = Number(m[1].replace(/,/g, ""));
       if (!Number.isFinite(value)) continue;
-      if (!amounts.has(value)) {
+      if (current.has(value)) continue;
+
+      // A retired price is allowed only where the sentence says it is retired.
+      if (reference.has(value)) {
+        if (readsAsHistorical(text, m.index ?? 0)) continue;
         findings.push({
-          kind: "unknown-price",
+          kind: "reference-price-as-current",
           item: item.id,
-          detail: `$${m[1]} is not a price in the catalogue (allowed: ${[...amounts].sort((a, b) => a - b).map((a) => `$${a}`).join(", ")})`,
+          detail:
+            `$${m[1]} is a retired price shown struck through on the cards, but here it reads as ` +
+            `something a customer can pay. Only "(was $${m[1]})" or "Previous price: $${m[1]}" is allowed.`,
         });
+        continue;
       }
+
+      findings.push({
+        kind: "unknown-price",
+        item: item.id,
+        detail: `$${m[1]} is not a price in the catalogue (sellable: ${[...current].sort((a, b) => a - b).map((a) => `$${a}`).join(", ")})`,
+      });
     }
 
     // 2. Package entries must describe something purchasable.
@@ -171,9 +216,21 @@ function selfTest(): boolean {
     ["a retired product name with no price", mk("membership-overview", "Choose a membership: Basic, Premium, or VIP Elite.")],
     ["a package entry for something not sold", mk("package-diet_basic", "Diet Basic: $40.")],
     ["a plausible but invented price", mk("package-treatment_basic", "Treatment Basic costs $149.")],
+    // Both directions of the retired-vs-current distinction. A struck-through
+    // price is a lawful claim about the past and an unlawful one about today.
+    [
+      "a retired price offered as something payable",
+      mk("package-treatment_plus", "Treatment Plus: Price: $269, a one-time payment."),
+    ],
+    [
+      "a retired price with the historical wording stripped",
+      mk("package-comparison", "One-time price — Treatment Premium: $349."),
+    ],
   ];
   const MUST_PASS: Array<[string, KnowledgeItem]> = [
     ["the corrected package entry", mk("package-treatment_basic", "Treatment Basic: Price: $119, a one-time payment (was $200). Includes 2 doctor consultations.")],
+    ["a retired price marked as retired", mk("package-treatment_plus", "Treatment Plus: Price: $169, a one-time payment (was $269).")],
+    ["the card's own label wording", mk("package-treatment_premium", "Previous price: $349. Current price: $199.")],
     ["the corrected comparison", mk("package-comparison", "One-time price — Treatment Basic: $119; Treatment Plus: $169; Treatment Premium: $199.")],
     ["prose that says 'monthly' legitimately", mk("policy-x", "Program credits do not expire on a monthly cycle like membership credits.")],
     // The site's real FAQ. The gate flagged this on its first run against real
