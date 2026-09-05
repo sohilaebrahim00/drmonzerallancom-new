@@ -8,19 +8,28 @@ import { useFloatingSlot } from "@/components/common/floatingStack";
 /**
  * Where the "View Programs" pill may appear.
  *
- * /packages IS DELIBERATELY ABSENT. The pill links to /packages, so on that
- * page it invited the visitor to the page they were already on — while sitting
- * on top of the Treatment cards' own "Start Your Program" buttons (measured:
- * 24% of one of them covered, on the live site, at a real scroll position on a
- * phone). A call to action that points at the current page and obscures the
- * real one is worse than no call to action.
+ * ── THE RULE ───────────────────────────────────────────────────────────────
+ * THE PILL EXISTS ONLY ON PAGES THAT HAVE NO OTHER ROUTE TO THE STOREFRONT.
  *
- * The rule for adding a prefix here: the pill must not be pointing at the
- * page's own primary action. /about, /blog and /faq are pages that inform; the
- * pill is the only route to the storefront from them, which is the job it
- * exists to do.
+ * Do not add a prefix here without checking that page for its own call to
+ * action first. If the page already has one, the pill is not helping — it is a
+ * second button competing with the first, floating on top of it.
+ *
+ * Three pages were removed for exactly that reason, each measured on a phone
+ * at real scroll positions rather than reasoned about:
+ *
+ *   /packages  the pill links to /packages, so it advertised the page the
+ *              visitor was already on, while covering 24% of a Treatment
+ *              card's own "Start Your Program" button
+ *   /about     has its own "Explore Programs" button; the pill covered 38% of
+ *              it in English
+ *   /faq       same, 36%
+ *
+ * What is left is the two content surfaces a reader arrives on from search
+ * with no purchase path anywhere in front of them. There the pill is the only
+ * route to the storefront, which is the job it was added to do.
  */
-const ELIGIBLE_PREFIXES = ["/about", "/blog", "/faq"];
+const ELIGIBLE_PREFIXES = ["/blog", "/education"];
 
 export function StickyCta() {
   const { pathname } = useLocation();
