@@ -35,7 +35,68 @@ import { articles } from "../src/data/articles";
 import { videos, youtubeChannelUrl } from "../src/data/videos";
 import { business } from "../src/data/business";
 import { bio, credentials } from "../src/data/about";
+import { ar } from "../src/i18n/dictionaries/ar";
 import type { KnowledgeBase, KnowledgeItem } from "../src/ai/knowledge/types";
+
+/**
+ * ARABIC SEARCH TERMS.
+ *
+ * Retrieval scores a query against each item's keywords. Every keyword here
+ * was English, so even after knowledge-retrieval.ts stopped deleting Arabic
+ * characters, an Arabic question still matched nothing: "بريميوم" is not
+ * "premium" to a string comparison. Half the audience could not reach the
+ * knowledge base at all.
+ *
+ * PRODUCT NOUNS COME FROM THE ARABIC DICTIONARY, not from a list typed here —
+ * the site already had to name these things in Arabic to render the cards, and
+ * a second Arabic name for the same product is exactly the kind of duplicate
+ * that put "$29 per month" in front of customers for weeks.
+ */
+function arText(...keys: string[]): string[] {
+  const out: string[] = [];
+  for (const k of keys) {
+    const v = (ar as Record<string, unknown>)[k];
+    if (typeof v === "string") out.push(v);
+  }
+  return out;
+}
+
+/** "treatment_plus" -> "treatmentPlus", the shape the dictionary keys use. */
+function camelSlug(slug: string): string {
+  return slug.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
+}
+
+/**
+ * Splits Arabic (or any) text into search words. The retriever folds both the
+ * stored keywords and the incoming query through the same normaliser at load
+ * time, so this only has to avoid throwing the letters away — which is exactly
+ * what slugKeywords() above does to anything non-ASCII, and why it must not be
+ * used for Arabic.
+ */
+function arKeywords(...texts: (string | undefined)[]): string[] {
+  return [
+    ...new Set(
+      texts
+        .filter((t): t is string => Boolean(t))
+        .flatMap((t) => t.split(/[^\p{L}\p{N}]+/u))
+        .filter((w) => w.length > 2),
+    ),
+  ];
+}
+
+/**
+ * HOW VISITORS ASK, which is genuinely new information and not duplicated
+ * product data — the dictionary has the site's nouns, not a patient's phrasing.
+ * Small on purpose; every entry earns its place by being a word someone would
+ * actually type into a chat box.
+ */
+const ASK_AR = {
+  price: ["سعر", "أسعار", "تكلفة", "كلفة", "بكم", "التكلفة", "ثمن"],
+  discount: ["خصم", "تخفيض", "عرض", "عروض", "خصومات"],
+  subscription: ["اشتراك", "شهري", "شهرية", "عضوية", "تجديد", "إلغاء"],
+  consultation: ["استشارة", "استشارات", "حجز", "موعد", "مواعيد", "جلسة"],
+  program: ["برنامج", "برامج", "باقة", "باقات", "خطة"],
+};
 
 function slugKeywords(...values: (string | undefined)[]): string[] {
   return Array.from(
@@ -92,7 +153,11 @@ items.push({
   content:
     `Programs work in six steps: choose a program (${listTiers()}), complete secure payment via Stripe Checkout, your account activates once payment is confirmed, your consultation credits become available, you request an online consultation from your account dashboard using a credit, and approved consultations happen over Google Meet. Each program is a ONE-TIME purchase, not a subscription — there is no recurring billing and no monthly renewal. Creating an account is not free — it begins with choosing and paying for a program. ` +
     programPackageDisclaimer,
-  keywords: slugKeywords("membership", "program", "how", "works", "join", "sign", "up", "create", "account", "free", "trial", "subscription", "recurring"),
+  keywords: [
+    ...slugKeywords("membership", "program", "how", "works", "join", "sign", "up", "create", "account", "free", "trial", "subscription", "recurring"),
+    ...ASK_AR.program,
+    ...ASK_AR.subscription,
+  ],
   // No `route` — navigating to view/choose a membership is the VIEW_MEMBERSHIP
   // action concept (see supabase/functions/_shared/actionRegistry.ts), which
   // resolves to the correct platform-specific destination server-side.
@@ -118,10 +183,15 @@ if (!purchasableProgramPackages.some((p) => /month|subscription/i.test(p.priceLa
       `${purchasableProgramPackages.map((p) => `${p.name} at ${p.priceLabel}`).join(", ")}. ` +
       "You pay once, the consultations included in that program are granted to your account, and nothing renews or charges again. " +
       "Monthly membership tiers were offered in the past and are no longer available, so any price quoted per month is out of date.",
-    keywords: slugKeywords(
-      "membership", "monthly", "month", "subscription", "subscribe", "recurring", "renew", "renewal",
-      "cancel", "billing", "plan", "tier", "free", "trial", "one", "time", "once",
-    ),
+    keywords: [
+      ...slugKeywords(
+        "membership", "monthly", "month", "subscription", "subscribe", "recurring", "renew", "renewal",
+        "cancel", "billing", "plan", "tier", "free", "trial", "one", "time", "once",
+      ),
+      ...ASK_AR.subscription,
+      ...ASK_AR.price,
+      ...ASK_AR.program,
+    ],
   });
 }
 
@@ -135,7 +205,10 @@ items.push({
       .map((p) => `${p.name} includes ${p.consultationCount}`)
       .join(", ") +
     ". A credit is only used once a booking is actually confirmed with a real Google Meet link — not just for opening the booking page or selecting a date. Clients book from their account by choosing an available date and time, reviewing the appointment, and confirming. If someone has no credits remaining, they can purchase another program — there is no renewal, because there is no subscription. Detailed medical history should not be shared through the consultation booking form — that stays with the consultation itself.",
-  keywords: slugKeywords("consultation", "credit", "credits", "book", "booking", "meeting", "meet", "google", "request", "schedule", "appointment"),
+  keywords: [
+    ...slugKeywords("consultation", "credit", "credits", "book", "booking", "meeting", "meet", "google", "request", "schedule", "appointment"),
+    ...ASK_AR.consultation,
+  ],
   // No `route` — booking is the BOOK_CONSULTATION action concept.
 });
 
@@ -183,7 +256,16 @@ for (const pkg of purchasableProgramPackages) {
     ]
       .filter(Boolean)
       .join(" "),
-    keywords: slugKeywords(pkg.name, pkg.slug, pkg.packageType, pkg.tier, "price", "cost", "program", "package", "plan"),
+    keywords: [
+      ...slugKeywords(pkg.name, pkg.slug, pkg.packageType, pkg.tier, "price", "cost", "program", "package", "plan"),
+      // The Arabic name the cards actually render, split into words, plus the
+      // vocabulary a visitor uses to ask about price and discount. Without
+      // these an Arabic price question scored zero against every item.
+      ...arKeywords(...arText(`pkg.${camelSlug(pkg.slug)}.name`)),
+      ...ASK_AR.price,
+      ...ASK_AR.discount,
+      ...ASK_AR.program,
+    ],
     // No `route` — viewing/choosing a program is the VIEW_MEMBERSHIP action concept.
   });
 }
@@ -201,7 +283,15 @@ items.push({
     `Consultations included — ${purchasableProgramPackages.map((p) => `${p.name}: ${p.consultationCount}`).join("; ")}.`,
     `The tiers differ only in how many consultations are included. There is no monthly plan and no recurring charge.`,
   ].join(" "),
-  keywords: slugKeywords("compare", "comparison", "difference", "tier", "tiers", ...purchasableProgramPackages.map((p) => p.name)),
+  keywords: [
+    ...slugKeywords("compare", "comparison", "difference", "tier", "tiers", ...purchasableProgramPackages.map((p) => p.name)),
+    ...arKeywords(...arText(...purchasableProgramPackages.map((p) => `pkg.${camelSlug(p.slug)}.name`))),
+    ...ASK_AR.price,
+    ...ASK_AR.discount,
+    ...ASK_AR.program,
+    "مقارنة",
+    "الفرق",
+  ],
   // No `route` — the VIEW_MEMBERSHIP action concept covers this.
 });
 

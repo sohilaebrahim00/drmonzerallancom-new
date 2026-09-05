@@ -21,27 +21,116 @@ const ITEMS = knowledgeBase.items as KnowledgeItem[];
 // "what is this website") never come back empty-handed.
 const ALWAYS_INCLUDE_IDS = new Set(["doctor-profile", "site-navigation"]);
 
-function normalize(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9\s]/g, " ");
+/**
+ * ── THIS FUNCTION USED TO DELETE ARABIC ────────────────────────────────────
+ *
+ * It was `text.toLowerCase().replace(/[^a-z0-9\s]/g, " ")`. Every character
+ * outside ASCII was replaced with a space, so an Arabic question normalised to
+ * the empty string, produced zero scoring words, matched zero of the 90
+ * knowledge items, and the assistant answered from nothing at all. Not a
+ * degraded answer — an UNGROUNDED one, every time, for every Arabic visitor,
+ * on a health product published under a doctor's name. Measured:
+ *
+ *   "كم تكلفة برنامج العلاج بريميوم؟"  ->  ""   scoring words: []
+ *
+ * Keeping the letters is necessary and not sufficient. Typed Arabic varies in
+ * ways that are invisible to a reader but fatal to string equality, so the
+ * same question typed by two people has to reduce to the same tokens:
+ *
+ *   harakat/tatweel   بُرْنامَج and برنامج are the same word; the marks are
+ *                     optional and inconsistently typed
+ *   alef forms        أ إ آ ٱ are all typed for ا, often by autocorrect
+ *   taa marbuta       ة and ه are interchanged constantly in informal typing
+ *   alef maqsura      ى and ي likewise
+ *   hamza carriers    ؤ ئ reduce to و ي for matching purposes
+ *   Arabic-Indic      ٠-٩ and ۰-۹ must become ASCII, because every price and
+ *                     count in the knowledge base is stored in ASCII digits
+ *   definite article  "برنامج" must match "البرنامج" — without stripping a
+ *                     leading ال, the single most common noun form in the
+ *                     data fails to match the way visitors actually type it
+ */
+const ARABIC_DIACRITICS = /[ً-ٰٟۖ-ۭـ]/g;
+const ARABIC_INDIC = /[٠-٩۰-۹]/g;
+/**
+ * Everything that is not a letter, a digit or whitespace becomes a space.
+ *
+ * NOT a character-range allow-list. The first version of this kept the whole
+ * Arabic block (U+0600–U+06FF), which also contains Arabic PUNCTUATION — so
+ * "بريميوم؟" survived tokenisation with the question mark still attached and
+ * could never equal the stored "بريميوم". Latin punctuation was being stripped
+ * while Arabic punctuation was not, which is the same bug as before in
+ * miniature: the code was written for one script and applied to two.
+ *
+ * Replacing with a space rather than deleting keeps English tokenisation
+ * byte-identical to the old behaviour — "doctor's" splits to "doctor s" exactly
+ * as it always did.
+ */
+const KEEP = /[^\p{L}\p{N}\s]/gu;
+
+function foldArabic(text: string): string {
+  return text
+    .replace(ARABIC_DIACRITICS, "")
+    .replace(ARABIC_INDIC, (d) => String((d.codePointAt(0)! & 0xf) % 10))
+    .replace(/[أإآٱ]/g, "ا") // أ إ آ ٱ -> ا
+    .replace(/ة/g, "ه") // ة -> ه
+    .replace(/ى/g, "ي") // ى -> ي
+    .replace(/ؤ/g, "و") // ؤ -> و
+    .replace(/ئ/g, "ي"); // ئ -> ي
 }
 
-function words(text: string): string[] {
+export function normalize(text: string): string {
+  return foldArabic(text.toLowerCase()).replace(KEEP, " ");
+}
+
+/**
+ * Strips a leading definite article, but only when a real word is left behind.
+ * "الله" must not become "له"; "البرنامج" must become "برنامج".
+ */
+function stripAl(word: string): string {
+  if (word.startsWith("ال") && word.length >= 5) return word.slice(2);
+  return word;
+}
+
+export function words(text: string): string[] {
   return normalize(text)
     .split(/\s+/)
-    .filter((w) => w.length > 2);
+    .filter((w) => w.length > 2)
+    .map(stripAl);
 }
 
+/**
+ * Keywords and titles are folded ONCE, at module load, with the same function
+ * the query goes through.
+ *
+ * They used to be compared raw. That was invisible while everything on both
+ * sides was ASCII, and would have silently defeated the Arabic keywords the
+ * moment they were added: a stored "الأسعار" would never equal a query's
+ * folded "اسعار". Both sides must pass through the same normaliser or the fix
+ * to normalize() buys nothing.
+ */
+const INDEX = new Map<string, { keywords: string[]; titleWords: string[]; title: string }>(
+  ITEMS.map((item) => [
+    item.id,
+    {
+      keywords: [...new Set(item.keywords.map((k) => normalize(k).trim()).filter(Boolean))],
+      titleWords: words(item.title),
+      title: normalize(item.title).trim(),
+    },
+  ]),
+);
+
 function scoreItem(item: KnowledgeItem, queryWords: Set<string>, rawQuery: string): number {
+  const idx = INDEX.get(item.id);
+  if (!idx) return 0;
   let score = 0;
-  for (const keyword of item.keywords) {
+  for (const keyword of idx.keywords) {
     if (queryWords.has(keyword)) score += 3;
-    else if (rawQuery.includes(keyword)) score += 1.5;
+    else if (keyword.length > 2 && rawQuery.includes(keyword)) score += 1.5;
   }
-  const titleWords = words(item.title);
-  for (const w of titleWords) {
+  for (const w of idx.titleWords) {
     if (queryWords.has(w)) score += 2;
   }
-  if (rawQuery.includes(normalize(item.title))) score += 4;
+  if (idx.title && rawQuery.includes(idx.title)) score += 4;
   return score;
 }
 

@@ -26,11 +26,12 @@
     "cap:ios": "npm run cap:sync:ios && npx cap open ios",
     "cap:assets": "npx capacitor-assets generate",
     "i18n:audit": "node scripts/i18n-audit.mjs",
-    "gate": "npm run typecheck && npm run check:functions && npm run check:knowledge && npm run check:functions:cors && npm run lint && npm run build:web && npm run build:app && npm run i18n:audit",
+    "gate": "npm run typecheck && npm run check:functions && npm run check:knowledge && npm run check:retrieval && npm run check:functions:cors && npm run lint && npm run build:web && npm run build:app && npm run i18n:audit",
     "i18n:audit:setup": "playwright install chromium",
     "check:functions": "node scripts/check-functions.mjs",
     "check:functions:cors": "node scripts/check-function-cors.mjs",
-    "check:knowledge": "tsx scripts/check-knowledge.ts"
+    "check:knowledge": "tsx scripts/check-knowledge.ts",
+    "check:retrieval": "npx --yes deno@latest run --allow-read scripts/retrieval-selftest.ts"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
